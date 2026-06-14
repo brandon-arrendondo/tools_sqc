@@ -1,0 +1,72 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+EXP34-C,1,sqlite,ext/intck/sqlite3intck.c,63,FP,p is the internal intck handle allocated in _open and passed by callers always non-null contract,b14-adjudicator,high
+MEM30-C,2,sqlite,ext/intck/sqlite3intck.c,65,FP,misread sqlite3_free(p->zErr) frees zErr not p->db the handle p->db is read live not freed,b14-adjudicator,high
+EXP34-C,3,sqlite,ext/intck/sqlite3intck.c,78,FP,p is the live intck handle never null in this static helper,b14-adjudicator,high
+DCL30-C,4,sqlite,ext/intck/sqlite3intck.c,85,FP,pRet is a sqlite3_stmt* pointer value returned not the address of a local object,b14-adjudicator,high
+EXP34-C,5,sqlite,ext/intck/sqlite3intck.c,104,FP,p is the live intck handle never null,b14-adjudicator,high
+EXP34-C,6,sqlite,ext/intck/sqlite3intck.c,120,FP,p is the live intck handle never null,b14-adjudicator,high
+DCL13-C,7,sqlite,ext/intck/sqlite3intck.c,129,TP,static intckStep only reads p->rc and never writes through p so const sqlite3_intck* compiles,b14-adjudicator,med
+EXP34-C,8,sqlite,ext/intck/sqlite3intck.c,130,FP,p is the live intck handle never null,b14-adjudicator,high
+EXP34-C,9,sqlite,ext/intck/sqlite3intck.c,155,FP,p is the live intck handle never null,b14-adjudicator,high
+STR34-C,10,sqlite,ext/intck/sqlite3intck.c,206,FP,zDir bytes feed an equality compare zDir[ii-1]=='1' not arithmetic sign-extension is benign,b14-adjudicator,med
+INT32-C,11,sqlite,ext/intck/sqlite3intck.c,255,FP,ii bounded by p->nKeyVal (small column count) ii+1 cannot approach INT_MAX,b14-adjudicator,high
+INT32-C,12,sqlite,ext/intck/sqlite3intck.c,255,FP,same bind loop ii bounded by nKeyVal no realistic overflow,b14-adjudicator,high
+EXP34-C,13,sqlite,ext/intck/sqlite3intck.c,274,FP,p is the live intck handle never null,b14-adjudicator,high
+DCL00-C,14,sqlite,ext/intck/sqlite3intck.c,319,FP,c is reassigned conceptually as a token byte DCL00 const advisory low-value not a defect,b14-adjudicator,high
+INT32-C,15,sqlite,ext/intck/sqlite3intck.c,324,FP,iRet counts bytes within a NUL-terminated schema string bounded well below INT_MAX,b14-adjudicator,med
+INT32-C,16,sqlite,ext/intck/sqlite3intck.c,327,FP,iRet bounded by token length within bounded schema string,b14-adjudicator,med
+EXP30-C,17,sqlite,ext/intck/sqlite3intck.c,331,FP,iRet++ then read are separate full expressions sequence points exist no UB,b14-adjudicator,high
+STR09-C,18,sqlite,ext/intck/sqlite3intck.c,333,FP,STR09 ordering on A-Z is the standard SQLite ASCII identifier test portable on all targets sqlite supports,b14-adjudicator,high
+STR09-C,19,sqlite,ext/intck/sqlite3intck.c,333,FP,same A-Z range test contract-safe ASCII assumption,b14-adjudicator,high
+STR09-C,20,sqlite,ext/intck/sqlite3intck.c,333,FP,same a-z range test,b14-adjudicator,high
+STR09-C,21,sqlite,ext/intck/sqlite3intck.c,333,FP,same a-z range test,b14-adjudicator,high
+INT32-C,22,sqlite,ext/intck/sqlite3intck.c,335,FP,iRet bounded by identifier length in schema string,b14-adjudicator,med
+INT32-C,23,sqlite,ext/intck/sqlite3intck.c,377,FP,iOff accumulates bytes within bounded schema sql cannot overflow int,b14-adjudicator,med
+STR34-C,24,sqlite,ext/intck/sqlite3intck.c,386,FP,z[iOff] compared to char constants no sign-extension hazard,b14-adjudicator,med
+INT32-C,25,sqlite,ext/intck/sqlite3intck.c,395,FP,iEnd and iStart are byte offsets within one bounded buffer difference is small positive,b14-adjudicator,high
+STR34-C,26,sqlite,ext/intck/sqlite3intck.c,396,FP,*z used in char comparisons no harmful sign extension,b14-adjudicator,med
+STR34-C,27,sqlite,ext/intck/sqlite3intck.c,396,FP,z[iStart] char compare no harmful sign extension,b14-adjudicator,med
+INT32-C,28,sqlite,ext/intck/sqlite3intck.c,400,FP,iStart offset within bounded schema string no overflow,b14-adjudicator,med
+INT32-C,29,sqlite,ext/intck/sqlite3intck.c,401,FP,iThisCol counts index columns tiny bound,b14-adjudicator,high
+INT32-C,30,sqlite,ext/intck/sqlite3intck.c,405,FP,nOpen tracks paren nesting in bounded sql cannot reach INT_MAX,b14-adjudicator,high
+INT32-C,31,sqlite,ext/intck/sqlite3intck.c,406,FP,nOpen decrement balanced by increments stays small,b14-adjudicator,high
+ARR37-C,32,sqlite,ext/intck/sqlite3intck.c,413,FP,zToken[0] is a normal pointer dereference ARR37 subscript advisory not a defect,b14-adjudicator,high
+INT32-C,33,sqlite,ext/intck/sqlite3intck.c,417,FP,iOff accumulates token bytes within bounded sql no int overflow,b14-adjudicator,med
+STR34-C,34,sqlite,ext/intck/sqlite3intck.c,423,FP,*z char compare to constants no harmful sign extension,b14-adjudicator,med
+STR34-C,35,sqlite,ext/intck/sqlite3intck.c,423,FP,z byte compared not sign-extended into arithmetic,b14-adjudicator,med
+STR34-C,36,sqlite,ext/intck/sqlite3intck.c,425,FP,*z char compare no harmful sign extension,b14-adjudicator,med
+STR34-C,37,sqlite,ext/intck/sqlite3intck.c,425,FP,z[iOff+5] char compare no harmful sign extension,b14-adjudicator,med
+INT32-C,38,sqlite,ext/intck/sqlite3intck.c,428,FP,iOff += n within bounded sql no overflow,b14-adjudicator,med
+INT32-C,39,sqlite,ext/intck/sqlite3intck.c,434,FP,nRet decremented only while trimming leading space bounded by string length positive,b14-adjudicator,med
+INT32-C,40,sqlite,ext/intck/sqlite3intck.c,437,FP,nRet>0 guard precedes nRet-1 so no underflow,b14-adjudicator,high
+ARR00-C,41,sqlite,ext/intck/sqlite3intck.c,441,FP,zRet is const char* into caller buffer z not a local array misread,b14-adjudicator,high
+DCL30-C,42,sqlite,ext/intck/sqlite3intck.c,441,FP,zRet is a pointer into the input string returned by value not an automatic-storage object address,b14-adjudicator,high
+DCL13-C,43,sqlite,ext/intck/sqlite3intck.c,452,FP,apVal signature is fixed by sqlite3 scalar-function callback typedef cannot be const-qualified,b14-adjudicator,high
+EXP34-C,44,sqlite,ext/intck/sqlite3intck.c,489,FP,p is the live intck handle never null,b14-adjudicator,high
+EXP37-C,45,sqlite,ext/intck/sqlite3intck.c,519,FP,intckParseCreateIndexFunc uses sqlite3_value varargs via documented callback not a stray variadic decl,b14-adjudicator,med
+EXP34-C,46,sqlite,ext/intck/sqlite3intck.c,682,FP,p is the live intck handle never null,b14-adjudicator,high
+API00-C,47,sqlite,ext/intck/sqlite3intck.c,781,FP,zDbArg is allowed to be NULL and is explicitly defaulted to main on line 788 validated,b14-adjudicator,high
+API00-C,48,sqlite,ext/intck/sqlite3intck.c,781,FP,ppOut is an OUT param dereferenced per documented API contract caller must pass valid pointer,b14-adjudicator,med
+STR34-C,49,sqlite,ext/intck/sqlite3intck.c,789,FP,zDb passed to strlen as char* standard no sign-extension defect,b14-adjudicator,med
+INT30-C,50,sqlite,ext/intck/sqlite3intck.c,791,FP,nDb is strlen of a caller db-name string tiny sizeof(*pNew)+nDb+1 cannot wrap size_t,b14-adjudicator,high
+EXP33-C,51,sqlite,ext/intck/sqlite3intck.c,795,FP,pNew is memset to zero on line 795 before any field read no uninitialized read,b14-adjudicator,high
+ARR38-C,52,sqlite,ext/intck/sqlite3intck.c,798,FP,memcpy size nDb+1 matches the allocation sizeof(*pNew)+nDb+1 sound,b14-adjudicator,high
+INT31-C,53,sqlite,ext/intck/sqlite3intck.c,798,FP,nDb is strlen result always non-negative conversion to size_t is safe,b14-adjudicator,high
+INT32-C,54,sqlite,ext/intck/sqlite3intck.c,798,FP,nDb+1 is a small string length plus one no overflow,b14-adjudicator,high
+DCL30-C,55,sqlite,ext/intck/sqlite3intck.c,808,FP,pNew is heap allocated ownership passed to *ppOut not a stack address DCL30 misread,b14-adjudicator,high
+API00-C,56,sqlite,ext/intck/sqlite3intck.c,815,FP,p null-check is the documented caller contract close mirrors sqlite handle convention,b14-adjudicator,high
+API00-C,57,sqlite,ext/intck/sqlite3intck.c,833,FP,p validity is the documented API contract for intck_step,b14-adjudicator,high
+EXP34-C,58,sqlite,ext/intck/sqlite3intck.c,834,FP,p is the live intck handle per API contract,b14-adjudicator,high
+DCL13-C,59,sqlite,ext/intck/sqlite3intck.c,891,FP,sqlite3_intck_message signature is fixed by the public header cannot add const,b14-adjudicator,high
+EXP34-C,60,sqlite,ext/intck/sqlite3intck.c,892,FP,p per public API contract,b14-adjudicator,high
+API00-C,61,sqlite,ext/intck/sqlite3intck.c,905,FP,p validity is the documented API contract,b14-adjudicator,high
+API00-C,62,sqlite,ext/intck/sqlite3intck.c,905,FP,pzErr guarded by if(pzErr) before deref line 906,b14-adjudicator,high
+DCL13-C,63,sqlite,ext/intck/sqlite3intck.c,905,FP,sqlite3_intck_error signature fixed by public header cannot add const,b14-adjudicator,high
+EXP34-C,64,sqlite,ext/intck/sqlite3intck.c,906,FP,p per public API contract,b14-adjudicator,high
+STR34-C,65,sqlite,ext/intck/sqlite3intck.c,906,FP,*pzErr stores a char* via assignment no sign-extension into arithmetic,b14-adjudicator,med
+API00-C,66,sqlite,ext/intck/sqlite3intck.c,914,FP,p validity is the documented API contract for intck_unlock,b14-adjudicator,high
+API00-C,67,sqlite,ext/intck/sqlite3intck.c,928,FP,p validity is the documented API contract for intck_test_sql,b14-adjudicator,high
+MEM30-C,68,sqlite,ext/intck/sqlite3intck.c,933,FP,p->zObj is read not freed before use intckCheckObjectSql consumes it the previous zTestSql is what was freed,b14-adjudicator,high
+MEM30-C,69,sqlite,ext/intck/sqlite3intck.c,934,FP,p->zObj read live not a freed pointer,b14-adjudicator,high
+MEM30-C,70,sqlite,ext/intck/sqlite3intck.c,934,FP,p->zKey read live not freed before this use,b14-adjudicator,high
+MEM30-C,71,sqlite,ext/intck/sqlite3intck.c,936,FP,p->zTestSql freed then reassigned each branch single free per call no double-free,b14-adjudicator,high

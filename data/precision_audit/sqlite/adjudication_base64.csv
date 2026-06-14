@@ -1,0 +1,48 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+PRE11-C,1,sqlite,ext/misc/base64.c,61,FP,deliberate_fall_through macro is __attribute__((fallthrough)); the trailing semicolon is intended at use sites and harmless,b14-adjudicator,high
+MEM05-C,2,sqlite,ext/misc/base64.c,99,FP,line 99 is a fixed-size const char[64+1] string literal not a runtime VLA; misread,b14-adjudicator,high
+PRE00-C,3,sqlite,ext/misc/base64.c,102,TP,BX_DV_PROTO(c) does evaluate c multiple times (cast and table index); function-like macro multi-eval is factually present,b14-adjudicator,med
+PRE12-C,4,sqlite,ext/misc/base64.c,102,TP,BX_DV_PROTO evaluates parameter c multiple times within the conditional macro body,b14-adjudicator,med
+DCL13-C,5,sqlite,ext/misc/base64.c,114,TP,toBase64 reads pIn[0..2] but never writes through pIn so it could be const u8*,b14-adjudicator,high
+ARR30-C,6,sqlite,ext/misc/base64.c,118,FP,"BX_NUMERAL indexes b64Numerals[(u8)dv] with dv masked to &0x3f or >>2 of u8, always 0-63 within size 65",b14-adjudicator,high
+INT14-C,7,sqlite,ext/misc/base64.c,118,FP,INT14 readability flag on pIn shifts/index is stylistic not a defect; values bounded,b14-adjudicator,med
+ARR30-C,8,sqlite,ext/misc/base64.c,119,FP,"same masked &0x3f index into b64Numerals[65], in-bounds",b14-adjudicator,high
+FIO50-C,9,sqlite,ext/misc/base64.c,119,FP,pIn is a u8* buffer not a FILE stream; FIO50 misclassification,b14-adjudicator,high
+FIO50-C,10,sqlite,ext/misc/base64.c,119,FP,pIn is a u8* buffer not a FILE stream; FIO50 misclassification,b14-adjudicator,high
+ARR30-C,11,sqlite,ext/misc/base64.c,120,FP,"index ((pIn[1]&0xf)<<2)|(pIn[2]>>6) is 0-63 into b64Numerals[65], in-bounds",b14-adjudicator,high
+ARR30-C,12,sqlite,ext/misc/base64.c,121,FP,"index pIn[2]&0x3f is 0-63 into b64Numerals[65], in-bounds",b14-adjudicator,high
+INT32-C,13,sqlite,ext/misc/base64.c,123,FP,nbIn loop guarded by while(nbIn>=3) so nbIn-=3 stays >=0 no signed overflow,b14-adjudicator,high
+INT32-C,14,sqlite,ext/misc/base64.c,125,FP,nCol reset to 0 at >=72 so nCol+=4 bounded well below INT_MAX no overflow,b14-adjudicator,high
+STR34-C,15,sqlite,ext/misc/base64.c,126,FP,*pOut++='\n' assigns a constant char to char buffer no sign-extension concern,b14-adjudicator,med
+INT30-C,16,sqlite,ext/misc/base64.c,135,FP,qv is unsigned long shifted by 8 at most 3 times for tail bytes no overflow,b14-adjudicator,high
+ARR00-C,17,sqlite,ext/misc/base64.c,138,FP,loop counts down nbe=3..0 writing pOut[nbe] indices 0-3 into oversized buffer; not a <= off-by-one,b14-adjudicator,high
+ARR30-C,18,sqlite,ext/misc/base64.c,139,FP,BX_NUMERAL((u8)(qv&0x3f)) index is 0-63 in-bounds,b14-adjudicator,high
+STR34-C,19,sqlite,ext/misc/base64.c,144,FP,*pOut++='\n' constant char assignment no sign-extension defect,b14-adjudicator,med
+STR34-C,20,sqlite,ext/misc/base64.c,146,FP,*pOut=0 constant assignment no sign-extension defect,b14-adjudicator,med
+DCL13-C,21,sqlite,ext/misc/base64.c,151,FP,skipNonB64 reads *s but never writes through s; returns advanced copy so s param could be const char*,b14-adjudicator,high
+ARR30-C,22,sqlite,ext/misc/base64.c,153,FP,BX_DV_PROTO guards index with ((u8)c)<0x80 before b64DigitValues[(u8)c] size 128; in-bounds,b14-adjudicator,high
+EXP30-C,23,sqlite,ext/misc/base64.c,153,FP,c=*s assigned once then read in macro; no modify-and-access without sequence point in single expression,b14-adjudicator,high
+EXP33-C,24,sqlite,ext/misc/base64.c,153,FP,c assigned via c=*s in the while condition before any use; not uninitialized,b14-adjudicator,high
+EXP45-C,25,sqlite,ext/misc/base64.c,153,TP,EXP45 assignment in while condition c=*s is factually present though idiomatic,b14-adjudicator,low
+STR34-C,26,sqlite,ext/misc/base64.c,153,FP,c is char read of *s into char then macro casts to u8 before indexing; no harmful sign-extension,b14-adjudicator,med
+STR34-C,27,sqlite,ext/misc/base64.c,153,FP,same as 26 the (u8) cast in BX_DV_PROTO neutralizes sign extension before table index,b14-adjudicator,med
+ARR30-C,28,sqlite,ext/misc/base64.c,160,FP,loop guarded by while(ncIn>0) and ncIn decremented via skipNonB64/nti each iteration; bounded not unbounded,b14-adjudicator,high
+EXP34-C,29,sqlite,ext/misc/base64.c,160,FP,pIn comes from sqlite3_value_text and is null-checked at line 250 before fromBase64 is called,b14-adjudicator,high
+ARR02-C,30,sqlite,ext/misc/base64.c,161,FP,"nboi[] = {0,0,1,2,3} has explicit initializer giving size 5; implicit bound is fine for const lookup",b14-adjudicator,high
+CON03-C,31,sqlite,ext/misc/base64.c,161,FP,nboi is function-local static const lookup table read-only; no thread synchronization issue,b14-adjudicator,high
+INT32-C,32,sqlite,ext/misc/base64.c,165,FP,pUse>=pIn from skipNonB64 and bounded by ncIn so ncIn-=(pUse-pIn) stays >=0 no overflow,b14-adjudicator,high
+INT32-C,33,sqlite,ext/misc/base64.c,168,FP,nti is 0-4 (min of ncIn and 4) so ncIn-=nti cannot overflow,b14-adjudicator,high
+ARR00-C,34,sqlite,ext/misc/base64.c,171,FP,nac is the for-loop variable initialized nac=0; not uninitialized,b14-adjudicator,high
+DCL00-C,35,sqlite,ext/misc/base64.c,172,TP,c at line 172 is assigned once and never reassigned; could be const-qualified,b14-adjudicator,med
+ARR30-C,36,sqlite,ext/misc/base64.c,173,FP,BX_DV_PROTO guards (u8)c<0x80 before b64DigitValues index size 128; in-bounds,b14-adjudicator,high
+FIO50-C,37,sqlite,ext/misc/base64.c,197,FP,qv is an unsigned long not a FILE stream; FIO50 misclassification,b14-adjudicator,high
+FIO50-C,38,sqlite,ext/misc/base64.c,197,FP,qv is an unsigned long not a FILE stream; FIO50 misclassification,b14-adjudicator,high
+DCL13-C,39,sqlite,ext/misc/base64.c,209,FP,av[] sqlite3_value* array is only read via av[0] not written; could be const,b14-adjudicator,high
+INT32-C,40,sqlite,ext/misc/base64.c,221,FP,nv is sqlite3_int64 bounded by SQLITE_LIMIT_LENGTH and result checked nvMax<nc before use; no overflow,b14-adjudicator,high
+INT32-C,41,sqlite,ext/misc/base64.c,222,FP,nc int64 arithmetic on bounded nv guarded by nvMax<nc check; no overflow,b14-adjudicator,high
+INT32-C,42,sqlite,ext/misc/base64.c,222,FP,same bounded int64 nc computation guarded by limit check,b14-adjudicator,high
+INT32-C,43,sqlite,ext/misc/base64.c,242,FP,nv int64 bounded by limit and nb checked against nvMax<nb before alloc; no overflow,b14-adjudicator,high
+MEM12-C,44,sqlite,ext/misc/base64.c,264,FP,cBuf/bBuf are returned to SQLite via sqlite3_result_* with sqlite3_free destructor or are SQLite-owned value buffers; not leaked,b14-adjudicator,high
+MEM12-C,45,sqlite,ext/misc/base64.c,266,FP,default case returns after sqlite3_result_error; cBuf/bBuf unassigned on this path so nothing to free,b14-adjudicator,high
+MSC07-C,46,sqlite,ext/misc/base64.c,267,FP,line 267 memFail label is reachable via goto from OOM paths; not unreachable code,b14-adjudicator,high
+DCL13-C,47,sqlite,ext/misc/base64.c,282,FP,pzErr is (void)pzErr cast unused; declaring const char** would change the documented init signature contract,b14-adjudicator,med

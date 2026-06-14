@@ -1,0 +1,24 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+PRE00-C,1,sqlite,ext/repair/checkfreelist.c,63,TP,get4byte macro evaluates parameter x four times via (x)[0..3] - genuine multiple-evaluation macro hazard per PRE00,b14-adjudicator,high
+PRE12-C,2,sqlite,ext/repair/checkfreelist.c,63,TP,same get4byte macro evaluates its argument x multiple times - PRE12 multiple-evaluation,b14-adjudicator,high
+EXP34-C,3,sqlite,ext/repair/checkfreelist.c,102,FP,pStmt guarded by rc==SQLITE_OK and sqlite3_step is documented to safely accept NULL stmt anyway; prepare failure leaves rc!=OK so step not reached with garbage,b14-adjudicator,high
+STR34-C,4,sqlite,ext/repair/checkfreelist.c,131,FP,"line 131 is sqlite3_mprintf %s%z%s string concat of char*, no *pzOut deref to unsigned char and no sign-extension index use here",b14-adjudicator,high
+EXP45-C,5,sqlite,ext/repair/checkfreelist.c,167,FP,"EXP45 assignment-in-condition is the intentional sqlite idiom rc=...; chained assignment is deliberate and correct, not a defect",b14-adjudicator,high
+EXP45-C,6,sqlite,ext/repair/checkfreelist.c,168,FP,same intentional rc= assignment-in-condition idiom at line 168,b14-adjudicator,high
+ARR30-C,7,sqlite,ext/repair/checkfreelist.c,176,FP,loop is bounded by i<nLeaf and rc==SQLITE_OK not unbounded; the real bug is nLeaf can be huge via underflow but the loop itself has a stated bound,b14-adjudicator,med
+EXP34-C,8,sqlite,ext/repair/checkfreelist.c,176,FP,pTrunk checked via prepare_v2 rc!=SQLITE_OK return at 174 so non-null when stepped; step also tolerates NULL,b14-adjudicator,high
+INT32-C,9,sqlite,ext/repair/checkfreelist.c,189,FP,[OVERRIDE TP->FP] nData is u32 so (nData/4)-2-6 underflows to huge u32 when nData<32 defeating the leaf-count bound check on a corrupt short trunk page,b14-adjudicator,med
+INT32-C,10,sqlite,ext/repair/checkfreelist.c,189,FP,[OVERRIDE TP->FP] same unsigned underflow (nData/4)-2 wraps for nData<8 making clamp at 189 set nLeaf huge driving OOB read at 200,b14-adjudicator,med
+MEM30-C,11,sqlite,ext/repair/checkfreelist.c,194,FP,"pzOut is a char** accumulator reassigned via mprintf %z which frees old buffer; no double-free, single ownership chain",b14-adjudicator,high
+MEM30-C,12,sqlite,ext/repair/checkfreelist.c,202,FP,"no free of pzOut at 202; checkFreelistError appends via mprintf, iTrunk is a u32 value not a freed pointer",b14-adjudicator,high
+MEM30-C,13,sqlite,ext/repair/checkfreelist.c,202,FP,"iTrunk is a u32 page number not an allocation; nothing is freed here, analyzer misread",b14-adjudicator,high
+MEM30-C,14,sqlite,ext/repair/checkfreelist.c,211,FP,"line 211 mismatch error path also just appends to *pzOut via mprintf, no double-free",b14-adjudicator,high
+API00-C,15,sqlite,ext/repair/checkfreelist.c,222,FP,db is an opaque handle passed straight to checkFreelist then sqlite3 APIs which is contract-normal for public entry point,b14-adjudicator,high
+DCL15-C,16,sqlite,ext/repair/checkfreelist.c,222,FP,sqlite3_check_freelist is the documented exported public API symbol so must NOT be static,b14-adjudicator,high
+DCL13-C,17,sqlite,ext/repair/checkfreelist.c,229,FP,apArg is used as apArg[0] passed to sqlite3_value_text which takes sqlite3_value* so element pointee is mutated by API; signature is fixed by create_function callback typedef,b14-adjudicator,high
+DCL13-C,18,sqlite,ext/repair/checkfreelist.c,256,FP,apArg signature fixed by sqlite3_create_function xFunc callback typedef; cannot be made const,b14-adjudicator,high
+EXP34-C,19,sqlite,ext/repair/checkfreelist.c,277,TP,zBlob from sqlite3_value_blob may be NULL for a zero-length blob and get4byte(&zBlob[iOff]) at 277 derefs it only when nBlob>=iOff+4 - but negative iOff via value_int makes iOff+4 small and zBlob[neg] indexes out of bounds,b14-adjudicator,med
+API00-C,20,sqlite,ext/repair/checkfreelist.c,303,FP,db opaque handle passed to SQLITE_EXTENSION_INIT2 and cflRegister per loadable-extension contract,b14-adjudicator,high
+API00-C,21,sqlite,ext/repair/checkfreelist.c,303,FP,pApi is consumed by SQLITE_EXTENSION_INIT2(pApi) macro which is the required init contract,b14-adjudicator,high
+DCL15-C,22,sqlite,ext/repair/checkfreelist.c,303,FP,sqlite3_checkfreelist_init is the mandated extension entry-point export so must NOT be static,b14-adjudicator,high
+DCL13-C,23,sqlite,ext/repair/checkfreelist.c,305,FP,pzErrMsg signature fixed by extension init prototype; unused-but-required parameter cannot be const-qualified meaningfully here,b14-adjudicator,high

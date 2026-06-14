@@ -1,0 +1,56 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+ARR02-C,1,sqlite,ext/misc/percentile.c,151,FP,"aPercentFunc[] is a fully brace-initialized const table; implicit size is idiomatic and correct, no defect",b14-adjudicator,high
+DCL03-C,2,sqlite,ext/misc/percentile.c,163,FP,assert(sizeof(u)==sizeof(r)) is a compile-time invariant check; style nit not a memory/safety defect,b14-adjudicator,high
+EXP05-C,3,sqlite,ext/misc/percentile.c,164,FP,"memcpy(&u,&r,...) takes address of local non-const u to write into it; no const being cast away",b14-adjudicator,high
+EXP07-C,4,sqlite,ext/misc/percentile.c,165,FP,u>>52 & 0x7ff is the standard IEEE-754 exponent extraction on a bit-copied uint64; intentional and correct,b14-adjudicator,high
+FLP02-C,5,sqlite,ext/misc/percentile.c,165,FP,((u>>52)&0x7ff)==0x7ff is an integer comparison on extracted exponent bits not a float equality compare,b14-adjudicator,high
+DCL13-C,6,sqlite,ext/misc/percentile.c,187,FP,"percentBinarySearch reads p->a[iMid] but p->a is a non-const double* member; making p const would require const-correct member chain, signature is internal-only style nit not a bug",b14-adjudicator,med
+INT32-C,7,sqlite,ext/misc/percentile.c,191,FP,iFirst+iLast bounded by nUsed which is bounded by realloc-limited array size far below INT_MAX; not reachable overflow,b14-adjudicator,high
+FLP06-C,8,sqlite,ext/misc/percentile.c,192,FP,iMid is array index used to read a double; integer arithmetic for an index is correct not a precision concern,b14-adjudicator,high
+INT32-C,9,sqlite,ext/misc/percentile.c,194,FP,iMid+1 bounded by nUsed array size well below INT_MAX; no reachable overflow,b14-adjudicator,high
+INT32-C,10,sqlite,ext/misc/percentile.c,196,FP,iMid-1 stays >= -1 within int range; no underflow defect,b14-adjudicator,high
+EXP34-C,11,sqlite,ext/misc/percentile.c,221,FP,pFunc from sqlite3_user_data is the registered aPercentFunc[] entry pointer set at create time always non-null,b14-adjudicator,high
+DCL13-C,12,sqlite,ext/misc/percentile.c,231,FP,"argv contents read via sqlite3_value_* but argv pointer itself not reassigned; sqlite callback signature is fixed so const cannot be applied, style nit",b14-adjudicator,med
+EXP34-C,13,sqlite,ext/misc/percentile.c,245,FP,pFunc is the registered non-null user_data pointer; dereference safe,b14-adjudicator,high
+FLP03-C,14,sqlite,ext/misc/percentile.c,245,FP,division by (double)pFunc->mxFrac where mxFrac is 1/100 const table value never zero; result range-checked after,b14-adjudicator,high
+FLP34-C,15,sqlite,ext/misc/percentile.c,245,FP,sqlite3_value_double returns a double already; no narrowing conversion needing range check,b14-adjudicator,high
+FLP34-C,16,sqlite,ext/misc/percentile.c,251,FP,(double)pFunc->mxFrac widens a char to double exactly; no range loss,b14-adjudicator,high
+EXP33-C,17,sqlite,ext/misc/percentile.c,257,FP,p assigned from sqlite3_aggregate_context and null-checked (if p==0 return) before any deref at 257-onward,b14-adjudicator,high
+INT30-C,18,sqlite,ext/misc/percentile.c,292,FP,sizeof(double)*n is evaluated in 64-bit size_t (sizeof is size_t) so 32-bit n cannot wrap the product; realloc fails before nAlloc grows enough to matter,b14-adjudicator,med
+ARR38-C,19,sqlite,ext/misc/percentile.c,311,FP,memmove dest/src within same p->a array; size (nUsed-i)*8 bounded by allocation since i<nUsed guaranteed by guard at 310,b14-adjudicator,high
+INT30-C,20,sqlite,ext/misc/percentile.c,311,FP,i+1 where i is int index < nUsed (small); no wrap,b14-adjudicator,high
+INT30-C,21,sqlite,ext/misc/percentile.c,311,FP,"(nUsed-i) guarded i<(int)nUsed so non-negative; *8 in size_t bounded by allocation, no wrap",b14-adjudicator,high
+INT32-C,22,sqlite,ext/misc/percentile.c,311,FP,same memmove size; i<nUsed guard ensures nUsed-i positive and within allocated bytes,b14-adjudicator,high
+INT32-C,23,sqlite,ext/misc/percentile.c,311,FP,i+1 bounded by nUsed array index well below INT_MAX,b14-adjudicator,high
+PRE00-C,24,sqlite,ext/misc/percentile.c,324,TP,"SWAP_DOUBLE(X,Y) macro expands X and Y multiple times; genuine multiple-evaluation hazard per PRE00",b14-adjudicator,high
+PRE10-C,25,sqlite,ext/misc/percentile.c,324,TP,SWAP_DOUBLE is a brace-block macro not wrapped in do-while; genuine PRE10 dangling-else/semicolon hazard,b14-adjudicator,high
+PRE12-C,26,sqlite,ext/misc/percentile.c,324,TP,macro evaluates X (and Y) multiple times in the swap; genuine PRE12 multiple-evaluation,b14-adjudicator,high
+MEM05-C,27,sqlite,ext/misc/percentile.c,338,TP,"percentSort recursively calls itself at lines 373-374; factual recursion (quicksort), depth bounded but real",b14-adjudicator,high
+INT30-C,28,sqlite,ext/misc/percentile.c,345,FP,n-1 where assert(n>=2) holds so n>=2; no underflow,b14-adjudicator,high
+INT30-C,29,sqlite,ext/misc/percentile.c,346,FP,n-1 with n>=2 guaranteed by assert; no underflow,b14-adjudicator,high
+INT30-C,30,sqlite,ext/misc/percentile.c,349,FP,"iGt=n-1 with n>=2 (n==2 already returned, here n>=3); no underflow",b14-adjudicator,high
+INT30-C,31,sqlite,ext/misc/percentile.c,363,FP,i++ is a small array index bounded by n (array size); no wrap,b14-adjudicator,high
+INT32-C,32,sqlite,ext/misc/percentile.c,363,FP,i++ index bounded by n well below INT_MAX; no overflow,b14-adjudicator,high
+INT32-C,33,sqlite,ext/misc/percentile.c,366,FP,iGt-- bounded below by i in loop condition (iGt>i); cannot reach INT_MIN,b14-adjudicator,high
+INT30-C,34,sqlite,ext/misc/percentile.c,370,FP,i++ small index bounded by n; no wrap,b14-adjudicator,high
+INT32-C,35,sqlite,ext/misc/percentile.c,370,FP,i++ index bounded by n; no INT_MAX overflow,b14-adjudicator,high
+INT30-C,36,sqlite,ext/misc/percentile.c,374,FP,n-iGt where iGt<=n-1 so result>=1; no underflow,b14-adjudicator,high
+INT30-C,37,sqlite,ext/misc/percentile.c,374,FP,"n-iGt with iGt in [i,n-1]; result positive, no underflow",b14-adjudicator,high
+INT30-C,38,sqlite,ext/misc/percentile.c,378,FP,n-1 in disabled #if 0 test block; not compiled,b14-adjudicator,high
+INT30-C,39,sqlite,ext/misc/percentile.c,379,FP,i+1 in disabled #if 0 test block; not compiled,b14-adjudicator,high
+DCL13-C,40,sqlite,ext/misc/percentile.c,389,FP,"argv pointer not reassigned but sqlite xInverse callback signature is fixed; const cannot apply, style nit",b14-adjudicator,med
+EXP33-C,41,sqlite,ext/misc/percentile.c,397,FP,p from sqlite3_aggregate_context with assert(p!=0); contract guarantees non-null in inverse path,b14-adjudicator,high
+ARR38-C,42,sqlite,ext/misc/percentile.c,427,FP,memmove within same p->a; i<(int)nUsed guard ensures (nUsed-i)*8 bounded by allocation,b14-adjudicator,high
+INT30-C,43,sqlite,ext/misc/percentile.c,427,FP,(nUsed-i) guarded positive by i<(int)nUsed at 426; *8 in size_t no wrap,b14-adjudicator,high
+INT32-C,44,sqlite,ext/misc/percentile.c,427,FP,"same memmove; size bounded by live allocation, i<nUsed enforced",b14-adjudicator,high
+EXP34-C,45,sqlite,ext/misc/percentile.c,453,FP,pFunc is registered non-null user_data; deref safe in percentCompute,b14-adjudicator,high
+FLP00-C,46,sqlite,ext/misc/percentile.c,456,FP,ix==(double)i1 compares a derived double to its own integer truncation; deliberate exactness test not erroneous-equality bug,b14-adjudicator,high
+FLP02-C,47,sqlite,ext/misc/percentile.c,456,FP,same intentional ix==(double)i1 truncation test; not an unintended float-equality defect,b14-adjudicator,high
+FLP34-C,48,sqlite,ext/misc/percentile.c,456,FP,"(double)i1 widens unsigned to double; for i1 bounded by nUsed (small) it is exact, no range issue",b14-adjudicator,high
+INT30-C,49,sqlite,ext/misc/percentile.c,456,FP,"i1+1 where i1=(unsigned)ix, ix=rPct*(nUsed-1) with rPct in [0,1] so i1<=nUsed-1; i1+1<=nUsed bounded",b14-adjudicator,high
+ARR36-C,50,sqlite,ext/misc/percentile.c,459,FP,p->a[i2] and p->a[i1] are elements of the SAME array p->a; subtraction is valid same-array pointer arithmetic (analyzer misread),b14-adjudicator,high
+API00-C,51,sqlite,ext/misc/percentile.c,478,FP,"db is the sqlite-provided connection in an extension init contract; validation not required by API contract, no deref bug",b14-adjudicator,high
+API00-C,52,sqlite,ext/misc/percentile.c,478,FP,"pApi handled by SQLITE_EXTENSION_INIT2 or cast to void; contract-provided, not a defect",b14-adjudicator,high
+DCL13-C,53,sqlite,ext/misc/percentile.c,482,FP,"pzErrMsg cast to void (unused); signature fixed by extension entrypoint ABI, const inapplicable",b14-adjudicator,med
+ARR01-C,54,sqlite,ext/misc/percentile.c,493,FP,"sizeof(aPercentFunc) here is the actual static array (file-scope), NOT a decayed parameter; sizeof/sizeof[0] count idiom is correct",b14-adjudicator,high
+ARR01-C,55,sqlite,ext/misc/percentile.c,493,FP,"same sizeof on file-scope static aPercentFunc array; not a parameter, idiom correct",b14-adjudicator,high

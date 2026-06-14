@@ -1,0 +1,56 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+ARR02-C,1,sqlite,ext/fts3/fts3_unicode.c,35,FP,sqlite3Utf8Trans1 is initialized by brace-enclosed list so size is implicit-but-defined 64 entries; index c-0xc0 (c>=0xc0) stays in 0..63 range,b14-adjudicator,high
+PRE00-C,2,sqlite,ext/fts3/fts3_unicode.c,46,TP,READ_UTF8 evaluates zIn multiple times (*(zIn++) then loop) and is a function-like macro with side effects,b14-adjudicator,high
+PRE01-C,3,sqlite,ext/fts3/fts3_unicode.c,46,TP,macro param zIn unparenthesized in replacement text (*(zIn++)),b14-adjudicator,high
+PRE01-C,4,sqlite,ext/fts3/fts3_unicode.c,46,TP,macro param zTerm unparenthesized (zIn!=zTerm),b14-adjudicator,high
+PRE01-C,5,sqlite,ext/fts3/fts3_unicode.c,46,TP,"macro param c unparenthesized (c=*(zIn++), c>=0xc0, c<<6)",b14-adjudicator,high
+PRE02-C,6,sqlite,ext/fts3/fts3_unicode.c,46,FP,READ_UTF8 is a statement-list macro not an expression so whole-list parenthesization is inapplicable,b14-adjudicator,med
+PRE10-C,7,sqlite,ext/fts3/fts3_unicode.c,46,TP,READ_UTF8 is a multistatement macro not wrapped in do-while; unsafe in braceless if,b14-adjudicator,high
+PRE12-C,8,sqlite,ext/fts3/fts3_unicode.c,46,TP,READ_UTF8 evaluates zIn multiple times via repeated zIn++ and dereference,b14-adjudicator,high
+PRE00-C,9,sqlite,ext/fts3/fts3_unicode.c,58,TP,WRITE_UTF8 evaluates c multiple times across the size branches,b14-adjudicator,high
+PRE01-C,10,sqlite,ext/fts3/fts3_unicode.c,58,TP,macro param zOut unparenthesized (*zOut++),b14-adjudicator,high
+PRE01-C,11,sqlite,ext/fts3/fts3_unicode.c,58,TP,"macro param c unparenthesized (c<0x00080, c>>6 etc)",b14-adjudicator,high
+PRE02-C,12,sqlite,ext/fts3/fts3_unicode.c,58,FP,WRITE_UTF8 body is a brace-wrapped statement block not an expression; list parenthesization inapplicable,b14-adjudicator,med
+PRE10-C,13,sqlite,ext/fts3/fts3_unicode.c,58,FP,WRITE_UTF8 IS wrapped in a brace block {...}; sqc wants do-while but braces already make it a single compound statement safe in if,b14-adjudicator,med
+PRE12-C,14,sqlite,ext/fts3/fts3_unicode.c,58,TP,WRITE_UTF8 evaluates zOut multiple times via repeated *zOut++,b14-adjudicator,high
+ARR30-C,15,sqlite,ext/fts3/fts3_unicode.c,138,FP,z[nIn] forms one-past-end address &z[nIn] only used as loop terminator zTerm never dereferenced; nIn=n-11 derived from strlen,b14-adjudicator,high
+ARR37-C,16,sqlite,ext/fts3/fts3_unicode.c,138,FP,&z[nIn] is standard one-past-end pointer for zTerm bound not an actual element read,b14-adjudicator,high
+ARR36-C,17,sqlite,ext/fts3/fts3_unicode.c,144,FP,z and zIn alias the same buffer (z=(unsigned char*)zIn); comparison z<zTerm is valid same-array,b14-adjudicator,high
+EXP33-C,18,sqlite,ext/fts3/fts3_unicode.c,145,FP,READ_UTF8 first statement is c=*(zIn++) so iCode is always assigned before any use,b14-adjudicator,high
+INT31-C,19,sqlite,ext/fts3/fts3_unicode.c,146,FP,iCode holds a folded codepoint <=0x10FFFF cast to int is value-preserving; no truncation,b14-adjudicator,high
+INT31-C,20,sqlite,ext/fts3/fts3_unicode.c,147,FP,same folded-codepoint cast to int is in-range,b14-adjudicator,high
+INT31-C,21,sqlite,ext/fts3/fts3_unicode.c,148,FP,same folded-codepoint cast to int is in-range,b14-adjudicator,high
+INT32-C,22,sqlite,ext/fts3/fts3_unicode.c,150,FP,nEntry bounded by codepoints in option string (each >=1 byte); cannot approach INT_MAX,b14-adjudicator,high
+INT30-C,23,sqlite,ext/fts3/fts3_unicode.c,158,FP,operands p->nException and nEntry are int not unsigned so INT30 unsigned-wrap rule does not apply; product is size_t via sizeof,b14-adjudicator,high
+INT32-C,24,sqlite,ext/fts3/fts3_unicode.c,158,FP,product computed as size_t (sizeof(int) is size_t) so no signed multiplication; counts bounded by option-string length,b14-adjudicator,med
+INT32-C,25,sqlite,ext/fts3/fts3_unicode.c,158,FP,p->nException+nEntry bounded by total option-string bytes; overflow needs 2GB+ arg unreachable via CVT args,b14-adjudicator,med
+ARR36-C,26,sqlite,ext/fts3/fts3_unicode.c,163,FP,z and zIn alias same buffer; z<zTerm comparison is same-array valid,b14-adjudicator,high
+INT31-C,27,sqlite,ext/fts3/fts3_unicode.c,165,FP,iCode folded codepoint cast to int is in-range,b14-adjudicator,high
+INT31-C,28,sqlite,ext/fts3/fts3_unicode.c,166,FP,iCode folded codepoint cast to int is in-range,b14-adjudicator,high
+INT31-C,29,sqlite,ext/fts3/fts3_unicode.c,169,FP,iCode folded codepoint cast to int is in-range,b14-adjudicator,high
+INT32-C,30,sqlite,ext/fts3/fts3_unicode.c,170,FP,j-1 indexes aNew with j>i>=0 so j>=1; no underflow,b14-adjudicator,high
+INT31-C,31,sqlite,ext/fts3/fts3_unicode.c,171,FP,iCode folded codepoint cast to int is in-range,b14-adjudicator,high
+INT32-C,32,sqlite,ext/fts3/fts3_unicode.c,172,FP,nNew bounded by nEntry which is bounded by option-string length,b14-adjudicator,high
+DCL13-C,33,sqlite,ext/fts3/fts3_unicode.c,185,FP,p is read-only here but signature is fixed contract for unicodeIsAlnum/Next callers; however p members never written so const valid - still flag context: function only reads p->nException/aiException,b14-adjudicator,high
+INT32-C,34,sqlite,ext/fts3/fts3_unicode.c,189,FP,p->nException>0 guarded so p->nException-1>=0 no overflow,b14-adjudicator,high
+INT32-C,35,sqlite,ext/fts3/fts3_unicode.c,192,FP,iHi and iLo are array indices bounded by nException; iHi+iLo cannot overflow for realistic arrays,b14-adjudicator,high
+INT32-C,36,sqlite,ext/fts3/fts3_unicode.c,196,FP,iTest is a valid index < nException; iTest+1 cannot overflow,b14-adjudicator,high
+INT32-C,37,sqlite,ext/fts3/fts3_unicode.c,198,FP,iTest-1 with iTest>=0; lower bound fine no overflow,b14-adjudicator,high
+STR34-C,38,sqlite,ext/fts3/fts3_unicode.c,234,FP,z here is azArg argument string compared via memcmp/strlen; no arithmetic sign-extension defect at line 234 (n=strlen(z)),b14-adjudicator,high
+ARR38-C,39,sqlite,ext/fts3/fts3_unicode.c,236,FP,memcmp size 19 guarded by n==19 ensuring strlen(z)==19 so buffer has >=19 bytes plus NUL,b14-adjudicator,high
+ARR38-C,40,sqlite,ext/fts3/fts3_unicode.c,239,FP,memcmp size 19 guarded by n==19,b14-adjudicator,high
+ARR38-C,41,sqlite,ext/fts3/fts3_unicode.c,242,FP,memcmp size 19 guarded by n==19,b14-adjudicator,high
+ARR38-C,42,sqlite,ext/fts3/fts3_unicode.c,245,FP,memcmp size 11 guarded by n>=11 ensuring at least 11 bytes present,b14-adjudicator,high
+ARR37-C,43,sqlite,ext/fts3/fts3_unicode.c,246,FP,"&z[11] guarded by n>=11; index 11 valid (or one-past if n==11, only address-taken)",b14-adjudicator,high
+ARR38-C,44,sqlite,ext/fts3/fts3_unicode.c,248,FP,memcmp size 11 guarded by n>=11,b14-adjudicator,high
+ARR37-C,45,sqlite,ext/fts3/fts3_unicode.c,249,FP,&z[11] guarded by n>=11; address-of valid,b14-adjudicator,high
+INT32-C,46,sqlite,ext/fts3/fts3_unicode.c,249,FP,n-11 guarded by n>=11 so result >=0 no underflow,b14-adjudicator,high
+MEM33-C,47,sqlite,ext/fts3/fts3_unicode.c,295,FP,line 295 is *pp=&pCsr->base a pointer assignment not a flexible-array struct copy,b14-adjudicator,high
+INT32-C,48,sqlite,ext/fts3/fts3_unicode.c,348,FP,nAlloc grows by fixed 64 each iteration; bounded by token length far below INT_MAX,b14-adjudicator,high
+STR34-C,49,sqlite,ext/fts3/fts3_unicode.c,350,FP,*zNew dereference here is realloc bookkeeping zOut=&zNew[...]; no char-to-int sign-extension defect,b14-adjudicator,high
+STR34-C,50,sqlite,ext/fts3/fts3_unicode.c,350,FP,zOut=&zNew[zOut-pCsr->zToken] is pointer arithmetic not a char-to-int conversion; sqc misparsed,b14-adjudicator,high
+INT32-C,51,sqlite,ext/fts3/fts3_unicode.c,352,FP,nAlloc+=64 bounded by token byte length; cannot overflow realistically,b14-adjudicator,high
+STR34-C,52,sqlite,ext/fts3/fts3_unicode.c,371,FP,*paToken=pCsr->zToken is a char* pointer assignment not a char value sign-extension,b14-adjudicator,high
+INT32-C,53,sqlite,ext/fts3/fts3_unicode.c,375,FP,iToken increments once per token; bounded by token count far below INT_MAX,b14-adjudicator,high
+API00-C,54,sqlite,ext/fts3/fts3_unicode.c,383,FP,ppModule is an internal API contract param always passed valid by sqlite registration; deref *ppModule=&module is the documented OUT assignment,b14-adjudicator,high
+MEM33-C,55,sqlite,ext/fts3/fts3_unicode.c,393,FP,line 393 *ppModule=&module is a pointer assignment not a flexible-array struct copy,b14-adjudicator,high

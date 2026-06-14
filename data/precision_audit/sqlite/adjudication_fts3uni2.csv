@@ -1,0 +1,43 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+ARR02-C,1,sqlite,ext/fts3/fts3_unicode2.c,42,FP,aEntry[] static const table fully initialized at 42-124; implicit-bound declaration is well-defined and safe,b14-adjudicator,high
+INT31-C,2,sqlite,ext/fts3/fts3_unicode2.c,130,FP,c is a codepoint input not a buffer index here; conversion guarded by (unsigned int)c<128 before use,b14-adjudicator,high
+ARR30-C,3,sqlite,ext/fts3/fts3_unicode2.c,131,FP,"aAscii[c>>5] index is 0..3 because branch is gated by (unsigned int)c<128, matching size-4 array",b14-adjudicator,high
+INT14-C,4,sqlite,ext/fts3/fts3_unicode2.c,131,FP,"INT14 style flag; c>>5 used as deliberate /32 bucket index, well-defined and bounded",b14-adjudicator,high
+EXP07-C,5,sqlite,ext/fts3/fts3_unicode2.c,132,FP,"EXP07 style flag; 1<<22 is a fixed codepoint-space constant, no defect",b14-adjudicator,high
+INT31-C,6,sqlite,ext/fts3/fts3_unicode2.c,132,FP,"signed-to-unsigned of c guarded by (unsigned int)c<(1<<22) range check, no unsafe index",b14-adjudicator,high
+EXP07-C,7,sqlite,ext/fts3/fts3_unicode2.c,133,FP,"EXP07 style flag on key-construction constant shift, no defect",b14-adjudicator,high
+INT31-C,8,sqlite,ext/fts3/fts3_unicode2.c,133,FP,"c cast to unsigned for key build; used only as binary-search key, not buffer index",b14-adjudicator,high
+INT14-C,9,sqlite,ext/fts3/fts3_unicode2.c,135,FP,"INT14 style flag; aEntry indexed by bounded iTest/iRes from binary search, no defect",b14-adjudicator,high
+INT32-C,10,sqlite,ext/fts3/fts3_unicode2.c,138,FP,iHi+iLo bounded by table size (~250 entries); no realistic signed overflow,b14-adjudicator,high
+INT32-C,11,sqlite,ext/fts3/fts3_unicode2.c,141,FP,iTest+1 bounded well below INT_MAX (table size ~250); no overflow,b14-adjudicator,high
+INT32-C,12,sqlite,ext/fts3/fts3_unicode2.c,143,FP,iTest-1 bounded small int from binary search; no underflow/overflow,b14-adjudicator,high
+ARR00-C,13,sqlite,ext/fts3/fts3_unicode2.c,146,FP,"aEntry[0] valid; assert reads element 0 of a fully-populated table, in bounds",b14-adjudicator,high
+EXP07-C,14,sqlite,ext/fts3/fts3_unicode2.c,148,FP,EXP07 style flag on aEntry[iRes]>>10 decode; iRes bounded by loop invariant,b14-adjudicator,high
+INT14-C,15,sqlite,ext/fts3/fts3_unicode2.c,148,FP,INT14 style flag; iRes is a valid bounded index from binary search,b14-adjudicator,high
+INT31-C,16,sqlite,ext/fts3/fts3_unicode2.c,148,FP,"c cast to unsigned only in comparison/decode, guarded by <(1<<22), no unsafe index",b14-adjudicator,high
+ARR02-C,17,sqlite,ext/fts3/fts3_unicode2.c,163,FP,aDia[] static array fully initialized at 164-179; implicit bound is safe,b14-adjudicator,high
+ARR02-C,18,sqlite,ext/fts3/fts3_unicode2.c,182,FP,aChar[] static array fully initialized; implicit bound is safe,b14-adjudicator,high
+STR00-C,19,sqlite,ext/fts3/fts3_unicode2.c,183,FP,STR00 style flag; unsigned char initializer with char literals is well-defined,b14-adjudicator,high
+INT14-C,20,sqlite,ext/fts3/fts3_unicode2.c,206,FP,"INT14 style flag; c<<3 key construction, well-defined, c is codepoint input",b14-adjudicator,high
+INT31-C,21,sqlite,ext/fts3/fts3_unicode2.c,206,FP,"signed-to-unsigned of c for binary-search key only, not a buffer index",b14-adjudicator,high
+INT14-C,22,sqlite,ext/fts3/fts3_unicode2.c,208,FP,"INT14 style flag; aDia indexed by bounded iTest/iRes, no defect",b14-adjudicator,high
+INT32-C,23,sqlite,ext/fts3/fts3_unicode2.c,211,FP,iHi+iLo bounded by aDia size (~126); no overflow,b14-adjudicator,high
+INT32-C,24,sqlite,ext/fts3/fts3_unicode2.c,214,FP,iTest+1 bounded by table size; no overflow,b14-adjudicator,high
+INT32-C,25,sqlite,ext/fts3/fts3_unicode2.c,216,FP,iTest-1 bounded small int; no underflow,b14-adjudicator,high
+INT14-C,26,sqlite,ext/fts3/fts3_unicode2.c,220,FP,"INT14 style flag; iRes bounded index, no defect",b14-adjudicator,high
+INT14-C,27,sqlite,ext/fts3/fts3_unicode2.c,234,FP,INT14 style flag; c-768 arithmetic guarded by c<768||c>817 return 0,b14-adjudicator,high
+INT30-C,28,sqlite,ext/fts3/fts3_unicode2.c,234,FP,"shift amount c-768 is 0..31 in this branch (c<800 guard at 233), no overflow",b14-adjudicator,high
+INT34-C,29,sqlite,ext/fts3/fts3_unicode2.c,234,FP,shift c-768 validated non-negative and <32 by c>=768 and c<768+32 branch guard,b14-adjudicator,high
+INT34-C,30,sqlite,ext/fts3/fts3_unicode2.c,235,FP,"shift c-768-32 is 0..17 in else branch (c<=817), within uint width, guarded",b14-adjudicator,high
+API00-C,31,sqlite,ext/fts3/fts3_unicode2.c,248,FP,"API00 advisory; c is a codepoint with documented contract, no arithmetic on attacker length",b14-adjudicator,high
+ARR02-C,32,sqlite,ext/fts3/fts3_unicode2.c,270,FP,aEntry[] TableEntry static array fully initialized at 271-325; implicit bound safe,b14-adjudicator,high
+ARR02-C,33,sqlite,ext/fts3/fts3_unicode2.c,327,FP,aiOff[] static array fully initialized at 328-337 (77 entries); implicit bound safe,b14-adjudicator,high
+DCL03-C,34,sqlite,ext/fts3/fts3_unicode2.c,342,FP,"DCL03 style; assert of sizeof equality is a sanity check, not a defect",b14-adjudicator,high
+INT14-C,35,sqlite,ext/fts3/fts3_unicode2.c,345,FP,"INT14 style flag; c compared/decoded as bounded codepoint, no defect",b14-adjudicator,high
+ARR00-C,36,sqlite,ext/fts3/fts3_unicode2.c,352,FP,aEntry[0] valid index into fully-populated table; assert in bounds,b14-adjudicator,high
+INT32-C,37,sqlite,ext/fts3/fts3_unicode2.c,354,FP,iHi+iLo bounded by table size; no overflow,b14-adjudicator,high
+INT32-C,38,sqlite,ext/fts3/fts3_unicode2.c,358,FP,iTest+1 bounded small int; no overflow,b14-adjudicator,high
+INT32-C,39,sqlite,ext/fts3/fts3_unicode2.c,360,FP,iTest-1 bounded small int; no underflow,b14-adjudicator,high
+INT14-C,40,sqlite,ext/fts3/fts3_unicode2.c,366,FP,"INT14 style flag; p->flags>>1 used as aiOff index, bounded by static table values",b14-adjudicator,high
+INT14-C,41,sqlite,ext/fts3/fts3_unicode2.c,367,FP,"INT14 style flag; aiOff indexed by flags>>1 (max 127, table values <=116), in bounds",b14-adjudicator,high
+INT32-C,42,sqlite,ext/fts3/fts3_unicode2.c,367,FP,"c+aiOff[...] masked with &0xFFFF; c<65536 guard and table-bounded offset, no unsafe result",b14-adjudicator,high

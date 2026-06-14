@@ -1,0 +1,69 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+EXP34-C,1,sqlite,src/vdbeblob.c,57,FP,p is the Incrblob handle dereferenced throughout blobSeekToRow caller guarantees non-null via API armor and malloc check,b14-adjudicator,high
+DCL30-C,2,sqlite,src/vdbeblob.c,114,FP,zErr is heap-allocated by sqlite3MPrintf and ownership transferred to caller via *pzErr documented contract not a stack address,b14-adjudicator,high
+STR34-C,3,sqlite,src/vdbeblob.c,114,FP,*pzErr is a char* pointer assignment of an owned heap buffer not a char value sign-extension misread,b14-adjudicator,high
+EXP20-C,4,sqlite,src/vdbeblob.c,146,FP,sqlite3SafetyCheckOk returns a boolean magic-number validity check intended for boolean test in API armor guard,b14-adjudicator,high
+EXP34-C,5,sqlite,src/vdbeblob.c,152,FP,db is validated by sqlite3SafetyCheckOk(db) immediately above before mutex_enter dereference,b14-adjudicator,high
+MEM30-C,6,sqlite,src/vdbeblob.c,161,FP,"sqlite3DbFree(db,zErr) frees zErr not db db is the live connection handle context arg",b14-adjudicator,high
+INT14-C,7,sqlite,src/vdbeblob.c,171,FP,pTab tested with bitwise tabFlags&TF_HasGenerated and pointer truthiness not a real bitwise/arithmetic mix on a number,b14-adjudicator,high
+MEM30-C,8,sqlite,src/vdbeblob.c,183,FP,"sqlite3DbFree(db,zErr) frees zErr db is the live context handle never freed",b14-adjudicator,high
+MEM30-C,9,sqlite,src/vdbeblob.c,187,FP,"sqlite3DbFree(db,zErr) frees zErr only not db no double-free of db",b14-adjudicator,high
+MEM30-C,10,sqlite,src/vdbeblob.c,192,FP,sqlite3BtreeLeaveAll(db) operates on live db handle not freed,b14-adjudicator,high
+MEM30-C,11,sqlite,src/vdbeblob.c,196,FP,db->aDb[iDb].zDbSName reads live db members db never freed in this function path,b14-adjudicator,high
+MEM30-C,12,sqlite,src/vdbeblob.c,196,FP,db->aDb array access on live handle not a freed array,b14-adjudicator,high
+MEM30-C,13,sqlite,src/vdbeblob.c,201,FP,"sqlite3DbFree(db,zErr) frees zErr db is context not double-freed",b14-adjudicator,high
+MEM30-C,14,sqlite,src/vdbeblob.c,202,FP,zErr argument is freed db is the live connection context,b14-adjudicator,high
+MEM30-C,15,sqlite,src/vdbeblob.c,204,FP,sqlite3BtreeLeaveAll(db) on live db handle,b14-adjudicator,high
+MEM30-C,16,sqlite,src/vdbeblob.c,215,FP,db->flags read on live handle db not freed,b14-adjudicator,high
+FLP30-C,17,sqlite,src/vdbeblob.c,222,FP,pFKey is an FKey* loop pointer iterator not a floating-point counter,b14-adjudicator,high
+MEM30-C,18,sqlite,src/vdbeblob.c,242,FP,"sqlite3DbFree(db,zErr) frees zErr not db",b14-adjudicator,high
+MEM30-C,19,sqlite,src/vdbeblob.c,243,FP,zErr freed db is live context arg,b14-adjudicator,high
+MEM30-C,20,sqlite,src/vdbeblob.c,245,FP,sqlite3BtreeLeaveAll(db) on live db handle,b14-adjudicator,high
+MEM30-C,21,sqlite,src/vdbeblob.c,251,FP,pBlob->pStmt is assigned then dereferenced not freed pBlob is live allocation,b14-adjudicator,high
+MEM30-C,22,sqlite,src/vdbeblob.c,251,FP,db->mallocFailed read on live handle assert context,b14-adjudicator,high
+MEM30-C,23,sqlite,src/vdbeblob.c,252,FP,pBlob->pStmt member access on live allocation not freed,b14-adjudicator,high
+MSC40-C,24,sqlite,src/vdbeblob.c,269,FP,static const iLn inside non-static sqlite3_blob_open but flagged line is a function-local const not an MSC40 inline-static issue this function is not inline,b14-adjudicator,high
+ARR02-C,25,sqlite,src/vdbeblob.c,270,TP,openBlob[] VdbeOpList declared with implicit array bounds via initializer ARR02 stylistic finding size is derivable but not explicit,b14-adjudicator,low
+MSC40-C,26,sqlite,src/vdbeblob.c,270,FP,static const VdbeOpList inside sqlite3_blob_open which is not inline MSC40 inline-static constraint inapplicable,b14-adjudicator,high
+MEM30-C,27,sqlite,src/vdbeblob.c,279,FP,pBlob->pStmt member access on live allocation,b14-adjudicator,high
+MEM30-C,28,sqlite,src/vdbeblob.c,282,FP,v is pBlob->pStmt cast live Vdbe passed to sqlite3VdbeAddOp4Int not freed,b14-adjudicator,high
+MEM30-C,29,sqlite,src/vdbeblob.c,285,FP,v passed to sqlite3VdbeChangeP5 live Vdbe,b14-adjudicator,high
+MEM30-C,30,sqlite,src/vdbeblob.c,286,FP,v passed to sqlite3VdbeAddOpList live Vdbe,b14-adjudicator,high
+MEM30-C,31,sqlite,src/vdbeblob.c,286,FP,db->mallocFailed read on live handle,b14-adjudicator,high
+MEM30-C,32,sqlite,src/vdbeblob.c,287,FP,v passed to sqlite3VdbeUsesBtree live Vdbe,b14-adjudicator,high
+MEM30-C,33,sqlite,src/vdbeblob.c,290,FP,v used in db->mallocFailed==0 branch live Vdbe,b14-adjudicator,high
+MEM30-C,34,sqlite,src/vdbeblob.c,292,FP,db->mallocFailed read on live handle,b14-adjudicator,high
+MEM30-C,35,sqlite,src/vdbeblob.c,301,FP,sqlite3VdbeMakeReady(v) on live Vdbe,b14-adjudicator,high
+MEM30-C,36,sqlite,src/vdbeblob.c,303,FP,db->mallocFailed read on live handle,b14-adjudicator,high
+EXP34-C,37,sqlite,src/vdbeblob.c,308,FP,aOp is sqlite3VdbeAddOpList result guarded by db->mallocFailed==0 assert aOp!=0 before aOp[1] access,b14-adjudicator,high
+MEM30-C,38,sqlite,src/vdbeblob.c,326,FP,v passed to sqlite3VdbeFinalize in error cleanup live Vdbe being finalized not previously freed,b14-adjudicator,high
+MEM30-C,39,sqlite,src/vdbeblob.c,332,FP,sqlite3BtreeLeaveAll(db) on live db handle,b14-adjudicator,high
+MEM30-C,40,sqlite,src/vdbeblob.c,333,FP,db->mallocFailed read on live handle,b14-adjudicator,high
+MEM30-C,41,sqlite,src/vdbeblob.c,336,FP,pBlob passed to blobSeekToRow live allocation,b14-adjudicator,high
+MEM30-C,42,sqlite,src/vdbeblob.c,342,FP,db->mallocFailed checked in blob_open_out live handle,b14-adjudicator,high
+MEM30-C,43,sqlite,src/vdbeblob.c,345,FP,pBlob->pStmt accessed in cleanup live allocation,b14-adjudicator,high
+MEM30-C,44,sqlite,src/vdbeblob.c,345,FP,pBlob->pStmt finalized via sqlite3VdbeFinalize live not previously freed,b14-adjudicator,high
+MEM30-C,45,sqlite,src/vdbeblob.c,345,FP,pBlob->pStmt member access guard before free,b14-adjudicator,high
+MEM30-C,46,sqlite,src/vdbeblob.c,346,FP,"sqlite3DbFree(db,pBlob) frees pBlob db is context not double-freed",b14-adjudicator,high
+MEM30-C,47,sqlite,src/vdbeblob.c,346,FP,"sqlite3DbFree(db,pBlob) single free of pBlob no double-free",b14-adjudicator,high
+MEM30-C,48,sqlite,src/vdbeblob.c,348,FP,"sqlite3ErrorWithMsg(db,...) on live db handle",b14-adjudicator,high
+MEM30-C,49,sqlite,src/vdbeblob.c,349,FP,"sqlite3DbFree(db,zErr) frees zErr db is context",b14-adjudicator,high
+MEM30-C,50,sqlite,src/vdbeblob.c,351,FP,"sqlite3DbFree(db,zErr) db is live context arg",b14-adjudicator,high
+MEM30-C,51,sqlite,src/vdbeblob.c,352,FP,"sqlite3ApiExit(db,rc) on live db handle",b14-adjudicator,high
+MEM30-C,52,sqlite,src/vdbeblob.c,352,FP,db->mutex accessed in mutex_leave live handle,b14-adjudicator,high
+API00-C,53,sqlite,src/vdbeblob.c,360,FP,p==null is explicitly handled by if(p) branch returning OK pBlob validity is the documented API contract,b14-adjudicator,high
+MEM30-C,54,sqlite,src/vdbeblob.c,370,FP,"db=p->db then sqlite3DbFree(db,p) frees p not db db used after only for mutex_leave on still-valid handle",b14-adjudicator,high
+MEM30-C,55,sqlite,src/vdbeblob.c,370,FP,db->mutex in sqlite3_mutex_leave only p was freed not db,b14-adjudicator,high
+MEM30-C,56,sqlite,src/vdbeblob.c,371,FP,"pStmt saved before sqlite3DbFree(db,p) then finalized p freed not pStmt",b14-adjudicator,high
+INT32-C,57,sqlite,src/vdbeblob.c,448,FP,iOffset bounded by iOffset+n<=p->nByte and p->iOffset is a record byte offset both well under INT_MAX no real overflow,b14-adjudicator,high
+INT32-C,58,sqlite,src/vdbeblob.c,451,FP,same bounded record-offset addition in non-preupdate path cannot overflow int given page/payload size limits,b14-adjudicator,high
+API00-C,59,sqlite,src/vdbeblob.c,471,FP,blobReadWrite checks p==0 returns MISUSE pBlob validity is documented API contract,b14-adjudicator,high
+API00-C,60,sqlite,src/vdbeblob.c,471,FP,z buffer is caller-provided output buffer validated by length n and bounds check API contract,b14-adjudicator,high
+API00-C,61,sqlite,src/vdbeblob.c,478,FP,blobReadWrite checks p==0 returns MISUSE pBlob validity is API contract,b14-adjudicator,high
+EXP05-C,62,sqlite,src/vdbeblob.c,479,FP,(void*)z casts away const because shared blobReadWrite signature takes void* write path legitimately writes intentional const-cast for API unification,b14-adjudicator,high
+API00-C,63,sqlite,src/vdbeblob.c,488,FP,p && p->pStmt null check present before nByte access,b14-adjudicator,high
+DCL13-C,64,sqlite,src/vdbeblob.c,488,TP,pBlob param in sqlite3_blob_bytes is only cast and read never written and not propagated to a mutating callee could be const but fixed public API signature limits practicality,b14-adjudicator,med
+API00-C,65,sqlite,src/vdbeblob.c,503,FP,p==0 checked returns MISUSE pBlob validity is API contract,b14-adjudicator,high
+MEM30-C,66,sqlite,src/vdbeblob.c,528,FP,db=p->db live handle passed to sqlite3ApiExit not freed,b14-adjudicator,high
+MEM30-C,67,sqlite,src/vdbeblob.c,530,FP,sqlite3_mutex_leave on live db handle,b14-adjudicator,high
+MEM30-C,68,sqlite,src/vdbeblob.c,530,FP,db->mutex on live handle nothing freed in reopen,b14-adjudicator,high

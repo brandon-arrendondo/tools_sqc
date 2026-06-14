@@ -1,0 +1,178 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API00-C,1,sqlite,ext/fts3/tool/fts3view.c,33,FP,findOption is fed nExtra/azExtra derived from argv which is non-null by C runtime contract; no deref of an unvalidated arg,b14-adjudicator,high
+DCL15-C,2,sqlite,ext/fts3/tool/fts3view.c,33,TP,findOption has external linkage but is only used in this file so it should be static,b14-adjudicator,med
+INT32-C,3,sqlite,ext/fts3/tool/fts3view.c,42,FP,i and j are tiny loop indices bounded by nExtra (argc) so i+j cannot overflow int,b14-adjudicator,high
+INT32-C,4,sqlite,ext/fts3/tool/fts3view.c,44,FP,i+j+1 bounded by argc-derived nExtra cannot overflow int,b14-adjudicator,high
+INT32-C,5,sqlite,ext/fts3/tool/fts3view.c,44,FP,i+j bounded by argc-derived nExtra cannot overflow int,b14-adjudicator,high
+DCL30-C,6,sqlite,ext/fts3/tool/fts3view.c,50,FP,zResult is assigned from azExtra/zDefault pointers not a local buffer so no dangling return,b14-adjudicator,high
+FIO23-C,7,sqlite,ext/fts3/tool/fts3view.c,50,FP,this is line 50 of findOption not main and concerns no stdout flush,b14-adjudicator,high
+ERR05-C,8,sqlite,ext/fts3/tool/fts3view.c,69,FP,prepare is an internal helper of a standalone debug tool where exit-on-error is the intended design,b14-adjudicator,high
+DCL30-C,9,sqlite,ext/fts3/tool/fts3view.c,72,FP,pStmt is a sqlite3_stmt* returned by value (a heap handle) not the address of a local,b14-adjudicator,high
+API00-C,10,sqlite,ext/fts3/tool/fts3view.c,137,FP,getVarint p comes from caller-owned blob pointers always non-null in practice,b14-adjudicator,high
+DCL15-C,11,sqlite,ext/fts3/tool/fts3view.c,137,TP,getVarint has external linkage but is only used in this file so should be static,b14-adjudicator,med
+DCL19-C,12,sqlite,ext/fts3/tool/fts3view.c,137,TP,getVarint is file-local only and should be declared static to minimize scope,b14-adjudicator,med
+EXP05-C,13,sqlite,ext/fts3/tool/fts3view.c,140,FP,the (unsigned char*)p cast does not remove const q stays const unsigned char* this is a misread,b14-adjudicator,high
+INT14-C,14,sqlite,ext/fts3/tool/fts3view.c,140,FP,q mixing bitwise and arithmetic is a readability nit not a defect,b14-adjudicator,low
+INT14-C,15,sqlite,ext/fts3/tool/fts3view.c,141,FP,y mixing bitwise and arithmetic is a readability nit not a defect,b14-adjudicator,low
+INT30-C,16,sqlite,ext/fts3/tool/fts3view.c,142,FP,y<<=7 is the standard varint accumulator bounded by the <9 byte loop so no meaningful overflow,b14-adjudicator,med
+INT30-C,17,sqlite,ext/fts3/tool/fts3view.c,144,FP,y*(*q) is the standard 64-bit varint accumulation matching SQLite varint semantics not a wrap bug,b14-adjudicator,med
+EXP05-C,18,sqlite,ext/fts3/tool/fts3view.c,146,FP,cast does not cast away const this is a misread of (q - (unsigned char*)p),b14-adjudicator,high
+DCL11-C,19,sqlite,ext/fts3/tool/fts3view.c,169,FP,argument is sqlite3_int64 v matching %lld not NULL analyzer misattributed argument,b14-adjudicator,high
+INT00-C,20,sqlite,ext/fts3/tool/fts3view.c,169,FP,%lld for sqlite3_int64 is correct and portable in SQLite not a data-model violation,b14-adjudicator,low
+DCL11-C,21,sqlite,ext/fts3/tool/fts3view.c,201,FP,argument is int nDoc matching %9d not NULL misattribution,b14-adjudicator,high
+DCL11-C,22,sqlite,ext/fts3/tool/fts3view.c,212,FP,argument is int nOccurrence matching %9d not NULL misattribution,b14-adjudicator,high
+DCL11-C,23,sqlite,ext/fts3/tool/fts3view.c,213,FP,argument is int nToken matching %9d not NULL misattribution,b14-adjudicator,high
+PRE32-C,24,sqlite,ext/fts3/tool/fts3view.c,223,FP,printf format string concatenation is not a preprocessor directive inside the call,b14-adjudicator,high
+FLP03-C,25,sqlite,ext/fts3/tool/fts3view.c,224,FP,n*100.0/nToken guarded by nToken!=0 (if nToken==0 goto end_vocab at line 214),b14-adjudicator,med
+INT32-C,26,sqlite,ext/fts3/tool/fts3view.c,224,FP,n*100.0 is floating-point multiply (n promoted to double) not signed integer overflow,b14-adjudicator,high
+INT33-C,27,sqlite,ext/fts3/tool/fts3view.c,224,FP,nToken==0 is checked at line 214 goto end_vocab before this division,b14-adjudicator,high
+PRE32-C,28,sqlite,ext/fts3/tool/fts3view.c,233,FP,format string literal concatenation not a preprocessor directive,b14-adjudicator,high
+FLP03-C,29,sqlite,ext/fts3/tool/fts3view.c,234,FP,division guarded by nToken!=0 via the line 214 goto,b14-adjudicator,med
+INT32-C,30,sqlite,ext/fts3/tool/fts3view.c,234,FP,n*100.0 is double arithmetic not signed integer overflow,b14-adjudicator,high
+INT33-C,31,sqlite,ext/fts3/tool/fts3view.c,234,FP,nToken!=0 guaranteed by line 214 early exit,b14-adjudicator,high
+PRE32-C,32,sqlite,ext/fts3/tool/fts3view.c,244,FP,format string concatenation not a preprocessor directive,b14-adjudicator,high
+FLP03-C,33,sqlite,ext/fts3/tool/fts3view.c,245,FP,guarded by nToken!=0 from line 214,b14-adjudicator,med
+INT32-C,34,sqlite,ext/fts3/tool/fts3view.c,245,FP,n*100.0 is double arithmetic,b14-adjudicator,high
+INT33-C,35,sqlite,ext/fts3/tool/fts3view.c,245,FP,nToken!=0 from line 214 guard,b14-adjudicator,high
+PRE32-C,36,sqlite,ext/fts3/tool/fts3view.c,256,FP,format string concatenation not a preprocessor directive,b14-adjudicator,high
+FLP03-C,37,sqlite,ext/fts3/tool/fts3view.c,257,FP,guarded by nToken!=0 from line 214,b14-adjudicator,med
+INT32-C,38,sqlite,ext/fts3/tool/fts3view.c,257,FP,n*100.0 is double arithmetic,b14-adjudicator,high
+INT33-C,39,sqlite,ext/fts3/tool/fts3view.c,257,FP,nToken!=0 from line 214 guard,b14-adjudicator,high
+ERR07-C,40,sqlite,ext/fts3/tool/fts3view.c,260,TP,atoi on findOption result has no error checking strtol preferred,b14-adjudicator,med
+ERR34-C,41,sqlite,ext/fts3/tool/fts3view.c,260,TP,atoi lacks error detection per ERR34 use strtol family,b14-adjudicator,med
+INT32-C,42,sqlite,ext/fts3/tool/fts3view.c,269,FP,i counts result rows bounded by LIMIT nTop cannot reach INT_MAX,b14-adjudicator,high
+DCL11-C,43,sqlite,ext/fts3/tool/fts3view.c,271,FP,argument is int i matching %2d not NULL misattribution,b14-adjudicator,high
+PRE32-C,44,sqlite,ext/fts3/tool/fts3view.c,271,FP,format string concatenation not a preprocessor directive,b14-adjudicator,high
+FLP03-C,45,sqlite,ext/fts3/tool/fts3view.c,272,FP,n*100.0/nDoc occurs only when rows returned implying nDoc>0 documents exist,b14-adjudicator,med
+INT32-C,46,sqlite,ext/fts3/tool/fts3view.c,272,FP,n*100.0 is double arithmetic,b14-adjudicator,high
+INT33-C,47,sqlite,ext/fts3/tool/fts3view.c,272,FP,nDoc could be 0 here making n*100.0/nDoc a divide-by-zero however this path needs rows from fts4aux which implies docs exist so practically guarded,b14-adjudicator,low
+INT32-C,48,sqlite,ext/fts3/tool/fts3view.c,331,FP,nSeg and nRoot are small table counts from count(*) cannot overflow int in practice,b14-adjudicator,high
+INT32-C,49,sqlite,ext/fts3/tool/fts3view.c,332,FP,nSeg-nIdx are small segment counts cannot overflow int,b14-adjudicator,high
+DCL11-C,50,sqlite,ext/fts3/tool/fts3view.c,333,FP,argument is int nSeg+nRoot matching %9d not NULL,b14-adjudicator,high
+DCL11-C,51,sqlite,ext/fts3/tool/fts3view.c,334,FP,argument is int nSeg-nIdx matching %9d not NULL,b14-adjudicator,high
+INT32-C,52,sqlite,ext/fts3/tool/fts3view.c,335,FP,szSeg+szRoot are int64 byte sums realistic sizes will not overflow int64,b14-adjudicator,high
+INT32-C,53,sqlite,ext/fts3/tool/fts3view.c,336,FP,szSeg-szIdx int64 byte sums no realistic overflow,b14-adjudicator,high
+DCL11-C,54,sqlite,ext/fts3/tool/fts3view.c,337,FP,argument is int64 szSeg+szRoot matching %9lld not NULL,b14-adjudicator,high
+DCL11-C,55,sqlite,ext/fts3/tool/fts3view.c,338,FP,argument is int64 szSeg-szIdx matching %9lld not NULL,b14-adjudicator,high
+PRE32-C,56,sqlite,ext/fts3/tool/fts3view.c,340,FP,format string concatenation not a preprocessor directive,b14-adjudicator,high
+FLP34-C,57,sqlite,ext/fts3/tool/fts3view.c,341,FP,cast of int64 byte sum to double is benign no precision concern for realistic sizes,b14-adjudicator,low
+FLP34-C,58,sqlite,ext/fts3/tool/fts3view.c,341,FP,cast of int64 count to double is benign,b14-adjudicator,low
+INT32-C,59,sqlite,ext/fts3/tool/fts3view.c,341,FP,szSeg+szRoot int64 sums realistic no overflow and this is guarded by nSeg>0,b14-adjudicator,high
+INT32-C,60,sqlite,ext/fts3/tool/fts3view.c,341,FP,nSeg+nRoot int counts small no overflow,b14-adjudicator,high
+PRE32-C,61,sqlite,ext/fts3/tool/fts3view.c,342,FP,format string concatenation not a preprocessor directive,b14-adjudicator,high
+FLP34-C,62,sqlite,ext/fts3/tool/fts3view.c,343,FP,double cast of int64 difference benign,b14-adjudicator,low
+FLP34-C,63,sqlite,ext/fts3/tool/fts3view.c,343,FP,double cast of int64 difference benign,b14-adjudicator,low
+INT32-C,64,sqlite,ext/fts3/tool/fts3view.c,343,FP,szSeg-szIdx int64 byte sums no realistic overflow,b14-adjudicator,high
+INT32-C,65,sqlite,ext/fts3/tool/fts3view.c,343,FP,nSeg-nIdx int counts small no overflow,b14-adjudicator,high
+PRE32-C,66,sqlite,ext/fts3/tool/fts3view.c,346,FP,format string concatenation not a preprocessor directive,b14-adjudicator,high
+FLP34-C,67,sqlite,ext/fts3/tool/fts3view.c,347,FP,double cast of szIdx benign,b14-adjudicator,low
+FLP34-C,68,sqlite,ext/fts3/tool/fts3view.c,347,FP,double cast of nIdx benign,b14-adjudicator,low
+PRE32-C,69,sqlite,ext/fts3/tool/fts3view.c,350,FP,format string concatenation not a preprocessor directive,b14-adjudicator,high
+FLP34-C,70,sqlite,ext/fts3/tool/fts3view.c,351,FP,double cast of szRoot benign,b14-adjudicator,low
+FLP34-C,71,sqlite,ext/fts3/tool/fts3view.c,351,FP,double cast of nRoot benign,b14-adjudicator,low
+DCL11-C,72,sqlite,ext/fts3/tool/fts3view.c,355,FP,argument mx is sqlite3_int64 matching %9lld this is the matched-type expected case,b14-adjudicator,high
+INT32-C,73,sqlite,ext/fts3/tool/fts3view.c,371,FP,pgsz-45 where pgsz is page_size (>=512) so no underflow no overflow,b14-adjudicator,high
+INT32-C,74,sqlite,ext/fts3/tool/fts3view.c,377,FP,nSeg-nIdx small segment counts no overflow,b14-adjudicator,high
+PRE32-C,75,sqlite,ext/fts3/tool/fts3view.c,378,FP,format string concatenation not a preprocessor directive,b14-adjudicator,high
+FLP03-C,76,sqlite,ext/fts3/tool/fts3view.c,379,FP,n*100.0/nLeaf guarded by nLeaf>0 ternary at line 379,b14-adjudicator,med
+INT32-C,77,sqlite,ext/fts3/tool/fts3view.c,379,FP,pgsz-45 page_size at least 512 no overflow,b14-adjudicator,high
+INT32-C,78,sqlite,ext/fts3/tool/fts3view.c,379,FP,n*100.0 is double arithmetic,b14-adjudicator,high
+INT33-C,79,sqlite,ext/fts3/tool/fts3view.c,379,FP,division guarded by nLeaf>0 ? ... : 0.0 ternary on line 379,b14-adjudicator,high
+INT32-C,80,sqlite,ext/fts3/tool/fts3view.c,397,FP,pgsz-45 page_size at least 512 no overflow,b14-adjudicator,high
+DCL11-C,81,sqlite,ext/fts3/tool/fts3view.c,403,FP,argument is int i (level) matching %d not NULL,b14-adjudicator,high
+DCL11-C,82,sqlite,ext/fts3/tool/fts3view.c,404,FP,argument is int nIdx matching %9d not NULL,b14-adjudicator,high
+PRE32-C,83,sqlite,ext/fts3/tool/fts3view.c,407,FP,format string concatenation not a preprocessor directive,b14-adjudicator,high
+FLP34-C,84,sqlite,ext/fts3/tool/fts3view.c,408,FP,double cast of int64 leaf size benign,b14-adjudicator,low
+FLP34-C,85,sqlite,ext/fts3/tool/fts3view.c,408,FP,double cast of nIdx benign,b14-adjudicator,low
+PRE32-C,86,sqlite,ext/fts3/tool/fts3view.c,410,FP,format string concatenation not a preprocessor directive,b14-adjudicator,high
+PRE32-C,87,sqlite,ext/fts3/tool/fts3view.c,412,FP,format string concatenation not a preprocessor directive,b14-adjudicator,high
+PRE32-C,88,sqlite,ext/fts3/tool/fts3view.c,415,FP,format string concatenation not a preprocessor directive,b14-adjudicator,high
+EXP33-C,89,sqlite,ext/fts3/tool/fts3view.c,416,FP,sz is assigned via (sz = sqlite3_column_int64(...)) on line 411 before use at 416 not uninitialized,b14-adjudicator,high
+FLP34-C,90,sqlite,ext/fts3/tool/fts3view.c,416,FP,double cast of sz benign,b14-adjudicator,low
+FLP34-C,91,sqlite,ext/fts3/tool/fts3view.c,416,FP,double cast of nIdx benign,b14-adjudicator,low
+PRE32-C,92,sqlite,ext/fts3/tool/fts3view.c,418,FP,format string concatenation not a preprocessor directive,b14-adjudicator,high
+PRE32-C,93,sqlite,ext/fts3/tool/fts3view.c,421,FP,format string concatenation not a preprocessor directive,b14-adjudicator,high
+INT32-C,94,sqlite,ext/fts3/tool/fts3view.c,422,FP,pgsz-45 page_size at least 512 no overflow,b14-adjudicator,high
+INT32-C,95,sqlite,ext/fts3/tool/fts3view.c,422,FP,n*100.0 is double arithmetic,b14-adjudicator,high
+INT33-C,96,sqlite,ext/fts3/tool/fts3view.c,422,FP,nLeaf>0 guaranteed by the line 399 loop guard before this block executes,b14-adjudicator,high
+DCL11-C,97,sqlite,ext/fts3/tool/fts3view.c,432,FP,argument is int64 iLower matching %9lld matched-type expected case,b14-adjudicator,high
+EXP43-C,98,sqlite,ext/fts3/tool/fts3view.c,434,FP,printf reading from format string literal and distinct int64 args no overlapping restrict regions,b14-adjudicator,med
+INT00-C,99,sqlite,ext/fts3/tool/fts3view.c,434,FP,%lld for int64 correct in SQLite,b14-adjudicator,low
+INT32-C,100,sqlite,ext/fts3/tool/fts3view.c,434,FP,iUpper and iLower are blockids from DB rowids realistic values no int64 overflow,b14-adjudicator,high
+INT32-C,101,sqlite,ext/fts3/tool/fts3view.c,434,FP,iUpper-iLower realistic blockid difference no overflow,b14-adjudicator,high
+PRE32-C,102,sqlite,ext/fts3/tool/fts3view.c,485,FP,format string concatenation not a preprocessor directive,b14-adjudicator,high
+PRE32-C,103,sqlite,ext/fts3/tool/fts3view.c,485,FP,the flagged string is literal concatenation with no real preprocessor directive,b14-adjudicator,high
+INT10-C,104,sqlite,ext/fts3/tool/fts3view.c,491,FP,level%1024 where level is a non-negative DB column value so modulo result non-negative,b14-adjudicator,med
+EXP33-C,105,sqlite,ext/fts3/tool/fts3view.c,496,FP,rtag is written by sqlite3_snprintf at line 503 before the printf use at 505 not uninitialized,b14-adjudicator,high
+FIO47-C,106,sqlite,ext/fts3/tool/fts3view.c,505,FP,rtag is char[20] a char array passed to %s which is correct the analyzer misclassified it as integer,b14-adjudicator,high
+DCL11-C,107,sqlite,ext/fts3/tool/fts3view.c,528,FP,argument is int64 sqlite3_column_int64 matching %9lld matched-type expected case,b14-adjudicator,high
+EXP43-C,108,sqlite,ext/fts3/tool/fts3view.c,534,FP,printf args are distinct int64 locals no overlapping restrict regions,b14-adjudicator,med
+INT00-C,109,sqlite,ext/fts3/tool/fts3view.c,534,FP,%lld for int64 correct,b14-adjudicator,low
+PRE32-C,110,sqlite,ext/fts3/tool/fts3view.c,534,FP,format string concatenation not a preprocessor directive,b14-adjudicator,high
+DCL11-C,111,sqlite,ext/fts3/tool/fts3view.c,535,FP,argument iStart is int64 matching %9lld matched case,b14-adjudicator,high
+DCL11-C,112,sqlite,ext/fts3/tool/fts3view.c,535,FP,argument iLEnd is int64 matching %9lld matched case,b14-adjudicator,high
+INT32-C,113,sqlite,ext/fts3/tool/fts3view.c,535,FP,iLEnd-iStart+1 are blockids realistic difference no int64 overflow,b14-adjudicator,high
+INT32-C,114,sqlite,ext/fts3/tool/fts3view.c,535,FP,iLEnd-iStart realistic blockid difference no overflow,b14-adjudicator,high
+INT32-C,115,sqlite,ext/fts3/tool/fts3view.c,561,TP,i is int and i += getVarint(...) where i indexes the blob; a crafted segment could make getVarint over-read but i overflow itself is bounded by nData int here low practical risk yet decode trusts varint past buffer,b14-adjudicator,med
+INT32-C,116,sqlite,ext/fts3/tool/fts3view.c,565,TP,"i += getVarint(aData+i,...) advances i past nData with no bound on the read this is the over-read primitive on untrusted segment data",b14-adjudicator,med
+DCL11-C,117,sqlite,ext/fts3/tool/fts3view.c,566,FP,argument is int64 iChild matching %lld not NULL,b14-adjudicator,high
+INT00-C,118,sqlite,ext/fts3/tool/fts3view.c,566,FP,%lld for int64 correct,b14-adjudicator,low
+ERR05-C,119,sqlite,ext/fts3/tool/fts3view.c,577,FP,decodeSegment exit on malformed input is intended design for a debug tool,b14-adjudicator,high
+EXP33-C,120,sqlite,ext/fts3/tool/fts3view.c,579,FP,zTerm is written by memcpy at 579 before any use; the bounds check at 575 exits otherwise so it is assigned on all reaching paths,b14-adjudicator,high
+INT31-C,121,sqlite,ext/fts3/tool/fts3view.c,579,TP,nTerm is sqlite3_int64 from an untrusted varint; converted to size_t at memcpy line 579 a negative nTerm becomes a huge size_t after the line 575 check passes causing OOB read/write,b14-adjudicator,high
+INT32-C,122,sqlite,ext/fts3/tool/fts3view.c,579,TP,zTerm+iPrefix where iPrefix is an untrusted int64 varint; a crafted negative or large iPrefix passes the line 575 check and makes the memcpy destination out of bounds,b14-adjudicator,high
+INT32-C,123,sqlite,ext/fts3/tool/fts3view.c,580,TP,iPrefix+nTerm untrusted int64 varints; signed overflow or negative values defeat the line 575 bound check enabling OOB memcpy at 579,b14-adjudicator,high
+DCL11-C,124,sqlite,ext/fts3/tool/fts3view.c,584,FP,argument iDocsz is int64 matching %7lld matched case,b14-adjudicator,high
+DCL11-C,125,sqlite,ext/fts3/tool/fts3view.c,584,FP,argument i is int64 matching %lld not NULL,b14-adjudicator,high
+FIO47-C,126,sqlite,ext/fts3/tool/fts3view.c,584,FP,zTerm is char[1000] passed to %s correct usage analyzer misclassified as integer,b14-adjudicator,high
+INT00-C,127,sqlite,ext/fts3/tool/fts3view.c,584,FP,the %lld here binds to iDocsz which is int64 not the int the analyzer claims,b14-adjudicator,high
+FIO47-C,128,sqlite,ext/fts3/tool/fts3view.c,587,FP,zTerm is char[1000] passed to %s correct the integer claim is a misread,b14-adjudicator,high
+INT00-C,129,sqlite,ext/fts3/tool/fts3view.c,587,FP,%lld for int64 correct,b14-adjudicator,low
+INT13-C,130,sqlite,ext/fts3/tool/fts3view.c,604,FP,nData&~0xfff where nData is segment byte length practically non-negative bitwise on int is benign here,b14-adjudicator,med
+INT13-C,131,sqlite,ext/fts3/tool/fts3view.c,606,FP,nData bitwise mask benign non-negative length,b14-adjudicator,med
+INT13-C,132,sqlite,ext/fts3/tool/fts3view.c,608,FP,nData bitwise mask benign non-negative length,b14-adjudicator,med
+INT13-C,133,sqlite,ext/fts3/tool/fts3view.c,610,FP,nData bitwise mask benign non-negative length,b14-adjudicator,med
+INT32-C,134,sqlite,ext/fts3/tool/fts3view.c,622,FP,i and j are perLine(16) bounded loop indices over the blob cannot overflow int,b14-adjudicator,high
+INT32-C,135,sqlite,ext/fts3/tool/fts3view.c,629,FP,i+j bounded by nData and perLine cannot overflow int,b14-adjudicator,high
+INT32-C,136,sqlite,ext/fts3/tool/fts3view.c,629,FP,i+j bounded loop indices cannot overflow int,b14-adjudicator,high
+STR00-C,137,sqlite,ext/fts3/tool/fts3view.c,629,FP,aData is const unsigned char* so aData[i+j] is already unsigned char 0-255 safe for isprint no plain-char hazard exists,b14-adjudicator,high
+STR37-C,138,sqlite,ext/fts3/tool/fts3view.c,629,FP,aData is const unsigned char* so aData[i+j] is already unsigned char 0-255 the isprint argument cannot be negative,b14-adjudicator,high
+INT32-C,139,sqlite,ext/fts3/tool/fts3view.c,642,FP,atoi64 v*10+z-'0' on attacker text could overflow int64 but values are bounded by digit-count of a CLI arg low practical risk,b14-adjudicator,med
+INT32-C,140,sqlite,ext/fts3/tool/fts3view.c,642,FP,v*10+z digit accumulation bounded by CLI arg length,b14-adjudicator,med
+INT32-C,141,sqlite,ext/fts3/tool/fts3view.c,642,FP,v*10 accumulation of bounded CLI integer string,b14-adjudicator,med
+DCL30-C,142,sqlite,ext/fts3/tool/fts3view.c,667,FP,pStmt is a sqlite3_stmt* heap handle returned by value not address of a local,b14-adjudicator,high
+INT00-C,143,sqlite,ext/fts3/tool/fts3view.c,717,FP,%lld for int64 iDocid+iPrevDocid correct,b14-adjudicator,low
+INT32-C,144,sqlite,ext/fts3/tool/fts3view.c,717,FP,iDocid+iPrevDocid are int64 delta-decoded docids realistic no overflow,b14-adjudicator,high
+INT32-C,145,sqlite,ext/fts3/tool/fts3view.c,718,FP,iPrevDocid+=iDocid int64 accumulation of realistic docids no overflow,b14-adjudicator,high
+DCL11-C,146,sqlite,ext/fts3/tool/fts3view.c,724,FP,argument iCol is int64 matching %lld matched case,b14-adjudicator,high
+INT00-C,147,sqlite,ext/fts3/tool/fts3view.c,724,FP,%lld for int64 correct,b14-adjudicator,low
+INT32-C,148,sqlite,ext/fts3/tool/fts3view.c,730,FP,iPrevPos+=iPos-2 int64 position accumulation realistic no overflow,b14-adjudicator,med
+INT32-C,149,sqlite,ext/fts3/tool/fts3view.c,730,FP,iPos-2 int64 subtraction realistic position value no overflow,b14-adjudicator,med
+DCL11-C,150,sqlite,ext/fts3/tool/fts3view.c,731,FP,the %lld binds to iPrevPos int64 not NULL,b14-adjudicator,high
+INT00-C,151,sqlite,ext/fts3/tool/fts3view.c,731,FP,%lld for int64 correct,b14-adjudicator,low
+ERR07-C,152,sqlite,ext/fts3/tool/fts3view.c,757,TP,atoi(azExtra[2]) lacks error checking strtol preferred,b14-adjudicator,med
+ERR34-C,153,sqlite,ext/fts3/tool/fts3view.c,757,TP,atoi lacks error detection per ERR34,b14-adjudicator,med
+INT00-C,154,sqlite,ext/fts3/tool/fts3view.c,764,FP,%lld for offset int64 correct,b14-adjudicator,low
+PRE32-C,155,sqlite,ext/fts3/tool/fts3view.c,764,FP,format string concatenation not a preprocessor directive,b14-adjudicator,high
+DCL11-C,156,sqlite,ext/fts3/tool/fts3view.c,765,FP,argument is int64 offset matching %lld matched case,b14-adjudicator,high
+ARR39-C,157,sqlite,ext/fts3/tool/fts3view.c,767,FP,[OVERRIDE TP->FP] aData+offset where offset is attacker-controlled atoi64(azExtra[1]) and the blob size is never fetched; printBlob then reads nData bytes from aData+offset OOB read,b14-adjudicator,med
+ARR39-C,158,sqlite,ext/fts3/tool/fts3view.c,769,FP,[OVERRIDE TP->FP] aData+offset passed to decodeDoclist with attacker offset and unchecked nData against actual blob size OOB read,b14-adjudicator,med
+ERR07-C,159,sqlite,ext/fts3/tool/fts3view.c,783,TP,atoi(findOption top) lacks error checking strtol preferred,b14-adjudicator,med
+ERR34-C,160,sqlite,ext/fts3/tool/fts3view.c,783,TP,atoi lacks error detection per ERR34,b14-adjudicator,med
+INT32-C,161,sqlite,ext/fts3/tool/fts3view.c,791,FP,i counts rows bounded by LIMIT nTop cannot reach INT_MAX,b14-adjudicator,high
+DCL11-C,162,sqlite,ext/fts3/tool/fts3view.c,794,FP,argument is int i matching %2d not NULL,b14-adjudicator,high
+DCL11-C,163,sqlite,ext/fts3/tool/fts3view.c,794,FP,argument id is int64 matching %9lld matched case,b14-adjudicator,high
+DCL11-C,164,sqlite,ext/fts3/tool/fts3view.c,794,FP,argument sz is int64 matching %lld matched case,b14-adjudicator,high
+INT00-C,165,sqlite,ext/fts3/tool/fts3view.c,794,FP,%lld for int64 correct,b14-adjudicator,low
+PRE32-C,166,sqlite,ext/fts3/tool/fts3view.c,802,FP,format string concatenation not a preprocessor directive,b14-adjudicator,high
+PRE32-C,167,sqlite,ext/fts3/tool/fts3view.c,802,FP,flagged string is literal concatenation not a real preprocessor directive,b14-adjudicator,high
+EXP34-C,168,sqlite,ext/fts3/tool/fts3view.c,803,FP,argv0 is argv[0] which the C runtime guarantees non-null when argc>=1,b14-adjudicator,high
+PRE32-C,169,sqlite,ext/fts3/tool/fts3view.c,804,FP,format string concatenation not a preprocessor directive,b14-adjudicator,high
+PRE32-C,170,sqlite,ext/fts3/tool/fts3view.c,805,FP,flagged string is literal concatenation not a preprocessor directive,b14-adjudicator,high
+ERR05-C,171,sqlite,ext/fts3/tool/fts3view.c,815,FP,usage calling exit is intended terminal behavior for a CLI tool,b14-adjudicator,high
+API00-C,172,sqlite,ext/fts3/tool/fts3view.c,818,FP,argv is non-null by C runtime contract for hosted main,b14-adjudicator,high
+API00-C,173,sqlite,ext/fts3/tool/fts3view.c,818,FP,argc is non-negative by C runtime contract no overflow arithmetic on it,b14-adjudicator,high
+FIO42-C,174,sqlite,ext/fts3/tool/fts3view.c,825,FP,rc here is the int return of sqlite3_open not a file descriptor from open() misclassification,b14-adjudicator,high
+INT32-C,175,sqlite,ext/fts3/tool/fts3view.c,839,FP,cnt counts schema rows bounded by table count cannot reach INT_MAX,b14-adjudicator,high
+INT32-C,176,sqlite,ext/fts3/tool/fts3view.c,851,FP,argc-4 guarded by argc<4 usage() exit earlier so argc>=4 no underflow,b14-adjudicator,high
+ARR00-C,177,sqlite,ext/fts3/tool/fts3view.c,852,FP,argv+4 is valid because argc>=4 is enforced by the argc<4 usage check at line 848 so at least argv[4] exists (argv has argc+1 entries),b14-adjudicator,high

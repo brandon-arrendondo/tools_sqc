@@ -1,0 +1,70 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API00-C,1,sqlite,src/delete.c,31,FP,pParse is internal Parse handle invariant-nonnull from parser not a trust boundary API00 misfire,b14-adjudicator,high
+DCL13-C,2,sqlite,src/delete.c,31,FP,pSrc written through pItem=pSrc->a then pItem->pSTab=pTab so const illegal,b14-adjudicator,high
+DCL30-C,3,sqlite,src/delete.c,45,FP,pTab is Table* from sqlite3LocateTableItem heap object not address of automatic local,b14-adjudicator,high
+DCL13-C,4,sqlite,src/delete.c,119,TP,"pTrigger only read (bReturning,pNext) never written const Trigger* would compile",b14-adjudicator,med
+API00-C,5,sqlite,src/delete.c,142,FP,pParse internal nonnull handle dereferenced for db not a trust boundary,b14-adjudicator,high
+API00-C,6,sqlite,src/delete.c,142,FP,pWhere optional may be null sqlite3ExprDup handles null no precondition violated,b14-adjudicator,high
+API00-C,7,sqlite,src/delete.c,142,FP,pOrderBy optional passed through to SelectNew which accepts null,b14-adjudicator,high
+API00-C,8,sqlite,src/delete.c,142,FP,pLimit optional passed through to SelectNew which accepts null,b14-adjudicator,high
+DCL13-C,9,sqlite,src/delete.c,144,TP,"pView only read (pSchema,zName) never mutated const Table* would compile",b14-adjudicator,med
+API00-C,10,sqlite,src/delete.c,182,FP,pParse internal nonnull handle not a trust boundary,b14-adjudicator,high
+API00-C,11,sqlite,src/delete.c,182,FP,pSrc dereferenced via pSrc->a[0] under nSrc==1 invariant not trust boundary,b14-adjudicator,high
+API00-C,12,sqlite,src/delete.c,182,FP,pWhere may be null and only conditionally used not unchecked deref,b14-adjudicator,high
+MEM30-C,13,sqlite,src/delete.c,263,FP,"sqlite3DbFree(db,pSrc->a[0].u1.zIndexedBy) frees zIndexedBy db handle is context not freed",b14-adjudicator,high
+MEM30-C,14,sqlite,src/delete.c,263,FP,pSrc->a is the live SrcList array not freed nothing freed here,b14-adjudicator,high
+MEM30-C,15,sqlite,src/delete.c,269,FP,pParse is live context arg to sqlite3SelectNew not a freed pointer,b14-adjudicator,high
+EXP34-C,16,sqlite,src/delete.c,270,FP,sqlite3SelectNew accepts null pOrderBy by contract no null deref,b14-adjudicator,high
+MEM30-C,17,sqlite,src/delete.c,274,FP,pParse live context arg to sqlite3PExpr not freed,b14-adjudicator,high
+MEM30-C,18,sqlite,src/delete.c,275,FP,pParse live context arg to sqlite3PExprAddSelect not freed,b14-adjudicator,high
+API00-C,19,sqlite,src/delete.c,288,FP,pParse internal nonnull handle not a trust boundary,b14-adjudicator,high
+API00-C,20,sqlite,src/delete.c,288,FP,pTabList nSrc==1 asserted internal invariant not trust boundary,b14-adjudicator,high
+API00-C,21,sqlite,src/delete.c,288,FP,pWhere optional null-allowed not unchecked deref,b14-adjudicator,high
+API00-C,22,sqlite,src/delete.c,288,FP,pOrderBy optional null-allowed,b14-adjudicator,high
+API00-C,23,sqlite,src/delete.c,288,FP,pLimit optional null-allowed,b14-adjudicator,high
+MSC04-C,24,sqlite,src/delete.c,288,TP,indirect recursion through trigger codegen genuinely exists per call chain,b14-adjudicator,high
+DCL00-C,25,sqlite,src/delete.c,319,FP,iRowSet reassigned at line 503 (iRowSet=++pParse->nMem) not effectively const,b14-adjudicator,high
+INT32-C,26,sqlite,src/delete.c,404,FP,pParse->nTab cursor count bounded by schema/statement size far below INT_MAX,b14-adjudicator,high
+INT32-C,27,sqlite,src/delete.c,455,FP,pParse->nMem register counter bounded by query size not attacker-driven to INT_MAX,b14-adjudicator,high
+EXP34-C,28,sqlite,src/delete.c,485,FP,pIdx is for-loop variable guarded by loop condition pIdx!=0,b14-adjudicator,high
+INT32-C,29,sqlite,src/delete.c,503,FP,pParse->nMem bounded register counter no realistic overflow,b14-adjudicator,high
+INT32-C,30,sqlite,src/delete.c,511,FP,pParse->nMem+1 register index bounded by query size,b14-adjudicator,high
+INT32-C,31,sqlite,src/delete.c,512,FP,nPk is i16 PK column count tiny pParse->nMem+=nPk cannot overflow,b14-adjudicator,high
+INT32-C,32,sqlite,src/delete.c,513,FP,pParse->nTab cursor count bounded no overflow,b14-adjudicator,high
+INT32-C,33,sqlite,src/delete.c,526,FP,iTabCur+1 cursor number bounded by schema size,b14-adjudicator,high
+INT32-C,34,sqlite,src/delete.c,547,FP,iPk+i register index i<nPk small bounded,b14-adjudicator,high
+INT32-C,35,sqlite,src/delete.c,551,FP,pParse->nMem bounded register counter,b14-adjudicator,high
+INT32-C,36,sqlite,src/delete.c,560,FP,nIdx+2 index count tiny bounded by table index count,b14-adjudicator,high
+ARR38-C,37,sqlite,src/delete.c,565,FP,"memset(aToOpen,1,nIdx+1) nIdx is small index count buffer sized nIdx+2 valid",b14-adjudicator,high
+INT32-C,38,sqlite,src/delete.c,565,FP,nIdx+1 index count tiny bounded,b14-adjudicator,high
+INT32-C,39,sqlite,src/delete.c,566,FP,nIdx+1 index count tiny bounded,b14-adjudicator,high
+INT32-C,40,sqlite,src/delete.c,567,FP,aiCurOnePass[0]-iTabCur cursor offset bounded valid array index,b14-adjudicator,high
+INT32-C,41,sqlite,src/delete.c,568,FP,aiCurOnePass[1]-iTabCur cursor offset bounded valid array index,b14-adjudicator,high
+INT32-C,42,sqlite,src/delete.c,574,FP,pParse->nMem bounded register counter,b14-adjudicator,high
+INT32-C,43,sqlite,src/delete.c,612,FP,iDataCur-iTabCur cursor offset small bounded index,b14-adjudicator,high
+INT32-C,44,sqlite,src/delete.c,659,FP,addrLoop+1 VDBE address bounded by program size,b14-adjudicator,high
+STR30-C,45,sqlite,src/delete.c,680,FP,zColName is read-only label passed to SetColName with SQLITE_STATIC not modified,b14-adjudicator,high
+API00-C,46,sqlite,src/delete.c,745,FP,pParse internal nonnull handle not a trust boundary,b14-adjudicator,high
+MSC04-C,47,sqlite,src/delete.c,745,TP,indirect recursion through FK actions trigger codegen genuinely exists,b14-adjudicator,high
+INT32-C,48,sqlite,src/delete.c,792,FP,pParse->nMem+1 register index bounded,b14-adjudicator,high
+INT32-C,49,sqlite,src/delete.c,793,FP,nMem+=(1+pTab->nCol) nCol bounded i16 column count not overflow,b14-adjudicator,high
+INT32-C,50,sqlite,src/delete.c,803,FP,iOld+kk+1 register index bounded by column count,b14-adjudicator,high
+INT32-C,51,sqlite,src/delete.c,803,FP,iOld+kk register index bounded by column count,b14-adjudicator,high
+API00-C,52,sqlite,src/delete.c,899,FP,pParse internal nonnull handle not a trust boundary,b14-adjudicator,high
+API00-C,53,sqlite,src/delete.c,899,FP,aRegIdx may be null and checked aRegIdx!=0 before use not unchecked,b14-adjudicator,high
+API00-C,54,sqlite,src/delete.c,899,FP,iIdxCur cursor number bounded by schema not overflow trigger,b14-adjudicator,high
+DCL13-C,55,sqlite,src/delete.c,904,TP,aRegIdx only read aRegIdx[i] never written const int* would compile,b14-adjudicator,med
+INT32-C,56,sqlite,src/delete.c,925,FP,iIdxCur+i cursor index bounded by index count,b14-adjudicator,high
+EXP33-C,57,sqlite,src/delete.c,927,FP,iPartIdxLabel always written by sqlite3GenerateIndexKey via &iPartIdxLabel before read,b14-adjudicator,high
+API00-C,58,sqlite,src/delete.c,963,FP,pParse internal nonnull handle not a trust boundary,b14-adjudicator,high
+API00-C,59,sqlite,src/delete.c,963,FP,pIdx required nonnull by caller loop contract not trust boundary,b14-adjudicator,high
+API00-C,60,sqlite,src/delete.c,963,FP,piPartIdxLabel checked if(piPartIdxLabel) before deref guarded,b14-adjudicator,high
+API00-C,61,sqlite,src/delete.c,963,FP,pPrior may be null and checked if(pPrior) before deref,b14-adjudicator,high
+API00-C,62,sqlite,src/delete.c,963,FP,iDataCur cursor number bounded by schema not overflow trigger,b14-adjudicator,high
+MSC04-C,63,sqlite,src/delete.c,963,TP,indirect recursion through expr codegen genuinely exists,b14-adjudicator,high
+DCL13-C,64,sqlite,src/delete.c,970,TP,"pPrior pointee only read (aiColumn,pPartIdxWhere) const Index* would compile param reassign ok",b14-adjudicator,med
+EXP34-C,65,sqlite,src/delete.c,979,FP,pIdx required nonnull by contract deref guarded under if(piPartIdxLabel),b14-adjudicator,high
+INT32-C,66,sqlite,src/delete.c,981,FP,iDataCur+1 cursor number bounded by schema size,b14-adjudicator,high
+INT32-C,67,sqlite,src/delete.c,1002,FP,regBase+j register index bounded by nCol small column count,b14-adjudicator,high
+API00-C,68,sqlite,src/delete.c,1025,FP,pParse internal nonnull handle not a trust boundary,b14-adjudicator,high
+DCL13-C,69,sqlite,src/delete.c,1025,TP,pParse only read for pVdbe const Parse* would compile though pParse is conventional mutable handle,b14-adjudicator,low

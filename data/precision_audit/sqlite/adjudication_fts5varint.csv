@@ -1,0 +1,37 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API00-C,1,sqlite,ext/fts5/fts5_varint.c,24,FP,p is contract-guaranteed by caller to point at a valid varint; SQLite varint API never takes a length and internal callers provide a complete encoding,b14-adjudicator,high
+API00-C,2,sqlite,ext/fts5/fts5_varint.c,24,FP,out-param v written unconditionally before return on every path; not a defect,b14-adjudicator,high
+EXP07-C,3,sqlite,ext/fts5/fts5_varint.c,52,FP,"a<<14 is intentional 7-bit varint shift on u32 with well-defined wrap behavior, not an unexpected constant",b14-adjudicator,high
+EXP07-C,4,sqlite,ext/fts5/fts5_varint.c,58,FP,"0x7f<<14 is a deliberate precomputed mask constant for varint decode, not an assumption error",b14-adjudicator,high
+API00-C,5,sqlite,ext/fts5/fts5_varint.c,102,FP,v out-param always written before each return path; no defect,b14-adjudicator,high
+DCL03-C,6,sqlite,ext/fts5/fts5_varint.c,126,FP,assert validates a precomputed mask constant SLOT_2_0; runtime assert is fine and removed in release builds,b14-adjudicator,med
+EXP07-C,7,sqlite,ext/fts5/fts5_varint.c,126,FP,0x7f<<14 inside assert is intentional mask verification,b14-adjudicator,high
+DCL03-C,8,sqlite,ext/fts5/fts5_varint.c,127,FP,assert validates SLOT_4_2_0 constant correctness; benign runtime assert,b14-adjudicator,med
+EXP07-C,9,sqlite,ext/fts5/fts5_varint.c,127,FP,0xfU<<28 is intentional mask constant in assert,b14-adjudicator,high
+EXP07-C,10,sqlite,ext/fts5/fts5_varint.c,127,FP,0x7f<<14 intentional mask constant in assert,b14-adjudicator,high
+EXP07-C,11,sqlite,ext/fts5/fts5_varint.c,130,FP,a<<14 deliberate varint bit-shift on u32,b14-adjudicator,high
+EXP07-C,12,sqlite,ext/fts5/fts5_varint.c,146,FP,b<<14 deliberate varint bit-shift on u32,b14-adjudicator,high
+EXP07-C,13,sqlite,ext/fts5/fts5_varint.c,170,FP,a<<14 deliberate varint bit-shift on u32,b14-adjudicator,high
+EXP07-C,14,sqlite,ext/fts5/fts5_varint.c,180,FP,s>>18 deliberate varint bit-extraction on u32,b14-adjudicator,high
+FIO50-C,15,sqlite,ext/fts5/fts5_varint.c,186,FP,s is a u32 local variable not a FILE stream; FIO50 misfire,b14-adjudicator,high
+FIO50-C,16,sqlite,ext/fts5/fts5_varint.c,186,FP,s is a u32 local variable not a FILE stream; FIO50 misfire,b14-adjudicator,high
+EXP07-C,17,sqlite,ext/fts5/fts5_varint.c,191,FP,b<<14 deliberate varint bit-shift on u32,b14-adjudicator,high
+EXP07-C,18,sqlite,ext/fts5/fts5_varint.c,201,FP,s>>18 deliberate varint bit-extraction; s is a u32 not a stream,b14-adjudicator,high
+FIO50-C,19,sqlite,ext/fts5/fts5_varint.c,201,FP,s is a u32 local not a FILE stream; FIO50 misfire,b14-adjudicator,high
+FIO50-C,20,sqlite,ext/fts5/fts5_varint.c,201,FP,s is a u32 local not a FILE stream; FIO50 misfire,b14-adjudicator,high
+EXP07-C,21,sqlite,ext/fts5/fts5_varint.c,207,FP,a<<14 deliberate varint bit-shift on u32,b14-adjudicator,high
+EXP07-C,22,sqlite,ext/fts5/fts5_varint.c,216,FP,s>>11 deliberate varint bit-extraction on u32,b14-adjudicator,high
+EXP07-C,23,sqlite,ext/fts5/fts5_varint.c,224,FP,b<<14 deliberate varint bit-shift on u32,b14-adjudicator,high
+EXP07-C,24,sqlite,ext/fts5/fts5_varint.c,240,FP,a<<15 deliberate varint bit-shift on u32 in 9-byte path,b14-adjudicator,high
+FIO50-C,25,sqlite,ext/fts5/fts5_varint.c,250,FP,s is a u32 local variable not a FILE stream; FIO50 misfire,b14-adjudicator,high
+FIO50-C,26,sqlite,ext/fts5/fts5_varint.c,250,FP,s is a u32 local variable not a FILE stream; FIO50 misfire,b14-adjudicator,high
+ARR00-C,27,sqlite,ext/fts5/fts5_varint.c,251,FP,at line 251 p has been incremented 8 times so p[-4] equals p0+4 which is in-bounds; subscript is syntactically negative only,b14-adjudicator,high
+FIO50-C,28,sqlite,ext/fts5/fts5_varint.c,253,FP,b is a u32 local variable not a FILE stream; FIO50 misfire,b14-adjudicator,high
+FIO50-C,29,sqlite,ext/fts5/fts5_varint.c,253,FP,b is a u32 local variable not a FILE stream; FIO50 misfire,b14-adjudicator,high
+EXP34-C,30,sqlite,ext/fts5/fts5_varint.c,300,FP,p is a caller-provided write buffer guaranteed >=9 bytes by the PutVarint contract; not attacker-null,b14-adjudicator,high
+ARR30-C,31,sqlite,ext/fts5/fts5_varint.c,316,FP,buf[10] and j bounded by n which is asserted <=9 since the >=9-byte case returns early at line 299; index in range,b14-adjudicator,high
+API00-C,32,sqlite,ext/fts5/fts5_varint.c,321,FP,p is caller-provided output buffer per PutVarint contract; not validated by design,b14-adjudicator,high
+EXP34-C,33,sqlite,ext/fts5/fts5_varint.c,323,FP,p[0] write to caller-provided buffer guaranteed sized by contract; not a null deref,b14-adjudicator,high
+EXP07-C,34,sqlite,ext/fts5/fts5_varint.c,340,FP,1<<14 is an intentional range-threshold constant in GetVarintLen,b14-adjudicator,high
+EXP07-C,35,sqlite,ext/fts5/fts5_varint.c,341,FP,1<<21 intentional range-threshold constant,b14-adjudicator,high
+EXP07-C,36,sqlite,ext/fts5/fts5_varint.c,342,FP,1<<28 intentional range-threshold constant,b14-adjudicator,high

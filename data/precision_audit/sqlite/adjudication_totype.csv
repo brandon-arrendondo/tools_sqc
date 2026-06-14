@@ -1,0 +1,49 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL00-C,1,sqlite,ext/misc/totype.c,96,FP,"c reassigned at lines 101 and 104 inside totypeCompare2pow63, not const-eligible",b14-adjudicator,high
+DCL00-C,2,sqlite,ext/misc/totype.c,129,FP,"c reassigned at 145 and 165 inside totypeAtoi64, not const-eligible",b14-adjudicator,high
+EXP30-C,3,sqlite,ext/misc/totype.c,145,FP,"c assigned in for-condition and used in body across loop sequence points and && short-circuit, no UB",b14-adjudicator,high
+INT30-C,4,sqlite,ext/misc/totype.c,146,FP,u is sqlite3_uint64 wrap is well-defined and >19-digit overflow is caught by i>19 returning 1,b14-adjudicator,high
+INT30-C,5,sqlite,ext/misc/totype.c,176,FP,"u-1 is unsigned and inside assert only reached when u is exactly 2^63, well-defined",b14-adjudicator,high
+DCL00-C,6,sqlite,ext/misc/totype.c,211,FP,"e reassigned at 273/286/289/316/333, not const-eligible",b14-adjudicator,high
+ARR30-C,7,sqlite,ext/misc/totype.c,235,FP,loop bounded by z<zEnd derived from caller-supplied length,b14-adjudicator,high
+INT32-C,8,sqlite,ext/misc/totype.c,236,FP,loop guard s<((LARGEST_INT64-9)/10) guarantees s*10+9 fits in int64,b14-adjudicator,high
+INT32-C,9,sqlite,ext/misc/totype.c,236,FP,same guard s<((LARGEST_INT64-9)/10) prevents multiply overflow,b14-adjudicator,high
+ARR30-C,10,sqlite,ext/misc/totype.c,250,FP,loop bounded by z<zEnd,b14-adjudicator,high
+INT32-C,11,sqlite,ext/misc/totype.c,251,FP,same significand guard prevents addition overflow,b14-adjudicator,high
+INT32-C,12,sqlite,ext/misc/totype.c,251,FP,same significand guard prevents multiply overflow,b14-adjudicator,high
+ARR30-C,13,sqlite,ext/misc/totype.c,272,FP,exponent loop bounded by z<zEnd,b14-adjudicator,high
+INT32-C,14,sqlite,ext/misc/totype.c,273,FP,e capped at 10000 via ternary so e*10+9 cannot overflow int,b14-adjudicator,high
+INT32-C,15,sqlite,ext/misc/totype.c,273,FP,e capped at 10000 so e*10 cannot overflow int,b14-adjudicator,high
+INT32-C,16,sqlite,ext/misc/totype.c,286,FP,"e*esign bounded by 10000 and d bounded by string length under SQLITE_MAX_LENGTH, sum well within INT_MAX",b14-adjudicator,high
+INT32-C,17,sqlite,ext/misc/totype.c,286,FP,e*esign with e<=10000 and esign +-1 cannot overflow,b14-adjudicator,high
+INT32-C,18,sqlite,ext/misc/totype.c,289,FP,"reached only when e<0 with e>=-10000 so e*=-1 yields small positive, no overflow",b14-adjudicator,high
+FLP34-C,19,sqlite,ext/misc/totype.c,298,FP,conversion of literal 0 to double is harmless,b14-adjudicator,high
+FLP34-C,20,sqlite,ext/misc/totype.c,298,FP,conversion of literal 0 to double is harmless,b14-adjudicator,high
+INT10-C,21,sqlite,ext/misc/totype.c,304,FP,"s is non-negative significand at line 304 (sign applied later at 308), s%10 defined",b14-adjudicator,high
+INT32-C,22,sqlite,ext/misc/totype.c,308,FP,s guarded below LARGEST_INT64/10 so -s never hits INT64_MIN,b14-adjudicator,high
+INT10-C,23,sqlite,ext/misc/totype.c,316,FP,"e in range (307,342) hence positive, e%308 defined",b14-adjudicator,high
+INT32-C,24,sqlite,ext/misc/totype.c,316,FP,"e>0 in loop, decrement cannot overflow",b14-adjudicator,high
+INT32-C,25,sqlite,ext/misc/totype.c,328,FP,"1e308*1e308*s is double arithmetic producing intentional infinity, not int overflow",b14-adjudicator,high
+INT10-C,26,sqlite,ext/misc/totype.c,333,FP,"e positive in this branch, e%22 defined",b14-adjudicator,high
+INT32-C,27,sqlite,ext/misc/totype.c,333,FP,"e>0 in loop, decrement safe",b14-adjudicator,high
+INT32-C,28,sqlite,ext/misc/totype.c,334,FP,"e bounded small and loop exits, e-=22 cannot overflow",b14-adjudicator,high
+FLP34-C,29,sqlite,ext/misc/totype.c,342,FP,"(double)s with s bounded below LARGEST_INT64/10, conversion well-defined",b14-adjudicator,high
+DCL13-C,30,sqlite,ext/misc/totype.c,375,FP,"argv signature fixed by sqlite3_create_function callback typedef, cannot be const",b14-adjudicator,high
+FLP00-C,31,sqlite,ext/misc/totype.c,383,FP,exact equality is the intentional lossless-conversion test for tointeger,b14-adjudicator,high
+FLP02-C,32,sqlite,ext/misc/totype.c,383,FP,exact equality intentional lossless check,b14-adjudicator,high
+FLP34-C,33,sqlite,ext/misc/totype.c,383,FP,(double)iVal conversion is part of intended lossless check,b14-adjudicator,high
+MEM05-C,34,sqlite,ext/misc/totype.c,400,FP,"zBlobRev[sizeof(sqlite3_int64)] is a fixed 8-byte array, sizeof is compile-time constant not VLA",b14-adjudicator,high
+ARR39-C,35,sqlite,ext/misc/totype.c,401,FP,"zBlob is unsigned char* so element size 1, sizeof byte count equals element count, no double scaling",b14-adjudicator,high
+INT30-C,36,sqlite,ext/misc/totype.c,402,FP,"sizeof-1 is constant 7, no wrap",b14-adjudicator,high
+INT32-C,37,sqlite,ext/misc/totype.c,402,FP,"index 7-i with i in [0,7] guarded by nBlob==sizeof(int64), in bounds",b14-adjudicator,high
+INT32-C,38,sqlite,ext/misc/totype.c,402,FP,"constant size_t expression, guarded by nBlob==8",b14-adjudicator,high
+DCL13-C,39,sqlite,ext/misc/totype.c,445,FP,"argv signature fixed by callback typedef, cannot be const",b14-adjudicator,high
+FLP34-C,40,sqlite,ext/misc/totype.c,456,FP,(double)iVal conversion in toreal is intentional,b14-adjudicator,high
+FLP02-C,41,sqlite,ext/misc/totype.c,457,FP,iVal==totypeDoubleToInt(rVal) intentional lossless roundtrip check,b14-adjudicator,high
+MEM05-C,42,sqlite,ext/misc/totype.c,470,FP,"zBlobRev[sizeof(double)] is fixed 8-byte array, not VLA",b14-adjudicator,high
+FLP34-C,43,sqlite,ext/misc/totype.c,472,FP,"line is byte-reverse copy, no float conversion present, misfire",b14-adjudicator,high
+INT30-C,44,sqlite,ext/misc/totype.c,472,FP,"sizeof(double)-1-i with i in [0,7] guarded by nBlob==8, in bounds",b14-adjudicator,high
+INT32-C,45,sqlite,ext/misc/totype.c,487,FP,"nStr>0 guaranteed by short-circuit nStr && before nStr-1, valid index",b14-adjudicator,high
+API00-C,46,sqlite,ext/misc/totype.c,509,FP,db is the loader-provided handle per extension entry-point contract,b14-adjudicator,high
+API00-C,47,sqlite,ext/misc/totype.c,509,FP,"pApi non-null per extension contract, dereferenced by SQLITE_EXTENSION_INIT2 by design",b14-adjudicator,high
+DCL13-C,48,sqlite,ext/misc/totype.c,513,FP,"pzErrMsg is a char** out-param fixed by extension init signature, cannot be const",b14-adjudicator,high

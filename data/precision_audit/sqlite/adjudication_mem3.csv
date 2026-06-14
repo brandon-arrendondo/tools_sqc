@@ -1,0 +1,69 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+MSC37-C,1,sqlite,src/mem3.c,100,FP,Line 100 is the Mem3Global struct definition not a function body; MSC37 misparse,b14-adjudicator,high
+MEM05-C,2,sqlite,src/mem3.c,137,FP,aiSmall[MX_SMALL-1] is a fixed-size struct member with compile-time bound not a VLA or malloc,b14-adjudicator,high
+INT14-C,3,sqlite,src/mem3.c,170,FP,INT14 readability advisory on assert pool index i-1 bitwise/arith mix,b14-adjudicator,high
+INT14-C,4,sqlite,src/mem3.c,170,FP,INT14 readability advisory on i in assert; pool-bounded index,b14-adjudicator,high
+FLP03-C,5,sqlite,src/mem3.c,172,FP,size4x/4 is integer division not floating point,b14-adjudicator,high
+ARR30-C,6,sqlite,src/mem3.c,179,FP,hash = size % N_HASH yields 0..60 within aiHash[61],b14-adjudicator,high
+INT14-C,7,sqlite,src/mem3.c,205,FP,INT14 readability advisory on assert pool index,b14-adjudicator,high
+INT14-C,8,sqlite,src/mem3.c,205,FP,INT14 readability advisory on i index,b14-adjudicator,high
+FLP03-C,9,sqlite,src/mem3.c,206,FP,size4x/4 integer division not FP,b14-adjudicator,high
+ARR30-C,10,sqlite,src/mem3.c,213,FP,hash = size % N_HASH bounded 0..60 within aiHash[61],b14-adjudicator,high
+FLP03-C,11,sqlite,src/mem3.c,256,FP,size4x/4 integer division not FP,b14-adjudicator,high
+INT14-C,12,sqlite,src/mem3.c,257,FP,INT14 readability advisory on nBlock in assert,b14-adjudicator,high
+INT14-C,13,sqlite,src/mem3.c,273,FP,INT14 readability advisory on mem3 index,b14-adjudicator,high
+INT32-C,14,sqlite,src/mem3.c,321,FP,aPool[i-1] with i from list loop guaranteed >=1 by chunk-index invariant; unsigned u32,b14-adjudicator,high
+INT14-C,15,sqlite,src/mem3.c,322,FP,INT14 readability advisory on size,b14-adjudicator,high
+INT14-C,16,sqlite,src/mem3.c,326,FP,INT14 readability advisory on mem3 index,b14-adjudicator,high
+INT32-C,17,sqlite,src/mem3.c,326,FP,prev = i - prevSize guarded by assert(i > prevSize) at line 325,b14-adjudicator,high
+INT14-C,18,sqlite,src/mem3.c,331,FP,INT14 readability advisory on prev,b14-adjudicator,high
+INT32-C,19,sqlite,src/mem3.c,332,FP,prev-1 with prev = i-prevSize > 0 by preceding assert,b14-adjudicator,high
+INT32-C,20,sqlite,src/mem3.c,333,FP,prev-1 with prev > 0 invariant,b14-adjudicator,high
+DCL03-C,21,sqlite,src/mem3.c,360,TP,assert(sizeof(Mem3Block)==8) is a pure compile-time constant suitable for static_assert,b14-adjudicator,high
+INT32-C,22,sqlite,src/mem3.c,364,FP,nByte+11 size math; allocation requests capped upstream by SQLITE_MAX_ALLOCATION_SIZE,b14-adjudicator,med
+ARR30-C,23,sqlite,src/mem3.c,381,FP,hash = nBlock % N_HASH bounded 0..60 within aiHash[61],b14-adjudicator,high
+FLP03-C,24,sqlite,src/mem3.c,382,FP,size4x/4 integer division not FP,b14-adjudicator,high
+ARR30-C,25,sqlite,src/mem3.c,383,FP,nBlock % N_HASH bounded index,b14-adjudicator,high
+ARR00-C,26,sqlite,src/mem3.c,405,FP,toFree is initialized to nBlock*16 in the for-init; not uninitialized,b14-adjudicator,high
+DCL13-C,27,sqlite,src/mem3.c,436,FP,pOld is cast to Mem3Block* and the pool memory it points to is mutated via index i,b14-adjudicator,high
+INT14-C,28,sqlite,src/mem3.c,442,FP,INT14 readability advisory on mem3 index,b14-adjudicator,high
+INT14-C,29,sqlite,src/mem3.c,443,FP,INT14 readability advisory on i index,b14-adjudicator,high
+FLP03-C,30,sqlite,src/mem3.c,444,FP,size4x/4 integer division not FP,b14-adjudicator,high
+INT32-C,31,sqlite,src/mem3.c,444,FP,i-1 with i>=1 guaranteed by assert(p>mem3.aPool) at line 441,b14-adjudicator,high
+INT32-C,32,sqlite,src/mem3.c,446,FP,i+size pool arithmetic guarded by assert i+size<=nPool+1,b14-adjudicator,high
+FLP03-C,33,sqlite,src/mem3.c,465,FP,size4x/4 integer division not FP,b14-adjudicator,high
+DCL13-C,34,sqlite,src/mem3.c,477,FP,p only read but signature is fixed by sqlite3_mem_methods.xSize typedef (stored at line 678),b14-adjudicator,high
+ARR00-C,35,sqlite,src/mem3.c,481,FP,pBlock[-1] is intentional chunk-header access one block before user data; allocator invariant,b14-adjudicator,high
+INT14-C,36,sqlite,src/mem3.c,481,FP,INT14 readability advisory on pBlock,b14-adjudicator,high
+ARR00-C,37,sqlite,src/mem3.c,482,FP,pBlock[-1] intentional header access,b14-adjudicator,high
+INT14-C,38,sqlite,src/mem3.c,492,FP,INT14 readability advisory on n,b14-adjudicator,high
+INT32-C,39,sqlite,src/mem3.c,492,FP,((n+11)&~7)-4 roundup math; request size bounded upstream,b14-adjudicator,med
+INT32-C,40,sqlite,src/mem3.c,492,FP,n+11 roundup math; request size bounded upstream,b14-adjudicator,med
+INT31-C,41,sqlite,src/mem3.c,539,FP,nOld from memsys3Size is always positive for checked-out chunk; guarded nOld<nBytes and nBytes>0,b14-adjudicator,high
+DCL30-C,42,sqlite,src/mem3.c,546,FP,p is a pointer variable holding pool address; returns pointer value not address of a local,b14-adjudicator,high
+DCL03-C,43,sqlite,src/mem3.c,559,TP,assert(sizeof(Mem3Block)==8) is a pure compile-time constant,b14-adjudicator,high
+FLP03-C,44,sqlite,src/mem3.c,561,FP,nHeap/sizeof(Mem3Block) integer division not FP,b14-adjudicator,high
+INT14-C,45,sqlite,src/mem3.c,567,FP,INT14 readability advisory on mem3 index,b14-adjudicator,high
+INT32-C,46,sqlite,src/mem3.c,567,FP,(szKeyBlk<<2)+2 is unsigned u32 arithmetic intended,b14-adjudicator,high
+API00-C,47,sqlite,src/mem3.c,589,FP,zFilename checked at line 594 (==0 || [0]==0) before use,b14-adjudicator,high
+ERR00-C,48,sqlite,src/mem3.c,597,FP,fopen return checked at line 598 if(out==0),b14-adjudicator,high
+FIO03-C,49,sqlite,src/mem3.c,597,FP,fopen mode w is a SQLITE_DEBUG-only diagnostic dump deliberately overwritten,b14-adjudicator,med
+FIO06-C,50,sqlite,src/mem3.c,597,FP,debug-only dump file not security sensitive; fopen permissions advisory,b14-adjudicator,med
+WIN03-C,51,sqlite,src/mem3.c,597,FP,debug-only dump file; Windows N-flag advisory not applicable,b14-adjudicator,med
+PRE32-C,52,sqlite,src/mem3.c,599,FP,fprintf args are a multi-line string continuation with no # directive; PRE32 misfire,b14-adjudicator,high
+INT14-C,53,sqlite,src/mem3.c,606,FP,INT14 readability advisory on i,b14-adjudicator,high
+INT14-C,54,sqlite,src/mem3.c,606,FP,INT14 readability advisory on size,b14-adjudicator,high
+DCL03-C,55,sqlite,src/mem3.c,610,FP,assert(0) is a runtime unreachable marker; static_assert(0) would always fail the build,b14-adjudicator,med
+DCL03-C,56,sqlite,src/mem3.c,615,FP,assert(0) runtime unreachable marker not a compile-time test,b14-adjudicator,med
+INT14-C,57,sqlite,src/mem3.c,618,FP,INT14 readability advisory on mem3 index,b14-adjudicator,high
+DCL03-C,58,sqlite,src/mem3.c,620,FP,assert(0) runtime unreachable marker not a compile-time test,b14-adjudicator,med
+PRE32-C,59,sqlite,src/mem3.c,626,FP,fprintf args are multi-line string with no # directive; PRE32 misfire,b14-adjudicator,high
+DCL11-C,60,sqlite,src/mem3.c,632,FP,"%2d with u32 i in range 0..MX_SMALL-2; bit pattern fits int, harmless bounded value",b14-adjudicator,low
+FLP03-C,61,sqlite,src/mem3.c,635,FP,size4x/4 integer division not FP,b14-adjudicator,high
+INT32-C,62,sqlite,src/mem3.c,635,FP,j-1 with j>0 from list loop,b14-adjudicator,high
+DCL11-C,63,sqlite,src/mem3.c,641,FP,%2d with u32 i bounded 0..N_HASH-1; harmless bounded value,b14-adjudicator,low
+FLP03-C,64,sqlite,src/mem3.c,644,FP,size4x/4 integer division not FP,b14-adjudicator,high
+INT32-C,65,sqlite,src/mem3.c,644,FP,j-1 with j>0 from list loop,b14-adjudicator,high
+ERR33-C,66,sqlite,src/mem3.c,653,FP,fflush(stdout) in SQLITE_DEBUG-only dump tool; ignored return harmless,b14-adjudicator,med
+ERR00-C,67,sqlite,src/mem3.c,655,FP,fclose in SQLITE_DEBUG-only dump tool; ignored return harmless,b14-adjudicator,med
+ERR33-C,68,sqlite,src/mem3.c,655,FP,fclose return ignored in debug-only dump tool,b14-adjudicator,med

@@ -1,0 +1,53 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+MSC37-C,1,sqlite,src/random.c,24,FP,Line 24 is a struct typedef with static variable sqlite3Prng not a function MSC37 misfire on struct decl,b14-adjudicator,high
+PRE00-C,2,sqlite,src/random.c,33,TP,ROTL is function-like macro multi-evaluating params a and b genuine PRE00,b14-adjudicator,high
+PRE12-C,3,sqlite,src/random.c,33,TP,ROTL expands a multiple times (a<<b | a>>...) genuine PRE12,b14-adjudicator,high
+PRE00-C,4,sqlite,src/random.c,34,TP,QR multi-evaluates a/b/c/d via repeated += and ^= genuine PRE00,b14-adjudicator,high
+PRE01-C,5,sqlite,src/random.c,34,TP,QR param a unparenthesized in replacement (a += b) genuine PRE01,b14-adjudicator,high
+PRE01-C,6,sqlite,src/random.c,34,TP,QR param b unparenthesized in replacement genuine PRE01,b14-adjudicator,high
+PRE01-C,7,sqlite,src/random.c,34,TP,QR param c unparenthesized in replacement genuine PRE01,b14-adjudicator,high
+PRE01-C,8,sqlite,src/random.c,34,TP,QR param d unparenthesized in replacement genuine PRE01,b14-adjudicator,high
+PRE12-C,9,sqlite,src/random.c,34,TP,QR evaluates a multiple times genuine PRE12,b14-adjudicator,high
+ARR30-C,10,sqlite,src/random.c,42,FP,x is u32[16]=64 bytes memcpy of 64 is exact sqc counted 16 elements as 16 bytes,b14-adjudicator,high
+ARR38-C,11,sqlite,src/random.c,42,FP,same as 10 buffer x is 64 bytes not 16 size 64 fits exactly,b14-adjudicator,high
+ARR00-C,12,sqlite,src/random.c,44,FP,"x fully initialized by memcpy(x,in,64) at line 42 before the loop reads",b14-adjudicator,high
+ARR00-C,13,sqlite,src/random.c,44,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,14,sqlite,src/random.c,44,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,15,sqlite,src/random.c,44,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,16,sqlite,src/random.c,45,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,17,sqlite,src/random.c,45,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,18,sqlite,src/random.c,45,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,19,sqlite,src/random.c,45,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,20,sqlite,src/random.c,46,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,21,sqlite,src/random.c,46,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,22,sqlite,src/random.c,46,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,23,sqlite,src/random.c,46,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,24,sqlite,src/random.c,47,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,25,sqlite,src/random.c,47,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,26,sqlite,src/random.c,47,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,27,sqlite,src/random.c,47,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,28,sqlite,src/random.c,48,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,29,sqlite,src/random.c,48,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,30,sqlite,src/random.c,48,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,31,sqlite,src/random.c,48,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,32,sqlite,src/random.c,49,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,33,sqlite,src/random.c,49,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,34,sqlite,src/random.c,49,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,35,sqlite,src/random.c,49,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,36,sqlite,src/random.c,50,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,37,sqlite,src/random.c,50,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,38,sqlite,src/random.c,50,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,39,sqlite,src/random.c,50,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,40,sqlite,src/random.c,51,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,41,sqlite,src/random.c,51,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,42,sqlite,src/random.c,51,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,43,sqlite,src/random.c,51,FP,x initialized at line 42 before loop,b14-adjudicator,high
+ARR00-C,44,sqlite,src/random.c,53,FP,x initialized at line 42 before loop final summation reads initialized x,b14-adjudicator,high
+INT32-C,45,sqlite,src/random.c,53,FP,x[i] and in[i] are u32 unsigned wraparound is intended ChaCha20 addition no signed overflow,b14-adjudicator,high
+API00-C,46,sqlite,src/random.c,59,FP,N validated N<=0 at line 88 before any arithmetic API00 misfire,b14-adjudicator,high
+ARR02-C,47,sqlite,src/random.c,99,FP,chacha20_init[] has explicit 4-element initializer so size is well-defined valid C idiom,b14-adjudicator,med
+ARR38-C,48,sqlite,src/random.c,102,FP,memcpy 16 bytes into wsdPrng.s[0] which is u32[16]=64 bytes ample room,b14-adjudicator,high
+ARR38-C,49,sqlite,src/random.c,104,FP,memset 44 bytes at s[4] leaves 12 u32=48 bytes available 44<=48 safe,b14-adjudicator,high
+DCL03-C,50,sqlite,src/random.c,113,FP,assert(N>0) N is runtime int parameter not a compile-time constant DCL03 misfire,b14-adjudicator,high
+EXP34-C,51,sqlite,src/random.c,116,FP,zBuf=pBuf and pBuf==0 rejected at line 88 before this point not null here,b14-adjudicator,high
+INT32-C,52,sqlite,src/random.c,122,FP,N>wsdPrng.n in this branch (N<=n already broke) and n is u8<=64 no overflow subtraction stays positive,b14-adjudicator,high

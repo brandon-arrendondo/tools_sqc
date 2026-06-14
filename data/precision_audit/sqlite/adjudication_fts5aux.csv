@@ -1,0 +1,71 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+INT32-C,1,sqlite,ext/fts5/fts5_aux.c,64,FP,io and xPhraseSize are token positions bounded by doc token count (int range); not attacker-arbitrary 64-bit,b14-adjudicator,high
+INT32-C,2,sqlite,ext/fts5/fts5_aux.c,64,FP,"io is a token byte offset within the indexed column text bounded by nIn, cannot underflow int meaningfully",b14-adjudicator,high
+INT32-C,3,sqlite,ext/fts5/fts5_aux.c,74,FP,"iInst bounded by nInst (phrase instance count from index), far below INT_MAX",b14-adjudicator,high
+INT32-C,4,sqlite,ext/fts5/fts5_aux.c,168,FP,"iPos counts tokens in a single column, bounded by doc size, no realistic INT_MAX",b14-adjudicator,high
+INT32-C,5,sqlite,ext/fts5/fts5_aux.c,193,FP,"iStartOff and iOff are byte offsets within nIn (column text), bounded and non-negative",b14-adjudicator,high
+INT32-C,6,sqlite,ext/fts5/fts5_aux.c,205,FP,"iEndOff and iOff are byte offsets within nIn, bounded by column text size",b14-adjudicator,high
+INT32-C,7,sqlite,ext/fts5/fts5_aux.c,216,FP,same iEndOff-iOff offsets bounded within column text length,b14-adjudicator,high
+INT32-C,8,sqlite,ext/fts5/fts5_aux.c,222,FP,same iEndOff-iOff bounded within column text length,b14-adjudicator,high
+DCL13-C,9,sqlite,ext/fts5/fts5_aux.c,238,FP,apVal is read-only via sqlite3_value_* accessors but signature is fixed by fts5_extension_function typedef so const cannot be applied,b14-adjudicator,med
+INT32-C,10,sqlite,ext/fts5/fts5_aux.c,277,FP,"ctx.nIn and ctx.iOff are byte offsets within column text, iOff<=nIn by construction",b14-adjudicator,high
+INT32-C,11,sqlite,ext/fts5/fts5_aux.c,311,FP,"nFirstAlloc doubles from 64; reaching INT_MAX overflow needs ~2^31 sentences, infeasible",b14-adjudicator,high
+INT30-C,12,sqlite,ext/fts5/fts5_aux.c,314,FP,nNew*sizeof(int) promotes to size_t and feeds realloc64; nNew bounded by sentence count,b14-adjudicator,high
+INT32-C,13,sqlite,ext/fts5/fts5_aux.c,314,FP,expression promotes to size_t via sizeof(int); not a real signed overflow at feasible sizes,b14-adjudicator,high
+INT32-C,14,sqlite,ext/fts5/fts5_aux.c,319,FP,"nFirst bounded by token count of one document, far below INT_MAX",b14-adjudicator,high
+MEM30-C,15,sqlite,ext/fts5/fts5_aux.c,319,FP,"aFirst is reallocated (aNew) and reassigned before use; no use-after-free, realloc semantics correct",b14-adjudicator,high
+DCL00-C,16,sqlite,ext/fts5/fts5_aux.c,345,FP,c is reassigned each loop iteration at line 347 (c=p->zDoc[i]); it IS modified so const-qualifying is invalid,b14-adjudicator,high
+INT32-C,17,sqlite,ext/fts5/fts5_aux.c,346,FP,"iStartOff-1 is a byte offset minus 1 used as loop bound, guarded i>=0; no overflow",b14-adjudicator,high
+INT32-C,18,sqlite,ext/fts5/fts5_aux.c,356,FP,iPos token counter bounded by doc size,b14-adjudicator,high
+INT32-C,19,sqlite,ext/fts5/fts5_aux.c,381,FP,"iPos+nToken is computed in sqlite3_int64 (iEnd), explicitly widened to avoid overflow",b14-adjudicator,high
+INT32-C,20,sqlite,ext/fts5/fts5_aux.c,387,FP,"nScore increments by at most 1000 per instance, instance count bounded by index size",b14-adjudicator,high
+INT32-C,21,sqlite,ext/fts5/fts5_aux.c,390,FP,iOff+xPhraseSize are token positions bounded by doc size,b14-adjudicator,high
+INT32-C,22,sqlite,ext/fts5/fts5_aux.c,396,FP,"iAdj arithmetic done in sqlite3_int64, then clamped to [0,nDocsize-nToken] and cast",b14-adjudicator,high
+INT32-C,23,sqlite,ext/fts5/fts5_aux.c,396,FP,"nToken and (iLast-iFirst) are token counts in int range, computed in int64 context iAdj",b14-adjudicator,high
+INT32-C,24,sqlite,ext/fts5/fts5_aux.c,396,FP,"iLast-iFirst token positions both in valid range, difference bounded",b14-adjudicator,high
+INT32-C,25,sqlite,ext/fts5/fts5_aux.c,397,FP,nDocsize-nToken both int token counts; result clamped before use,b14-adjudicator,high
+DCL13-C,26,sqlite,ext/fts5/fts5_aux.c,423,FP,"apVal read-only but signature fixed by fts5_extension_function typedef, const not applicable",b14-adjudicator,med
+DCL00-C,27,sqlite,ext/fts5/fts5_aux.c,437,FP,"nColSize is reassigned at lines 505/524/536, not effectively const",b14-adjudicator,high
+INT31-C,28,sqlite,ext/fts5/fts5_aux.c,497,FP,nPhrase from xPhraseCount is non-negative query phrase count; memset size safe,b14-adjudicator,high
+EXP33-C,29,sqlite,ext/fts5/fts5_aux.c,504,FP,iAdj written by fts5SnippetScore via piPos at line 499 before read at 504 under rc==SQLITE_OK,b14-adjudicator,high
+ARR00-C,30,sqlite,ext/fts5/fts5_aux.c,509,FP,"jj is initialized to 0 in the for-init at line 509, not uninitialized",b14-adjudicator,high
+INT31-C,31,sqlite,ext/fts5/fts5_aux.c,514,FP,nPhrase non-negative query phrase count; memset of aSeen sized nPhrase,b14-adjudicator,high
+INT32-C,32,sqlite,ext/fts5/fts5_aux.c,519,FP,"nScore bounded increments, phrase/instance counts bounded by index",b14-adjudicator,high
+INT32-C,33,sqlite,ext/fts5/fts5_aux.c,547,FP,iBestStart and nToken are token counts in int range from clamped iAdj,b14-adjudicator,high
+INT32-C,34,sqlite,ext/fts5/fts5_aux.c,547,FP,"iBestStart+nToken token counts, used as iRangeEnd; no attacker-arbitrary overflow",b14-adjudicator,high
+INT32-C,35,sqlite,ext/fts5/fts5_aux.c,571,FP,"ctx.nIn-ctx.iOff byte offsets within column text, iOff<=nIn",b14-adjudicator,high
+INT30-C,36,sqlite,ext/fts5/fts5_aux.c,638,FP,nPhrase*2*sizeof(double) promotes to size_t for malloc64; nPhrase is query phrase count,b14-adjudicator,high
+INT30-C,37,sqlite,ext/fts5/fts5_aux.c,638,FP,same expression promotes to size_t via sizeof(double); bounded nPhrase,b14-adjudicator,high
+INT32-C,38,sqlite,ext/fts5/fts5_aux.c,638,FP,"nPhrase*2 int but nPhrase is small query phrase count, no feasible overflow",b14-adjudicator,high
+EXP05-C,39,sqlite,ext/fts5/fts5_aux.c,643,FP,"p[1] cast to double* is intra-allocation pointer math on freshly malloc'd buffer, not casting away const",b14-adjudicator,med
+INT31-C,40,sqlite,ext/fts5/fts5_aux.c,643,FP,"nByte is sqlite3_int64 sized sizeof+small product, positive, passed to malloc64",b14-adjudicator,high
+EXP39-C,41,sqlite,ext/fts5/fts5_aux.c,645,FP,"aIDF/aFreq are double arrays placed in a buffer sized to hold them; deliberate flexible layout, not type-pun of an int object",b14-adjudicator,high
+FLP34-C,42,sqlite,ext/fts5/fts5_aux.c,645,FP,"(double*)&p[1] is pointer arithmetic into allocated buffer, no FP conversion involved",b14-adjudicator,high
+FLP03-C,43,sqlite,ext/fts5/fts5_aux.c,653,FP,"avgdl division at 653 is BM25 math; nRow>0 asserted and avgdl computed from totals, not a CERT FLP defect",b14-adjudicator,low
+FLP34-C,44,sqlite,ext/fts5/fts5_aux.c,653,FP,nToken/nRow cast to double is benign integer-to-double for averaging,b14-adjudicator,low
+FLP34-C,45,sqlite,ext/fts5/fts5_aux.c,653,FP,"same double cast for average doc length, benign",b14-adjudicator,low
+ERR01-C,46,sqlite,ext/fts5/fts5_aux.c,673,FP,log() result clamped to 1e-6 floor; errno not relevant to correctness here,b14-adjudicator,low
+FLP03-C,47,sqlite,ext/fts5/fts5_aux.c,673,FP,"division inside log argument; arguments derived from row counts, not a real defect",b14-adjudicator,low
+FLP32-C,48,sqlite,ext/fts5/fts5_aux.c,673,FP,"log argument (nRow-nHit+0.5)/(nHit+0.5) always positive since nHit<=nRow, no domain error",b14-adjudicator,med
+INT33-C,49,sqlite,ext/fts5/fts5_aux.c,673,FP,"(nHit+0.5) is always >=0.5, never zero",b14-adjudicator,high
+DCL30-C,50,sqlite,ext/fts5/fts5_aux.c,686,FP,"*ppData=p stores the heap pointer p into caller out-param, not the address of a local; p points to malloc'd memory",b14-adjudicator,high
+DCL13-C,51,sqlite,ext/fts5/fts5_aux.c,698,FP,apVal read-only but signature fixed by fts5_extension_function typedef,b14-adjudicator,med
+EXP34-C,52,sqlite,ext/fts5/fts5_aux.c,714,FP,pData only dereferenced under rc==SQLITE_OK; fts5Bm25GetData sets pData non-null when it returns OK,b14-adjudicator,high
+ARR38-C,53,sqlite,ext/fts5/fts5_aux.c,715,FP,"aFreq is pData->aFreq (valid sub-buffer), memset size sizeof(double)*nPhrase non-negative",b14-adjudicator,high
+EXP34-C,54,sqlite,ext/fts5/fts5_aux.c,715,FP,aFreq non-null when rc==SQLITE_OK as it points into the allocated pData buffer,b14-adjudicator,high
+INT30-C,55,sqlite,ext/fts5/fts5_aux.c,715,FP,sizeof(double)*nPhrase promotes to size_t; nPhrase small query phrase count,b14-adjudicator,high
+INT32-C,56,sqlite,ext/fts5/fts5_aux.c,715,FP,"same product; nPhrase bounded, no overflow at feasible phrase counts",b14-adjudicator,high
+FLP34-C,57,sqlite,ext/fts5/fts5_aux.c,731,FP,(double)nTok benign integer-to-double conversion,b14-adjudicator,low
+FLP03-C,58,sqlite,ext/fts5/fts5_aux.c,739,FP,BM25 score division; denominator includes aFreq[i]+k1*(...) which is positive,b14-adjudicator,low
+INT33-C,59,sqlite,ext/fts5/fts5_aux.c,739,FP,"denominator aFreq[i]+k1*(1-b+b*D/avgdl) with k1=1.2,b=0.75 stays positive, not zero",b14-adjudicator,med
+FLP03-C,60,sqlite,ext/fts5/fts5_aux.c,740,FP,"D/avgdl; avgdl>0 because nRow>0 asserted and nToken>=0, only zero if empty table where loop body unreached",b14-adjudicator,med
+INT33-C,61,sqlite,ext/fts5/fts5_aux.c,740,FP,pData->avgdl is nonzero for non-empty table (nRow>0 asserted); division guarded by table having rows,b14-adjudicator,med
+DCL13-C,62,sqlite,ext/fts5/fts5_aux.c,757,FP,apVal read-only but signature fixed by fts5_extension_function typedef,b14-adjudicator,med
+EXP34-C,63,sqlite,ext/fts5/fts5_aux.c,793,FP,"sqlite3_result_text handles null zLocale fine (returns NULL result); nLocale also 0, documented behavior",b14-adjudicator,high
+API00-C,64,sqlite,ext/fts5/fts5_aux.c,796,FP,"pApi is the FTS5 api pointer supplied by the engine, internal trusted caller, never null at this init entry",b14-adjudicator,med
+ARR02-C,65,sqlite,ext/fts5/fts5_aux.c,802,FP,"aBuiltin[] sized implicitly by initializer list, idiomatic and correct C",b14-adjudicator,low
+WIN04-C,66,sqlite,ext/fts5/fts5_aux.c,802,FP,WIN04 EncodePointer guidance not applicable to this portable code,b14-adjudicator,high
+ARR00-C,67,sqlite,ext/fts5/fts5_aux.c,813,FP,aBuiltin is fully initialized by its brace initializer at declaration; read is valid,b14-adjudicator,high
+ARR00-C,68,sqlite,ext/fts5/fts5_aux.c,814,FP,"aBuiltin fully initialized by initializer list, valid read",b14-adjudicator,high
+ARR00-C,69,sqlite,ext/fts5/fts5_aux.c,815,FP,"aBuiltin fully initialized by initializer list, valid read",b14-adjudicator,high
+ARR00-C,70,sqlite,ext/fts5/fts5_aux.c,816,FP,"aBuiltin fully initialized by initializer list, valid read",b14-adjudicator,high

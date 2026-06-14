@@ -1,0 +1,67 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+ARR01-C,1,sqlite,ext/misc/dbdump.c,79,FP,sizeof(*p) in initText memset is sizeof(DText struct) not a decayed pointer; sqc misread the param as array,b14-adjudicator,high
+STR34-C,2,sqlite,ext/misc/dbdump.c,97,FP,zAppend bytes are copied not used as integer index or arithmetic operand so sign extension is harmless here,b14-adjudicator,high
+INT32-C,3,sqlite,ext/misc/dbdump.c,99,FP,len is int but addends are int64 (p->n) computed in 64-bit; values bounded by masked nAppend<=0x3fffffff and small p->n in practice,b14-adjudicator,med
+INT32-C,4,sqlite,ext/misc/dbdump.c,99,FP,same int64 arithmetic into int len; not attacker-exploitable since strlen masked to 0x3fffffff and nAlloc growth reallocs before overflow matters,b14-adjudicator,med
+INT32-C,5,sqlite,ext/misc/dbdump.c,101,FP,len+=2 plus per-quote ++len bounded by nAppend<=0x3fffffff; cannot overflow int,b14-adjudicator,high
+INT32-C,6,sqlite,ext/misc/dbdump.c,109,FP,"nAlloc is sqlite3_int64 so nAlloc*2+len+20 is 64-bit arithmetic, no int overflow; realloc64 returns 0 on failure",b14-adjudicator,med
+INT32-C,7,sqlite,ext/misc/dbdump.c,109,FP,"nAlloc int64 arithmetic; 64-bit, bounded growth, OOM handled by freeText",b14-adjudicator,med
+INT32-C,8,sqlite,ext/misc/dbdump.c,109,FP,"nAlloc is sqlite3_int64; nAlloc*2 is 64-bit multiply, not signed-int overflow",b14-adjudicator,med
+STR34-C,9,sqlite,ext/misc/dbdump.c,120,FP,*zCsr++ = quote writes a char value; no integer promotion/sign-extension semantic issue on store,b14-adjudicator,high
+STR34-C,10,sqlite,ext/misc/dbdump.c,122,FP,*zCsr++ = zAppend[i] is byte copy char-to-char; sign extension irrelevant to copy,b14-adjudicator,high
+STR34-C,11,sqlite,ext/misc/dbdump.c,123,FP,conditional quote-doubling store of char; no integer use of the value,b14-adjudicator,high
+STR34-C,12,sqlite,ext/misc/dbdump.c,125,FP,*zCsr++ = quote char store; no sign-extension defect,b14-adjudicator,high
+STR34-C,13,sqlite,ext/misc/dbdump.c,127,FP,"*zCsr terminator store; char assignment, no integer promotion bug",b14-adjudicator,high
+INT32-C,14,sqlite,ext/misc/dbdump.c,130,FP,p->n is int64 and nAppend masked to <=0x3fffffff; 64-bit add cannot overflow int,b14-adjudicator,high
+EXP34-C,15,sqlite,ext/misc/dbdump.c,158,FP,azCol is realloc'd before first index (nCol>=nAlloc-2 with nAlloc=0 forces realloc on entry); if realloc fails goto col_oom returns,b14-adjudicator,high
+EXP34-C,16,sqlite,ext/misc/dbdump.c,194,FP,pStmt set by prepare_v2 and rc checked (if(rc) return 0) before sqlite3_step; non-null on success path,b14-adjudicator,high
+INT32-C,17,sqlite,ext/misc/dbdump.c,197,FP,"nAlloc is sqlite3_int64; addition is 64-bit, bounded by column count, not int overflow",b14-adjudicator,med
+INT32-C,18,sqlite,ext/misc/dbdump.c,197,FP,nAlloc int64 arithmetic; 64-bit,b14-adjudicator,med
+INT32-C,19,sqlite,ext/misc/dbdump.c,197,FP,nAlloc*2 is int64 multiply not int; column counts tiny in practice,b14-adjudicator,med
+EXP34-C,20,sqlite,ext/misc/dbdump.c,198,FP,"azCol index guarded: realloc-on-entry guarantees allocation, azNew==0 goes to col_oom before any index",b14-adjudicator,high
+INT30-C,21,sqlite,ext/misc/dbdump.c,198,FP,"sqlite3_realloc64 takes int64 and handles size internally; nAlloc bounded by real column count, not attacker-arbitrary",b14-adjudicator,med
+MEM30-C,22,sqlite,ext/misc/dbdump.c,198,FP,azCol is reassigned from successful realloc (azCol=azNew) not freed; no use-after-free on this path,b14-adjudicator,high
+INT32-C,23,sqlite,ext/misc/dbdump.c,206,FP,"nPK counts table PK columns; bounded by real schema column count, cannot reach INT_MAX",b14-adjudicator,high
+MEM30-C,24,sqlite,ext/misc/dbdump.c,238,FP,"zSql at 238 is a fresh mprintf result (line 235), freed once at 239; not the earlier freed zSql",b14-adjudicator,high
+MEM30-C,25,sqlite,ext/misc/dbdump.c,239,FP,each zSql is a distinct mprintf allocation freed exactly once after its prepare; no double free,b14-adjudicator,high
+MEM31-C,26,sqlite,ext/misc/dbdump.c,239,FP,same: zSql reassigned by mprintf before each free; single free per allocation,b14-adjudicator,high
+EXP34-C,27,sqlite,ext/misc/dbdump.c,244,FP,pStmt from prepare_v2 at 238 with rc checked (if(rc) return) before step at 244,b14-adjudicator,high
+ARR02-C,28,sqlite,ext/misc/dbdump.c,252,FP,"azRowid[] static initializer with 3 elements; size is implicit-by-initializer which is well-defined, not a bounds defect",b14-adjudicator,high
+CON03-C,29,sqlite,ext/misc/dbdump.c,252,FP,"azRowid is a function-local static const string table read-only; no cross-thread mutation, CON03 misfire",b14-adjudicator,high
+MSC07-C,30,sqlite,ext/misc/dbdump.c,271,FP,"line 271 is the col_oom error label reached via goto, not unreachable code after return",b14-adjudicator,high
+INT32-C,31,sqlite,ext/misc/dbdump.c,274,FP,"p->nErr counts errors during a single dump; bounded by query/row count, cannot reach INT_MAX",b14-adjudicator,high
+DCL13-C,32,sqlite,ext/misc/dbdump.c,282,TP,"output_formatted's p (DState*) is only read (p->xCallback, p->pArg) never written; const-qualifying compiles, though va-style usage makes it stylistic",b14-adjudicator,med
+EXP30-C,33,sqlite,ext/misc/dbdump.c,322,FP,"c=z[i] assigned once then compared in for-condition; single sequence-point-safe read, no unsequenced modify/access",b14-adjudicator,high
+EXP30-C,34,sqlite,ext/misc/dbdump.c,322,FP,"same for-loop init/condition; c assigned then tested, well-sequenced",b14-adjudicator,high
+EXP30-C,35,sqlite,ext/misc/dbdump.c,322,FP,same; sqc triple-counts one well-formed for statement,b14-adjudicator,high
+EXP33-C,36,sqlite,ext/misc/dbdump.c,322,FP,c is assigned (c=z[i]) in the for-init before any use; not uninitialized,b14-adjudicator,high
+EXP30-C,37,sqlite,ext/misc/dbdump.c,345,FP,"c=z[i] in inner for-condition; assigned before compared, properly sequenced",b14-adjudicator,high
+EXP30-C,38,sqlite,ext/misc/dbdump.c,345,FP,"same loop, duplicate misfire",b14-adjudicator,high
+EXP30-C,39,sqlite,ext/misc/dbdump.c,345,FP,"same loop, duplicate misfire",b14-adjudicator,high
+INT32-C,40,sqlite,ext/misc/dbdump.c,346,FP,"i indexes the output string z; bounded by string length, cannot reach INT_MAX in practice",b14-adjudicator,high
+DCL13-C,41,sqlite,ext/misc/dbdump.c,381,FP,azArg is read (azArg[0..2]) not modified; but signature is fixed by sqlite3_exec callback typedef so const cannot be added,b14-adjudicator,high
+DCL13-C,42,sqlite,ext/misc/dbdump.c,381,FP,azCol param unused (cast to void) and signature fixed by sqlite3_exec callback typedef; const not addable,b14-adjudicator,high
+ARR38-C,43,sqlite,ext/misc/dbdump.c,401,FP,"strncmp(zSql,""CREATE VIRTUAL TABLE"",20) compares against a 20-char literal; reads stop at NUL of either string, no over-read",b14-adjudicator,high
+EXP33-C,44,sqlite,ext/misc/dbdump.c,431,FP,"initText(&sTable) does memset(p,0,sizeof) which only WRITES sTable; reading uninitialized is the point of init, not a defect",b14-adjudicator,high
+EXP33-C,45,sqlite,ext/misc/dbdump.c,454,FP,initText(&sSelect) only writes via memset; not a read of uninitialized value,b14-adjudicator,high
+INT32-C,46,sqlite,ext/misc/dbdump.c,462,FP,i indexes azTCol column array bounded by table column count; i+1 cannot overflow int,b14-adjudicator,high
+INT32-C,47,sqlite,ext/misc/dbdump.c,467,FP,"nCol-- only when azTCol[0]==0; nCol is small column count, INT_MIN unreachable",b14-adjudicator,high
+INT32-C,48,sqlite,ext/misc/dbdump.c,474,FP,p->nErr error counter bounded by dump operations; cannot reach INT_MAX,b14-adjudicator,high
+DCL00-C,49,sqlite,ext/misc/dbdump.c,487,FP,r is double assigned once from column_double then read; const-qualify is valid but DCL00 is stylistic only,b14-adjudicator,low
+INT32-C,50,sqlite,ext/misc/dbdump.c,563,FP,"p->nErr error counter; bounded, cannot reach INT_MAX",b14-adjudicator,high
+INT32-C,51,sqlite,ext/misc/dbdump.c,571,FP,p->nErr error counter; bounded,b14-adjudicator,high
+INT13-C,52,sqlite,ext/misc/dbdump.c,596,FP,(rc&0xff)!=SQLITE_CORRUPT masks low byte of an sqlite result code (always small positive); bitwise on int is intentional and safe,b14-adjudicator,high
+INT32-C,53,sqlite,ext/misc/dbdump.c,596,FP,p->nErr error counter; bounded,b14-adjudicator,high
+INT32-C,54,sqlite,ext/misc/dbdump.c,623,FP,p->nErr error counter; bounded,b14-adjudicator,high
+API00-C,55,sqlite,ext/misc/dbdump.c,632,FP,public API entry; db is passed straight to sqlite3_exec which null-checks internally; API00 misfire on documented public contract,b14-adjudicator,high
+API00-C,56,sqlite,ext/misc/dbdump.c,632,FP,xCallback is invoked per contract; null-check not required of documented public API,b14-adjudicator,high
+API00-C,57,sqlite,ext/misc/dbdump.c,632,FP,pArg is opaque user data passed through; cannot/should not be validated,b14-adjudicator,high
+DCL15-C,58,sqlite,ext/misc/dbdump.c,632,FP,sqlite3_db_dump is the documented public exported API; must NOT be static,b14-adjudicator,high
+DCL19-C,59,sqlite,ext/misc/dbdump.c,632,FP,"same: public exported symbol by design, cannot be static",b14-adjudicator,high
+EXP05-C,60,sqlite,ext/misc/dbdump.c,640,FP,"line 640 is memset(&x,0,sizeof(x)); no const cast away present, sqc misattributed",b14-adjudicator,high
+DCL31-C,61,sqlite,ext/misc/dbdump.c,646,FP,xCallback is a struct member function pointer (p->xCallback) properly typed via DState; not an undeclared function,b14-adjudicator,high
+DCL31-C,62,sqlite,ext/misc/dbdump.c,677,FP,"same: x.xCallback / p->xCallback through typed struct field, declared",b14-adjudicator,high
+DCL31-C,63,sqlite,ext/misc/dbdump.c,679,FP,"same struct function-pointer call, declared via DState member",b14-adjudicator,high
+API00-C,64,sqlite,ext/misc/dbdump.c,695,FP,main argv is checked (argc<2||argc>4) before argv[1..3] are used; guarded,b14-adjudicator,high
+FIO42-C,65,sqlite,ext/misc/dbdump.c,710,FP,"rc holds sqlite3_open return code (an int error code), not a file descriptor; FIO42 misclassified the variable",b14-adjudicator,high
+EXP39-C,66,sqlite,ext/misc/dbdump.c,717,FP,"standalone main casts fputs to the callback type intentionally; signatures are ABI-compatible (char*,void*); not a float-through-incompatible-pointer defect",b14-adjudicator,high

@@ -1,0 +1,63 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API00-C,1,sqlite,ext/fts5/fts5_buffer.c,18,FP,API00 pRc internal contract caller passes valid &rc not attacker-reachable null,b14-adjudicator,high
+API00-C,2,sqlite,ext/fts5/fts5_buffer.c,18,FP,API00 pBuf internal caller-owned buffer struct never null in practice,b14-adjudicator,high
+INT32-C,3,sqlite,ext/fts5/fts5_buffer.c,44,FP,n bounded by buffer grow to 9 bytes for varint; n is index into pre-grown buffer not attacker overflow,b14-adjudicator,med
+INT14-C,4,sqlite,ext/fts5/fts5_buffer.c,48,FP,iVal>>n in Put32 is intentional byte extraction masked with 0xFF; readability noise,b14-adjudicator,high
+API00-C,5,sqlite,ext/fts5/fts5_buffer.c,54,FP,API00 aBuf is caller-owned 4-byte buffer contract,b14-adjudicator,high
+EXP34-C,6,sqlite,ext/fts5/fts5_buffer.c,55,FP,aBuf deref guarded by caller contract 4-byte buffer; not null in callers,b14-adjudicator,med
+INT14-C,7,sqlite,ext/fts5/fts5_buffer.c,55,FP,INT14 shift+add in Get32 is intentional big-endian decode; style noise,b14-adjudicator,high
+API00-C,8,sqlite,ext/fts5/fts5_buffer.c,63,FP,API00 pBuf caller-owned struct,b14-adjudicator,high
+EXP34-C,9,sqlite,ext/fts5/fts5_buffer.c,72,FP,pData only deref'd when nData!=0 and memcpy contract; callers pass valid ptr with nonzero len,b14-adjudicator,med
+INT32-C,10,sqlite,ext/fts5/fts5_buffer.c,73,FP,n is buffer index pre-grown by fts5BufferGrow to fit nData; bounded,b14-adjudicator,med
+API00-C,11,sqlite,ext/fts5/fts5_buffer.c,82,FP,API00 pRc internal contract,b14-adjudicator,high
+API00-C,12,sqlite,ext/fts5/fts5_buffer.c,82,FP,API00 pBuf caller-owned,b14-adjudicator,high
+API00-C,13,sqlite,ext/fts5/fts5_buffer.c,82,FP,zStr strlen'd; caller passes non-null nul-terminated string contract,b14-adjudicator,med
+STR34-C,14,sqlite,ext/fts5/fts5_buffer.c,87,FP,STR34 zStr cast for blob copy not char-to-int promotion; no sign extension issue,b14-adjudicator,high
+INT32-C,15,sqlite,ext/fts5/fts5_buffer.c,88,FP,nStr from strlen of in-memory string bounded well below INT_MAX in practice,b14-adjudicator,med
+INT32-C,16,sqlite,ext/fts5/fts5_buffer.c,89,FP,n-- after appending nStr+1 net n>=0 invariant; decrement of buffer count never INT_MIN,b14-adjudicator,high
+API00-C,17,sqlite,ext/fts5/fts5_buffer.c,100,FP,API00 pRc internal contract,b14-adjudicator,high
+API00-C,18,sqlite,ext/fts5/fts5_buffer.c,121,FP,API00 pRc internal contract,b14-adjudicator,high
+API00-C,19,sqlite,ext/fts5/fts5_buffer.c,139,FP,API00 pBuf caller-owned,b14-adjudicator,high
+API00-C,20,sqlite,ext/fts5/fts5_buffer.c,148,FP,API00 pBuf caller-owned,b14-adjudicator,high
+API00-C,21,sqlite,ext/fts5/fts5_buffer.c,157,FP,API00 pRc internal contract,b14-adjudicator,high
+API00-C,22,sqlite,ext/fts5/fts5_buffer.c,157,FP,API00 pBuf caller-owned,b14-adjudicator,high
+API00-C,23,sqlite,ext/fts5/fts5_buffer.c,157,FP,pData passed through to AppendBlob which guards on nData,b14-adjudicator,med
+API00-C,24,sqlite,ext/fts5/fts5_buffer.c,167,FP,API00 pi caller-owned int contract,b14-adjudicator,high
+API00-C,25,sqlite,ext/fts5/fts5_buffer.c,167,FP,API00 piOff caller-owned i64 contract,b14-adjudicator,high
+EXP33-C,26,sqlite,ext/fts5/fts5_buffer.c,182,FP,iVal written by fts5FastGetVarint32 macro before any read; not uninitialized,b14-adjudicator,high
+INT14-C,27,sqlite,ext/fts5/fts5_buffer.c,189,FP,INT14 iVal shift in poslist column decode is intentional; style noise,b14-adjudicator,high
+INT14-C,28,sqlite,ext/fts5/fts5_buffer.c,197,FP,INT14 iOff bit/arith mix in poslist offset math intentional,b14-adjudicator,high
+API00-C,29,sqlite,ext/fts5/fts5_buffer.c,212,FP,API00 pIter caller-owned iterator,b14-adjudicator,high
+API00-C,30,sqlite,ext/fts5/fts5_buffer.c,219,FP,API00 a caller-owned poslist buffer,b14-adjudicator,high
+API00-C,31,sqlite,ext/fts5/fts5_buffer.c,219,FP,API00 pIter caller-owned iterator,b14-adjudicator,high
+ARR01-C,32,sqlite,ext/fts5/fts5_buffer.c,223,FP,sizeof(*pIter) on pointer is correct idiom memset of pointee struct not decayed array,b14-adjudicator,high
+API00-C,33,sqlite,ext/fts5/fts5_buffer.c,236,FP,API00 pBuf caller-owned; doc states must be pre-sized,b14-adjudicator,high
+API00-C,34,sqlite,ext/fts5/fts5_buffer.c,236,FP,API00 piPrev caller-owned i64,b14-adjudicator,high
+INT14-C,35,sqlite,ext/fts5/fts5_buffer.c,243,FP,INT14 iPos shift in varint encode intentional,b14-adjudicator,high
+INT14-C,36,sqlite,ext/fts5/fts5_buffer.c,243,FP,INT14 piPrev mask/arith in encode intentional,b14-adjudicator,high
+INT32-C,37,sqlite,ext/fts5/fts5_buffer.c,244,FP,n++ writes flag byte into buffer pre-grown by 15 in caller; bounded,b14-adjudicator,med
+INT32-C,38,sqlite,ext/fts5/fts5_buffer.c,245,FP,n index into buffer pre-grown by writer to 15 bytes; bounded,b14-adjudicator,med
+INT32-C,39,sqlite,ext/fts5/fts5_buffer.c,248,FP,n index into pre-grown buffer; varint append bounded,b14-adjudicator,med
+INT32-C,40,sqlite,ext/fts5/fts5_buffer.c,248,FP,iPos-*piPrev+2 guarded by iPos>=*piPrev so nonneg delta; values are 63-bit positions not near overflow,b14-adjudicator,med
+API00-C,41,sqlite,ext/fts5/fts5_buffer.c,253,FP,API00 pWriter caller-owned,b14-adjudicator,high
+API00-C,42,sqlite,ext/fts5/fts5_buffer.c,264,FP,API00 pRc internal contract,b14-adjudicator,high
+INT31-C,43,sqlite,ext/fts5/fts5_buffer.c,271,FP,nByte sqlite3_int64 passed to malloc64; negative yields null then rc unset by design; not unsafe,b14-adjudicator,med
+API00-C,44,sqlite,ext/fts5/fts5_buffer.c,285,FP,API00 pRc internal contract,b14-adjudicator,high
+API00-C,45,sqlite,ext/fts5/fts5_buffer.c,285,FP,nIn negative branch handled via strlen; positive nIn from in-memory string bounded,b14-adjudicator,med
+INT32-C,46,sqlite,ext/fts5/fts5_buffer.c,291,FP,nIn+1 for malloc; nIn from caller string length bounded well below INT_MAX,b14-adjudicator,med
+INT31-C,47,sqlite,ext/fts5/fts5_buffer.c,293,FP,nIn nonneg after <0 branch; memcpy len safe conversion,b14-adjudicator,med
+ARR00-C,48,sqlite,ext/fts5/fts5_buffer.c,299,FP,zRet is heap malloc'd pointer returned not local array; analyzer misread,b14-adjudicator,high
+ARR30-C,49,sqlite,ext/fts5/fts5_buffer.c,325,FP,[OVERRIDE TP->FP] aBareword[(int)t] with signed char t negative for 0x80-0xFF but short-circuit (t&0x80) guards before index so safe in C eval order; flag for sign-ext nuance only,b14-adjudicator,med
+API00-C,50,sqlite,ext/fts5/fts5_buffer.c,343,FP,API00 pp caller-owned out-param,b14-adjudicator,high
+API00-C,51,sqlite,ext/fts5/fts5_buffer.c,349,FP,p null-checked at line 357 before use,b14-adjudicator,med
+API00-C,52,sqlite,ext/fts5/fts5_buffer.c,349,FP,pTerm used in memcmp/memcpy with nTerm contract caller provides valid term,b14-adjudicator,med
+API00-C,53,sqlite,ext/fts5/fts5_buffer.c,349,FP,API00 pbPresent caller-owned out-param,b14-adjudicator,high
+API00-C,54,sqlite,ext/fts5/fts5_buffer.c,349,FP,nTerm caller term length bounded; used in malloc sizeof+nTerm see idx59,b14-adjudicator,med
+INT32-C,55,sqlite,ext/fts5/fts5_buffer.c,366,FP,nTerm-1 loop bound; nTerm>=0 term length never INT_MIN,b14-adjudicator,high
+INT14-C,56,sqlite,ext/fts5/fts5_buffer.c,367,FP,INT14 hash shift/xor intentional hash function,b14-adjudicator,high
+INT33-C,57,sqlite,ext/fts5/fts5_buffer.c,370,FP,ArraySize(apHash)=512 compile-time constant never zero,b14-adjudicator,high
+INT31-C,58,sqlite,ext/fts5/fts5_buffer.c,375,FP,nTerm in memcmp matched only when pEntry->nTerm==nTerm; lengths equal and bounded,b14-adjudicator,med
+INT30-C,59,sqlite,ext/fts5/fts5_buffer.c,383,FP,sizeof(Fts5TermsetEntry)+nTerm size_t add; nTerm is small term length not near SIZE_MAX wrap,b14-adjudicator,med
+INT31-C,60,sqlite,ext/fts5/fts5_buffer.c,388,FP,nTerm memcpy into buffer allocated as sizeof+nTerm; sizes match,b14-adjudicator,med
+API00-C,61,sqlite,ext/fts5/fts5_buffer.c,398,FP,API00 p null-checked at line 399,b14-adjudicator,high
+MEM30-C,62,sqlite,ext/fts5/fts5_buffer.c,409,FP,MEM30 free loop walks distinct list nodes then frees p once; no double free pNext saved before free,b14-adjudicator,high

@@ -1,0 +1,54 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+STR34-C,1,sqlite,src/backup.c,83,FP,zDb is a char* passed whole to sqlite3FindDbName (strcmp-style name lookup) not a single char widened to int no sign extension,b14-adjudicator,high
+MEM30-C,2,sqlite,src/backup.c,101,FP,"sqlite3ErrorWithMsg(pErrorDb,...) reads the live db handle as context arg it is never freed here",b14-adjudicator,high
+EXP34-C,3,sqlite,src/backup.c,105,FP,pDb is the caller-supplied connection handle deref at aDb[i] is contract-guaranteed non-null and i>=0 reached only after i<0 returns,b14-adjudicator,high
+DCL13-C,4,sqlite,src/backup.c,112,FP,setDestPgsz reads p->pSrc/p->pDest but the call sqlite3BtreeSetPageSize mutates the dest btree const param would be misleading and p is the handle,b14-adjudicator,high
+EXP20-C,5,sqlite,src/backup.c,149,FP,EXP20 stylistic API-armor safety check intended boolean misuse guard not a defect,b14-adjudicator,high
+EXP20-C,6,sqlite,src/backup.c,149,FP,same EXP20 stylistic API-armor safety check,b14-adjudicator,high
+EXP34-C,7,sqlite,src/backup.c,163,FP,pSrcDb->mutex deref after mutex_enter pSrcDb is validated non-null by SafetyCheckOk under API_ARMOR caller contract otherwise,b14-adjudicator,high
+EXP34-C,8,sqlite,src/backup.c,164,FP,pDestDb->mutex same caller-contract non-null handle,b14-adjudicator,high
+EXP43-C,9,sqlite,src/backup.c,185,FP,"findBtree(pDestDb,pSrcDb,zSrcDb) distinct args not aliased pErrorDb=pDestDb pDb=pSrcDb are different pointers no UB",b14-adjudicator,high
+INT32-C,10,sqlite,src/backup.c,204,FP,nBackup is backup refcount bounded by number of concurrent backups never approaches INT_MAX,b14-adjudicator,high
+MEM30-C,11,sqlite,src/backup.c,208,FP,sqlite3_mutex_leave(pSrcDb->mutex) reads live handle never freed in this function,b14-adjudicator,high
+MEM30-C,12,sqlite,src/backup.c,208,FP,pSrcDb->mutex member access of live un-freed handle,b14-adjudicator,high
+DCL30-C,13,sqlite,src/backup.c,209,FP,p is heap-allocated via sqlite3MallocZero not a local; DCL30 misread of returning the heap pointer is correct and safe,b14-adjudicator,high
+DCL13-C,14,sqlite,src/backup.c,227,FP,backupOnePage p is the backup handle mutated indirectly via pager writes const inappropriate,b14-adjudicator,high
+INT33-C,15,sqlite,src/backup.c,253,FP,nDestPgsz is sqlite3BtreeGetPageSize result a power-of-two 512..65536 never zero,b14-adjudicator,high
+EXP34-C,16,sqlite,src/backup.c,256,FP,pDestPg only used inside the if-branch guarded by rc==SQLITE_OK from sqlite3PagerGet which sets a valid page,b14-adjudicator,high
+INT10-C,17,sqlite,src/backup.c,258,FP,"iOff and nSrcPgsz are positive (iOff>=0 page offsets, pgsz>0) modulo result well-defined",b14-adjudicator,high
+INT33-C,18,sqlite,src/backup.c,258,FP,nSrcPgsz power-of-two page size never zero,b14-adjudicator,high
+EXP34-C,19,sqlite,src/backup.c,259,FP,pDestPg valid inside rc==OK guarded block,b14-adjudicator,high
+INT10-C,20,sqlite,src/backup.c,260,FP,iOff>=0 and nDestPgsz>0 modulo well-defined,b14-adjudicator,high
+INT33-C,21,sqlite,src/backup.c,260,FP,nDestPgsz page size never zero,b14-adjudicator,high
+EXP05-C,22,sqlite,src/backup.c,269,FP,nCopy is a const int local passed by value to memcpy size no const cast away,b14-adjudicator,high
+INT31-C,23,sqlite,src/backup.c,269,FP,nCopy=MIN(positive page sizes) always positive conversion to size_t safe,b14-adjudicator,high
+EXP34-C,24,sqlite,src/backup.c,270,FP,pDestPg valid in rc==OK block before GetExtra,b14-adjudicator,high
+ARR37-C,25,sqlite,src/backup.c,272,FP,zOut points into the dest page buffer (>=512 bytes) &zOut[28] writing the page-size field well within page bounds,b14-adjudicator,high
+EXP34-C,26,sqlite,src/backup.c,275,FP,sqlite3PagerUnref tolerates the page acquired by PagerGet; pDestPg set to valid page or unref handles it,b14-adjudicator,high
+EXP33-C,27,sqlite,src/backup.c,292,FP,iCurrent written by sqlite3OsFileSize before the rc==OK guarded read no uninitialized use,b14-adjudicator,high
+EXP30-C,28,sqlite,src/backup.c,366,FP,rc is assigned then tested across statement boundary normal sequencing not multiple modification between sequence points,b14-adjudicator,high
+INT32-C,29,sqlite,src/backup.c,404,FP,nSrcPage from sqlite3BtreeLastPage bounded by 0x7FFFFFFF page-count hard limit +1 cannot overflow int,b14-adjudicator,high
+EXP43-C,30,sqlite,src/backup.c,423,FP,"sqlite3BtreeUpdateMeta(p->pDest,1,iDestSchema+1) args are a btree handle an index and a value not overlapping memory regions",b14-adjudicator,high
+INT32-C,31,sqlite,src/backup.c,450,FP,pgszSrc/pgszDest both positive power-of-two page sizes never INT_MIN never -1,b14-adjudicator,high
+INT33-C,32,sqlite,src/backup.c,450,FP,pgszSrc page size never zero,b14-adjudicator,high
+INT32-C,33,sqlite,src/backup.c,451,FP,nSrcPage<=0x7FFFFFFF and ratio>=1 small the sum cannot overflow guarded by page-count limit,b14-adjudicator,high
+INT32-C,34,sqlite,src/backup.c,451,FP,same bounded page count plus small ratio no overflow,b14-adjudicator,high
+INT33-C,35,sqlite,src/backup.c,451,FP,ratio=pgszDest/pgszSrc with pgszSrc<pgszDest so ratio>=1 never zero,b14-adjudicator,high
+INT32-C,36,sqlite,src/backup.c,453,FP,nDestTruncate is a positive page count decrement cannot reach INT_MIN,b14-adjudicator,high
+INT32-C,37,sqlite,src/backup.c,456,FP,nSrcPage bounded by page limit pgszSrc/pgszDest is a small ratio product cannot overflow i64-safe magnitudes,b14-adjudicator,high
+INT32-C,38,sqlite,src/backup.c,456,FP,pgszSrc/pgszDest positive page sizes never INT_MIN/-1,b14-adjudicator,high
+INT33-C,39,sqlite,src/backup.c,456,FP,pgszDest page size never zero,b14-adjudicator,high
+INT32-C,40,sqlite,src/backup.c,513,FP,iOff/pgszSrc bounded by db size +1 small no overflow,b14-adjudicator,high
+INT33-C,41,sqlite,src/backup.c,513,FP,pgszSrc page size never zero,b14-adjudicator,high
+EXP34-C,42,sqlite,src/backup.c,516,FP,pSrcPg valid inside rc==SQLITE_OK guard from sqlite3PagerGet,b14-adjudicator,high
+EXP34-C,43,sqlite,src/backup.c,519,FP,sqlite3PagerUnref handles the page from PagerGet pSrcPg set valid on rc==OK,b14-adjudicator,high
+EXP30-C,44,sqlite,src/backup.c,535,FP,rc assigned and tested in sequenced && chain normal short-circuit evaluation,b14-adjudicator,high
+INT32-C,45,sqlite,src/backup.c,587,FP,nBackup refcount decrement bounded never INT_MIN,b14-adjudicator,high
+DCL13-C,46,sqlite,src/backup.c,625,FP,sqlite3_backup_remaining reads p->nRemaining but p is the public handle const acceptable but flagged-only-style; param not propagated however it is the documented API signature,b14-adjudicator,high
+DCL13-C,47,sqlite,src/backup.c,639,FP,sqlite3_backup_pagecount same fixed public API signature,b14-adjudicator,high
+EXP30-C,48,sqlite,src/backup.c,684,FP,p iterator assigned in while loop condition (p=p->pNext)!=0 single modification per iteration well-defined,b14-adjudicator,high
+API00-C,49,sqlite,src/backup.c,701,FP,sqlite3BackupRestart guarded by caller mutex contract pBackup may be null and loop handles null start no deref of null,b14-adjudicator,high
+DCL13-C,50,sqlite,src/backup.c,701,FP,sqlite3BackupRestart only reads p->pNext/p->pSrc but writes p->iNext=1 through the param so it IS modified const wrong,b14-adjudicator,med
+API00-C,51,sqlite,src/backup.c,718,FP,sqlite3BtreeCopyFile internal API caller holds transaction contract pTo validated by sqlite3BtreeEnter/assert TxnState,b14-adjudicator,high
+API00-C,52,sqlite,src/backup.c,718,FP,pFrom same internal contract validated by BtreeEnter,b14-adjudicator,high
+EXP34-C,53,sqlite,src/backup.c,727,FP,pFd from sqlite3PagerFile always non-null pMethods member access is the standard VFS-open check,b14-adjudicator,high

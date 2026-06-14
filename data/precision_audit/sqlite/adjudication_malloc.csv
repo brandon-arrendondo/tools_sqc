@@ -1,0 +1,62 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+MSC37-C,1,sqlite,src/malloc.c,23,FP,sqlite3_release_memory returns on every #if/#else path; both branches end in return,b14-adjudicator,high
+MSC37-C,2,sqlite,src/malloc.c,45,FP,"line 45 is the Mem0Global struct/static declaration, not a non-void function body",b14-adjudicator,high
+DCL13-C,3,sqlite,src/malloc.c,74,FP,pArg is unused deprecated public-API param with fixed signature; const not meaningfully applicable and (void)pArg already documents it,b14-adjudicator,high
+API00-C,4,sqlite,src/malloc.c,95,FP,"n is i64, n<0 short-circuits, clamp to hardLimit; no overflow in soft_heap_limit64",b14-adjudicator,high
+INT32-C,5,sqlite,src/malloc.c,116,FP,excess is i64 = memory_used - n with i64 math then masked by &0x7fffffff before int cast; no signed overflow defect,b14-adjudicator,high
+API00-C,6,sqlite,src/malloc.c,137,FP,n is i64 with n>=0 guard and i64 comparisons in hard_heap_limit64; no overflow,b14-adjudicator,high
+CON07-C,7,sqlite,src/malloc.c,231,FP,test_oom_breakpoint is SQLITE_DEBUG-only gdb breakpoint on file-static nOomFault; not a real shared-concurrency hazard,b14-adjudicator,high
+CON03-C,8,sqlite,src/malloc.c,232,FP,"nOomFault is a debug-only breakpoint counter, never relied upon for visibility; deliberately non-atomic",b14-adjudicator,high
+INT14-C,9,sqlite,src/malloc.c,233,FP,INT14 readability only; nOomFault += n then >>32 in assert is intentional and debug-only,b14-adjudicator,med
+DCL30-C,10,sqlite,src/malloc.c,289,FP,p is heap pointer returned by xMalloc and stored via *pp; not address of a local,b14-adjudicator,high
+DCL30-C,11,sqlite,src/malloc.c,308,FP,"sqlite3Malloc returns p which holds the xMalloc heap pointer, not a local's address",b14-adjudicator,high
+MSC04-C,12,sqlite,src/malloc.c,316,TP,genuine indirect recursion sqlite3_malloc->sqlite3_initialize->sqlite3OsInit->sqlite3_malloc per MSC04,b14-adjudicator,med
+DCL13-C,13,sqlite,src/malloc.c,333,FP,db is dereferenced (db->lookaside fields) and passed to non-const callees; const would break in sqlite3MallocSize path,b14-adjudicator,high
+API00-C,14,sqlite,src/malloc.c,344,FP,p validated by assert(MemdebugHasType) contract; internal callers guarantee non-null heap ptr,b14-adjudicator,high
+EXP05-C,15,sqlite,src/malloc.c,346,FP,(void*)p cast is required because xSize takes void* not const void*; intentional API shim,b14-adjudicator,high
+DCL13-C,16,sqlite,src/malloc.c,348,FP,sqlite3DbMallocSize reads db->lookaside.* and db->mutex; db not const-able,b14-adjudicator,high
+MSC37-C,17,sqlite,src/malloc.c,348,FP,line 348 is lookasideMallocSize which returns on all paths via if/else size selection,b14-adjudicator,high
+API00-C,18,sqlite,src/malloc.c,355,FP,p asserted non-null (assert p!=0) and db is internal contract; no validation defect,b14-adjudicator,high
+API00-C,19,sqlite,src/malloc.c,355,FP,"same: p covered by assert(p!=0), internal allocator contract",b14-adjudicator,high
+EXP05-C,20,sqlite,src/malloc.c,380,FP,(void*)p needed for xSize(void*) signature; intentional const-shim,b14-adjudicator,high
+API00-C,21,sqlite,src/malloc.c,382,FP,sqlite3_msize guards p with ternary p?xSize:0; cast required by xSize signature,b14-adjudicator,high
+API00-C,22,sqlite,src/malloc.c,419,FP,db null-tolerant (if(db) branch) and asserted mutex; p asserted non-null; contract not validation,b14-adjudicator,high
+API00-C,23,sqlite,src/malloc.c,419,FP,p asserted p!=0; freed-arg read first; internal NN contract guarantees non-null,b14-adjudicator,high
+API00-C,24,sqlite,src/malloc.c,495,FP,sqlite3DbFree explicitly handles db==0 (assert allows) and null p; internal contract,b14-adjudicator,high
+INT32-C,25,sqlite,src/malloc.c,529,FP,"nNew,nOld are int from xRoundup of bounded nBytes (<=MAX_ALLOCATION_SIZE); nDiff fits int, intended",b14-adjudicator,high
+INT32-C,26,sqlite,src/malloc.c,548,FP,"nNew-nOld both bounded int allocation sizes <=2^31; no realistic overflow, intended stat math",b14-adjudicator,high
+DCL30-C,27,sqlite,src/malloc.c,555,FP,"pNew holds xRealloc heap pointer, not address of a local variable",b14-adjudicator,high
+API00-C,28,sqlite,src/malloc.c,562,FP,sqlite3_realloc handles pOld==0 inside sqlite3Realloc (returns Malloc); null tolerated by design,b14-adjudicator,high
+API00-C,29,sqlite,src/malloc.c,569,FP,sqlite3_realloc64 same null-tolerant path via sqlite3Realloc(pOld==0),b14-adjudicator,high
+API00-C,30,sqlite,src/malloc.c,592,FP,sqlite3DbMallocZero passes db to sqlite3DbMallocRaw which handles db==0; testcase(db==0) confirms,b14-adjudicator,high
+DCL30-C,31,sqlite,src/malloc.c,597,FP,"p is heap/lookaside pointer returned by sqlite3DbMallocRaw, not a local address",b14-adjudicator,high
+DCL30-C,32,sqlite,src/malloc.c,611,FP,"p in dbMallocRawFinish holds sqlite3Malloc heap pointer, not local storage",b14-adjudicator,high
+DCL30-C,33,sqlite,src/malloc.c,641,FP,"p returned by sqlite3DbMallocRawNN is lookaside/heap pointer, not local address",b14-adjudicator,high
+API00-C,34,sqlite,src/malloc.c,699,FP,sqlite3DbRealloc asserts db!=0 and dereferences db->lookaside; not a validation gap,b14-adjudicator,high
+API00-C,35,sqlite,src/malloc.c,745,FP,sqlite3DbReallocOrFree forwards db/p to sqlite3DbRealloc which asserts/handles; contract,b14-adjudicator,high
+API00-C,36,sqlite,src/malloc.c,745,FP,p forwarded and null-handled inside sqlite3DbRealloc (p==0 -> MallocRawNN); tolerated,b14-adjudicator,high
+DCL30-C,37,sqlite,src/malloc.c,751,FP,"pNew holds reallocated heap/lookaside pointer, not local address",b14-adjudicator,high
+API00-C,38,sqlite,src/malloc.c,761,FP,sqlite3DbStrDup handles z==0 (returns 0) and db via DbMallocRaw db==0 path; contract,b14-adjudicator,high
+ARR38-C,39,sqlite,src/malloc.c,770,FP,memcpy size n = strlen(z)+1 derived from the NUL-terminated source; bounded by allocation of same n,b14-adjudicator,high
+EXP05-C,40,sqlite,src/malloc.c,770,FP,"n is size_t value not a const pointer; EXP05 misfire, no const cast present",b14-adjudicator,high
+DCL30-C,41,sqlite,src/malloc.c,772,FP,"zNew holds sqlite3DbMallocRaw heap/lookaside pointer, not a local array address",b14-adjudicator,high
+API00-C,42,sqlite,src/malloc.c,774,FP,z null-tolerant (ternary z?...:0) and asserts; contract not validation,b14-adjudicator,high
+API00-C,43,sqlite,src/malloc.c,774,FP,z guarded by assert(z!=0||n==0) and ternary; not a validation defect,b14-adjudicator,high
+INT13-C,44,sqlite,src/malloc.c,778,FP,n bitwise &0x7fffffff is the assert (n&0x7fffffff)==n verifying n fits 31 bits; intentional,b14-adjudicator,high
+INT14-C,45,sqlite,src/malloc.c,778,FP,INT14 readability only on the bound-check assert; n value comes pre-bounded by parser,b14-adjudicator,high
+EXP05-C,46,sqlite,src/malloc.c,781,FP,"(size_t)n is integer cast for memcpy size, not casting away const; EXP05 misfire",b14-adjudicator,high
+ARR00-C,47,sqlite,src/malloc.c,784,FP,zNew is sqlite3DbMallocRawNN heap/lookaside pointer not a local array,b14-adjudicator,high
+DCL30-C,48,sqlite,src/malloc.c,784,FP,"same: zNew holds heap pointer returned from allocator, not automatic storage",b14-adjudicator,high
+API00-C,49,sqlite,src/malloc.c,792,FP,sqlite3DbSpanDup forwards db to DbStrNDup; null/contract handled downstream,b14-adjudicator,high
+API00-C,50,sqlite,src/malloc.c,792,FP,zStart dereferenced under SQLITE_DEBUG span-non-empty invariant; parser guarantees non-null span,b14-adjudicator,high
+ARR36-C,51,sqlite,src/malloc.c,800,FP,zEnd-zStart is valid: both point into the same SQL statement buffer by parser contract,b14-adjudicator,high
+INT32-C,52,sqlite,src/malloc.c,801,FP,"n-1 indexing after parser guarantees span has >=1 non-space char; n>=1 invariant, no overflow",b14-adjudicator,high
+INT32-C,53,sqlite,src/malloc.c,801,FP,n-- bounded by trailing-whitespace scan within parser span; cannot reach INT_MIN,b14-adjudicator,high
+API00-C,54,sqlite,src/malloc.c,808,FP,pz dereferenced as *pz with internal caller contract (always valid char** address),b14-adjudicator,high
+API00-C,55,sqlite,src/malloc.c,808,FP,db forwarded to DbStrDup which handles db==0; internal contract,b14-adjudicator,high
+API00-C,56,sqlite,src/malloc.c,808,FP,zNew is the source string param passed to DbStrDup which handles NULL (returns 0),b14-adjudicator,high
+DCL30-C,57,sqlite,src/malloc.c,811,FP,z holds sqlite3DbStrDup heap pointer assigned to *pz; not address of a local,b14-adjudicator,high
+STR34-C,58,sqlite,src/malloc.c,811,FP,"STR34 misfire; *pz is char* pointer assignment (z), no char sign-extension occurs",b14-adjudicator,high
+API00-C,59,sqlite,src/malloc.c,827,FP,sqlite3OomFault internal contract: callers always pass valid db; documented invariant,b14-adjudicator,high
+API00-C,60,sqlite,src/malloc.c,854,FP,sqlite3OomClear same internal-contract db; not a trust boundary,b14-adjudicator,high
+INT13-C,61,sqlite,src/malloc.c,872,FP,rc & db->errMask is intended truncation/mask of result code; INT13 misfire on signed mask,b14-adjudicator,high

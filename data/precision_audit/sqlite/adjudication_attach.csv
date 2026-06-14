@@ -1,0 +1,64 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API00-C,1,sqlite,src/attach.c,52,FP,sqlite3DbIsNamed is internal; callers iterate i<db->nDb so db/iDb valid by contract not a trust boundary,b14-adjudicator,high
+DCL13-C,2,sqlite,src/attach.c,52,TP,db param only read via db->aDb[iDb] never written so const sqlite3* would compile but signature convention-bound,b14-adjudicator,med
+ARR00-C,3,sqlite,src/attach.c,54,FP,iDb bounded by callers (loops i<db->nDb); internal invariant guarantees valid index,b14-adjudicator,high
+ARR30-C,4,sqlite,src/attach.c,54,FP,same as idx3 iDb is caller-validated against db->nDb not unvalidated,b14-adjudicator,high
+DCL13-C,5,sqlite,src/attach.c,77,FP,"argv fixed by SQLite UDF callback signature (xSFunc), cannot be made const",b14-adjudicator,high
+PRE01-C,6,sqlite,src/attach.c,99,FP,"REOPEN_AS_MEMDB(db) expands to (db->init.reopenMemdb), db only used in member-access so parenthesization irrelevant",b14-adjudicator,high
+EXP34-C,7,sqlite,src/attach.c,113,FP,pNewBt set non-null by successful sqlite3BtreeOpen under rc==SQLITE_OK guard at line 112,b14-adjudicator,high
+EXP34-C,8,sqlite,src/attach.c,118,FP,"db is the connection handle, non-null by UDF contract (sqlite3_context_db_handle)",b14-adjudicator,high
+INT30-C,9,sqlite,src/attach.c,155,FP,"sizeof(Db)*3 compile-time small constant, no runtime overflow",b14-adjudicator,high
+ARR38-C,10,sqlite,src/attach.c,157,FP,"memcpy size sizeof(Db)*2 compile-time constant, aNew freshly allocated for *3",b14-adjudicator,high
+INT30-C,11,sqlite,src/attach.c,157,FP,sizeof(Db)*2 compile-time constant cannot overflow,b14-adjudicator,high
+INT32-C,12,sqlite,src/attach.c,157,FP,"sizeof(Db)*2 compile-time constant, no overflow",b14-adjudicator,high
+INT30-C,13,sqlite,src/attach.c,159,FP,"nDb bounded by SQLITE_LIMIT_ATTACHED+2 (~127), i64 math cannot wrap",b14-adjudicator,high
+INT32-C,14,sqlite,src/attach.c,159,FP,"nDb capped at line 137 well below INT_MAX, 1+(i64)db->nDb cannot overflow",b14-adjudicator,high
+MEM30-C,15,sqlite,src/attach.c,159,FP,"db not freed; sqlite3DbRealloc returns aNew, db handle reused not freed",b14-adjudicator,high
+MEM30-C,16,sqlite,src/attach.c,159,FP,db handle reused after realloc of db->aDb; db itself never freed,b14-adjudicator,high
+EXP34-C,17,sqlite,src/attach.c,174,FP,zErr may legitimately be null; sqlite3_result_error tolerates null per API,b14-adjudicator,high
+INT32-C,18,sqlite,src/attach.c,187,FP,db->nDb capped at SQLITE_LIMIT_ATTACHED+2 far below INT_MAX before increment,b14-adjudicator,high
+EXP34-C,19,sqlite,src/attach.c,196,FP,pNew assigned &db->aDb[db->nDb] (non-null) before deref under rc==OK path,b14-adjudicator,high
+INT32-C,20,sqlite,src/attach.c,245,FP,"db->nDb>=2 here (assert iDb>=2 at 246), subtraction safe and bounded",b14-adjudicator,high
+MSC07-C,21,sqlite,src/attach.c,267,FP,return at 265 ends normal path; attach_error label below is reachable via goto not dead code,b14-adjudicator,high
+MEM30-C,22,sqlite,src/attach.c,270,FP,zErrDyn passed to sqlite3_result_error then freed; not previously freed on this path,b14-adjudicator,high
+MEM30-C,23,sqlite,src/attach.c,271,FP,zErrDyn freed once here; line 256 free is on a different (rc) branch that reassigns before reaching here,b14-adjudicator,high
+DCL13-C,24,sqlite,src/attach.c,287,FP,"argv fixed by SQLite UDF callback signature, cannot be const",b14-adjudicator,high
+EXP34-C,25,sqlite,src/attach.c,299,FP,db non-null by UDF contract (sqlite3_context_db_handle),b14-adjudicator,high
+EXP33-C,26,sqlite,src/attach.c,306,FP,"zErr is char[128] stack buffer, written by sqlite3_snprintf before use at detach_error",b14-adjudicator,high
+EXP34-C,27,sqlite,src/attach.c,313,FP,pDb assigned &db->aDb[i] in loop; deref guarded by i<db->nDb and break path,b14-adjudicator,high
+MSC07-C,28,sqlite,src/attach.c,338,FP,"return at 336 ends normal path; detach_error reachable via goto, not dead code",b14-adjudicator,high
+EXP33-C,29,sqlite,src/attach.c,385,FP,rc assigned by sqlite3AuthCheck at line 384 before use at 385,b14-adjudicator,high
+EXP43-C,30,sqlite,src/attach.c,400,FP,"sqlite3VdbeAddFunctionCall args are distinct regArgs ranges and pFunc, no real restrict overlap",b14-adjudicator,high
+API00-C,31,sqlite,src/attach.c,420,FP,sqlite3Detach internal parser entrypoint; pParse non-null by parser contract,b14-adjudicator,high
+API00-C,32,sqlite,src/attach.c,420,FP,pDbname may be null and is handled downstream (codeAttach/resolveAttachExpr guard pExpr),b14-adjudicator,high
+API00-C,33,sqlite,src/attach.c,440,FP,sqlite3Attach internal parser entrypoint; pParse non-null by parser contract,b14-adjudicator,high
+API00-C,34,sqlite,src/attach.c,440,FP,p (filename expr) passed to codeAttach which guards null in resolveAttachExpr,b14-adjudicator,high
+API00-C,35,sqlite,src/attach.c,440,FP,pDbname handled with null-guard downstream,b14-adjudicator,high
+API00-C,36,sqlite,src/attach.c,440,FP,pKey may be null (KEY optional) and is null-guarded in resolveAttachExpr,b14-adjudicator,high
+DCL13-C,37,sqlite,src/attach.c,459,FP,p is Walker* fixed by Walker xExprCallback typedef; cannot be const,b14-adjudicator,high
+DCL13-C,38,sqlite,src/attach.c,476,FP,pSelect param fixed by Walker xSelectCallback typedef signature; cannot be const,b14-adjudicator,high
+MEM30-C,39,sqlite,src/attach.c,494,FP,"pItem->u4.zDatabase freed; pItem itself not freed, u4 union reused as pSchema after",b14-adjudicator,high
+MEM30-C,40,sqlite,src/attach.c,495,FP,"pItem->fg accessed (set notCte); fg is a struct field of live pItem, nothing freed",b14-adjudicator,high
+MEM30-C,41,sqlite,src/attach.c,496,FP,pItem->fg.hadSchema set on live pItem; no UAF,b14-adjudicator,high
+MEM30-C,42,sqlite,src/attach.c,498,FP,pItem->u4.pSchema assigned (union reuse) on live pItem; not freed,b14-adjudicator,high
+MEM30-C,43,sqlite,src/attach.c,498,FP,"pFix is live DbFixer; member access valid, nothing freed",b14-adjudicator,high
+MEM30-C,44,sqlite,src/attach.c,499,FP,pItem->fg.fromDDL set on live pItem; no free occurred,b14-adjudicator,high
+MEM30-C,45,sqlite,src/attach.c,500,FP,pItem->fg.fixedSchema set on live pItem; no UAF,b14-adjudicator,high
+MEM30-C,46,sqlite,src/attach.c,504,FP,"pFix->w passed to sqlite3WalkExpr; pFix live, never freed",b14-adjudicator,high
+MEM30-C,47,sqlite,src/attach.c,504,FP,pFix live DbFixer used in walk; not freed,b14-adjudicator,high
+MEM30-C,48,sqlite,src/attach.c,504,FP,pFix->w member access on live pFix,b14-adjudicator,high
+MEM30-C,49,sqlite,src/attach.c,512,FP,"p is Walker*, passed to sqlite3WalkSelect; live, not freed",b14-adjudicator,high
+API00-C,50,sqlite,src/attach.c,524,FP,sqlite3FixInit internal init routine; pFix non-null by caller contract,b14-adjudicator,high
+API00-C,51,sqlite,src/attach.c,524,FP,pParse non-null by caller contract (db = pParse->db deref expected),b14-adjudicator,high
+API00-C,52,sqlite,src/attach.c,524,FP,pName may be null but only stored not derefed here; no validation needed,b14-adjudicator,high
+DCL13-C,53,sqlite,src/attach.c,526,FP,pParse stored into pFix->pParse (non-const field) so const would not propagate; signature fine as-is,b14-adjudicator,med
+ARR00-C,54,sqlite,src/attach.c,534,FP,iDb validated by assert(db->nDb>iDb) at line 532; bounded access,b14-adjudicator,high
+ARR00-C,55,sqlite,src/attach.c,535,FP,iDb bounded by assert at 532; aDb[iDb] safe,b14-adjudicator,high
+API00-C,56,sqlite,src/attach.c,562,FP,sqlite3FixSrcList internal; pFix non-null by FixInit contract,b14-adjudicator,high
+DCL13-C,57,sqlite,src/attach.c,564,FP,pList read-only here but passed to s.pSrc=pList (non-const Select field); const would not propagate,b14-adjudicator,high
+API00-C,58,sqlite,src/attach.c,576,FP,sqlite3FixSelect internal API; pFix non-null by contract,b14-adjudicator,high
+API00-C,59,sqlite,src/attach.c,582,FP,sqlite3FixExpr internal; pFix non-null by contract,b14-adjudicator,high
+API00-C,60,sqlite,src/attach.c,582,FP,pExpr passed to sqlite3WalkExpr which tolerates/handles null,b14-adjudicator,high
+API00-C,61,sqlite,src/attach.c,591,FP,sqlite3FixTriggerStep internal; pFix non-null by contract,b14-adjudicator,high
+API00-C,62,sqlite,src/attach.c,591,FP,pStep null-checked by while(pStep) loop at line 595,b14-adjudicator,high
+DCL13-C,63,sqlite,src/attach.c,593,FP,pStep modified through walk callbacks (fields fixed via pFix); not safely const,b14-adjudicator,high

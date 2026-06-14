@@ -1732,3 +1732,88 @@ sqlite coverage **129 -> 147/220 (66.8%)** — two-thirds audited; **17 FNs** (+
 the genuine memory-safety items (closure UAF, dbstat corrupt-page overread, the elevated-attention decoders)
 again concentrate in the less-fuzzed / structure-decoding paths. Remaining ~73 in-scope files are smaller
 core/glue + ext/misc filler.
+
+## File-at-a-time — Batch 14 (22 files; decoders + hardened-core/glue filler)
+
+Continued the file-at-a-time sweep over the remaining in-scope corpus. 22 files, **1338 findings → 65 TP /
+1273 FP**, 3 FNs. Decoder-class files (untrusted-input framework) got attacker-mindset review; core/glue files
+got the hardened-core framework. The integrity gate (source-verify every semantic-TP and FN myself) again
+changed five reviewer verdicts and surfaced the headline find.
+
+| File | Findings | TP | FP | FN | Class |
+|------|---------:|---:|---:|---:|-------|
+| ext/intck/sqlite3intck.c | 71 | 1 | 70 | 1 | decoder (corrupt-DB) |
+| ext/misc/base64.c | 47 | 5 | 42 | 0 | decoder |
+| ext/misc/totype.c | 48 | 0 | 48 | 0 | decoder |
+| ext/misc/dbdump.c | 66 | 1 | 65 | 0 | decoder |
+| ext/fts5/fts5_varint.c | 36 | 0 | 36 | 0 | decoder |
+| ext/fts3/fts3_unicode.c | 55 | 10 | 45 | 0 | decoder |
+| ext/fts3/fts3_unicode2.c | 42 | 0 | 42 | 0 | decoder (tables) |
+| ext/fts5/fts5_unicode2.c | 48 | 2 | 46 | 0 | decoder (tables) |
+| ext/fts5/fts5_buffer.c | 62 | 0 | 62 | 0 | decoder |
+| ext/fts5/fts5_aux.c | 70 | 0 | 70 | 0 | decoder |
+| ext/repair/checkfreelist.c | 23 | 3 | 20 | 0 | decoder (corrupt-DB) |
+| ext/fts3/tool/fts3view.c | 177 | 14 | 163 | 1 | decoder (tool) |
+| ext/misc/percentile.c | 55 | 4 | 51 | 1 | aggregate |
+| ext/misc/randomjson.c | 44 | 1 | 43 | 0 | generator |
+| src/vdbeblob.c | 68 | 2 | 66 | 0 | core (blob API) |
+| src/delete.c | 69 | 8 | 61 | 0 | core/codegen |
+| src/mem3.c | 68 | 2 | 66 | 0 | core (allocator) |
+| src/attach.c | 63 | 1 | 62 | 0 | core |
+| src/malloc.c | 61 | 1 | 60 | 0 | core (allocator) |
+| ext/misc/carray.c | 60 | 2 | 58 | 0 | ext (vtab) |
+| src/backup.c | 53 | 0 | 53 | 0 | core (backup API) |
+| src/random.c | 52 | 8 | 44 | 0 | core (PRNG) |
+
+### sqc-caught real bug #17 — `checkfreelist.c:277` OOB read in `sqlite_readint32(blob, offset)`
+`readint_function` takes a caller-supplied signed `int iOff` (2nd SQL arg) and guards the read with
+`if( nBlob >= (iOff+4) ) iRet = get4byte(&zBlob[iOff]);`. For a **negative** offset the guard is trivially
+true (`8 >= -96`), so `get4byte(&zBlob[-100])` reads before the buffer; and `iOff+4` can overflow `int` for
+`iOff` near `INT_MAX`, again passing the guard for a huge forward OOB. Reachable from SQL once the `checkfreelist`
+extension is loaded: `SELECT sqlite_readint32(x'00000000', -100)`. sqc flagged it correctly (EXP34 @277,
+"potential null/invalid pointer deref in array access of zBlob"). Loadable repair extension, not core, but a
+genuine SQL-reachable read primitive — **confirmed real bug**.
+
+### sqc-caught memory-safety TP — `fts3view.c:579` OOB in `decodeSegment` (standalone tool)
+`decodeSegment` reads `iPrefix`/`nTerm` as int64 varints from an untrusted FTS3 segment blob, then `memcpy(zTerm+iPrefix,
+aData+i, (size_t)nTerm)`. The guard `iPrefix+nTerm+1 >= sizeof(zTerm)` can be bypassed by signed overflow of the
+int64 sum, and the memcpy **source** length `(size_t)nTerm` is never checked against `nData` → OOB read/write on a
+crafted DB fed to the `fts3view` debugging tool. sqc fired INT31 @579 (unchecked `(size_t)nTerm` cast) plus INT32
+@579/580 (the overflow that defeats the guard). Standalone dev tool (lower severity than a library/service path),
+but a real memory-safety defect sqc caught.
+
+### Integrity-gate overrides (5)
+- **checkfreelist idx 9/10 (INT32 @189): TP→FP.** sqc labeled `(nData/4)-2-6` as *signed* overflow, but `nData`
+  is `u32`; the real concern is unsigned underflow on a short trunk page. Unreachable — `sqlite_dbpage` always
+  returns a full page (`nData>=512`), so `(nData/4)-2-6 >= 120` and the leaf-count clamp at line 189 holds.
+- **fts3view idx 157/158 (ARR39 @767/769): TP→FP.** `aData+offset` is plain pointer arithmetic, not "double
+  scaling"; the rationale is wrong, and the unchecked offset/size come from **command-line args** (`azExtra`), not
+  data — a usage issue on a dev tool, not an attacker-controlled defect.
+- **fts5_buffer idx 49 (ARR30 @poslist): TP→FP.** Reviewer marked it TP "only to surface the signed-char-index
+  pattern" while its own analysis showed `(t&0x80)` short-circuits the unsafe index — it is safe → FP.
+
+### FNs recorded (3, all low confidence)
+- **sqlite3intck.c:322** — `intckGetToken` quoted-string branch (`while(1){ if(z[iRet]==c)... }`) treats only the
+  matching quote as a terminator, **not NUL** → unbounded OOB read on an unterminated quoted identifier in a corrupt
+  `sqlite_schema.sql`. (The bracket branch at 331 also reads one byte past NUL for input `"["`+NUL.) Reachable —
+  intck's entire purpose is scanning possibly-corrupt DBs; sqc flagged neither.
+- **fts3view.c:568** — `decodeSegment`'s `while(i<nData)` calls `getVarint(aData+i)` which reads up to 9 bytes
+  without checking `i+len<=nData` → varint overread past the segment blob (standalone tool).
+- **percentile.c:291** — `n = nAlloc*2 + 250` doubling done in 32-bit unsigned can wrap; only reachable at ~2^31
+  rows (~16 GB), so practically unreachable.
+
+### Takeaways
+- The bifurcation holds firmly. Hardened core/allocator/API files (backup, malloc, mem3, attach, vdbeblob,
+  delete, random) produced **only** decl/macro/recursion TPs (DCL13/DCL03/PRE/MSC04) and the ChaCha20/quicksort
+  recursion macros — zero genuine semantic memory-safety TPs. backup.c, totype.c, fts5_varint.c, fts5_buffer.c,
+  fts5_aux.c, fts3_unicode2.c were 0-TP-semantic.
+- Every genuine memory-safety item again landed in the **less-fuzzed / untrusted-decode / corrupt-DB** class:
+  the `sqlite_readint32` negative-offset OOB (repair extension), the fts3view segment-decode OOB (tool), and the
+  intck corrupt-schema token-scan overread. The integrity gate paid off a 4th time — it caught two bad reviewer
+  TPs (checkfreelist signed/unsigned, fts3view double-scaling) and confirmed the one real SQL-reachable bug.
+
+sqlite coverage **147 -> 169/220 (76.8%)** — three-quarters audited; **20 FNs** (+3); confirmed real bugs now
+**17** (the `sqlite_readint32` OOB), plus an additional sqc-caught memory-safety TP in the fts3view standalone
+tool. Remaining ~51 in-scope files are the larger core/codegen engines (vdbe, btree, where, select, expr, build,
+os_unix/os_win, json, pager, wal) plus the heavier ext/ decoders (fts5_index, sqlite3session, fts3, sqlite3rbu,
+rtree, geopoly, spellfix, qrf) — the genuine-untrusted-input ones warrant the high-effort framework.

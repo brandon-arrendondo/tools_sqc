@@ -1,0 +1,45 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+INT14-C,1,sqlite,ext/misc/randomjson.c,54,FP,PRNG line p->x uses defined unsigned bitwise/arith on PRNG state not attacker-sized index; style-only INT14,b14-adjudicator,high
+INT32-C,2,sqlite,ext/misc/randomjson.c,54,FP,p->x is unsigned int so 1+~(p->x&1) is unsigned modular arithmetic with defined wrap not signed overflow,b14-adjudicator,high
+INT30-C,3,sqlite,ext/misc/randomjson.c,55,FP,p->y is unsigned int so *1103515245 is defined modular wrap (classic LCG) not a defect,b14-adjudicator,high
+ARR02-C,4,sqlite,ext/misc/randomjson.c,59,FP,azJsonAtoms is a brace-initialized literal array; implicit bounds is idiomatic and fully determined at compile time,b14-adjudicator,high
+CON03-C,5,sqlite,ext/misc/randomjson.c,59,FP,azJsonAtoms is read-only static table used single-threaded per call; CON03 thread-sync claim spurious,b14-adjudicator,high
+ARR02-C,6,sqlite,ext/misc/randomjson.c,104,FP,azJsonTemplate is a brace-initialized literal array with compile-time-determined bounds,b14-adjudicator,high
+CON03-C,7,sqlite,ext/misc/randomjson.c,104,FP,azJsonTemplate is read-only static literal table; CON03 spurious,b14-adjudicator,high
+PRE00-C,8,sqlite,ext/misc/randomjson.c,122,FP,count(X)=sizeof/sizeof on a fixed array; single sizeof eval has no side effect so multiple-eval harm absent,b14-adjudicator,med
+PRE01-C,9,sqlite,ext/misc/randomjson.c,122,FP,count macro arg X is an array name used only inside sizeof; lack of parens cannot misparse here,b14-adjudicator,med
+PRE12-C,10,sqlite,ext/misc/randomjson.c,122,FP,count applies sizeof to fixed array name; no side-effecting multiple evaluation,b14-adjudicator,med
+ARR30-C,11,sqlite,ext/misc/randomjson.c,149,FP,count(azJsonAtoms)/2 is a compile-time constant (21); divisor and bound statically known and safe,b14-adjudicator,high
+INT33-C,12,sqlite,ext/misc/randomjson.c,149,FP,"count(azJsonAtoms)/2 = 42/2 = 21, a nonzero compile-time constant; modulo can never be by zero",b14-adjudicator,high
+INT32-C,13,sqlite,ext/misc/randomjson.c,150,FP,"k bounded to 0..20 by prngInt%21 then k*2+eType is unsigned, max 41 indexing 42-entry table; no overflow",b14-adjudicator,high
+INT32-C,14,sqlite,ext/misc/randomjson.c,150,FP,"k*2 unsigned with k<=20 yields <=40, far from UINT_MAX; no wrap",b14-adjudicator,high
+ARR30-C,15,sqlite,ext/misc/randomjson.c,154,FP,count(azJsonTemplate)/2 compile-time constant (14); bound statically known,b14-adjudicator,high
+INT33-C,16,sqlite,ext/misc/randomjson.c,154,FP,"count(azJsonTemplate)/2 = 28/2 = 14, nonzero compile-time constant; no div-by-zero",b14-adjudicator,high
+INT32-C,17,sqlite,ext/misc/randomjson.c,155,FP,k<=13 so k*2+eType<=27 unsigned indexing 28-entry table; no overflow,b14-adjudicator,high
+INT32-C,18,sqlite,ext/misc/randomjson.c,155,FP,k*2 with k<=13 yields <=26 unsigned; no wrap,b14-adjudicator,high
+FLP02-C,19,sqlite,ext/misc/randomjson.c,161,FP,line 161 is integer bitmask comparison ((y&0xff)==((y>>8)&0xff)) on unsigned int not floating point; FLP02 misfire,b14-adjudicator,high
+INT14-C,20,sqlite,ext/misc/randomjson.c,161,FP,y is unsigned int; bitwise+arith on PRNG value is intended and defined; style-only,b14-adjudicator,high
+INT30-C,21,sqlite,ext/misc/randomjson.c,161,FP,y += 0x100 on unsigned int is defined modular addition; the loop intentionally perturbs y; no defect,b14-adjudicator,high
+FLP02-C,22,sqlite,ext/misc/randomjson.c,162,FP,line 162 compares integer bitfields of unsigned y; no floating point involved; FLP02 misfire,b14-adjudicator,high
+FLP02-C,23,sqlite,ext/misc/randomjson.c,162,FP,same integer bitfield comparison on unsigned y; FLP02 misfire,b14-adjudicator,high
+INT30-C,24,sqlite,ext/misc/randomjson.c,163,FP,y += 0x10000 on unsigned int is defined modular addition; intentional perturbation,b14-adjudicator,high
+ARR38-C,25,sqlite,ext/misc/randomjson.c,165,FP,"memcpy(zBuf,z,n+1) copies a fixed short string literal (max ~33 bytes) into zBuf[200]; n bounded by code not attacker",b14-adjudicator,high
+EXP05-C,26,sqlite,ext/misc/randomjson.c,165,FP,no const cast at line 165; n+1 is a size_t length argument not a pointer; EXP05 misread,b14-adjudicator,high
+EXP43-C,27,sqlite,ext/misc/randomjson.c,165,FP,src z is a string literal and dest zBuf is a distinct local array (z=zBuf assignment is after this memcpy); non-overlapping,b14-adjudicator,high
+INT32-C,28,sqlite,ext/misc/randomjson.c,165,FP,n is strlen of a fixed short literal (<=~33); n+1 cannot overflow size_t,b14-adjudicator,high
+STR31-C,29,sqlite,ext/misc/randomjson.c,165,FP,memcpy uses n+1 to include the literal NUL terminator intentionally; STR31 misfire,b14-adjudicator,high
+EXP34-C,30,sqlite,ext/misc/randomjson.c,171,FP,zX is result of strstr that was non-null-checked at line 159/173 before entering this branch; not null here,b14-adjudicator,high
+ARR38-C,31,sqlite,ext/misc/randomjson.c,175,FP,"memcpy(zBuf,z,n+1) at 175 same fixed short literal into zBuf[200]; bounded",b14-adjudicator,high
+EXP05-C,32,sqlite,ext/misc/randomjson.c,175,FP,n+1 is a length argument not a pointer; no const cast,b14-adjudicator,high
+EXP43-C,33,sqlite,ext/misc/randomjson.c,175,FP,"src z is string literal, dest zBuf distinct local; z=zBuf assignment occurs after the memcpy; non-overlapping",b14-adjudicator,high
+INT32-C,34,sqlite,ext/misc/randomjson.c,175,FP,n is strlen of fixed short literal; n+1 cannot overflow,b14-adjudicator,high
+STR31-C,35,sqlite,ext/misc/randomjson.c,175,FP,memcpy copies literal plus NUL intentionally; STR31 misfire,b14-adjudicator,high
+INT30-C,36,sqlite,ext/misc/randomjson.c,186,FP,j<10000 and n<=~33 unsigned; j+n cannot wrap and is the bound-check guard itself,b14-adjudicator,high
+EXP05-C,37,sqlite,ext/misc/randomjson.c,187,FP,n at line 187 is a size_t length passed to memcpy not a pointer; no const cast,b14-adjudicator,high
+DCL13-C,38,sqlite,ext/misc/randomjson.c,198,TP,argv (sqlite3_value**) is only read via argv[0] never written through; const-qualifying is valid but signature is fixed by SQLite callback contract,b14-adjudicator,med
+MEM05-C,39,sqlite,ext/misc/randomjson.c,203,FP,"z1/z2 are fixed-size arrays char[STRSZ+1] with constant STRSZ, not runtime-sized VLAs; MEM05 misfire",b14-adjudicator,high
+API00-C,40,sqlite,ext/misc/randomjson.c,215,FP,db is passed straight to sqlite3_create_function which the SQLite API contract requires callers to provide valid; init-entry contract,b14-adjudicator,high
+API00-C,41,sqlite,ext/misc/randomjson.c,215,FP,pApi consumed by SQLITE_EXTENSION_INIT2 per extension-loading contract; null handled by loader,b14-adjudicator,high
+DCL13-C,42,sqlite,ext/misc/randomjson.c,219,FP,pzErrMsg is explicitly (void)pzErrMsg unused; not modified but it is an out-param by contract; const would break extension ABI,b14-adjudicator,high
+CON03-C,43,sqlite,ext/misc/randomjson.c,222,FP,cOne is a static int passed as user-data pointer read single-threaded; CON03 sync claim spurious,b14-adjudicator,high
+CON03-C,44,sqlite,ext/misc/randomjson.c,223,FP,cZero is static int used as user-data discriminator; CON03 spurious,b14-adjudicator,high
