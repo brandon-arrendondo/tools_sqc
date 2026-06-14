@@ -1,0 +1,225 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+MSC04-C,0,sqlite,src/vdbesort.c,474,FP,"Indirect recursion is factual in the call graph but depth-bounded by the finite MergeEngine/IncrMerger tree built from SORTER_MAX_MERGE_COUNT; MSC04 flags structure not a defect, no unbounded reentry on these freeing paths",,high
+EXP34-C,1,sqlite,src/vdbesort.c,475,FP,pReadr->member access guarded by caller contract; vdbePmaReaderClear is only ever called with a valid PmaReader (aReadr[i] element or pSorter->pReader); sqc has no proof of null,,high
+MEM30-C,2,sqlite,src/vdbesort.c,477,FP,"aMap is read then passed to Unfetch, not freed-then-used; sqlite3_free above only frees aAlloc/aBuffer, not aMap; no UAF",,high
+MEM30-C,3,sqlite,src/vdbesort.c,477,FP,pFd is a live file handle (not freed here); used as arg to OsUnfetch; sqc misclassifies the sqlite3_free(aAlloc/aBuffer) as freeing pFd,,high
+MEM30-C,4,sqlite,src/vdbesort.c,477,FP,duplicate of idx2; aMap not freed before this use,,high
+MEM05-C,5,sqlite,src/vdbesort.c,491,FP,"recursion is tree-bounded (<=16 wide, log depth); not unbounded stack growth; informational",,high
+EXP34-C,6,sqlite,src/vdbesort.c,499,FP,p->aMap dereference is the taken branch only when p->aMap!=0 (the if condition itself); guarded,,high
+MEM33-C,7,sqlite,src/vdbesort.c,500,FP,"line 500 *ppOut=&p->aMap[p->iReadOff] is pointer-take of array element, not a flexible-array struct assignment; MEM33 misfire",,high
+INT33-C,8,sqlite,src/vdbesort.c,510,FP,"p->nBuffer is the buffer size set to pgsz (page size, >=512) at seek; never zero when aBuffer path is taken (assert p->aBuffer); not attacker-controlled",,high
+INT32-C,9,sqlite,src/vdbesort.c,528,FP,"nBuffer-iBuf: nBuffer=pgsz>=512, iBuf=iReadOff%nBuffer in [0,nBuffer), so difference is positive and small; no overflow",,high
+MEM33-C,10,sqlite,src/vdbesort.c,534,FP,*ppOut=&p->aBuffer[iBuf] is address-of element; not a flexible-array struct copy; MEM33 misfire,,high
+INT32-C,11,sqlite,src/vdbesort.c,545,FP,"nNew computed as sqlite3_int64 with MAX(128,2*..); growth loop bounded by nByte (a 32-bit record length); the assert at line 974 caps key sizes; no practical wrap",,high
+INT32-C,12,sqlite,src/vdbesort.c,546,FP,nNew*2 in i64 domain doubling toward nByte (int); cannot overflow i64 for any int nByte,,high
+INT31-C,13,sqlite,src/vdbesort.c,555,FP,nAvail=nBuffer-iBuf is positive (0<nAvail<=nBuffer=pgsz); safe non-negative conversion to size_t in memcpy,,med
+INT32-C,14,sqlite,src/vdbesort.c,557,FP,"nByte-nAvail computed only after nByte>nAvail tested at line 530 (else branch), so result is positive; no overflow",,high
+INT31-C,15,sqlite,src/vdbesort.c,572,FP,"nCopy=min(nRem,nBuffer)>0 inside while(nRem>0); positive int to size_t safe",,high
+INT32-C,16,sqlite,src/vdbesort.c,572,FP,"nByte-nRem: nRem<=nByte and decreasing, index stays within [0,nByte); positive, no overflow",,high
+INT32-C,17,sqlite,src/vdbesort.c,573,FP,"nRem-=nCopy with nCopy<=nRem (nCopy=min(nRem,nBuffer)); stays >=0, loop guard nRem>0; no overflow",,high
+EXP34-C,18,sqlite,src/vdbesort.c,589,FP,p->aMap deref at 590 is inside if(p->aMap) branch; guarded,,high
+INT33-C,19,sqlite,src/vdbesort.c,592,FP,"nBuffer=pgsz, set non-zero on the non-mmap path; reachable only when aMap==0 where aBuffer/nBuffer initialized; not zero",,high
+EXP33-C,20,sqlite,src/vdbesort.c,601,FP,aVarint[16] fully written by the do/while before sqlite3GetVarint reads it; the loop reads at least one byte and stops on high-bit-clear; varint <=9 bytes; not uninit in practice,,high
+EXP34-C,21,sqlite,src/vdbesort.c,601,FP,a is set by vdbePmaReadBlob which returns a valid pointer (or rc!=OK handled); a[0] read only after rc==0 check; not null,,high
+INT13-C,22,sqlite,src/vdbesort.c,601,FP,"i&0xf on a small loop counter i (0..) bounds the index into aVarint[16]; bitwise-on-signed is benign idiom, value always small positive",,high
+DCL13-C,23,sqlite,src/vdbesort.c,619,FP,pTask is dereferenced read-only (pTask->pSorter->db) in vdbeSorterMapFile; DCL13 const would compile; low-value but technically valid,,med
+DCL13-C,24,sqlite,src/vdbesort.c,619,FP,"pFile fields (iEof, pFd) are read but pFd is stored into *pp indirectly via OsFetch; pFile not written; const-eligible but contract/typedef-style; low value",,med
+EXP34-C,25,sqlite,src/vdbesort.c,644,FP,pReadr->pIncr access at 644 is in an assert; only enabled in debug and pReadr is valid by contract,,high
+INT33-C,26,sqlite,src/vdbesort.c,658,FP,pgsz=pTask->pSorter->pgsz=page size (>=512); never zero; iReadOff%pgsz safe,,high
+INT32-C,27,sqlite,src/vdbesort.c,665,FP,"pgsz-iBuf with iBuf=iReadOff%pgsz in [0,pgsz); difference positive; no overflow",,high
+MSC04-C,28,sqlite,src/vdbesort.c,683,FP,"indirect recursion via merge step is real but bounded by finite PMA tree; MSC04 structural, no defect",,high
+EXP34-C,29,sqlite,src/vdbesort.c,688,FP,pReadr valid by contract (caller passes aReadr element); iReadOff/iEof are struct fields; no null,,high
+DCL13-C,30,sqlite,src/vdbesort.c,764,FP,"pTask read-only in this function; const-eligible, low value",,med
+DCL13-C,31,sqlite,src/vdbesort.c,791,FP,"pTask read-only here; const-eligible, low value",,med
+ARR37-C,32,sqlite,src/vdbesort.c,817,FP,"p1 points to a valid serialized SQLite record buffer; p1[0] is the header-size byte, &p1[p1[0]] indexes within the same record; idiomatic record decode, p1 is effectively an array",,high
+ARR37-C,33,sqlite,src/vdbesort.c,817,FP,p1[0] reads header-size byte of the record buffer p1 points to; valid array access,,high
+ARR37-C,34,sqlite,src/vdbesort.c,818,FP,same as idx32 for p2; valid record-buffer indexing,,high
+ARR37-C,35,sqlite,src/vdbesort.c,818,FP,p2[0] header-size byte read; valid,,high
+ARR37-C,36,sqlite,src/vdbesort.c,824,FP,p1[1] is serial-type byte of first field in record; within buffer,,high
+EXP33-C,37,sqlite,src/vdbesort.c,824,FP,"n1 IS initialized by getVarint32NR(&p1[1],n1) macro which assigns n1; sqc fails to model the macro's output assignment",,high
+ARR37-C,38,sqlite,src/vdbesort.c,825,FP,p2[1] serial-type byte; within record buffer,,high
+EXP33-C,39,sqlite,src/vdbesort.c,825,FP,"n2 initialized by getVarint32NR(&p2[1],n2) macro; not uninit",,high
+INT32-C,40,sqlite,src/vdbesort.c,826,FP,"MIN(n1,n2)-13 then /2 used as memcmp len; n1/n2 are TEXT serial types >=13 by construction (typeMask gate ensures first field is text); subtraction non-negative; relies on record validity not attacker temp data",,med
+INT32-C,41,sqlite,src/vdbesort.c,828,FP,n1-n2 are bounded int field lengths from a record; difference fits int; no practical overflow,,high
+INT32-C,42,sqlite,src/vdbesort.c,841,FP,res*-1 where res is a small comparison result (-/0/+ or n1-n2); cannot overflow int meaningfully (INT_MIN not reachable from these comparisons),,high
+ARR37-C,43,sqlite,src/vdbesort.c,860,FP,p1[1] serial-type byte of record; valid array access,,high
+ARR37-C,44,sqlite,src/vdbesort.c,861,FP,p2[1] serial-type byte; valid,,high
+ARR37-C,45,sqlite,src/vdbesort.c,862,FP,p1[p1[0]] value pointer within record buffer; valid,,high
+ARR37-C,46,sqlite,src/vdbesort.c,862,FP,p1[0] header size byte; valid,,high
+ARR37-C,47,sqlite,src/vdbesort.c,863,FP,p2[p2[0]] value pointer; valid,,high
+ARR37-C,48,sqlite,src/vdbesort.c,863,FP,p2[0] header byte; valid,,high
+ARR02-C,49,sqlite,src/vdbesort.c,871,FP,"aLen[] is a static const initialized array {0,1,2,...}; size is implicit-from-initializer which is standard C and well-defined; ARR02 style-only, harmless",,high
+ARR37-C,50,sqlite,src/vdbesort.c,876,FP,v1[i] with i<n=aLen[s1]<=8 and v1 pointing into the record value region; bounded loop within record,,high
+ARR37-C,51,sqlite,src/vdbesort.c,876,FP,v2[i] same bound; within record,,high
+ARR37-C,52,sqlite,src/vdbesort.c,877,FP,v1[0] sign byte of integer value; within record,,high
+ARR37-C,53,sqlite,src/vdbesort.c,877,FP,v2[0]; within record,,high
+ARR37-C,54,sqlite,src/vdbesort.c,878,FP,v1[0]; within record,,high
+ARR00-C,55,sqlite,src/vdbesort.c,884,FP,s1=v1-p1 and s2=v2-p2 each subtract within their own record buffer (same array); the cross-comparison res is fine; ARR00 misreads two independent same-array subtractions as cross-array,,low
+ARR00-C,56,sqlite,src/vdbesort.c,891,FP,"same as idx55; s1,s2 each computed within their own record",,low
+INT32-C,57,sqlite,src/vdbesort.c,891,FP,"s1,s2 are serial-type bytes (small ints 0-9 here); s1-s2 cannot overflow",,high
+INT32-C,58,sqlite,src/vdbesort.c,911,FP,res*-1 on small comparison result; no overflow,,high
+API00-C,59,sqlite,src/vdbesort.c,936,FP,sqlite3VdbeSorterInit is an internal API; db/pCsr are non-null by VDBE contract (asserts at 971-973 deref pCsr); API00 advisory FP,,high
+API00-C,60,sqlite,src/vdbesort.c,936,FP,pCsr validated by asserts and immediate use; internal contract guarantees non-null,,high
+INT30-C,61,sqlite,src/vdbesort.c,974,FP,the expression is inside an assert(...<0x7fffffff) that explicitly bounds it; UMXV macro caps nKeyField; no wrap,,high
+INT30-C,62,sqlite,src/vdbesort.c,974,FP,same assert bounds the multiplication; UMXV caps the factor; INT30 misfire on an explicitly-asserted bound,,high
+INT32-C,63,sqlite,src/vdbesort.c,978,FP,nWorker is capped at SORTER_MAX_MERGE_COUNT-1 (<=15) just above; nWorker+1 trivially safe,,high
+EXP34-C,64,sqlite,src/vdbesort.c,987,FP,"pKeyInfo assigned from pSorter+sz (non-null, pSorter checked at 982); memcpy dest valid; not null",,high
+EXP43-C,65,sqlite,src/vdbesort.c,987,FP,"src=pCsr->pKeyInfo, dst=pKeyInfo inside freshly-allocated pSorter block; disjoint allocations; not overlapping; EXP43 misfire",,high
+INT31-C,66,sqlite,src/vdbesort.c,987,FP,szKeyInfo=SZ_KEYINFO(nAllField) positive; safe int to size_t,,high
+INT32-C,67,sqlite,src/vdbesort.c,1000,FP,nWorker+1 with nWorker<=15; safe,,high
+INT32-C,68,sqlite,src/vdbesort.c,1001,FP,"nWorker-1 cast to u8 for iPrev; nWorker>=0; benign, value used as round-robin index; no defect",,high
+DCL13-C,69,sqlite,src/vdbesort.c,1050,FP,"pRecord traversed read-only (p=p->u.pNext) but each node freed via sqlite3DbFree; pointer param value not modified so const-eligible, but freeing through it is the point; low value/borderline, mark FP",,med
+MEM30-C,70,sqlite,src/vdbesort.c,1068,FP,pTask->list.aMemory read in if() then freed; not used after free; no UAF; sqc confuses the free target,,high
+MEM30-C,71,sqlite,src/vdbesort.c,1068,FP,"pTask->list is a struct member, not freed; reading list.aMemory; no UAF",,high
+MEM30-C,72,sqlite,src/vdbesort.c,1069,FP,list.pList passed to RecordFree in else branch; aMemory was 0 here; not freed-then-used,,high
+MEM30-C,73,sqlite,src/vdbesort.c,1073,FP,aMemory freed inside the if; this is the free site not a use-after; misattribution,,high
+MEM30-C,74,sqlite,src/vdbesort.c,1073,FP,list.pList used in distinct else branch; not the freed aMemory path,,high
+MEM30-C,75,sqlite,src/vdbesort.c,1074,FP,same; no UAF,,high
+MEM30-C,76,sqlite,src/vdbesort.c,1076,FP,pTask->file.pFd checked then closed; not used after; the memset at 1082 zeroes after all frees; no UAF,,high
+MEM30-C,77,sqlite,src/vdbesort.c,1076,FP,"pTask->file is a struct member (SorterFile), not a freed pointer; reading .pFd",,high
+MEM30-C,78,sqlite,src/vdbesort.c,1077,FP,file.pFd closed once; no double use,,high
+MEM30-C,79,sqlite,src/vdbesort.c,1079,FP,file2.pFd checked then closed; no UAF,,high
+MEM30-C,80,sqlite,src/vdbesort.c,1079,FP,file2 is struct member; not freed,,high
+MEM30-C,81,sqlite,src/vdbesort.c,1080,FP,file2.pFd closed once; fine,,high
+DCL13-C,82,sqlite,src/vdbesort.c,1086,FP,pTask read-only in cleanup-adjacent debug fn; const-eligible low value,,med
+DCL11-C,83,sqlite,src/vdbesort.c,1090,FP,"fprintf ""%lld"" with arg t which is i64 (sqlite3_int64); correct match; sqc misreads arg type as NULL/int; debug-only code",,high
+INT00-C,84,sqlite,src/vdbesort.c,1090,FP,t is i64 matching %lld; INT00 misfire; also #ifdef SQLITE_DEBUG_SORTER_THREADS only,,high
+DCL11-C,85,sqlite,src/vdbesort.c,1096,FP,"same as 83, t is i64",,high
+INT00-C,86,sqlite,src/vdbesort.c,1096,FP,same as 84,,high
+DCL13-C,87,sqlite,src/vdbesort.c,1099,FP,pTask read-only in debug fn; const-eligible low value,,med
+DCL11-C,88,sqlite,src/vdbesort.c,1105,FP,%lld matches i64 t; debug-only,,high
+INT00-C,89,sqlite,src/vdbesort.c,1105,FP,same,,high
+DCL13-C,90,sqlite,src/vdbesort.c,1108,FP,pTask const-eligible debug fn; low value,,med
+EXP34-C,91,sqlite,src/vdbesort.c,1114,FP,pTask->pThread access guarded; pTask valid by contract; debug/threads code; not null,,high
+DCL11-C,92,sqlite,src/vdbesort.c,1115,FP,%lld matches i64 t,,high
+INT00-C,93,sqlite,src/vdbesort.c,1115,FP,same,,high
+EXP34-C,94,sqlite,src/vdbesort.c,1131,FP,pTask non-null by contract (worker subtask); pThread member access fine,,high
+EXP34-C,95,sqlite,src/vdbesort.c,1155,FP,pTask non-null by contract in thread-create path,,high
+DCL13-C,96,sqlite,src/vdbesort.c,1163,FP,pSorter read-only in JoinAll loop body? actually pSorter->aTask iterated and pTask mutated; pSorter members read; const-eligible borderline; low value FP,,med
+INT30-C,97,sqlite,src/vdbesort.c,1201,FP,nByte is i64; expression bounded by N<=SORTER_MAX_MERGE_COUNT (16) so total alloc tiny; no wrap,,high
+INT30-C,98,sqlite,src/vdbesort.c,1201,FP,sizeof(int)+sizeof(PmaReader) is a compile-time constant; cannot wrap,,high
+INT32-C,99,sqlite,src/vdbesort.c,1201,FP,N*(const) with N<=16; product is small i64; assert nReader<=16 at 1198; no overflow,,high
+DCL30-C,100,sqlite,src/vdbesort.c,1210,FP,"returns pNew which is a heap pointer (sqlite3MallocZero), NOT the address of the local variable; DCL30 misreads returning the value of a local pointer as returning its address",,high
+MSC04-C,101,sqlite,src/vdbesort.c,1216,FP,recursion structural and tree-bounded; no defect,,high
+MSC04-C,102,sqlite,src/vdbesort.c,1230,FP,recursion structural and tree-bounded; no defect,,high
+MEM30-C,103,sqlite,src/vdbesort.c,1235,FP,"pIncr->aFile is an inline array member (SorterFile aFile[2]), not freed; reading aFile[0].pFd; no UAF",,high
+MEM30-C,104,sqlite,src/vdbesort.c,1236,FP,aFile[1].pFd is a live handle being closed (CloseFree); not previously freed; no UAF,,high
+MEM30-C,105,sqlite,src/vdbesort.c,1236,FP,"aFile is inline array, not a freed allocation",,high
+MEM30-C,106,sqlite,src/vdbesort.c,1236,FP,same,,high
+API00-C,107,sqlite,src/vdbesort.c,1247,FP,"internal API, pSorter/db non-null by VDBE contract; advisory",,high
+API00-C,108,sqlite,src/vdbesort.c,1247,FP,pSorter dereferenced throughout with contract guarantee; not null,,high
+MEM30-C,109,sqlite,src/vdbesort.c,1262,FP,"db is the live connection handle passed in; sqlite3DbFree(db,...) uses it as allocator context, db not freed; no UAF",,high
+MEM30-C,110,sqlite,src/vdbesort.c,1266,FP,pSorter->list.pList freed via RecordFree then list.pList set to 0 at 1268; the read at 1266 is the free call argument not a use-after-free,,high
+MEM30-C,111,sqlite,src/vdbesort.c,1273,FP,"db is reused as allocator across multiple DbFree calls; that is correct usage, not double-free; sqc misreads repeated db arg as freeing db",,high
+API00-C,112,sqlite,src/vdbesort.c,1280,FP,"API00 on internal static-call API; pCsr->eCurType asserted by caller contract, db is the live connection never null here",,high
+API00-C,113,sqlite,src/vdbesort.c,1280,FP,pCsr is guaranteed non-null by VDBE cursor contract; pSorter null is explicitly handled by if(pSorter),,high
+ARR00-C,114,sqlite,src/vdbesort.c,1288,FP,ii IS initialized: for(ii=0; ii<pSorter->nTask; ii++) at line 1288 — analyzer misread the loop init,,high
+MEM30-C,115,sqlite,src/vdbesort.c,1292,FP,"pSorter->list.aMemory freed at 1292 then pSorter freed at 1293; no read of list after free — sequential frees, not UAF",,high
+DCL13-C,116,sqlite,src/vdbesort.c,1308,FP,"db is passed to sqlite3OsFetch/sqlite3OsUnfetch and db->nMaxSorterMmap read; const would be valid but signature kin to OS helpers, low-value DCL13",,med
+EXP40-C,117,sqlite,src/vdbesort.c,1374,FP,"EXP40 misfire; pp is a local SorterRecord** building a merge list, no const object involved",,high
+EXP30-C,118,sqlite,src/vdbesort.c,1380,FP,xCompare callback args (SRVAL/p->nVal) have no unsequenced side effects; pure reads,,high
+EXP34-C,119,sqlite,src/vdbesort.c,1381,FP,p1 asserted non-null at 1377 (assert p1!=0 && p2!=0); contract-guaranteed by caller vdbeSorterSort,,high
+DCL30-C,120,sqlite,src/vdbesort.c,1403,FP,"returns pFinal which is the head of a heap-allocated SorterRecord list, NOT address of the local pointer var; analyzer confused pointer var with pointee",,high
+DCL13-C,121,sqlite,src/vdbesort.c,1410,FP,p only read (p->typeMask); const valid but low value,,med
+ARR30-C,122,sqlite,src/vdbesort.c,1451,FP,"aSlot[i] indexed with i bounded by aSlot[i]!=0 loop + assert i<ArraySize(aSlot)=64; mathematically <64 (each slot holds 2x prior, 64-bit addr space)",,high
+ARR30-C,123,sqlite,src/vdbesort.c,1452,FP,same aSlot bound as 122,,high
+ARR30-C,124,sqlite,src/vdbesort.c,1457,FP,same; assert i<ArraySize(aSlot) at 1456 guards it,,high
+ARR30-C,125,sqlite,src/vdbesort.c,1465,FP,loop for(i=0;i<ArraySize(aSlot);i++) explicitly bounds i to 64,,high
+ARR30-C,126,sqlite,src/vdbesort.c,1466,FP,same explicit i<ArraySize(aSlot) bound,,high
+ARR30-C,127,sqlite,src/vdbesort.c,1466,FP,same explicit i<ArraySize(aSlot) bound,,high
+DCL13-C,128,sqlite,src/vdbesort.c,1480,FP,"pFd passed through to OS hint calls; const-correctness low value, sqlite3_file API not const",,med
+INT10-C,129,sqlite,src/vdbesort.c,1490,FP,"iStart%nBuf: iStart is i64 file offset >=0, nBuf>0; INT10 theoretical only",,high
+INT33-C,130,sqlite,src/vdbesort.c,1490,FP,"nBuf is pgsz, always >0 (page size); never zero in practice",,high
+INT32-C,131,sqlite,src/vdbesort.c,1506,FP,"nCopy bounded 0..nBuffer (page size), no signed-sub overflow; values small and positive",,high
+INT31-C,132,sqlite,src/vdbesort.c,1509,FP,"nCopy is clamped to nBuffer-iBufEnd, positive and small; INT31 conversion benign",,high
+INT32-C,133,sqlite,src/vdbesort.c,1509,FP,"nData-nRem: nRem<=nData always (nRem starts =nData, only decremented), result >=0",,high
+INT32-C,134,sqlite,src/vdbesort.c,1510,FP,iBufEnd += nCopy bounded by nBuffer (page size); no overflow,,high
+INT32-C,135,sqlite,src/vdbesort.c,1513,FP,"iBufEnd-iBufStart both within [0,nBuffer]; positive small",,high
+INT32-C,136,sqlite,src/vdbesort.c,1516,FP,same buffer-offset subtraction within page bounds,,high
+INT32-C,137,sqlite,src/vdbesort.c,1522,FP,"nRem -= nCopy, nCopy<=nRem so stays >=0",,high
+INT32-C,138,sqlite,src/vdbesort.c,1540,FP,iBufEnd-iBufStart within page-size buffer bounds,,high
+INT32-C,139,sqlite,src/vdbesort.c,1543,FP,"same buffer-offset subtraction, bounded",,high
+MEM30-C,140,sqlite,src/vdbesort.c,1548,FP,p->eFWErr is an int field read after sqlite3_free(p->aBuffer); aBuffer is freed not p; eFWErr is not freed memory,,high
+INT32-C,141,sqlite,src/vdbesort.c,1617,FP,"nPMA++ is PMA count, bounded by available memory/disk; cannot reach INT_MAX in practice",,high
+MEM30-C,142,sqlite,src/vdbesort.c,1630,FP,"pList not freed before access at 1630 (assert pList->pList==0); individual records freed in loop, list struct intact",,high
+MSC04-C,143,sqlite,src/vdbesort.c,1642,TP,factual indirect recursion vdbeMergeEngineStep->vdbePmaReaderNext->vdbeIncrSwap->vdbeIncrPopulate->vdbeMergeEngineStep exists (depth-bounded by tree depth but recursion is real),,high
+INT13-C,144,sqlite,src/vdbesort.c,1662,FP,iPrev = aTree[1] is a small array index 0..nTree; INT13 style nit on bounded value,,high
+INT14-C,145,sqlite,src/vdbesort.c,1662,FP,iPrev used in &0xFFFE and (nTree+iPrev)/2; readability nit only,,high
+INT13-C,146,sqlite,src/vdbesort.c,1663,FP,iPrev|0x0001 bitwise on small array index; style nit,,high
+INT14-C,147,sqlite,src/vdbesort.c,1665,FP,i used in i/2 and i^0x0001; tree-index style nit,,high
+INT32-C,148,sqlite,src/vdbesort.c,1665,FP,nTree+iPrev: both small bounded array indices (nTree<=SORTER_MAX_MERGE_COUNT region); no overflow,,high
+INT13-C,149,sqlite,src/vdbesort.c,1695,FP,i^0x0001 on small bounded tree index; style nit,,high
+INT13-C,150,sqlite,src/vdbesort.c,1700,FP,same i^0x0001 style nit,,high
+MSC37-C,151,sqlite,src/vdbesort.c,1727,FP,vdbeMergeEngineStep returns at line 1706 on all paths (single return); MSC37 misfire,,high
+INT10-C,152,sqlite,src/vdbesort.c,1750,FP,iTest=(iPrev+i+1)%nWorker; operands non-negative; INT10 theoretical,,high
+INT33-C,153,sqlite,src/vdbesort.c,1750,FP,"nWorker=nTask-1; loop for(i=0;i<nWorker) only executes when nWorker>0, so %nWorker safe (zero-trip if nWorker==0)",,high
+API00-C,154,sqlite,src/vdbesort.c,1797,FP,"API00 internal API; pCsr contract-guaranteed by VDBE layer, eCurType asserted",,high
+API00-C,155,sqlite,src/vdbesort.c,1797,FP,"pVal is the record Mem cell, caller-guaranteed non-null; getVarint reads pVal->z",,high
+DCL13-C,156,sqlite,src/vdbesort.c,1799,FP,"pVal read (pVal->z, pVal->n) but memcpy from pVal->z is a read; const valid, low value",,med
+EXP33-C,157,sqlite,src/vdbesort.c,1811,FP,"t IS assigned via getVarint32NR(...,t) macro at 1811 which writes t; not uninitialized",,high
+EXP34-C,158,sqlite,src/vdbesort.c,1811,FP,pVal->z[1] accessed; pVal contract-guaranteed non-null by VDBE record write path,,high
+INT13-C,159,sqlite,src/vdbesort.c,1814,FP,t & 0x01 on serial-type int (small positive); style nit,,high
+INT30-C,160,sqlite,src/vdbesort.c,1838,FP,"pVal->n + sizeof(SorterRecord): pVal->n is record size bounded by SQLITE_MAX_LENGTH; i64 nReq, no wrap",,high
+INT32-C,161,sqlite,src/vdbesort.c,1867,FP,2*(i64)nMemory: cast to i64 before multiply prevents overflow; nMemory bounded by mxPmaSize,,high
+INT32-C,162,sqlite,src/vdbesort.c,1872,FP,"nNew*2 where nNew is i64 capped at mxPmaSize next line; while-loop with cap, no overflow in practice",,high
+INT32-C,163,sqlite,src/vdbesort.c,1885,FP,"iMemory += ROUND8(nReq); iMemory bounded by nMemory/mxPmaSize, all i64",,high
+DCL13-C,164,sqlite,src/vdbesort.c,1909,FP,pIncr read fields only; const valid low value,,med
+MSC04-C,165,sqlite,src/vdbesort.c,1909,TP,factual indirect recursion vdbeIncrPopulate->vdbeMergeEngineStep->vdbePmaReaderNext->vdbeIncrSwap->vdbeIncrPopulate exists,,high
+DCL30-C,166,sqlite,src/vdbesort.c,1955,FP,returns pRet which is a malloc'd MergeEngine (SQLITE_INT_TO_PTR of rc actually) — not address of local; DCL30 misread,,high
+MSC04-C,167,sqlite,src/vdbesort.c,1985,TP,factual indirect recursion vdbeIncrSwap->vdbeIncrPopulate->vdbeMergeEngineStep->vdbePmaReaderNext->vdbeIncrSwap exists,,high
+EXP43-C,168,sqlite,src/vdbesort.c,2035,FP,"MAX(a,b) macro is (a<b?b:a); args are mxKeysize+9 and mxPmaSize/2, no overlapping memory; EXP43 misfire on macro",,high
+INT32-C,169,sqlite,src/vdbesort.c,2035,FP,"mxKeysize+9: mxKeysize bounded by max record size (SQLITE_MAX_LENGTH), +9 no overflow on int",,high
+EXP34-C,170,sqlite,src/vdbesort.c,2072,FP,"pMerger asserted/used in well-formed tree; caller passes non-null MergeEngine, iOut asserted >0 && <nTree at 2072",,high
+INT32-C,171,sqlite,src/vdbesort.c,2075,FP,"(iOut - nTree/2)*2: iOut bounded by nTree (asserted), small tree indices, no overflow",,high
+INT32-C,172,sqlite,src/vdbesort.c,2075,FP,iOut - nTree/2 bounded small tree indices,,high
+INT32-C,173,sqlite,src/vdbesort.c,2076,FP,"i1+1 small tree index, no overflow",,high
+INT32-C,174,sqlite,src/vdbesort.c,2078,FP,iOut*2 small bounded tree index,,high
+INT32-C,175,sqlite,src/vdbesort.c,2079,FP,iOut*2+1 small bounded tree index,,high
+INT32-C,176,sqlite,src/vdbesort.c,2079,FP,iOut*2 small bounded tree index,,high
+EXP34-C,177,sqlite,src/vdbesort.c,2093,FP,pTask from pMerger->pTask set in vdbeMergeEngineInit (asserted pTask->pUnpacked!=0); non-null by init contract,,high
+ARR00-C,178,sqlite,src/vdbesort.c,2104,FP,"aReadr[i1]/[i2] indices derived from asserted iOut<nTree and tree structure; ArrayOK by merge-tree invariant, internal not caller-arbitrary",,high
+DCL13-C,179,sqlite,src/vdbesort.c,2124,FP,pReadr read-only here; const valid low value,,med
+MSC04-C,180,sqlite,src/vdbesort.c,2144,TP,factual indirect recursion vdbeMergeEngineInit->vdbePmaReaderIncrInit->vdbePmaReaderIncrMergeInit->vdbeMergeEngineInit exists,,high
+DCL13-C,181,sqlite,src/vdbesort.c,2145,FP,pTask read-only; const valid low value,,med
+INT32-C,182,sqlite,src/vdbesort.c,2174,FP,"nTree-i-1: i in [0,nTree), result >=0; bounded loop index",,high
+INT32-C,183,sqlite,src/vdbesort.c,2174,FP,"nTree-i bounded, i<nTree",,high
+INT32-C,184,sqlite,src/vdbesort.c,2181,FP,nTree-1: nTree>=1 (merge engine has at least one reader); no overflow/underflow,,high
+MSC04-C,185,sqlite,src/vdbesort.c,2220,TP,factual indirect recursion vdbePmaReaderIncrMergeInit->vdbeMergeEngineInit->vdbePmaReaderIncrInit->vdbePmaReaderIncrMergeInit exists,,high
+EXP34-C,186,sqlite,src/vdbesort.c,2222,FP,pReadr->pIncr deref; pReadr guaranteed incremental-reader by function contract (doc says pReadr->pIncr!=0),,high
+EXP34-C,187,sqlite,src/vdbesort.c,2223,FP,pIncr=pReadr->pIncr contract-guaranteed non-null per function header,,high
+EXP34-C,188,sqlite,src/vdbesort.c,2224,FP,pTask=pIncr->pTask set at IncrMerger creation; non-null,,high
+DCL30-C,189,sqlite,src/vdbesort.c,2293,FP,"returns pRet = SQLITE_INT_TO_PTR(...) a thread return code cast to void*, not address of local; DCL30 misread",,high
+MSC04-C,190,sqlite,src/vdbesort.c,2308,TP,factual indirect recursion vdbePmaReaderIncrInit->vdbePmaReaderIncrMergeInit->vdbeMergeEngineInit->vdbePmaReaderIncrInit exists,,high
+DCL00-C,191,sqlite,src/vdbesort.c,2378,FP,nDepth IS modified (nDepth++ at 2382); DCL00 misfire — it is not const,,med
+INT32-C,192,sqlite,src/vdbesort.c,2382,FP,"nDepth++ counts merge-tree depth, bounded by log_{16}(nPMA), tiny; cannot reach INT_MAX",,high
+INT10-C,193,sqlite,src/vdbesort.c,2415,FP,"(iSeq/nDiv)%SORTER_MAX_MERGE_COUNT; iSeq,nDiv non-negative; INT10 theoretical",,high
+INT32-C,194,sqlite,src/vdbesort.c,2415,FP,"iSeq/nDiv: iSeq is non-negative leaf seq, nDiv>=1 (product of positive constants); no INT_MIN/-1",,high
+INT33-C,195,sqlite,src/vdbesort.c,2415,FP,"nDiv is product of SORTER_MAX_MERGE_COUNT (>=16), never zero; loop only runs when nDepth>1",,high
+EXP34-C,196,sqlite,src/vdbesort.c,2416,FP,p=pRoot non-null (caller vdbeSorterMergeTreeBuild checks pRoot==0); p->aReadr valid,,high
+INT10-C,197,sqlite,src/vdbesort.c,2433,FP,iSeq % SORTER_MAX_MERGE_COUNT; both non-negative; INT10 theoretical,,high
+DCL13-C,198,sqlite,src/vdbesort.c,2452,FP,pSorter read-only in this accessor; const valid low value,,med
+INT32-C,199,sqlite,src/vdbesort.c,2489,FP,nPMA - i: i steps by SORTER_MAX_MERGE_COUNT staying <nPMA (loop cond i<nPMA); MIN clamps result; >=0,,high
+EXP34-C,200,sqlite,src/vdbesort.c,2492,FP,pMerger here is pMain; vdbeSorterAddToTree receives pLeaf which is checked non-null upstream; merge-tree build invariant,,high
+DCL30-C,201,sqlite,src/vdbesort.c,2517,FP,"pMain assigned into *ppOut (output param) at 2517 then function returns; caller owns it, not a dangling local — DCL30 misread of out-param pattern",,high
+EXP34-C,202,sqlite,src/vdbesort.c,2558,FP,pMain passed to vdbeIncrMergerNew which on null pMerger would be handled; but pMain non-null guaranteed by prior rc==OK build; reachable-null is false,,high
+ARR00-C,203,sqlite,src/vdbesort.c,2561,FP,iTask IS initialized in for(iTask=0; iTask<pSorter->nTask-1; iTask++) at 2561; analyzer misread loop init,,high
+EXP34-C,204,sqlite,src/vdbesort.c,2563,FP,"pMain non-null when bUseThreads path reached (built by MergeTreeBuild, rc checked); aReadr[iTask] valid",,high
+EXP45-C,205,sqlite,src/vdbesort.c,2563,FP,"EXP45 assignment-in-if is intentional idiom (pIncr = pMain->aReadr[iTask].pIncr) tested for non-null; standard SQLite style, not a bug",,high
+EXP34-C,206,sqlite,src/vdbesort.c,2601,FP,pMain may be 0 here and vdbeMergeEngineFree handles NULL (free funcs are null-safe in sqlite); not a defect,,high
+API00-C,207,sqlite,src/vdbesort.c,2612,FP,API00 internal; pCsr/pbEof caller-guaranteed by VDBE opcode contract,,high
+API00-C,208,sqlite,src/vdbesort.c,2612,FP,pbEof is output param written unconditionally on success paths; caller provides valid ptr,,high
+API00-C,209,sqlite,src/vdbesort.c,2664,FP,API00 internal; pCsr contract-guaranteed,,high
+EXP33-C,210,sqlite,src/vdbesort.c,2678,FP,"rc is assigned on every branch (bUseThreads/else, and PMA/non-PMA) before use; not uninitialized — all paths set rc",,high
+MEM30-C,211,sqlite,src/vdbesort.c,2693,FP,pFree=pSorter->list.pList freed via vdbeSorterRecordFree but pSorter itself NOT freed; pSorter->list read after is valid,,high
+MEM30-C,212,sqlite,src/vdbesort.c,2693,FP,same — pSorter not freed; only the individual record pFree is freed,,high
+DCL30-C,213,sqlite,src/vdbesort.c,2723,FP,"returns pKey which is pReader->aKey or SRVAL(list) — a pointer INTO sorter-owned buffer, not address of local pKey var; DCL30 misread",,high
+API00-C,214,sqlite,src/vdbesort.c,2729,FP,API00 internal; pCsr contract-guaranteed,,high
+EXP33-C,215,sqlite,src/vdbesort.c,2736,FP,"nKey set via vdbeSorterRowkey(pSorter,&nKey) which writes *pnKey on all paths; not uninitialized",,high
+EXP34-C,216,sqlite,src/vdbesort.c,2739,FP,"pOut is caller-provided Mem cell, non-null by contract; sqlite3VdbeMemClearAndResize guards alloc",,high
+INT31-C,217,sqlite,src/vdbesort.c,2741,FP,"nKey is record key length from sorter, bounded by SQLITE_MAX_LENGTH, positive; memcpy size benign",,high
+API00-C,218,sqlite,src/vdbesort.c,2762,FP,API00 internal; pCsr contract-guaranteed,,high
+API00-C,219,sqlite,src/vdbesort.c,2762,FP,"pVal caller-provided value Mem, non-null by contract",,high
+API00-C,220,sqlite,src/vdbesort.c,2762,FP,"pRes output param, caller provides valid ptr",,high
+DCL13-C,221,sqlite,src/vdbesort.c,2764,FP,"pVal read-only here (pVal->n, pVal->z passed to compare); const valid low value",,med
+EXP33-C,222,sqlite,src/vdbesort.c,2786,FP,"nKey set by vdbeSorterRowkey(pSorter,&nKey) which always writes; not uninitialized",,high
+EXP34-C,223,sqlite,src/vdbesort.c,2794,FP,pVal->n/pVal->z accessed; pVal caller-guaranteed non-null per OP_SorterCompare contract,,high

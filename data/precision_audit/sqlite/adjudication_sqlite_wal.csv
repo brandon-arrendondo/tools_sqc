@@ -1,0 +1,430 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+PRE01-C,0,sqlite,src/wal.c,259,FP,"WALTRACE(X): X is the parenthesized printf arg-list token used as `sqlite3DebugPrintf X`; cannot be parenthesized, no precedence hazard",,high
+PRE02-C,1,sqlite,src/wal.c,646,FP,SEH_TRY replacement is a `__try {` statement-block; parenthesizing a statement-macro list is nonsensical,,high
+PRE10-C,2,sqlite,src/wal.c,646,FP,SEH_TRY deliberately opens a brace block paired with SEH_EXCEPT closing brace; do-while wrap is structurally impossible by design,,med
+PRE11-C,3,sqlite,src/wal.c,646,FP,"SEH_TRY ends with semicolon by design (VVA_ONLY(...) stmt); it is a statement macro, not an expression",,med
+PRE00-C,4,sqlite,src/wal.c,651,TP,SEH_EXCEPT(X) expands assert(pWal->nSehTry==0) using pWal->nSehTry... X is injected as a statement block; X token is single-use but macro is function-like multi-statement — accept as macro-hygiene TP,,high
+PRE01-C,5,sqlite,src/wal.c,651,FP,SEH_EXCEPT(X): X is an injected statement block placed inside __except(){ X }; parenthesizing a statement body is invalid,,high
+PRE10-C,6,sqlite,src/wal.c,651,FP,SEH_EXCEPT closes a brace block opened by SEH_TRY; do-while wrap structurally impossible by design,,med
+DCL13-C,7,sqlite,src/wal.c,665,TP,"sehExceptionFilter param p only read (p->ExceptionRecord etc), never written; const EXCEPTION_POINTERS* would compile",,high
+DCL13-C,8,sqlite,src/wal.c,687,TP,sehInjectFault only reads pWal->nSehTry (assert) and passes pWal nowhere mutating; const Wal* would compile for this read-only use,,med
+PRE00-C,9,sqlite,src/wal.c,714,TP,"SEH_FREE_ON_ERROR(X,Y): X evaluated twice — in `X==0` and `pWal->pFree==X`",,high
+PRE01-C,10,sqlite,src/wal.c,714,TP,"SEH_FREE_ON_ERROR X used in comparisons `X==0`/`==X`; unparenthesized, precedence-relevant for expression args",,high
+PRE01-C,11,sqlite,src/wal.c,714,TP,"SEH_FREE_ON_ERROR Y used in `Y==0` and `pWal->pFree = Y`; unparenthesized, precedence-relevant",,high
+PRE02-C,12,sqlite,src/wal.c,714,FP,SEH_FREE_ON_ERROR is assert(...); assignment; — two statements; parenthesizing whole replacement list is invalid,,high
+PRE12-C,13,sqlite,src/wal.c,714,TP,SEH_FREE_ON_ERROR evaluates X twice (`X==0` and `pWal->pFree==X`); duplicate side-effects if X has them,,high
+PRE01-C,14,sqlite,src/wal.c,727,TP,"SEH_SET_ON_ERROR(X,Y) X used in `pWal->iWiPg = X`; unparenthesized assignment RHS, precedence-relevant",,high
+PRE01-C,15,sqlite,src/wal.c,727,TP,"SEH_SET_ON_ERROR(X,Y) Y used in `pWal->pWiValue = Y`; unparenthesized assignment RHS",,high
+PRE11-C,16,sqlite,src/wal.c,730,FP,non-SEH SEH_TRY = VVA_ONLY(pWal->nSehTry++); — statement macro intended to end in semicolon,,med
+PRE00-C,17,sqlite,src/wal.c,731,TP,non-SEH SEH_EXCEPT(X) expands two statements referencing pWal->nSehTry; function-like multi-statement macro — hygiene TP,,med
+PRE10-C,18,sqlite,src/wal.c,731,FP,SEH_EXCEPT is a sequence of statements used as a statement; do-while wrap would change the injected X block semantics — by-design,,med
+PRE11-C,19,sqlite,src/wal.c,731,FP,non-SEH SEH_EXCEPT ends in `}` from assert macro/stmt sequence; trailing-semicolon flag misreads VVA_ONLY stmt,,med
+PRE11-C,20,sqlite,src/wal.c,732,FP,SEH_INJECT_FAULT = assert(pWal->nSehTry>0) ; statement macro intended as a statement (used with trailing ;),,high
+INT30-C,21,sqlite,src/wal.c,765,FP,nByte=sizeof(u32*)*(1+(i64)iPage): iPage is internal wal-index page index bounded by frame count; i64 cast prevents wrap in reachable range,,high
+INT32-C,22,sqlite,src/wal.c,765,FP,"1+(i64)iPage: iPage is a small internal page index (derived from frame#), not a raw untrusted field; no realistic overflow",,high
+MEM30-C,23,sqlite,src/wal.c,767,FP,"sqlite3Realloc reallocs pWal->apWiData member, NOT pWal; pWal is never freed — analyzer confuses member realloc with struct free",,high
+ARR38-C,24,sqlite,src/wal.c,772,FP,memset size sizeof(u32*)*(iPage+1-nWiData) with iPage>=nWiData guaranteed by enclosing `if(nWiData<=iPage)`; bounded internal index,,high
+INT32-C,25,sqlite,src/wal.c,772,FP,"same memset arithmetic; iPage bounded internal index, difference is small positive count of new slots",,high
+INT30-C,26,sqlite,src/wal.c,773,FP,sizeof(u32*)*(iPage+1-nWiData): positive bounded slot count; iPage internal not attacker varint,,high
+INT32-C,27,sqlite,src/wal.c,773,FP,iPage+1-nWiData guarded positive by `if(nWiData<=iPage)`; bounded,,high
+INT32-C,28,sqlite,src/wal.c,773,FP,iPage+1: iPage bounded internal page index; no overflow in reachable range,,high
+MEM30-C,29,sqlite,src/wal.c,773,FP,pWal not freed; only pWal->apWiData reallocated — use-after-free misfire,,high
+INT32-C,30,sqlite,src/wal.c,775,FP,iPage+1 with bounded internal iPage; no overflow,,high
+ARR00-C,31,sqlite,src/wal.c,779,FP,apWiData[iPage] safe: enclosing realloc set nWiData=iPage+1 making slot valid; iPage internal bounded,,high
+MEM30-C,32,sqlite,src/wal.c,779,FP,pWal not freed (member apWiData reallocated); array access valid post-realloc,,high
+MEM30-C,33,sqlite,src/wal.c,780,FP,pWal not freed; member access valid,,high
+ARR00-C,34,sqlite,src/wal.c,781,FP,iPage bounded; apWiData[iPage] valid after realloc grows array to iPage+1,,high
+MEM30-C,35,sqlite,src/wal.c,781,FP,pWal not freed; apWiData reallocated and reassigned,,high
+ARR00-C,36,sqlite,src/wal.c,782,FP,iPage bounded internal index; slot valid post-realloc,,high
+MEM30-C,37,sqlite,src/wal.c,782,FP,pWal not freed,,high
+MEM30-C,38,sqlite,src/wal.c,784,FP,pWal live; passed to sqlite3OsShmMap legitimately,,high
+MEM30-C,39,sqlite,src/wal.c,784,FP,pWal live (only array member reallocated),,high
+MEM30-C,40,sqlite,src/wal.c,784,FP,pWal live,,high
+MEM30-C,41,sqlite,src/wal.c,784,FP,pWal->pDbFd/writeLock read on live struct,,high
+ARR00-C,42,sqlite,src/wal.c,785,FP,iPage bounded; apWiData[iPage] valid,,high
+MEM30-C,43,sqlite,src/wal.c,785,FP,pWal live,,high
+MEM30-C,44,sqlite,src/wal.c,785,FP,"pWal live, not freed",,high
+MEM30-C,45,sqlite,src/wal.c,785,FP,apWiData live after reassignment,,high
+ARR00-C,46,sqlite,src/wal.c,787,FP,iPage bounded; valid slot,,high
+MEM30-C,47,sqlite,src/wal.c,787,FP,apWiData live,,high
+MEM30-C,48,sqlite,src/wal.c,789,FP,pWal live,,high
+ARR00-C,49,sqlite,src/wal.c,790,FP,iPage bounded; valid slot,,high
+MEM30-C,50,sqlite,src/wal.c,790,FP,apWiData live,,high
+INT13-C,51,sqlite,src/wal.c,793,FP,"rc&0xff on signed int rc: rc holds SQLITE result codes, value-range safe; CERT idiom in core, low severity",,med
+ARR00-C,52,sqlite,src/wal.c,801,FP,iPage bounded internal index; apWiData[iPage] valid post-realloc,,high
+MEM30-C,53,sqlite,src/wal.c,801,FP,"apWiData live (reallocated member, pWal not freed)",,high
+ARR00-C,54,sqlite,src/wal.c,811,FP,iPage bounded; *ppPage = apWiData[iPage] valid,,high
+DCL13-C,55,sqlite,src/wal.c,820,FP,"walCkptInfo reads pWal->apWiData[0][..] returning interior pointer; pWal deref read-only but returns volatile* into its array — const would not fit usage pattern; borderline, treat as FP (pointer-into-member returned mutable)",,high
+DCL13-C,56,sqlite,src/wal.c,829,FP,walIndexHdr returns (WalIndexHdr*)apWiData[0] — a mutable pointer into pWal-owned memory; declaring pWal const conflicts with returning non-const interior pointer,,high
+PRE00-C,57,sqlite,src/wal.c,842,TP,BYTESWAP32(x) evaluates x four times via (x)&mask; multiple evaluation of argument,,high
+PRE12-C,58,sqlite,src/wal.c,842,TP,BYTESWAP32 evaluates parameter x multiple times (four masks),,high
+DCL13-C,59,sqlite,src/wal.c,858,TP,walChecksumBytes param `a` only read (cast to u32* and walked for reads); const u8* would compile,,high
+EXP05-C,60,sqlite,src/wal.c,864,FP,`(u32 *)a` where a is non-const `u8 *a`; cast removes no const qualifier — no cast-away-const occurs,,high
+INT14-C,61,sqlite,src/wal.c,875,FP,"nByte used in `&7`, `%64`, and as bound — mixed bitwise/arithmetic is idiomatic alignment test; readability-only, no defect",,med
+ARR37-C,62,sqlite,src/wal.c,879,FP,aData=(u32*)a is a pointer into a contiguous buffer; aData[0] is valid buffer access bounded by aEnd loop,,high
+ARR37-C,63,sqlite,src/wal.c,880,FP,"aData[1] within 8-byte (2*u32) read, loop bounded by aData<aEnd and nByte multiple of 8",,high
+ARR37-C,64,sqlite,src/wal.c,881,FP,aData+=2 walks contiguous buffer; bounded by aEnd,,high
+ARR36-C,65,sqlite,src/wal.c,882,FP,aData and aEnd both derived from same object `a`; comparison is well-defined same-array,,high
+INT10-C,66,sqlite,src/wal.c,883,FP,"nByte%64: nByte asserted >=8 positive multiple of 8; non-negative, defined modulo",,high
+ARR37-C,67,sqlite,src/wal.c,885,FP,"aData++ over contiguous buffer, loop bound aData<aEnd; valid",,high
+ARR37-C,68,sqlite,src/wal.c,886,FP,same contiguous walk,,high
+ARR37-C,69,sqlite,src/wal.c,887,FP,same,,high
+ARR37-C,70,sqlite,src/wal.c,888,FP,same,,high
+ARR37-C,71,sqlite,src/wal.c,889,FP,same,,high
+ARR37-C,72,sqlite,src/wal.c,890,FP,same,,high
+ARR37-C,73,sqlite,src/wal.c,891,FP,same,,high
+ARR37-C,74,sqlite,src/wal.c,892,FP,same,,high
+ARR37-C,75,sqlite,src/wal.c,893,FP,same,,high
+ARR37-C,76,sqlite,src/wal.c,894,FP,same,,high
+ARR37-C,77,sqlite,src/wal.c,895,FP,same,,high
+ARR37-C,78,sqlite,src/wal.c,896,FP,same,,high
+ARR37-C,79,sqlite,src/wal.c,897,FP,same,,high
+ARR37-C,80,sqlite,src/wal.c,898,FP,same,,high
+ARR37-C,81,sqlite,src/wal.c,899,FP,same,,high
+ARR37-C,82,sqlite,src/wal.c,900,FP,same,,high
+ARR36-C,83,sqlite,src/wal.c,901,FP,aData vs aEnd same-object comparison; well-defined,,high
+ARR37-C,84,sqlite,src/wal.c,904,FP,aData++ contiguous walk bounded by aEnd,,high
+ARR37-C,85,sqlite,src/wal.c,905,FP,same,,high
+ARR36-C,86,sqlite,src/wal.c,906,FP,aData vs aEnd same-object comparison,,high
+DCL13-C,87,sqlite,src/wal.c,918,FP,walIndexWriteHdr: aHdr=walIndexHdr(pWal) returns mutable interior pointer and memcpy writes through it; pWal cannot be const (interior buffer mutated),,high
+EXP34-C,88,sqlite,src/wal.c,951,FP,aHdr=walIndexHdr(pWal) returns apWiData[0] which is asserted non-null (assert nWiData>0 && apWiData[0]); not null at deref,,high
+DCL13-C,89,sqlite,src/wal.c,970,FP,walEncodeFrame writes pWal->hdr.aFrameCksum via aCksum and reads szPage; pWal state used to produce output — const inappropriate; FP,,high
+DCL03-C,90,sqlite,src/wal.c,978,TP,assert(WAL_FRAME_HDRSIZE==24) is a compile-time constant condition; static_assert appropriate,,high
+ARR38-C,91,sqlite,src/wal.c,991,FP,"memset(&aFrame[8],0,16): aFrame is a WAL_FRAME_HDRSIZE(24)-byte frame header buffer; offset 8 +16 = 24 within bounds",,high
+DCL13-C,92,sqlite,src/wal.c,1001,FP,"walDecodeFrame writes pWal->hdr.aFrameCksum (aCksum points into pWal->hdr); pWal mutated, const invalid",,high
+DCL03-C,93,sqlite,src/wal.c,1010,TP,assert(WAL_FRAME_HDRSIZE==24) compile-time constant; static_assert preferable,,high
+EXP34-C,94,sqlite,src/wal.c,1015,FP,"aFrame is caller-supplied frame buffer, non-null by contract (callers pass real buffers); salt memcmp/Get4byte all bounded within 24-byte header",,high
+EXP33-C,95,sqlite,src/wal.c,1064,FP,zName is static char[15]; written by sqlite3_snprintf before being read/returned — initialized at use,,high
+INT32-C,96,sqlite,src/wal.c,1065,FP,lockIdx-WAL_READ_LOCK(0): only reached in else branch where lockIdx is a READ lock index >= WAL_READ_LOCK(0); non-negative small result,,high
+ARR00-C,97,sqlite,src/wal.c,1066,FP,"zName is declared `static char zName[15]` — has static storage duration, NOT destroyed at return; returning &zName is valid (sqc missed static)",,high
+PRE32-C,98,sqlite,src/wal.c,1084,FP,WALTRACE arg list spans lines but contains no preprocessor # directive; multi-line continuation only,,high
+PRE32-C,99,sqlite,src/wal.c,1084,FP,argument text has no preprocessor directive; just a multi-line string/expr arg to WALTRACE,,high
+INT13-C,100,sqlite,src/wal.c,1086,FP,rc&0xFF on signed rc holding SQLITE codes; value-range safe idiom,,med
+INT14-C,101,sqlite,src/wal.c,1088,FP,1<<lockIdx: lockIdx is a small lock index (0..~SQLITE_SHM_NLOCK); no overflow/UB in reachable range,,high
+INT32-C,102,sqlite,src/wal.c,1088,FP,1<<lockIdx with bounded small lockIdx; within int width,,high
+INT34-C,103,sqlite,src/wal.c,1088,FP,lockIdx is a bounded non-negative lock index by construction; shift amount valid,,high
+INT14-C,104,sqlite,src/wal.c,1097,FP,1<<lockIdx (unlock path) bounded small lockIdx,,high
+INT32-C,105,sqlite,src/wal.c,1097,FP,same bounded shift,,high
+INT34-C,106,sqlite,src/wal.c,1097,FP,lockIdx bounded non-negative; shift valid,,high
+PRE32-C,107,sqlite,src/wal.c,1106,FP,WALTRACE multi-line arg contains no # preprocessor directive,,high
+PRE32-C,108,sqlite,src/wal.c,1106,FP,WALTRACE arg is a parenthesized printf arg list not a preprocessor directive; sqc misparses commas; macro expands to nothing or sqlite3DebugPrintf call,,high
+INT13-C,109,sqlite,src/wal.c,1108,FP,rc&0xFF inside VVA_ONLY assert-only diagnostic; rc is an sqlite result code small positive int; signed-& benign and debug-only,,high
+INT14-C,110,sqlite,src/wal.c,1111,FP,INT14 readability heuristic; n is a small lock-count (1..SQLITE_SHM_NLOCK) used in 1<<n shift; no defect,,high
+INT14-C,111,sqlite,src/wal.c,1111,FP,INT14 readability; lockIdx is small bounded lock index; SEH-only code under SQLITE_USE_SEH,,high
+INT14-C,112,sqlite,src/wal.c,1111,FP,INT14 readability; SQLITE_SHM_NLOCK is constant 8; benign,,high
+INT32-C,113,sqlite,src/wal.c,1111,FP,(1<<n)-1 with n<=8 (SQLITE_SHM_NLOCK) cannot overflow int; mask construction,,high
+INT32-C,114,sqlite,src/wal.c,1111,FP,1<<n with n bounded by SQLITE_SHM_NLOCK=8 is well within int width; no UB,,high
+INT34-C,115,sqlite,src/wal.c,1111,FP,shift amount SQLITE_SHM_NLOCK+lockIdx bounded (<24) and non-negative; lockMask is u32 mask; safe,,high
+INT34-C,116,sqlite,src/wal.c,1111,FP,1<<n shift amount n<=8 non-negative and within width; safe,,high
+INT14-C,117,sqlite,src/wal.c,1121,FP,INT14 readability; bounded lockIdx in unlock path,,high
+INT14-C,118,sqlite,src/wal.c,1121,FP,INT14 readability; bounded n,,high
+INT14-C,119,sqlite,src/wal.c,1121,FP,INT14 readability; constant SQLITE_SHM_NLOCK,,high
+INT32-C,120,sqlite,src/wal.c,1121,FP,(1<<n)-1 n<=8 no overflow; mask,,high
+INT32-C,121,sqlite,src/wal.c,1121,FP,1<<n n<=8 within int width,,high
+INT34-C,122,sqlite,src/wal.c,1121,FP,shift amount bounded <24 non-negative; safe mask clear,,high
+INT34-C,123,sqlite,src/wal.c,1121,FP,1<<n n<=8 safe,,high
+PRE32-C,124,sqlite,src/wal.c,1123,FP,WALTRACE printf args misparsed as preprocessor directives; FP same as 108,,high
+PRE32-C,125,sqlite,src/wal.c,1123,FP,parenthesized printf arg list not a preprocessor directive,,high
+DCL03-C,126,sqlite,src/wal.c,1134,FP,assert((HASHTABLE_NSLOT&(HASHTABLE_NSLOT-1))==0) is a compile-constant power-of-two check; static_assert candidate but not a defect,,high
+INT14-C,127,sqlite,src/wal.c,1134,FP,INT14 readability; HASHTABLE_NSLOT constant 8192 power-of-two mask,,high
+INT14-C,128,sqlite,src/wal.c,1135,FP,INT14 readability; iPage is u32 page number in hash multiply,,high
+INT14-C,129,sqlite,src/wal.c,1135,FP,INT14 readability; HASHTABLE_HASH_1 constant 383,,high
+INT14-C,130,sqlite,src/wal.c,1138,FP,INT14 readability; iPriorHash bounded 0..NSLOT-1,,high
+INT14-C,131,sqlite,src/wal.c,1138,FP,INT14 readability; constant NSLOT,,high
+INT32-C,132,sqlite,src/wal.c,1138,FP,iPriorHash+1 then masked &(NSLOT-1); iPriorHash<8192 no overflow,,high
+INT32-C,133,sqlite,src/wal.c,1183,FP,iHash-1 where iHash>=1 in this branch (else-branch of iHash==0); no signed underflow,,high
+DCL13-C,134,sqlite,src/wal.c,1212,TP,walFramePgno reads pWal members only (apWiData) and never writes through pWal; const Wal* would compile; declaration-quality TP,,med
+DCL00-C,135,sqlite,src/wal.c,1235,TP,iLimit initialized to 0 then reassigned at line 1258 before use; NOT never-modified so DCL00 premise is wrong; FP,,med
+ARR38-C,136,sqlite,src/wal.c,1271,FP,memset size nByte computed as (aHash - &aPgno[iLimit]) within same mapped wal-index region; assert(nByte>=0) guards; bounded,,high
+INT31-C,137,sqlite,src/wal.c,1271,FP,nByte derived from in-region pointer subtraction always >=0 (asserted); conversion to size_t safe,,high
+ARR38-C,138,sqlite,src/wal.c,1318,FP,memset nByte = aHash[NSLOT]-aPgno within mapped region; assert(nByte>=0); bounded,,high
+INT31-C,139,sqlite,src/wal.c,1318,FP,nByte >=0 asserted; size_t conversion safe,,high
+INT14-C,140,sqlite,src/wal.c,1327,FP,INT14 readability; idx is hash slot value bounded by HASHTABLE_NSLOT/2+1,,high
+INT32-C,141,sqlite,src/wal.c,1327,FP,"idx-1 where idx>=1 (idx==1 handled, aPgno[idx-1]); idx is frame-zero offset >=1; no underflow",,high
+INT32-C,142,sqlite,src/wal.c,1329,FP,idx-1 idx>=1; assert(!aPgno[idx-1]) follows; safe,,high
+INT32-C,143,sqlite,src/wal.c,1337,FP,idx-1 idx>=1 write to aPgno[idx-1]; bounded by assert idx<=NSLOT/2+1,,high
+INT13-C,144,sqlite,src/wal.c,1356,FP,idx&0x3ff under SQLITE_ENABLE_EXPENSIVE_ASSERT only; idx positive bounded; benign,,high
+DCL03-C,145,sqlite,src/wal.c,1397,FP,assert(WAL_ALL_BUT_WRITE==WAL_WRITE_LOCK+1) compile-constant check; static_assert candidate not defect,,high
+DCL03-C,146,sqlite,src/wal.c,1398,FP,assert(WAL_CKPT_LOCK==WAL_ALL_BUT_WRITE) compile-constant; not defect,,high
+INT32-C,147,sqlite,src/wal.c,1401,FP,WAL_READ_LOCK(0)-iLock both small lock-offset constants; iLock=WAL_ALL_BUT_WRITE+ckptLock(0/1); positive small no overflow,,high
+INT13-C,148,sqlite,src/wal.c,1442,FP,szPage&(szPage-1) is the power-of-two test; szPage validated 512..65536 positive; signed-& benign,,high
+INT14-C,149,sqlite,src/wal.c,1442,FP,INT14 readability; szPage validated power-of-two 512..SQLITE_MAX_PAGE_SIZE,,high
+INT32-C,150,sqlite,src/wal.c,1442,FP,szPage-1 szPage>=512 no underflow; power-of-two mask test,,high
+ARR30-C,151,sqlite,src/wal.c,1479,FP,aFrame allocated sqlite3_malloc64(szFrame+WALINDEX_PGSZ) >= 24+512+32768; aFrame[WAL_FRAME_HDRSIZE=24] in-bounds; sqc misreads alloc size as 24,,high
+MEM30-C,152,sqlite,src/wal.c,1479,FP,aFrame freed only at line 1557 after loop completes; line 1479 precedes free; no UAF,,high
+MEM30-C,153,sqlite,src/wal.c,1479,FP,same; aFrame live at 1479,,high
+ARR37-C,154,sqlite,src/wal.c,1480,FP,aData=&aFrame[24] points into szPage-byte data region; aData[szPage] is one-past computing aPrivate pointer not a deref; in allocation,,high
+MEM30-C,155,sqlite,src/wal.c,1480,FP,aData live; aFrame freed only at 1557,,high
+MEM30-C,156,sqlite,src/wal.c,1480,FP,aData live at 1480,,high
+ARR00-C,157,sqlite,src/wal.c,1484,FP,iPg is the for-loop induction var initialized iPg=0 at line 1484 not uninitialized; sqc misidentified,,high
+INT32-C,158,sqlite,src/wal.c,1488,FP,1+(...) computing iFirst from page constants HASHTABLE_NPAGE_ONE/NPAGE; iPg bounded by walFramePage(iLastFrame); no practical overflow,,high
+EXP33-C,159,sqlite,src/wal.c,1491,FP,aShare set by walIndexPage at 1490 and break if aShare==0 (1492) before any use; not used uninitialized,,high
+MEM30-C,160,sqlite,src/wal.c,1494,FP,pWal is a live handle never freed in this function; no UAF,,high
+MEM30-C,161,sqlite,src/wal.c,1502,FP,pWal live handle passed to walIndexAppend; not freed,,high
+MEM30-C,162,sqlite,src/wal.c,1502,FP,aFrame live at 1502 (freed at 1557); passed to sqlite3OsRead,,high
+MEM30-C,163,sqlite,src/wal.c,1502,FP,pWal live; member access in walIndexAppend,,high
+MEM30-C,164,sqlite,src/wal.c,1504,FP,pWal live at walDecodeFrame call,,high
+MEM30-C,165,sqlite,src/wal.c,1504,FP,aData live at 1504,,high
+MEM30-C,166,sqlite,src/wal.c,1504,FP,aFrame live at 1504,,high
+MEM30-C,167,sqlite,src/wal.c,1506,FP,pWal live at walIndexAppend call 1506,,high
+MEM30-C,168,sqlite,src/wal.c,1511,FP,pWal live; hdr.mxFrame write,,high
+MEM30-C,169,sqlite,src/wal.c,1512,FP,pWal live; hdr.nPage write,,high
+INT13-C,170,sqlite,src/wal.c,1513,FP,szPage signed | bitwise to build hdr.szPage u16; szPage validated; benign,,high
+MEM30-C,171,sqlite,src/wal.c,1513,FP,pWal live; hdr.szPage write,,high
+MEM30-C,172,sqlite,src/wal.c,1516,FP,aFrameCksum is stack array u32[2] never freed; line 1516,,high
+MEM30-C,173,sqlite,src/wal.c,1516,FP,pWal live; aFrameCksum read,,high
+MEM30-C,174,sqlite,src/wal.c,1517,FP,aFrameCksum stack array live,,high
+MEM30-C,175,sqlite,src/wal.c,1517,FP,pWal live,,high
+MEM30-C,176,sqlite,src/wal.c,1520,FP,pWal live,,high
+ARR37-C,177,sqlite,src/wal.c,1533,FP,aPrivate=(u32*)&aData[szPage] points into the WALINDEX_PGSZ tail of aFrame allocation; aPrivate[nHdr32] in-bounds; not freed,,high
+INT32-C,178,sqlite,src/wal.c,1533,FP,memcpy size WALINDEX_PGSZ-nHdr where nHdr is 136 or 0 constant; positive bounded; no overflow,,high
+MEM30-C,179,sqlite,src/wal.c,1533,FP,aPrivate is interior pointer of live aFrame; not freed,,high
+MEM30-C,180,sqlite,src/wal.c,1533,FP,aPrivate live,,high
+MEM30-C,181,sqlite,src/wal.c,1533,FP,aPrivate live,,high
+ARR37-C,182,sqlite,src/wal.c,1543,FP,aPrivate live (SAFER variant loop),,high
+MEM30-C,183,sqlite,src/wal.c,1543,FP,aPrivate live,,high
+ARR37-C,184,sqlite,src/wal.c,1547,FP,aPrivate live,,high
+MEM30-C,185,sqlite,src/wal.c,1547,FP,aShare is the real shm page from walIndexPage; not freed here,,high
+MEM30-C,186,sqlite,src/wal.c,1547,FP,aPrivate live,,high
+MEM30-C,187,sqlite,src/wal.c,1556,FP,"aFrame freed exactly once at 1557; SEH_FREE_ON_ERROR(aFrame,0) at 1556 only arms SEH cleanup it does not free; not a double-free",,high
+MEM30-C,188,sqlite,src/wal.c,1557,FP,single sqlite3_free(aFrame) at 1557; no second free,,high
+ARR00-C,189,sqlite,src/wal.c,1564,FP,aFrameCksum declared u32 aFrameCksum[2]; index 0 valid; sqc misreads size as 1,,high
+MEM30-C,190,sqlite,src/wal.c,1564,FP,pWal live,,high
+MEM30-C,191,sqlite,src/wal.c,1564,FP,aFrameCksum[2] index 0 valid,,high
+ARR00-C,192,sqlite,src/wal.c,1565,FP,aFrameCksum[2] index 1 valid; sqc misreads array size,,high
+MEM30-C,193,sqlite,src/wal.c,1565,FP,pWal live,,high
+MEM30-C,194,sqlite,src/wal.c,1565,FP,aFrameCksum[2] index 1 valid,,high
+MEM30-C,195,sqlite,src/wal.c,1566,FP,pWal live; walIndexWriteHdr,,high
+MEM30-C,196,sqlite,src/wal.c,1572,FP,pWal live; walCkptInfo,,high
+EXP34-C,197,sqlite,src/wal.c,1573,FP,walCkptInfo returns &apWiData[0][..] guaranteed non-null (assert nWiData>0 && apWiData[0]); pInfo never null,,high
+MEM30-C,198,sqlite,src/wal.c,1574,FP,pWal live; nBackfill write,,high
+MEM30-C,199,sqlite,src/wal.c,1574,FP,pWal live,,high
+MEM30-C,200,sqlite,src/wal.c,1577,FP,pWal live; walLockExclusive,,high
+MEM30-C,201,sqlite,src/wal.c,1579,FP,pWal live,,high
+MEM30-C,202,sqlite,src/wal.c,1579,FP,pWal live,,high
+MEM30-C,203,sqlite,src/wal.c,1580,FP,pWal live,,high
+MEM30-C,204,sqlite,src/wal.c,1580,FP,pWal live,,high
+MEM30-C,205,sqlite,src/wal.c,1585,FP,pWal live; walUnlockExclusive,,high
+MEM30-C,206,sqlite,src/wal.c,1596,FP,pWal live; hdr.nPage read,,high
+MEM30-C,207,sqlite,src/wal.c,1596,FP,pWal live,,high
+MEM30-C,208,sqlite,src/wal.c,1597,FP,pWal live; sqlite3_log args,,high
+MEM30-C,209,sqlite,src/wal.c,1597,FP,pWal live,,high
+MEM30-C,210,sqlite,src/wal.c,1599,FP,pWal live,,high
+MEM30-C,211,sqlite,src/wal.c,1599,FP,pWal live,,high
+MEM30-C,212,sqlite,src/wal.c,1599,FP,pWal live,,high
+INT32-C,213,sqlite,src/wal.c,1606,FP,WAL_READ_LOCK(0)-iLock small lock-offset constants; no overflow (recovery_error unlock),,high
+MEM30-C,214,sqlite,src/wal.c,1606,FP,pWal live in recovery_error cleanup,,high
+API00-C,215,sqlite,src/wal.c,1641,FP,sqlite3WalOpen pVfs is non-null by VFS contract; asserts pDbFd/zWalName; internal API caller guarantees pVfs; API00 heuristic FP,,high
+API00-C,216,sqlite,src/wal.c,1641,FP,sqlite3WalOpen asserts zWalName/pDbFd at 1653-1654 and ppWal is OUT param written before use; internal API contract guarantees non-null,,high
+API00-C,217,sqlite,src/wal.c,1641,FP,zWalName guarded by assert at 1653 and used as VFS path string per internal contract,,high
+API00-C,218,sqlite,src/wal.c,1641,FP,ppWal is an OUT parameter written (*ppWal=0 at 1702) per documented contract; not an unchecked input,,high
+DCL03-C,219,sqlite,src/wal.c,1665,FP,"assert checks compile-time invariant sizeof(WalIndexHdr); static_assert preference is stylistic, not a defect, and SQLite uses runtime assert by design",,high
+DCL03-C,220,sqlite,src/wal.c,1666,FP,compile-time constant invariant assert (on-disk format guard); stylistic only,,high
+DCL03-C,221,sqlite,src/wal.c,1667,FP,compile-time constant invariant assert; stylistic only,,high
+DCL03-C,222,sqlite,src/wal.c,1668,FP,compile-time constant invariant assert; stylistic only,,high
+DCL03-C,223,sqlite,src/wal.c,1669,FP,compile-time constant invariant assert; stylistic only,,high
+DCL03-C,224,sqlite,src/wal.c,1670,FP,compile-time constant invariant assert; stylistic only,,high
+DCL03-C,225,sqlite,src/wal.c,1671,FP,compile-time constant invariant assert; stylistic only,,high
+DCL03-C,226,sqlite,src/wal.c,1672,FP,compile-time constant invariant assert; stylistic only,,high
+DCL03-C,227,sqlite,src/wal.c,1673,FP,compile-time constant invariant assert; stylistic only,,high
+DCL03-C,228,sqlite,src/wal.c,1674,FP,compile-time constant invariant assert; stylistic only,,high
+DCL03-C,229,sqlite,src/wal.c,1675,FP,compile-time constant invariant assert; stylistic only,,high
+DCL03-C,230,sqlite,src/wal.c,1676,FP,compile-time constant invariant assert; stylistic only,,high
+DCL03-C,231,sqlite,src/wal.c,1677,FP,compile-time constant invariant assert; stylistic only,,high
+DCL03-C,232,sqlite,src/wal.c,1678,FP,compile-time constant invariant assert; stylistic only,,high
+DCL03-C,233,sqlite,src/wal.c,1679,FP,compile-time constant invariant assert; stylistic only,,high
+DCL03-C,234,sqlite,src/wal.c,1680,FP,compile-time constant invariant assert; stylistic only,,high
+DCL03-C,235,sqlite,src/wal.c,1694,FP,WIN_SHM_BASE invariant assert inside #ifdef; stylistic only,,high
+DCL03-C,236,sqlite,src/wal.c,1697,FP,UNIX_SHM_BASE invariant assert inside #ifdef; stylistic only,,high
+INT30-C,237,sqlite,src/wal.c,1703,FP,"sizeof(Wal)+pVfs->szOsFile are small fixed struct sizes set by SQLite, not attacker-controlled; cannot wrap size_t",,high
+INT13-C,238,sqlite,src/wal.c,1721,FP,"flags is a local SQLITE_OPEN_* bitmask of small positive constants; AND with SQLITE_OPEN_READONLY is well-defined, no negative operand",,high
+INT13-C,239,sqlite,src/wal.c,1731,FP,iDC is OS device-characteristics bitmask of small positive IOCAP_* flags; bitwise AND well-defined,,high
+INT13-C,240,sqlite,src/wal.c,1732,FP,same iDC IOCAP bitmask; well-defined positive operand,,high
+DCL30-C,241,sqlite,src/wal.c,1735,FP,"*ppWal=pRet assigns heap-allocated pRet (sqlite3MallocZero) into OUT param, not a local stack address; lifetime persists after return",,high
+API00-C,242,sqlite,src/wal.c,1744,FP,sqlite3WalLimit explicitly null-checks pWal (if(pWal)) before use at 1745,,high
+EXP34-C,243,sqlite,src/wal.c,1767,FP,p is the WalIterator (non-null in callers) and p->nSegment loop is valid; iMin/iPrior path has no null deref,,high
+INT32-C,244,sqlite,src/wal.c,1769,FP,"p->nSegment = walFramePage()+1 is always >=1, so nSegment-1 cannot underflow; loop counter only",,high
+ARR37-C,245,sqlite,src/wal.c,1831,FP,aRight = *paRight points into caller-provided ht_slot array (the wal-index sort buffer); subscript is normal array indexing of a valid buffer,,high
+EXP34-C,246,sqlite,src/wal.c,1831,FP,"aRight derives from *paRight, a valid caller buffer guarded by assert(nLeft>0 && nRight>0); not null",,high
+INT32-C,247,sqlite,src/wal.c,1833,FP,iLeft bounded by nLeft (<=HASHTABLE_NPAGE=4096); cannot reach INT_MAX,,high
+ARR37-C,248,sqlite,src/wal.c,1835,FP,aRight is a valid ht_slot buffer; iRight bounded by nRight; normal array access,,high
+INT32-C,249,sqlite,src/wal.c,1840,FP,iLeft bounded by nLeft<=4096; no INT_MAX overflow,,high
+ARR37-C,250,sqlite,src/wal.c,1843,FP,aRight valid buffer indexed by bounded iRight; normal array access,,high
+ARR01-C,251,sqlite,src/wal.c,1848,FP,"aTmp[0] in sizeof(aTmp[0]) takes element size (ht_slot), not buffer size; correct idiom, no decay defect",,high
+ARR38-C,252,sqlite,src/wal.c,1848,FP,"memcpy size sizeof(aTmp[0])*iOut where iOut<=nLeft+nRight<=HASHTABLE_NPAGE; bounded, destination aLeft sized for it by contract",,high
+INT30-C,253,sqlite,src/wal.c,1848,FP,"sizeof(ht_slot)*iOut with iOut<=~8192 (2*HASHTABLE_NPAGE max); product tiny, cannot wrap",,high
+INT32-C,254,sqlite,src/wal.c,1848,FP,same bounded small product; no overflow into memcpy size,,high
+DCL13-C,255,sqlite,src/wal.c,1871,FP,aList IS modified in walMergesort - sorted in place via walMerge writing through aMerge=&aList[iList] and final memcpy; const would not compile,,high
+INT14-C,256,sqlite,src/wal.c,1888,FP,"aSub used with bitwise on iSub index (1<<iSub) and arithmetic on indices; readability heuristic, not a defect, code is correct",,high
+INT14-C,257,sqlite,src/wal.c,1888,FP,ArraySize(aSub) is a compile-time constant macro; bitwise/arithmetic mix is stylistic heuristic only,,high
+INT32-C,258,sqlite,src/wal.c,1888,FP,"1<<(ArraySize(aSub)-1) = 1<<12 = 4096 = HASHTABLE_NPAGE, compile-time constant well within int range; asserted equal",,high
+INT34-C,259,sqlite,src/wal.c,1888,FP,shift amount ArraySize(aSub)-1 = 12 is a fixed positive compile-time constant; well-defined,,high
+INT13-C,260,sqlite,src/wal.c,1893,FP,"iList is loop counter 0..nList(<=4096), always non-negative; AND with (1<<iSub) well-defined",,high
+INT14-C,261,sqlite,src/wal.c,1893,FP,"iSub used as index and shift exponent; readability heuristic, code correct",,high
+ARR00-C,262,sqlite,src/wal.c,1896,FP,aSub is memset to 0 at line 1886 before the loop; not uninitialized - analyzer missed the memset,,high
+INT13-C,263,sqlite,src/wal.c,1898,FP,iList non-negative loop counter; bitwise AND well-defined,,high
+ARR00-C,264,sqlite,src/wal.c,1901,FP,aSub initialized by memset at 1886; not uninitialized,,high
+INT30-C,265,sqlite,src/wal.c,1966,FP,"iLast=hdr.mxFrame (u32 frame count), iLast*sizeof(ht_slot) computed in sqlite3_int64 nByte via SZ_WALITERATOR; bounded by valid frame count, allocation guarded by malloc null-check",,high
+INT30-C,266,sqlite,src/wal.c,1968,FP,"sizeof(ht_slot)*(min(iLast,HASHTABLE_NPAGE)) bounded by HASHTABLE_NPAGE=4096; cannot wrap",,high
+ARR38-C,267,sqlite,src/wal.c,1973,FP,"memset(p,0,nByte) where nByte is the exact malloc64 base size; valid sizing",,high
+INT31-C,268,sqlite,src/wal.c,1973,FP,nByte is sqlite3_int64 but is a positive byte count from bounded frame counts; sqlite3_malloc64 already accepted it; conversion to size_t safe on 64-bit,,high
+MEM30-C,269,sqlite,src/wal.c,1991,FP,p only freed in rc!=SQLITE_OK branch at 2004-2008; deref at 1991 is inside rc==SQLITE_OK block before any free,,high
+MEM30-C,270,sqlite,src/wal.c,1991,FP,same - no free precedes line 1991; p live,,high
+ARR37-C,271,sqlite,src/wal.c,1995,FP,"aIndex points into p's allocation (&p->aSegment[nSegment])[iZero]; valid array subscript, p not freed",,high
+MEM30-C,272,sqlite,src/wal.c,1995,FP,aIndex valid (sub-region of live p allocation); no free before 1995,,high
+MEM30-C,273,sqlite,src/wal.c,1997,FP,aIndex passed to walMergesort is live; p freed only on error after the loop,,high
+MEM30-C,274,sqlite,src/wal.c,1998,FP,p live at 1998; free only in rc!=OK branch later,,high
+MEM30-C,275,sqlite,src/wal.c,1999,FP,p live at 1999,,high
+MEM30-C,276,sqlite,src/wal.c,2000,FP,p live at 2000,,high
+MEM30-C,277,sqlite,src/wal.c,2001,FP,p live at 2001,,high
+MEM30-C,278,sqlite,src/wal.c,2005,FP,p freed exactly once via walIteratorFree in rc!=SQLITE_OK branch (2004-2006); no double-free,,high
+MEM30-C,279,sqlite,src/wal.c,2006,FP,"single free path; SEH_FREE_ON_ERROR(p,0) clears the SEH registration, then walIteratorFree frees once",,high
+DCL30-C,280,sqlite,src/wal.c,2009,FP,*pp=p assigns heap-allocated WalIterator (sqlite3_malloc64) to OUT param; valid lifetime after return,,high
+DCL13-C,281,sqlite,src/wal.c,2020,TP,walEnableBlockingMs only reads pWal->pDbFd/db; const Wal* would compile and object not written - but matches SQLite non-const convention,,low
+DCL13-C,282,sqlite,src/wal.c,2047,TP,"walDisableBlocking only reads pWal->pDbFd; const-able, object never mutated",,low
+API00-C,283,sqlite,src/wal.c,2061,FP,"sqlite3WalWriteLock asserts pWal state (pWal->readLock, pWal->db) per internal contract; pWal guaranteed non-null by caller",,high
+API00-C,284,sqlite,src/wal.c,2083,FP,"sqlite3WalDb writes pWal->db=db; pWal is a valid handle per contract, not unchecked input",,high
+API00-C,285,sqlite,src/wal.c,2083,FP,"db stored into pWal->db; it is the caller's connection handle per contract, validation not required at this internal boundary",,high
+DCL13-C,286,sqlite,src/wal.c,2083,FP,db is stored into pWal->db (non-const field) at 2084; declaring db const would not compile,,high
+DCL13-C,287,sqlite,src/wal.c,2125,TP,"walPagesize only reads pWal->hdr.szPage; const Wal* compiles, pWal never written - but SQLite convention is non-const",,low
+INT14-C,288,sqlite,src/wal.c,2126,FP,"pWal->hdr.szPage read with bitwise & and arithmetic +; readability heuristic, computation is correct",,high
+EXP34-C,289,sqlite,src/wal.c,2155,FP,pInfo=walCkptInfo(pWal) returns address into apWiData[0] (asserted non-null in walCkptInfo); never null,,high
+EXP34-C,290,sqlite,src/wal.c,2216,FP,pInfo from walCkptInfo is a non-null shared-memory address by contract (assert at 821),,high
+EXP16-C,291,sqlite,src/wal.c,2220,FP,"xBusy compared in do/while condition (xBusy && rc==BUSY && xBusy(arg)); the null-check IS intentional before calling, not a missed call",,high
+INT32-C,292,sqlite,src/wal.c,2266,FP,"(i64)mxPage*szPage casts mxPage to i64 first; szPage<=65536, mxPage u32 page count; product fits i64, no overflow",,high
+EXP34-C,293,sqlite,src/wal.c,2289,FP,db is the connection handle passed by checkpoint caller; &db->u1.isInterrupted deref on contract-non-null handle,,high
+MEM30-C,294,sqlite,src/wal.c,2373,FP,"pIter freed exactly once at 2373 (walIteratorFree); SEH_FREE_ON_ERROR(pIter,0) only clears registration; no double-free",,high
+DCL13-C,295,sqlite,src/wal.c,2381,TP,"walLimitSize only reads pWal->pWalFd/zWalName; const-able, pWal never mutated - SQLite convention non-const",,low
+EXP00-C,296,sqlite,src/wal.c,2424,FP,"lockMask & ~(...) precedence is correct and idiomatic; parenthesization heuristic, no defect",,high
+EXP00-C,297,sqlite,src/wal.c,2425,FP,operator precedence clarity heuristic on a correct ternary/OR expression,,high
+EXP00-C,298,sqlite,src/wal.c,2425,FP,precedence clarity heuristic; expression correct,,high
+INT32-C,299,sqlite,src/wal.c,2425,FP,"S=1 shifted by WAL_READ_LOCK(readLock) (small fixed lock offset 3..7); 1<<7 fits int, no overflow",,high
+INT34-C,300,sqlite,src/wal.c,2425,FP,"shift amount WAL_READ_LOCK(readLock) bounded (readLock 0..4 -> offset 3..7), readLock<0 guarded by ternary; well-defined",,high
+INT32-C,301,sqlite,src/wal.c,2426,FP,E=(1<<SQLITE_SHM_NLOCK)=256 shifted by WAL_WRITE_LOCK (small const); fits int,,high
+INT32-C,302,sqlite,src/wal.c,2427,FP,E<<WAL_CKPT_LOCK with small fixed lock offset; fits int,,high
+INT13-C,303,sqlite,src/wal.c,2430,FP,"ii is loop counter 0..SQLITE_SHM_NLOCK(8), non-negative; S<<ii well-defined",,high
+INT13-C,304,sqlite,src/wal.c,2431,FP,ii non-negative loop counter 0..8; E<<ii well-defined,,high
+DCL13-C,305,sqlite,src/wal.c,2450,TP,"walAssertLockmask only reads pWal fields to compute mExpect; const-able, pWal never written - SQLite convention non-const",,low
+EXP00-C,306,sqlite,src/wal.c,2455,FP,precedence clarity heuristic on correct expression (with #ifdef SNAPSHOT branch); no defect,,high
+EXP00-C,307,sqlite,src/wal.c,2455,FP,precedence heuristic; correct,,high
+EXP00-C,308,sqlite,src/wal.c,2455,FP,precedence heuristic; correct,,high
+INT32-C,309,sqlite,src/wal.c,2455,FP,"S<<WAL_READ_LOCK(readLock) small fixed offset; fits int, readLock<0 guarded by ternary",,high
+INT34-C,310,sqlite,src/wal.c,2455,FP,"shift amount is bounded lock offset, guarded non-negative by ternary; well-defined",,high
+API00-C,311,sqlite,src/wal.c,2471,FP,sqlite3WalSystemErrno explicitly null-checks pWal (if(pWal)) at 2473,,high
+API00-C,312,sqlite,src/wal.c,2487,FP,sqlite3WalClose explicitly null-checks pWal (if(pWal)) at 2495,,high
+MEM30-C,313,sqlite,src/wal.c,2547,FP,pWal->apWiData freed at 2547 then pWal freed at 2548; apWiData not accessed after its own free; no use-after-free,,high
+EXP34-C,314,sqlite,src/wal.c,2595,FP,aHdr=walIndexHdr(pWal) returns non-null shared-memory address (assert at 830); aHdr[0]/aHdr[1] are valid 2-copy header reads,,high
+EXP42-C,315,sqlite,src/wal.c,2599,FP,"WalIndexHdr has NO padding (all u32/u8/u8/u16/u32 fields, explicit unused field, asserted sizeof==48); memcmp of two on-disk-format copies is the documented dirty-read detection",,high
+INT30-C,316,sqlite,src/wal.c,2605,FP,"sizeof(h1)-sizeof(h1.aCksum) = 48-8 = 40, compile-time constant, no underflow possible",,high
+EXP42-C,317,sqlite,src/wal.c,2610,FP,"WalIndexHdr is packed-by-design with no padding bytes; memcmp(&pWal->hdr,&h1) compares the defined on-disk format",,high
+INT14-C,318,sqlite,src/wal.c,2613,FP,"pWal->hdr.szPage read with bitwise & and arithmetic; readability heuristic, correct",,high
+EXP33-C,319,sqlite,src/wal.c,2671,FP,page0 is set by walIndexPage at 2649 (or NULL with writeLock==0 path handled); used only after assert(page0!=0||writeLock==0) and ternary (page0?...:1) guards every deref,,high
+INT14-C,320,sqlite,src/wal.c,2784,FP,pWal->hdr.szPage bitwise/arithmetic mix; readability heuristic,,high
+ARR30-C,321,sqlite,src/wal.c,2873,FP,"aFrame is malloc'd szFrame=szPage+24 bytes (line 2868), not 24; aData=&aFrame[24] indexing is within bounds; the cited size 24 and alloc line 3970 are wrong (different buffer)",,high
+EXP43-C,322,sqlite,src/wal.c,2881,FP,"walFrameOffset is a pure arithmetic macro (line 498), not a function and takes no pointers; no overlapping memory or restrict UB",,high
+FLP30-C,323,sqlite,src/wal.c,2881,FP,"iOffset is declared i64 (line 2774), an integer loop counter, not floating-point; analyzer misclassified",,high
+INT32-C,324,sqlite,src/wal.c,3037,FP,"nDelay=(cnt-9)^2*39 where cnt is bounded by WAL_RETRY_PROTOCOL_LIMIT (~100) check at 3033 returning PROTOCOL above it; max ~91*91*39 fits in int, internal retry counter not attacker-controlled",,high
+INT32-C,325,sqlite,src/wal.c,3037,FP,"cnt-9 with cnt bounded by WAL_RETRY_PROTOCOL_LIMIT at line 3033; small internal counter, no overflow",,high
+INT32-C,326,sqlite,src/wal.c,3037,FP,"duplicate of 325, cnt bounded, no overflow",,high
+INT32-C,327,sqlite,src/wal.c,3050,FP,nDelay+998 with nDelay max ~91*91*39 (~323k) far below INT_MAX; internal value,,high
+EXP34-C,328,sqlite,src/wal.c,3114,FP,"pInfo=walCkptInfo(pWal) at 3107 after asserts apWiData[0]!=0; walCkptInfo derives from mapped shm region, non-null by contract on this path",,med
+EXP42-C,329,sqlite,src/wal.c,3125,FP,memcmp of WalIndexHdr is intentional whole-image compare against live shm copy; SQLite packs header so the two compared images use identical layout; design-correct not a bug,,high
+INT13-C,330,sqlite,src/wal.c,3202,FP,"rc&0xFF masks SQLite error code low byte; idiomatic, value range well-defined, no signedness defect reachable",,high
+INT13-C,331,sqlite,src/wal.c,3203,FP,same idiom rc&0xFF on SQLite result codes; correct,,high
+EXP42-C,332,sqlite,src/wal.c,3242,FP,"memcmp(walIndexHdr,&pWal->hdr,sizeof(WalIndexHdr)) whole-image header compare by design",,high
+EXP34-C,333,sqlite,src/wal.c,3270,FP,pInfo=walCkptInfo(pWal) at 3269 inside rc==SQLITE_OK block; contract non-null mapped region,,med
+INT32-C,334,sqlite,src/wal.c,3281,FP,"(i64)(pgno-1)*szPage cast to i64 before multiply; pgno is u32 page no from hash, szPage<=65536, product fits i64 iDbOff",,high
+INT31-C,335,sqlite,src/wal.c,3291,FP,"szPage=(int)pWal->szPage in 32..65536 range (testcased), positive; memcmp size_t conversion safe, no negative value",,high
+API00-C,336,sqlite,src/wal.c,3322,FP,API00 internal Wal* handle always valid from pager; not external input,,high
+MSC37-C,337,sqlite,src/wal.c,3322,FP,MSC37 misfire; function returns rc at 3346 (analyzer confused by SEH macros),,high
+EXP42-C,338,sqlite,src/wal.c,3368,FP,"memcmp(pSnapshot,&pWal->hdr,sizeof(WalIndexHdr)) intentional whole-header snapshot compare",,high
+EXP33-C,339,sqlite,src/wal.c,3384,FP,"rc is assigned at 3381 (rc=walLockShared) before read at 3384, both inside if(pSnapshot); not uninitialized",,high
+INT13-C,340,sqlite,src/wal.c,3394,FP,rc&0xff on SQLite result code in testcase macro; idiomatic,,high
+INT13-C,341,sqlite,src/wal.c,3395,FP,same rc&0xff idiom; correct,,high
+EXP42-C,342,sqlite,src/wal.c,3401,FP,memcmp whole WalIndexHdr image compare by design,,high
+ARR01-C,343,sqlite,src/wal.c,3426,FP,"sizeof(pWal->hdr.aSalt) is sizeof a fixed member array (u32[2]=8), not sizeof(pWal); analyzer misparsed; correct size",,high
+EXP20-C,344,sqlite,src/wal.c,3426,FP,EXP20 stylistic; memcmp!=0 in if is standard C idiom,,high
+API00-C,345,sqlite,src/wal.c,3473,FP,"API00 internal handle from pager, always valid",,high
+API00-C,346,sqlite,src/wal.c,3473,FP,"pChanged is caller-provided OUT ptr, internal pager contract",,high
+MSC37-C,347,sqlite,src/wal.c,3473,FP,MSC37 misfire; returns rc at 3479,,high
+API00-C,348,sqlite,src/wal.c,3486,FP,API00 internal Wal* handle,,high
+API00-C,349,sqlite,src/wal.c,3617,FP,API00 internal Wal* handle,,high
+API00-C,350,sqlite,src/wal.c,3617,FP,piRead internal OUT ptr from pager,,high
+MSC37-C,351,sqlite,src/wal.c,3617,FP,MSC37 misfire; returns rc at 3627,,high
+API00-C,352,sqlite,src/wal.c,3635,FP,API00 internal Wal* handle,,high
+API00-C,353,sqlite,src/wal.c,3635,FP,pOut internal buffer from pager,,high
+DCL13-C,354,sqlite,src/wal.c,3636,FP,DCL13 pWal IS modified path-dependent; even read here it is mutated elsewhere via same typedef-style API family and shm; const not warranted by interface contract,,high
+DCL13-C,355,sqlite,src/wal.c,3655,FP,"sqlite3WalDbsize reads pWal->hdr.nPage but pWal is part of mutating API family; declaring const would diverge from sibling signatures, low value; not a defect",,high
+EXP20-C,356,sqlite,src/wal.c,3684,FP,"memcmp(&pWal->hdr,apWiData[0],sizeof(WalIndexHdr)) in assert, whole-image compare by design",,high
+EXP42-C,357,sqlite,src/wal.c,3684,FP,same whole WalIndexHdr image compare; intentional,,high
+EXP42-C,358,sqlite,src/wal.c,3712,FP,memcmp whole WalIndexHdr compare by design,,high
+API00-C,359,sqlite,src/wal.c,3729,FP,API00 internal Wal* handle,,high
+API00-C,360,sqlite,src/wal.c,3751,FP,API00 internal Wal* handle,,high
+FLP30-C,361,sqlite,src/wal.c,3763,FP,iFrame is Pgno (u32) not float; FLP30 misfire on integer loop counter,,high
+API00-C,362,sqlite,src/wal.c,3795,FP,API00 internal Wal* handle,,high
+API00-C,363,sqlite,src/wal.c,3795,FP,aWalData internal u32 array from pager savepoint contract,,high
+DCL13-C,364,sqlite,src/wal.c,3795,FP,"sqlite3WalSavepoint reads pWal->hdr.* only but is part of mutating WAL API; const not interface-appropriate, not a defect",,high
+API00-C,365,sqlite,src/wal.c,3809,FP,API00 internal Wal* handle,,high
+API00-C,366,sqlite,src/wal.c,3809,FP,aWalData internal array,,high
+MSC37-C,367,sqlite,src/wal.c,3809,FP,MSC37 misfire; returns rc at 3837,,high
+EXP34-C,368,sqlite,src/wal.c,3858,FP,pInfo=walCkptInfo(pWal) at 3857 after readLock==0 guarantees mapped shm; assert at 3858 dereferences nBackfill; contract non-null,,med
+INT13-C,369,sqlite,src/wal.c,3886,FP,rc&0xff testcase idiom on SQLite result code,,high
+INT13-C,370,sqlite,src/wal.c,3887,FP,same rc&0xff idiom,,high
+DCL13-C,371,sqlite,src/wal.c,3916,FP,"walWriteToLog: p (WalWriter*) members read (iSyncPoint,syncFlags,pFd) not written; but const would not match writer-mutation idiom; low-value, p->pFd passed to OsWrite as object; not a clear const omission",,high
+INT32-C,372,sqlite,src/wal.c,3923,FP,"p->iSyncPoint - iOffset both i64 file offsets, guarded by iOffset<iSyncPoint at 3922 so positive small; cast to int iFirstAmt bounded by frame size; no overflow",,high
+INT32-C,373,sqlite,src/wal.c,3926,FP,"iOffset+=iFirstAmt i64 file offset accumulation within WAL size, no realistic overflow",,high
+INT32-C,374,sqlite,src/wal.c,3927,FP,"iAmt-=iFirstAmt where iFirstAmt<=iAmt by construction (iSyncPoint within [iOffset,iOffset+iAmt]); stays non-negative",,high
+INT32-C,375,sqlite,src/wal.c,3928,FP,iFirstAmt+(char*)pContent is pointer arithmetic within buffer being written; iFirstAmt<=iAmt<=buffer size; in-bounds,,high
+DCL13-C,376,sqlite,src/wal.c,3942,FP,"walWriteOneFrame pPage read (pData,pgno) only but passed to walEncodeFrame; part of write API, const not interface-fit; not a defect",,high
+EXP34-C,377,sqlite,src/wal.c,3949,FP,"pPage->pData at 3949; pPage comes from dirty page list, asserted non-null contract (pList non-null asserted at 4034, iterated), internal pager guarantee",,med
+INT32-C,378,sqlite,src/wal.c,3986,FP,"walFrameOffset macro casts to i64 (line 499) so (iReCksum-1)*(szPage+24)+16 computed in i64; iReCksum is frame index, szPage<=65536; fits i64",,high
+INT30-C,379,sqlite,src/wal.c,3988,FP,sizeof(u32)*2 is compile-time constant 8; cannot wrap; INT30 misfire on constant expr,,high
+ARR30-C,380,sqlite,src/wal.c,3990,FP,"aBuf at 3990 is heap malloc(szPage+WAL_FRAME_HDRSIZE) at 3974 (>=512+24), NOT the 32-byte stack aBuf at line 2775 in a different function; analyzer cross-contaminated buffer identity; aBuf[sizeof(u32)]=aBuf[4] well within 8 bytes read by OsRead",,high
+ARR39-C,381,sqlite,src/wal.c,3990,FP,"aBuf[sizeof(u32)] is aBuf[4], a normal byte index into 4-byte boundary; no double-scaling, aBuf is u8*; misfire",,high
+EXP33-C,382,sqlite,src/wal.c,3990,FP,aBuf received sizeof(u32)*2=8 bytes via sqlite3OsRead at 3988 before the reads at 3989-3990; not uninitialized for the bytes read,,high
+ARR30-C,383,sqlite,src/wal.c,4002,FP,aBuf[WAL_FRAME_HDRSIZE]=aBuf[24] into heap buffer of size szPage+24 (>=536); in-bounds; wrong buffer/size attributed by analyzer,,high
+DCL13-C,384,sqlite,src/wal.c,4018,FP,walFrames pList iterated read-only here? No-it writes p->flags; pList nodes mutated; const wrong; not a defect,,high
+EXP33-C,385,sqlite,src/wal.c,4042,FP,"p assigned in for(cnt=0,p=pList; p; ...) at 4042; loop init assigns before use; not uninitialized",,high
+EXP34-C,386,sqlite,src/wal.c,4042,FP,p dereferenced only while p!=0 in loop guard; pList asserted non-null at 4034; no null deref,,high
+PRE32-C,387,sqlite,src/wal.c,4043,FP,WALTRACE in SQLITE_TEST/DEBUG block is a trace macro; the #if context is outside the call; PRE32 misfire on conditionally-compiled trace,,high
+PRE32-C,388,sqlite,src/wal.c,4043,FP,"same WALTRACE trace macro; format-string arg, not a preprocessor-directive-in-arg defect",,high
+EXP42-C,389,sqlite,src/wal.c,4049,FP,"memcmp(&pWal->hdr,pLive,sizeof(WalIndexHdr)) whole-image header compare by design",,high
+EXP34-C,390,sqlite,src/wal.c,4050,FP,"pLive=(WalIndexHdr*)walIndexHdr(pWal) at 4048; walIndexHdr returns mapped apWiData[0] base, non-null after write-lock held (asserted writeLock at 4035)",,high
+EXP33-C,391,sqlite,src/wal.c,4069,FP,aWalHdr fully populated by sqlite3Put4byte/memcpy at 4069-4077 before OsWrite read at 4085; not uninitialized,,high
+INT14-C,392,sqlite,src/wal.c,4114,FP,"INT14 readability heuristic; szPage&0xff00|szPage>>16 is the documented WAL page-size encoding; intentional, not a defect",,high
+INT32-C,393,sqlite,src/wal.c,4176,FP,"((iOffset+sectorSize-1)/sectorSize)*sectorSize i64 sector-align; sectorSize bounded small positive; iOffset WAL offset, no realistic overflow",,high
+INT33-C,394,sqlite,src/wal.c,4176,FP,sectorSize=sqlite3SectorSize() returns >=512 always (min sector size guaranteed by VFS); division by zero not reachable,,high
+INT32-C,395,sqlite,src/wal.c,4183,FP,"nExtra++ counts padding frames to sector boundary, bounded by sectorSize/szFrame (tiny); no overflow",,high
+EXP34-C,396,sqlite,src/wal.c,4221,FP,pLast deref at 4221 guarded by while(nExtra>0) and assert(pLast!=0||nExtra==0) at 4217; nExtra>0 implies pLast set in padding loop,,med
+INT13-C,397,sqlite,src/wal.c,4226,FP,szPage encoding (szPage&0xff00)|(szPage>>16) at 4226 is documented WAL header encoding; intentional bit ops on positive bounded value,,high
+API00-C,398,sqlite,src/wal.c,4252,FP,API00 internal Wal* handle,,high
+API00-C,399,sqlite,src/wal.c,4252,FP,"pList internal dirty-page list from pager, asserted non-null",,high
+MSC37-C,400,sqlite,src/wal.c,4252,FP,MSC37 misfire; returns rc at 4265,,high
+API00-C,401,sqlite,src/wal.c,4278,FP,API00 internal db handle,,high
+API00-C,402,sqlite,src/wal.c,4278,FP,xBusy may legitimately be NULL (passive mode); checked before use at 4308; not a missing-validation defect,,high
+API00-C,403,sqlite,src/wal.c,4278,FP,pnLog internal OUT ptr,,high
+API00-C,404,sqlite,src/wal.c,4278,FP,pnCkpt internal OUT ptr,,high
+WIN04-C,405,sqlite,src/wal.c,4293,FP,"WIN04 EncodePointer heuristic; xBusy is a transient callback ptr, not security-sensitive stored pointer; not applicable",,high
+DCL03-C,406,sqlite,src/wal.c,4300,FP,assert(SQLITE_CHECKPOINT_NOOP<SQLITE_CHECKPOINT_PASSIVE) is a compile-constant invariant assert; DCL03 style suggestion only,,high
+EXP16-C,407,sqlite,src/wal.c,4301,FP,"xBusy==0 is a NULL-check on a function pointer (passive mode), not an accidental missing call; correct",,high
+API00-C,408,sqlite,src/wal.c,4415,FP,"sqlite3WalCallback checks if(pWal) at 4417 before deref; API00 misfire, it DOES validate",,high
+API00-C,409,sqlite,src/wal.c,4448,FP,API00 internal Wal* handle,,high
+API00-C,410,sqlite,src/wal.c,4492,FP,"sqlite3WalHeapMemory checks (pWal && ...) at 4493; API00 misfire, validated",,high
+DCL13-C,411,sqlite,src/wal.c,4492,FP,"sqlite3WalHeapMemory reads pWal->exclusiveMode only; const-correct candidate but signature fixed by WAL API family; low value, not a true defect",,high
+API00-C,412,sqlite,src/wal.c,4501,FP,ppSnapshot internal OUT ptr from snapshot API,,high
+ARR38-C,413,sqlite,src/wal.c,4508,FP,"memcmp(aFrameCksum[0],aZero,16) compares 4 u32 (16 bytes) against static u32 aZero[4]; both exactly 16 bytes; size correct",,high
+API00-C,414,sqlite,src/wal.c,4525,FP,API00 internal Wal* handle,,high
+DCL13-C,415,sqlite,src/wal.c,4527,FP,"sqlite3WalSnapshotOpen casts pSnapshot, stores into pWal->pSnapshot; pSnapshot pointee not modified but stored as non-const-incompatible field; const not applicable",,high
+API00-C,416,sqlite,src/wal.c,4549,FP,"p1 is sqlite3_snapshot* public API arg cast to WalIndexHdr*; deref of caller object, public contract",,high
+API00-C,417,sqlite,src/wal.c,4549,FP,p2 same public snapshot arg,,high
+DCL13-C,418,sqlite,src/wal.c,4549,FP,"sqlite3_snapshot_cmp reads pHdr1 members only; but public API signature sqlite3_snapshot_cmp(sqlite3_snapshot*,...) is fixed by exported declaration; cannot add const",,high
+DCL13-C,419,sqlite,src/wal.c,4549,FP,p2 same; fixed public API signature,,high
+API00-C,420,sqlite,src/wal.c,4573,FP,API00 internal Wal* handle,,high
+DCL13-C,421,sqlite,src/wal.c,4573,FP,pSnapshot read-only in SnapshotCheck but signature is part of WAL API family; const not interface-appropriate,,high
+MSC37-C,422,sqlite,src/wal.c,4573,FP,MSC37 misfire; returns rc at 4588,,high
+ARR01-C,423,sqlite,src/wal.c,4579,FP,"sizeof(pWal->hdr.aSalt) is sizeof fixed member u32[2]=8, not sizeof(pWal) decayed; analyzer misparse; correct",,high
+API00-C,424,sqlite,src/wal.c,4595,FP,sqlite3WalSnapshotUnlock asserts pWal at 4596; API00 misfire,,high
+API00-C,425,sqlite,src/wal.c,4609,FP,sqlite3WalFramesize asserts pWal==0||readLock>=0 and returns (pWal?...:0); validated,,high
+DCL13-C,426,sqlite,src/wal.c,4609,FP,"sqlite3WalFramesize reads pWal->szPage only; fixed WAL API signature, const not added; not a defect",,high
+API00-C,427,sqlite,src/wal.c,4617,FP,sqlite3WalFile returns pWal->pWalFd; internal handle always valid by pager contract,,high
+DCL13-C,428,sqlite,src/wal.c,4617,FP,sqlite3WalFile reads pWal->pWalFd; fixed WAL API signature; const not interface-appropriate,,high

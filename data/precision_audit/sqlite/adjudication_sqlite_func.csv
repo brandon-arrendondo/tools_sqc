@@ -1,0 +1,412 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,0,sqlite,src/func.c,27,FP,sqlite3GetFuncCollSeq reads context->pVdbe/iOp but never writes through context; signature is the fixed sqlite3_context callback convention so const is not actually applied here and read-only is by design,,high
+INT32-C,1,sqlite,src/func.c,30,FP,"context->iOp is a small VDBE program counter set internally, never an attacker-sized value; iOp-1 cannot realistically underflow INT_MIN",,high
+DCL13-C,2,sqlite,src/func.c,52,FP,"minmaxFunc reads argv[] entries only (sqlite3_value_type/result_value); argv pointer array not modified, fixed callback signature",,high
+INT13-C,3,sqlite,src/func.c,68,FP,"mask is 0 or -1 internal flag; XOR with signed compare result is intentional sign-trick, defined behavior on these values, not attacker data",,med
+DCL13-C,4,sqlite,src/func.c,82,FP,typeofFunc only reads argv[0]; fixed callback signature,,high
+ARR02-C,5,sqlite,src/func.c,84,FP,azType[] implicit size with explicit initializer list is idiomatic and exact; ArraySize() used in assert; no defect,,high
+INT32-C,6,sqlite,src/func.c,85,FP,sqlite3_value_type returns 1..5 enum; minus 1 cannot overflow; guarded by assert i>=0 && i<ArraySize,,high
+DCL03-C,7,sqlite,src/func.c,88,FP,assert(SQLITE_INTEGER==1) is a compile-time-known constant invariant check; intentional runtime assert documenting enum mapping,,high
+DCL03-C,8,sqlite,src/func.c,89,FP,same constant-invariant assert pattern,,high
+DCL03-C,9,sqlite,src/func.c,90,FP,same constant-invariant assert pattern,,high
+DCL03-C,10,sqlite,src/func.c,91,FP,same constant-invariant assert pattern,,high
+DCL03-C,11,sqlite,src/func.c,92,FP,same constant-invariant assert pattern,,high
+DCL13-C,12,sqlite,src/func.c,107,FP,subtypeFunc only reads argv[0]; fixed callback signature,,high
+DCL13-C,13,sqlite,src/func.c,119,FP,lengthFunc only reads argv[0]; fixed callback signature,,high
+ARR30-C,14,sqlite,src/func.c,136,FP,"UTF-8 char-count loop in lengthFunc bounded by NUL terminator (c=*z; while c!=0); z0 advances with z, no OOB",,high
+INT14-C,15,sqlite,src/func.c,139,FP,"z used in *z deref and z++ arithmetic; standard pointer iteration, not a readability defect",,med
+DCL13-C,16,sqlite,src/func.c,158,FP,bytelengthFunc only reads argv[0]; fixed callback signature,,high
+DCL13-C,17,sqlite,src/func.c,194,FP,absFunc only reads argv[0]; fixed callback signature,,high
+DCL13-C,18,sqlite,src/func.c,246,FP,instrFunc reads argv entries only; fixed callback signature,,high
+INT32-C,19,sqlite,src/func.c,290,FP,"N counts matched chars bounded by nHaystack (a value-bytes length, far below INT_MAX); cannot reach INT_MAX in practice",,high
+INT32-C,20,sqlite,src/func.c,292,FP,"nHaystack-- guarded by loop condition nNeedle<=nHaystack; stops at >=0, no underflow",,high
+MSC07-C,21,sqlite,src/func.c,303,FP,"code after endInstr return is the endInstrOOM error label reached via goto, not unreachable",,high
+DCL13-C,22,sqlite,src/func.c,314,FP,printfFunc reads argv via x.apArg; fixed callback signature,,high
+ARR00-C,23,sqlite,src/func.c,325,FP,"argv+1 forms x.apArg with x.nArg=argc-1, guarded by argc>=1; one-past/element pointer over the real argc-element argv array, analyzer mismodels argv as single element",,high
+EXP34-C,24,sqlite,src/func.c,326,FP,db = sqlite3_context_db_handle(context) never returns NULL for a live context; deref safe,,high
+DCL13-C,25,sqlite,src/func.c,350,FP,upper/lower etc only read argv[0]; fixed callback signature,,high
+EXP05-C,26,sqlite,src/func.c,425,FP,(char*)z cast in substr result_text64 drops only the constness for a TRANSIENT copy API that does not modify it; idiomatic,,med
+ARR00-C,27,sqlite,src/func.c,430,FP,"z2-z is pointer subtraction within the same value-text buffer z (z2 walked forward from z); same array object, defined",,high
+ARR00-C,28,sqlite,src/func.c,431,FP,"same: z2-z within one buffer in substr, defined subtraction",,high
+DCL13-C,29,sqlite,src/func.c,442,FP,roundFunc only reads argv[]; fixed callback signature,,high
+FLP34-C,30,sqlite,src/func.c,462,FP,sqlite3_value_double conversion to double is the documented numeric coercion; range pre-checked against 4503599627370496.0 before integer cast,,med
+EXP34-C,31,sqlite,src/func.c,487,FP,db handle from context is non-NULL for live context,,high
+DCL30-C,32,sqlite,src/func.c,498,FP,"contextMalloc returns z which is sqlite3Malloc heap pointer, not an automatic-storage local; analyzer misread local var name z",,high
+DCL13-C,33,sqlite,src/func.c,504,FP,upperFunc only reads argv[0]; fixed callback signature,,high
+INT32-C,34,sqlite,src/func.c,514,FP,((i64)n)+1 where n=sqlite3_value_bytes capped by SQLITE_LIMIT_LENGTH (<2^31); i64 add cannot overflow,,high
+DCL13-C,35,sqlite,src/func.c,523,FP,lowerFunc only reads argv[0]; fixed callback signature,,high
+INT32-C,36,sqlite,src/func.c,533,FP,"same bounded ((i64)n)+1, n bounded by length limit",,high
+DCL13-C,37,sqlite,src/func.c,585,FP,randomBlob only reads argv[0]; fixed callback signature,,high
+PRE00-C,38,sqlite,src/func.c,669,FP,"sqlite3Utf8Read EBCDIC-only macro; multiple-eval is platform-specific and argument is an lvalue pointer, intentional perf macro",,med
+PRE00-C,39,sqlite,src/func.c,670,FP,"Utf8Read perf macro multi-evals A by design (post-increment); intentional, contained",,med
+PRE01-C,40,sqlite,src/func.c,670,FP,macro param A not parenthesized but used as A[0]/A++ where parens are inapplicable to the ++ context; idiomatic SQLite macro,,med
+PRE00-C,41,sqlite,src/func.c,672,FP,"same Utf8Read macro multi-eval, intentional",,med
+PRE01-C,42,sqlite,src/func.c,672,FP,same A non-parenthesized perf macro,,med
+PRE12-C,43,sqlite,src/func.c,672,FP,same multi-eval perf macro,,med
+MEM05-C,44,sqlite,src/func.c,728,FP,patternCompare recursion exists (line 762/794/801) but is bounded by pattern length limit SQLITE_LIMIT_LIKE_PATTERN_LENGTH enforced in likeFunc; intentional design,,med
+ARR30-C,45,sqlite,src/func.c,740,FP,patternCompare while(Utf8Read(zPattern)!=0) bounded by NUL terminator of the value-text pattern; not unbounded,,high
+EXP30-C,46,sqlite,src/func.c,745,FP,"c used across reads in Utf8Read expansion; no genuine unsequenced modify-and-access defect, c assigned once per iteration",,med
+ARR00-C,47,sqlite,src/func.c,762,FP,"&zPattern[-1] is valid: zPattern was advanced one char past the '[' via Utf8Read so [-1] points back at '[', within the pattern buffer",,high
+DCL00-C,48,sqlite,src/func.c,813,FP,"prior_c is reassigned inside the set-matching loop (prior_c=c2 / prior_c=0); not actually never-modified, analyzer misread",,med
+INT13-C,49,sqlite,src/func.c,840,FP,"seen is an internal 0/1 flag; seen^invert is intentional boolean logic, not unsafe signed bitwise",,med
+EXP05-C,50,sqlite,src/func.c,867,FP,(u8*)zGlobPattern cast in sqlite3_strglob to patternCompare which only reads the pattern; const not violated semantically,,high
+EXP05-C,51,sqlite,src/func.c,867,FP,(u8*)zString likewise read-only in patternCompare,,high
+EXP05-C,52,sqlite,src/func.c,881,FP,(u8*)zPattern read-only in patternCompare,,high
+EXP05-C,53,sqlite,src/func.c,881,FP,(u8*)zStr read-only in patternCompare,,high
+DCL13-C,54,sqlite,src/func.c,910,FP,likeFunc reads argv only; fixed callback signature,,high
+INT32-C,55,sqlite,src/func.c,924,FP,"sqlite3_like_count is SQLITE_TEST-only counter, not attacker-driven; cannot meaningfully reach INT_MAX",,high
+EXP34-C,56,sqlite,src/func.c,935,FP,db handle non-NULL for live context,,high
+EXP05-C,57,sqlite,src/func.c,947,FP,(char*)zEsc cast feeds sqlite3Utf8CharLen which reads only; const-safe,,med
+EXP34-C,58,sqlite,src/func.c,953,FP,"pInfo = sqlite3_user_data(context) is the static globInfo/likeInfoNorm compareInfo pointer, always non-NULL by registration; deref safe",,high
+INT32-C,59,sqlite,src/func.c,966,FP,"test-only counter increment, not reachable to overflow",,high
+DCL13-C,60,sqlite,src/func.c,981,FP,nullifFunc reads argv only; fixed callback signature,,high
+DCL13-C,61,sqlite,src/func.c,1029,FP,versionFunc/sourceid only read; fixed callback signature,,high
+EXP30-C,62,sqlite,src/func.c,1033,FP,"sqlite3_log(value_int(argv[0]), ""%s"", value_text(argv[1])) args evaluated in unspecified order but operate on distinct argv elements with no shared side effects; safe",,med
+DCL13-C,63,sqlite,src/func.c,1045,FP,compileoptionusedFunc reads argv[0]; fixed callback signature,,high
+DCL13-C,64,sqlite,src/func.c,1069,FP,compileoptiongetFunc reads argv[0]; fixed callback signature,,high
+ARR02-C,65,sqlite,src/func.c,1084,FP,hexdigits[] implicit size with full 16-element initializer is exact and idiomatic,,high
+API00-C,66,sqlite,src/func.c,1093,FP,sqlite3QuoteValue asserts pStr!=0 at entry and pValue is dispatched through sqlite3_value_type; both are caller-contract internal pointers,,high
+API00-C,67,sqlite,src/func.c,1093,FP,pValue contract-guaranteed non-NULL sqlite3_value; value_type handles it,,high
+FLP02-C,68,sqlite,src/func.c,1108,FP,"r1!=r2 float inequality is deliberate round-trip-precision test to decide %g vs %e formatting; intentional, not an accidental equality compare",,med
+EXP34-C,69,sqlite,src/func.c,1128,FP,zBlob from sqlite3_value_blob; loop i<nBlob and buffer pre-enlarged via sqlite3StrAccumEnlarge(nBlob*2+4) with accError==0 guard before writes; indices in bounds,,high
+INT14-C,70,sqlite,src/func.c,1128,FP,"i used as i*2+2 index and loop counter; standard, no defect",,med
+INT32-C,71,sqlite,src/func.c,1128,FP,"(i*2)+2 within i64 nBlob bound; nBlob is value-bytes capped by length limit, no overflow; buffer sized nBlob*2+4",,high
+INT32-C,72,sqlite,src/func.c,1128,FP,i*2 bounded by nBlob (length-limited); no overflow,,high
+INT32-C,73,sqlite,src/func.c,1129,FP,"(i*2)+3 same bounded index, buffer sized accordingly",,high
+INT32-C,74,sqlite,src/func.c,1129,FP,i*2 same bounded,,high
+INT32-C,75,sqlite,src/func.c,1131,FP,(nBlob*2)+2 within buffer sized nBlob*2+4; nBlob length-limited so no int overflow (i64),,high
+INT32-C,76,sqlite,src/func.c,1132,FP,"(nBlob*2)+3 same, last byte index, within nBlob*2+4 allocation",,high
+INT14-C,77,sqlite,src/func.c,1162,FP,"v built as (v<<4)+hex in isNHex over N bounded digits; standard hex accumulation, not a defect",,med
+DCL13-C,78,sqlite,src/func.c,1184,FP,unistrFunc reads argv[0]; fixed callback signature,,high
+INT30-C,79,sqlite,src/func.c,1206,FP,"nIn-i: i only ever incremented by amounts that keep i<=nIn within the while(i<nIn) loop; strchr/isNHex stop at NUL so n=nIn-i stays >=0, no unsigned wrap",,high
+INT32-C,80,sqlite,src/func.c,1206,FP,nIn-i is non-negative by loop invariant i<nIn at the strchr-not-found branch; no signed overflow,,high
+EXP05-C,81,sqlite,src/func.c,1207,FP,n is int copied into memmove size; value is z-&zIn[i] >=0 and <=nIn (length-limited); const cast claim is analyzer noise,,med
+INT31-C,82,sqlite,src/func.c,1207,FP,n converted to size_t in memmove is non-negative (n>0 guarded at 1212 / n=nIn-i>=0 at 1206); no negative-to-size_t bug,,high
+EXP05-C,83,sqlite,src/func.c,1213,FP,"same n size_t conversion, guarded non-negative",,med
+INT32-C,84,sqlite,src/func.c,1220,FP,"i+1 index into NUL-terminated zIn; if i+1 is the NUL it simply fails the escape tests and goes to error; bounded read, i<nIn so i+1<=nIn within allocated/terminated buffer",,high
+INT32-C,85,sqlite,src/func.c,1221,FP,same i+1 read bounded by NUL terminator,,high
+INT32-C,86,sqlite,src/func.c,1225,FP,"i+2 read: isNHex stops at first non-hex incl NUL, never reads past terminator; bounded",,high
+INT32-C,87,sqlite,src/func.c,1229,FP,same i+2 bounded by NUL/isNHex early-out,,high
+INT32-C,88,sqlite,src/func.c,1233,FP,same i+2 bounded,,high
+MSC07-C,89,sqlite,src/func.c,1244,FP,"unistr_error label after the return is reached via goto, not unreachable code",,high
+DCL13-C,90,sqlite,src/func.c,1265,FP,quoteFunc reads argv[0]; fixed callback signature,,high
+EXP34-C,91,sqlite,src/func.c,1270,FP,db handle non-NULL for live context,,high
+DCL13-C,92,sqlite,src/func.c,1287,FP,unicodeFunc reads argv[0]; fixed callback signature,,high
+DCL13-C,93,sqlite,src/func.c,1302,FP,charFunc reads argv[]; fixed callback signature,,high
+INT32-C,94,sqlite,src/func.c,1306,FP,"argc*4+1 where argc is the SQL function arg count, bounded by SQLITE_LIMIT_FUNCTION_ARG (<<2^29); int product cannot overflow",,high
+INT32-C,95,sqlite,src/func.c,1306,FP,argc*4 bounded by function-arg limit; no overflow; allocation sized to hold max 4 UTF-8 bytes per arg,,high
+INT14-C,96,sqlite,src/func.c,1318,FP,"c used in c>>n shifts and bit math; intentional UTF-8 encoding, not a defect",,med
+EXP07-C,97,sqlite,src/func.c,1323,FP,c>>12 is deliberate UTF-8 3-byte encoding shift on a value masked to 0x1fffff; not a magic-constant defect,,high
+EXP07-C,98,sqlite,src/func.c,1327,FP,c>>18 deliberate 4-byte UTF-8 lead-byte shift; intentional,,high
+EXP07-C,99,sqlite,src/func.c,1328,FP,c>>12 deliberate UTF-8 continuation-byte extraction; intentional,,high
+DCL13-C,100,sqlite,src/func.c,1344,FP,hexFunc reads argv[0]; fixed callback signature,,high
+INT32-C,101,sqlite,src/func.c,1354,FP,((i64)n)*2+1 with n=value_bytes capped by SQLITE_LIMIT_LENGTH; i64 arithmetic cannot overflow,,high
+INT32-C,102,sqlite,src/func.c,1354,FP,((i64)n)*2 bounded by length limit; no overflow; buffer sized via contextMalloc with TOOBIG check,,high
+DCL00-C,103,sqlite,src/func.c,1357,FP,"local 'c'=*pBlob reassigned each loop iteration; const-qualify is style-only, contract-safe",,low
+EXP34-C,104,sqlite,src/func.c,1357,FP,pBlob from sqlite3_value_blob may be NULL but read guarded by for loop i<n where n=value_bytes==0 when blob NULL; no deref,,med
+STR34-C,105,sqlite,src/func.c,1358,FP,c declared unsigned char (line 1357) so hexdigits index already unsigned; STR34 sign-extension misfire,,low
+STR34-C,106,sqlite,src/func.c,1359,FP,"same: c is unsigned char, &0xf masks; no signed-char hazard",,low
+STR34-C,107,sqlite,src/func.c,1361,FP,"*z is write target (z is char*), not a sign-extended read used as index",,low
+ARR30-C,108,sqlite,src/func.c,1372,FP,"strContainsChar zEnd=&zStr[nStr] then loop z<zEnd with Utf8Read; nStr is value_bytes of real buffer, bounded; not attacker-unbounded",,med
+ARR36-C,109,sqlite,src/func.c,1374,FP,zEnd and z both derive from same zStr buffer; pointer compare within one object is well-defined,,low
+DCL13-C,110,sqlite,src/func.c,1406,TP,"argv elements read via sqlite3_value_* (no store into non-const, no mutation); const-qualifying argv[] compiles; DCL13 valid",,med
+INT32-C,111,sqlite,src/func.c,1425,FP,(nHex/2)+1 passed to contextMalloc as i64 arg; nHex is value_bytes bounded by SQLITE_MAX_LENGTH; no int overflow reachable,,med
+ARR30-C,112,sqlite,src/func.c,1430,FP,"while((c=*zHex)!=0) terminates at NUL of value_text; Utf8Read advances, pBlob sized (nHex/2)+1 and each byte consumes >=2 chars; bounded",,high
+MSC07-C,113,sqlite,src/func.c,1451,FP,line 1451 is the unhex_null label after the unhex_done return; it is a goto target not dead code; MSC07 misfire,,high
+DCL13-C,114,sqlite,src/func.c,1463,TP,zeroblobFunc reads argv[0] via sqlite3_value_int64 only; argv never modified; DCL13 const-valid,,med
+DCL13-C,115,sqlite,src/func.c,1486,TP,replaceFunc reads argv via sqlite3_value_*; no mutation/store of argv; DCL13 const-valid,,med
+INT32-C,116,sqlite,src/func.c,1530,FP,loopLimit=nStr-nPattern both bounded value_bytes; used as loop limit i<=loopLimit; negative limit just skips loop; no overflow defect,,med
+INT31-C,117,sqlite,src/func.c,1533,FP,"memcmp nPattern: nPattern=value_bytes>=0 (zPattern[0]!=0 case), cannot be negative; size_t conversion safe",,med
+INT32-C,118,sqlite,src/func.c,1537,FP,nRep-nPattern computed only inside if(nRep>nPattern) so positive; bounded value_bytes; no overflow,,med
+EXP34-C,119,sqlite,src/func.c,1538,FP,db=sqlite3_context_db_handle never NULL for a valid context; deref of db->aLimit safe,,high
+INT14-C,120,sqlite,src/func.c,1546,FP,cntExpand power-of-two test (cntExpand&(cntExpand-1)) plus ++ is intentional idiom; INT14 readability-only,,low
+INT32-C,121,sqlite,src/func.c,1551,FP,"nOut bounded by SQLITE_LIMIT_LENGTH guard at 1540 before realloc; (int)nOut+(nOut-nStr-1) within i64; checked, no overflow",,med
+ARR00-C,122,sqlite,src/func.c,1559,FP,zOut after sqlite3Realloc is the NEW live buffer; old freed only via zOld on failure branch; not UAF,,high
+INT31-C,123,sqlite,src/func.c,1559,FP,nRep=value_bytes>=0; memcpy size_t conversion safe,,med
+MEM30-C,124,sqlite,src/func.c,1559,FP,"zOut passed to memcpy is live realloc result, not freed; UAF misfire",,high
+MEM30-C,125,sqlite,src/func.c,1559,FP,same: zOut is valid post-realloc buffer; no UAF,,high
+MEM30-C,126,sqlite,src/func.c,1559,FP,same: zOut live; analyzer misread realloc(zOut) as free-of-zOut,,high
+INT32-C,127,sqlite,src/func.c,1561,FP,nPattern-1 used as i+=nPattern-1; nPattern>=1 in this branch; no signed overflow,,med
+ARR00-C,128,sqlite,src/func.c,1565,FP,zOut at 1565 is live realloc buffer; final memcpy bounded by assert j+nStr-i+1<=nOut; not UAF,,high
+EXP05-C,129,sqlite,src/func.c,1565,FP,"&zStr[i] is const u8*; nStr-i is just the length arg, no const cast-away; EXP05 misfire",,low
+INT31-C,130,sqlite,src/func.c,1565,FP,nStr=value_bytes>=0; memcpy size_t safe,,med
+INT32-C,131,sqlite,src/func.c,1565,FP,nStr-i: i<=nStr by loop construction and assert at 1564; non-negative; no overflow,,med
+MEM30-C,132,sqlite,src/func.c,1565,FP,zOut live post-realloc; not freed; UAF misfire,,high
+MEM30-C,133,sqlite,src/func.c,1565,FP,same,,high
+MEM30-C,134,sqlite,src/func.c,1565,FP,same,,high
+INT32-C,135,sqlite,src/func.c,1566,FP,nStr-i non-negative (assert 1564); bounded; no overflow,,med
+ARR00-C,136,sqlite,src/func.c,1568,FP,"zOut live buffer at 1568 write zOut[j]=0, j<=nOut per assert 1567; not UAF",,high
+DCL13-C,137,sqlite,src/func.c,1579,TP,trimFunc reads argv via sqlite3_value_*; argv not mutated; DCL13 const-valid,,med
+ARR02-C,138,sqlite,src/func.c,1598,FP,"lenOne[]={1} static const with initializer; size is inferred and fixed; ARR02 style-only, intentional",,low
+ARR02-C,139,sqlite,src/func.c,1599,FP,azOne[] static const with initializer; fixed inferred size; style-only,,low
+CON03-C,140,sqlite,src/func.c,1599,FP,"azOne is function-local static const initialized at compile time, read-only; no thread visibility issue; CON03 misfire",,high
+EXP05-C,141,sqlite,src/func.c,1601,FP,(unsigned*)lenOne casts const array to unsigned* but only READ via aLen[i]; not written; const-correctness preserved in practice,,med
+EXP34-C,142,sqlite,src/func.c,1608,FP,z=zCharSet checked (zCharSet!=0 at 1604 else return); loop *z guard; not NULL-deref,,med
+EXP05-C,143,sqlite,src/func.c,1619,FP,azChar[nChar]=(unsigned char*)z stores pointer into zCharSet; z is const but stored as non-const ptr only read later; benign cast,,low
+ARR37-C,144,sqlite,src/func.c,1621,FP,aLen=(unsigned*)&azChar[nChar] points into the single contextMalloc block; aLen[nChar] indexing within allocated region; not bare pointer,,med
+INT13-C,145,sqlite,src/func.c,1627,FP,flags=SQLITE_PTR_TO_INT(user_data) is 1/2/3 small constants; flags&1 well-defined; INT13 style-only,,low
+ARR37-C,146,sqlite,src/func.c,1631,FP,aLen[i] indexes the malloc'd len array region (sized nChar slots); i<nChar; bounded,,med
+EXP34-C,147,sqlite,src/func.c,1631,FP,aLen non-NULL when nChar>0 (contextMalloc checked at 1614 return); guarded,,med
+INT30-C,148,sqlite,src/func.c,1636,FP,nIn-=len guarded by len<=nIn at 1632 in the matched branch (break sets i<nChar); no unsigned wrap,,high
+INT13-C,149,sqlite,src/func.c,1639,FP,flags&2 small constant; style-only,,low
+ARR37-C,150,sqlite,src/func.c,1643,FP,aLen[i] bounded i<nChar within malloc'd region,,med
+INT30-C,151,sqlite,src/func.c,1644,FP,zIn[nIn-len] guarded by len<=nIn at 1644 before access; no underflow,,high
+INT30-C,152,sqlite,src/func.c,1647,FP,nIn-=len in flags&2 branch reached only on match where len<=nIn held; no wrap,,high
+EXP05-C,153,sqlite,src/func.c,1654,FP,(char*)zIn cast for sqlite3_result_text SQLITE_TRANSIENT (copies); read-only; benign,,low
+DCL13-C,154,sqlite,src/func.c,1666,TP,concatFuncCore reads argv via value_* only; not mutated; DCL13 const-valid,,med
+INT32-C,155,sqlite,src/func.c,1677,FP,(argc-1)*nSep: argc>=1 for concat funcs; nSep i64; bounded by arg count; no practical overflow,,med
+EXP05-C,156,sqlite,src/func.c,1690,FP,&z[j] z is char* output buffer; not const; EXP05 misfire on memcpy dest,,low
+EXP05-C,157,sqlite,src/func.c,1693,FP,&z[j] output buffer non-const; misfire,,low
+INT31-C,158,sqlite,src/func.c,1693,FP,k=value_bytes>=0; memcpy size_t safe,,med
+DCL13-C,159,sqlite,src/func.c,1726,TP,concatwsFunc reads argv[0] via value_*; argv not mutated; DCL13 const-valid,,med
+ARR00-C,160,sqlite,src/func.c,1731,FP,"argv+1 is intentional: skip separator arg, pass remaining argc-1 args; standard pointer-past-element-0 into the real argv array (size>=2 here); not OOB",,high
+INT32-C,161,sqlite,src/func.c,1731,FP,argc-1: concatws requires argc>=1; bounded by call site; no overflow,,med
+DCL13-C,162,sqlite,src/func.c,1746,FP,unknownFunc is a no-op stub; context unused; DCL13 vacuously true but harmless; low value,,low
+DCL13-C,163,sqlite,src/func.c,1748,FP,unknownFunc no-op stub; argv unused; const trivially-true low value,,low
+DCL13-C,164,sqlite,src/func.c,1772,TP,soundexFunc (SQLITE_SOUNDEX build) reads argv via value_text; argv not mutated; DCL13 const-valid,,low
+ARR02-C,165,sqlite,src/func.c,1777,FP,iCode[] static const with 128-entry initializer; fixed inferred size; style-only,,low
+INT32-C,166,sqlite,src/func.c,1799,FP,code from iCode[] is 0..6; code+'0' is a small ASCII digit; no overflow,,low
+DCL13-C,167,sqlite,src/func.c,1822,TP,loadExt reads argv via value_text only; argv not mutated; DCL13 const-valid,,med
+EXP34-C,168,sqlite,src/func.c,1831,FP,db=sqlite3_context_db_handle never NULL; db->flags deref safe,,high
+EXP34-C,169,sqlite,src/func.c,1842,FP,zErrMsg passed to sqlite3_result_error after sqlite3_load_extension failed; result_error handles NULL/-1 length; documented contract,,med
+FLP06-C,170,sqlite,src/func.c,1875,FP,4503599627370496LL literal is exact i64 boundary used in i64 compare not float init; FLP06 misfire,,low
+FLP06-C,171,sqlite,src/func.c,1876,FP,same i64 boundary constant; not float init,,low
+INT10-C,172,sqlite,src/func.c,1891,FP,iVal%16384 with i64 iVal; result sign handled by Kahan algorithm design (iBig+iSm reconstruct iVal exactly); intentional,,med
+FLP34-C,173,sqlite,src/func.c,1896,FP,(double)iVal cast in Kahan init; range fits; FLP34 style,,low
+INT10-C,174,sqlite,src/func.c,1908,FP,iVal%16384 i64 modulo intentional Kahan decomposition,,med
+FLP34-C,175,sqlite,src/func.c,1909,FP,(double)(iVal-iSm) cast; intentional,,low
+FLP34-C,176,sqlite,src/func.c,1910,FP,(double)iSm cast; intentional,,low
+FLP34-C,177,sqlite,src/func.c,1912,FP,(double)iVal cast; intentional,,low
+DCL13-C,178,sqlite,src/func.c,1927,TP,sumStep reads argv via value_*; argv not mutated; DCL13 const-valid,,med
+EXP33-C,179,sqlite,src/func.c,1932,FP,"p=sqlite3_aggregate_context(...,sizeof(*p)); used under if(p && ...) guard at 1934; not uninit deref",,high
+DCL13-C,180,sqlite,src/func.c,1963,TP,sumInverse reads argv via value_*; not mutated; DCL13 const-valid,,med
+EXP33-C,181,sqlite,src/func.c,1968,FP,"p from aggregate_context, guarded by if(ALWAYS(p)&&...) at 1972; not uninit",,high
+FLP34-C,182,sqlite,src/func.c,2022,FP,(double)(p->iSum) cast in avgFinalize; intentional,,low
+FLP34-C,183,sqlite,src/func.c,2024,FP,(double)cnt division cast; intentional,,low
+DCL00-C,184,sqlite,src/func.c,2029,FP,"r reassigned in branches (1875/1876 are different func); in totalFinalize r=0.0 then conditionally set; not truly const-able... actually r is reassigned, const wrong; DCL00 misfire",,low
+FLP34-C,185,sqlite,src/func.c,2036,FP,(double)(p->iSum) cast; intentional,,low
+DCL13-C,186,sqlite,src/func.c,2057,TP,countStep reads argv via value_type; argv not mutated; DCL13 const-valid,,med
+EXP33-C,187,sqlite,src/func.c,2059,FP,"p=aggregate_context, used under if(... && p) guard at 2060; not uninit deref",,high
+EXP34-C,188,sqlite,src/func.c,2069,FP,p in assert only (SQLITE_DEBUG) and guarded; aggregate_context returns valid or NULL handled,,high
+FLP02-C,189,sqlite,src/func.c,2070,FP,p->n==sqlite3_aggregate_count in an assert with ||p==0 guards; FLP02 misfire on integer compare anyway,,low
+DCL13-C,190,sqlite,src/func.c,2079,TP,countInverse reads argv via value_type; not mutated; DCL13 const-valid,,med
+EXP33-C,191,sqlite,src/func.c,2081,FP,p guarded by ALWAYS(p) at 2083; not uninit,,high
+DCL13-C,192,sqlite,src/func.c,2100,TP,minmaxStep: argv read as Mem* via value_type/MemCompare; argv array not mutated; DCL13 const-valid,,med
+EXP33-C,193,sqlite,src/func.c,2106,FP,pBest=aggregate_context then if(!pBest) return at 2107; subsequent use guarded; not uninit,,high
+DCL13-C,194,sqlite,src/func.c,2187,TP,groupConcatStep reads argv via value_*; argv not mutated; DCL13 const-valid,,med
+EXP33-C,195,sqlite,src/func.c,2195,FP,"pGCC=aggregate_context, all use under if(pGCC) at 2196; not uninit",,high
+EXP34-C,196,sqlite,src/func.c,2199,FP,db=sqlite3_context_db_handle never NULL; db->aLimit deref safe,,high
+INT30-C,197,sqlite,src/func.c,2223,FP,(nAccum+1)*sizeof(int) via sqlite3_malloc64; nAccum bounded by row count; overflow needs ~2^61 rows; not reachable,,med
+INT32-C,198,sqlite,src/func.c,2223,FP,same multiplication; size_t promotion; not reachable overflow,,med
+INT30-C,199,sqlite,src/func.c,2229,FP,nAccum*sizeof(int) realloc64; bounded by rows; not reachable,,med
+MEM30-C,200,sqlite,src/func.c,2233,FP,"pnsl is realloc input/output; old value consumed by realloc, new assigned; not used-after-free",,high
+MEM30-C,201,sqlite,src/func.c,2250,FP,"pGCC is aggregate context, never freed; not UAF",,high
+MEM30-C,202,sqlite,src/func.c,2250,FP,pGCC live aggregate context; not freed,,high
+MEM30-C,203,sqlite,src/func.c,2250,FP,pGCC->nAccum access on live context; not UAF,,high
+DCL13-C,204,sqlite,src/func.c,2258,TP,groupConcatInverse reads argv via value_*; not mutated; DCL13 const-valid,,med
+EXP33-C,205,sqlite,src/func.c,2264,FP,pGCC=aggregate_context guarded by ALWAYS(pGCC) at 2267; not uninit deref,,high
+INT32-C,206,sqlite,src/func.c,2277,FP,nVS accumulates sqlite3_value_bytes counts then clamped by 'if(nVS>=(int)str.nChar)' at 2285 before any use; no unbounded growth,,high
+ARR38-C,207,sqlite,src/func.c,2278,FP,"memmove size '(nAccum-1)*sizeof(int)' guarded by nAccum>0 and assert(nAccum>=0); nAccum is bounded row count, not attacker length",,high
+EXP43-C,208,sqlite,src/func.c,2278,FP,"memmove is precisely the overlap-safe primitive; src/dst overlap is the intended use, not UB",,high
+INT32-C,209,sqlite,src/func.c,2278,FP,"same as 207: nAccum guarded >0, decremented per inverse, never trusted from input bytes",,high
+INT30-C,210,sqlite,src/func.c,2279,FP,"(nAccum-1) is non-negative under guard; nAccum is internal counter bounded by aggregate row count, no wrap reachable",,high
+INT32-C,211,sqlite,src/func.c,2279,FP,"signed mul of bounded internal counter*sizeof(int); to overflow needs ~2^29 rows of separators, infeasible and counter not input-derived",,high
+INT32-C,212,sqlite,src/func.c,2283,FP,"nFirstSepLength is sqlite3_value_bytes of sep arg; nVS clamped at 2285 before use, harmless overshoot is by design comment",,high
+API00-C,213,sqlite,src/func.c,2351,FP,"API00 boilerplate; sqlite3RegisterLikeFunctions is internal, db is non-null by caller contract (called from connection init)",,high
+EXP34-C,214,sqlite,src/func.c,2367,FP,"pDef from sqlite3FindFunction after sqlite3CreateFunc of core 'like'; on OOM path mallocFailed handled by caller, established safe core pattern",,med
+API00-C,215,sqlite,src/func.c,2389,FP,"API00 boilerplate; internal optimizer entry, db non-null by contract, pExpr asserted non-null",,high
+API00-C,216,sqlite,src/func.c,2389,FP,pIsNocase written unconditionally before any deref later; caller always passes valid pointer (internal use),,high
+DCL13-C,217,sqlite,src/func.c,2463,TP,argv read-only in ceilingFunc (only sqlite3_value_int64/double on argv[0]); const sqlite3_value** would compile but signature is fixed by xFunc typedef,,high
+FLP34-C,218,sqlite,src/func.c,2472,FP,"FLP34 on function-pointer call x(double); the double is a validated SQLITE_FLOAT value, no narrowing conversion present",,high
+WIN04-C,219,sqlite,src/func.c,2472,FP,"WIN04 EncodePointer is Windows-hardening noise; sqlite3_user_data returns internal const pointer, not attacker-controlled",,high
+DCL13-C,220,sqlite,src/func.c,2513,TP,"argv read-only in logFunc; const-qualifying compiles, but signature fixed by xFunc typedef (style-only)",,high
+ERR01-C,221,sqlite,src/func.c,2530,FP,ERR01 errno-after-log; SQL log() pre-validates x>0.0 at 2521 so no domain error; result is well-defined,,high
+FLP32-C,222,sqlite,src/func.c,2530,FP,FLP32 domain check IS present: x<=0.0 returns at 2521 before log(),,high
+ERR01-C,223,sqlite,src/func.c,2538,FP,same: b=log(x) with x>0 guaranteed; errno not needed,,high
+FLP03-C,224,sqlite,src/func.c,2538,FP,FLP03 div log(x)/b guarded by b<=0.0 return at 2531; b is finite positive,,high
+FLP32-C,225,sqlite,src/func.c,2538,FP,domain guarded (x>0 enforced),,high
+INT33-C,226,sqlite,src/func.c,2538,FP,"INT33 div-by-b: b<=0.0 returns at 2531, so b is strictly positive, never zero",,high
+ERR01-C,227,sqlite,src/func.c,2542,FP,log10 input x>0 enforced at 2521,,high
+FLP32-C,228,sqlite,src/func.c,2542,FP,domain guarded,,high
+ERR01-C,229,sqlite,src/func.c,2545,FP,log2 input x>0 enforced at 2521,,high
+EXP37-C,230,sqlite,src/func.c,2545,FP,"EXP37 complex-number note inapplicable; x is real double, log2 is the real libm function",,high
+FLP32-C,231,sqlite,src/func.c,2545,FP,domain guarded,,high
+ERR01-C,232,sqlite,src/func.c,2548,FP,log input x>0 enforced,,high
+FLP32-C,233,sqlite,src/func.c,2548,FP,domain guarded,,high
+FLP03-C,234,sqlite,src/func.c,2558,FP,"degToRad x*(M_PI/180.0) is multiplication not division; rule misfire, no div-by-zero",,high
+FLP03-C,235,sqlite,src/func.c,2559,FP,"radToDeg x*(180.0/M_PI): constant divisor M_PI nonzero, computed at compile time",,high
+INT33-C,236,sqlite,src/func.c,2559,FP,"INT33 div-by-M_PI: M_PI is a nonzero constant, never zero",,high
+DCL13-C,237,sqlite,src/func.c,2569,TP,argv read-only in math1Func (value_numeric_type/value_double on argv[0]); const compiles but typedef fixes signature,,high
+FLP34-C,238,sqlite,src/func.c,2578,FP,"FLP34 fp call x(v0); v0 is validated numeric double, no out-of-range narrowing",,high
+DCL13-C,239,sqlite,src/func.c,2591,TP,"argv read-only in math2Func; const-qualifiable, signature fixed by xFunc typedef",,high
+FLP34-C,240,sqlite,src/func.c,2603,FP,"FLP34 two-arg fp call; both validated numeric doubles, no narrowing",,high
+DCL13-C,241,sqlite,src/func.c,2614,TP,"argv read-only in piFunc (argv unused, (void)argv); const compiles, typedef-fixed signature",,high
+DCL13-C,242,sqlite,src/func.c,2629,TP,"argv read-only in signFunc; only value_numeric_type/value_double reads; const compiles, typedef-fixed",,high
+DCL03-C,243,sqlite,src/func.c,2767,FP,"DCL03 assert(sizeof(u)==sizeof(r)) is a sizeof compile-constant; SQLite intentionally uses assert here, not a runtime bug",,high
+EXP07-C,244,sqlite,src/func.c,2769,FP,EXP07 'u>>52' is the documented IEEE-754 exponent extraction; magic constant is correct by spec,,high
+FLP02-C,245,sqlite,src/func.c,2769,FP,"FLP02 '((u>>52)&0x7ff)==0x7ff' is integer bit comparison on the bit-pattern, not float equality",,high
+DCL13-C,246,sqlite,src/func.c,2791,TP,"p read-only in percentBinarySearch (reads p->nUsed, p->a[]); const Percentile* compiles; not stored or mutated",,high
+INT32-C,247,sqlite,src/func.c,2793,FP,(i64)p->nUsed-1 with nUsed u64; if nUsed==0 yields -1 sentinel that makes loop body not execute; no signed overflow reachable,,high
+FLP06-C,248,sqlite,src/func.c,2796,FP,"FLP06 'iLast=(i64)nUsed-1' is integer init of i64, not a float variable; rule misfire",,high
+DCL13-C,249,sqlite,src/func.c,2834,TP,"argv read-only in percentStep; only value_type/value_double/value_numeric_type reads; const-qualifiable, typedef-fixed",,high
+FLP03-C,250,sqlite,src/func.c,2852,FP,"FLP03 rPct=value_double/mxFrac; mxFrac is 100.0 or 1.0 constant, never zero",,high
+INT33-C,251,sqlite,src/func.c,2852,FP,"INT33 div-by-mxFrac: mxFrac is literal 100.0 or 1.0, nonzero by construction",,high
+FLP34-C,252,sqlite,src/func.c,2858,FP,"FLP34 result_double(vx); vx is internal computed double, no narrowing conversion at call",,high
+EXP33-C,253,sqlite,src/func.c,2864,FP,p assigned by sqlite3_aggregate_context at 2864 then checked 'if(p==0)return' before any deref; not uninitialized,,high
+INT30-C,254,sqlite,src/func.c,2899,FP,"sizeof(double)*n with n=nAlloc*2+250 (u64); to wrap u64 needs ~2^60 rows, infeasible; realloc64 takes u64",,high
+ARR38-C,255,sqlite,src/func.c,2918,FP,"memmove (nUsed-i)*sizeof; i=percentBinarySearch returns 0..nUsed, guarded i<(int)nUsed at 2917; bounded internal index",,high
+EXP05-C,256,sqlite,src/func.c,2918,FP,"EXP05 '&p->a[i+1]' a[] is double* non-const; no const cast away, rule misread",,high
+INT30-C,257,sqlite,src/func.c,2918,FP,"(nUsed-i) non-negative under i<nUsed guard; nUsed is internal row count, multiply cannot wrap at feasible sizes",,high
+INT32-C,258,sqlite,src/func.c,2918,FP,"same: bounded index arithmetic on internal counter, not input length",,high
+PRE00-C,259,sqlite,src/func.c,2931,FP,PRE00 SWAP_DOUBLE evaluates args multiple times but is only ever called with simple a[idx] lvalues (no side effects); style finding,,med
+PRE10-C,260,sqlite,src/func.c,2931,FP,"PRE10 multistatement macro not in do-while; only used in statement context with braces here, no if-without-braces misuse present",,med
+PRE12-C,261,sqlite,src/func.c,2931,FP,"PRE12 same as 259; macro is local, args are plain array lvalues, no double-eval hazard realized",,med
+MEM05-C,262,sqlite,src/func.c,2945,FP,"MEM05 percentSort recursion is bounded quicksort (recurses on iLt and n-iGt sub-ranges, each strictly smaller); depth O(log n) typical, not unbounded",,high
+INT32-C,263,sqlite,src/func.c,2970,FP,"INT32 i++ bounded by i<iGt loop and iGt<=n; n is array size, not at INT_MAX in practice",,high
+INT32-C,264,sqlite,src/func.c,2973,FP,"INT32 iGt-- guarded by 'while(iGt>i)'; iGt stays >i>=1, no underflow to INT_MIN",,high
+INT32-C,265,sqlite,src/func.c,2977,FP,INT32 i++ in iLt branch bounded by i<iGt; bounded loop counter,,high
+DCL13-C,266,sqlite,src/func.c,2996,TP,"argv read-only in percentInverse; only value_type/value_double reads; const-qualifiable, typedef-fixed",,high
+EXP33-C,267,sqlite,src/func.c,3004,FP,p assigned by sqlite3_aggregate_context then assert(p!=0) at 3005; not uninitialized before use,,high
+ARR38-C,268,sqlite,src/func.c,3034,FP,memmove (nUsed-i)*sizeof guarded by i<(int)nUsed at 3033; i from binarySearch exact (>=0 checked); bounded,,high
+EXP05-C,269,sqlite,src/func.c,3034,FP,"EXP05 '&p->a[i]' a[] is non-const double*; no const cast, misread",,high
+INT30-C,270,sqlite,src/func.c,3034,FP,"bounded internal index subtraction, no wrap at feasible row counts",,high
+INT32-C,271,sqlite,src/func.c,3034,FP,same bounded arithmetic,,high
+INT13-C,272,sqlite,src/func.c,3060,FP,"INT13 settings = user_data&1; user_data is internal const pointer-to-int, the & is on a small flag value, not attacker signed data",,high
+FLP00-C,273,sqlite,src/func.c,3063,FP,"FLP00 'ix==(double)i1' is the documented exact-integer check to pick interpolation endpoint; intentional, correct",,high
+FLP02-C,274,sqlite,src/func.c,3063,FP,FLP02 same exact-integer test; deliberate boundary detection for percentile interpolation,,high
+FLP34-C,275,sqlite,src/func.c,3063,FP,FLP34 within percentCompute; values are bounded internal doubles,,high
+INT30-C,276,sqlite,src/func.c,3063,FP,"INT30 'i1+1' where i1=(unsigned)ix, ix=rPct*(nUsed-1) with rPct<=1, so i1<=nUsed-1; guarded i1==nUsed-1?i1:i1+1 prevents OOB and no wrap",,high
+ARR36-C,277,sqlite,src/func.c,3066,FP,ARR36 p->a[i2] and p->a[i1] are same array a[]; pointer subtraction within one array is well-defined; misread as different arrays,,high
+DCL13-C,278,sqlite,src/func.c,3096,TP,"argv read-only in filestatFunc (only value_text(argv[0])); const-qualifiable, typedef-fixed signature",,high
+MEM31-C,279,sqlite,src/func.c,3113,FP,MEM31 pStr from sqlite3_str_new freed via sqlite3_str_finish at 3127 (ownership transferred to result_text with sqlite3_free destructor); not leaked,,high
+DCL13-C,280,sqlite,src/func.c,3153,TP,"argv read-only in fpdecodeFunc (value_double/value_int reads); const-qualifiable, typedef-fixed",,high
+EXP33-C,281,sqlite,src/func.c,3167,FP,zBuf written by sqlite3_snprintf at 3167 or 3169 on every path before result_text reads it; not uninitialized,,high
+DCL13-C,282,sqlite,src/func.c,3197,TP,"argv read-only in parseuriFunc (value_text/value_int/value_type reads); const-qualifiable, typedef-fixed",,high
+MEM31-C,283,sqlite,src/func.c,3216,FP,MEM31 pResult from sqlite3_str_new consumed by sqlite3_str_finish at 3244 (transfers to result_text); freed on the only allocation path,,high
+EXP33-C,284,sqlite,src/func.c,3232,FP,zArg assigned in the controlling 'else if((zArg=...)!=0)' condition and only used inside that true branch; never read uninitialized,,high
+ARR02-C,285,sqlite,src/func.c,3269,FP,"ARR02 aBuiltinFunc[] uses implicit size with brace-enclosed initializer; size is determined by initializer, ArraySize() computes it; idiomatic and safe",,high
+CON03-C,286,sqlite,src/func.c,3269,FP,"CON03 aBuiltinFunc is function-static, written once at init before threads use it (comment notes read-only after init); not a shared-mutable race",,high
+EXP43-C,287,sqlite,src/func.c,3346,FP,"EXP43 VFUNCTION is a FuncDef-table initializer macro, not a call with restrict pointers; rule misfire on macro expansion",,high
+EXP43-C,288,sqlite,src/func.c,3347,FP,same VFUNCTION initializer macro misfire,,high
+EXP43-C,289,sqlite,src/func.c,3348,FP,same VFUNCTION initializer macro misfire,,high
+EXP43-C,290,sqlite,src/func.c,3401,FP,EXP43 MFUNCTION is a static-initializer macro for the func table; no runtime call with aliased restrict params,,high
+EXP43-C,291,sqlite,src/func.c,3408,FP,MFUNCTION initializer macro misfire,,high
+EXP43-C,292,sqlite,src/func.c,3409,FP,MFUNCTION initializer macro misfire,,high
+EXP43-C,293,sqlite,src/func.c,3412,FP,MFUNCTION initializer macro misfire,,high
+EXP43-C,294,sqlite,src/func.c,3413,FP,MFUNCTION initializer macro misfire,,high
+EXP43-C,295,sqlite,src/func.c,3414,FP,MFUNCTION initializer macro misfire,,high
+EXP43-C,296,sqlite,src/func.c,3415,FP,MFUNCTION initializer macro misfire,,high
+EXP43-C,297,sqlite,src/func.c,3416,FP,MFUNCTION initializer macro misfire,,high
+EXP43-C,298,sqlite,src/func.c,3417,FP,MFUNCTION initializer macro misfire,,high
+EXP43-C,299,sqlite,src/func.c,3418,FP,MFUNCTION initializer macro misfire,,high
+EXP43-C,300,sqlite,src/func.c,3419,FP,MFUNCTION initializer macro misfire,,high
+EXP43-C,301,sqlite,src/func.c,3420,FP,MFUNCTION initializer macro misfire,,high
+EXP43-C,302,sqlite,src/func.c,3421,FP,MFUNCTION initializer macro misfire,,high
+EXP43-C,303,sqlite,src/func.c,3423,FP,MFUNCTION initializer macro misfire,,high
+EXP43-C,304,sqlite,src/func.c,3424,FP,MFUNCTION initializer macro misfire,,high
+EXP43-C,305,sqlite,src/func.c,3425,FP,MFUNCTION initializer macro misfire,,high
+EXP43-C,306,sqlite,src/func.c,3427,FP,MFUNCTION initializer macro misfire,,high
+FLP30-C,307,sqlite,src/func.c,3451,FP,"FLP30 'h' loop discussion misattributed; line 3451 is the disabled (#if 0) debug print block, not live float loop counter",,high
+DCL00-C,308,sqlite,src/func.c,3453,FP,"DCL00 'h' in disabled #if 0 debug block; not compiled, cosmetic",,high
+DCL02-C,309,sqlite,src/func.c,3453,FP,"line 3453 sits inside a `#if 0 ... #endif` (3445-3460) debug-print block — never compiled, unreachable dead code",,high
+DCL02-C,310,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block at func.c 3445-3460,,high
+DCL02-C,311,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,312,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,313,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,314,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,315,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,316,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,317,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,318,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,319,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,320,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,321,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,322,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,323,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,324,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,325,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,326,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,327,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,328,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,329,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,330,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,331,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,332,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,333,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,334,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,335,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,336,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,337,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,338,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,339,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,340,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,341,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,342,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,343,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,344,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,345,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,346,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,347,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,348,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,349,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,350,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,351,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,352,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,353,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,354,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,355,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,356,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,357,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,358,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,359,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,360,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,361,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,362,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,363,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,364,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,365,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,366,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,367,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,368,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,369,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,370,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,371,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,372,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,373,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,374,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,375,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,376,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,377,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,378,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,379,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,380,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,381,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,382,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,383,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,384,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,385,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,386,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,387,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,388,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,389,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,390,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,391,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,392,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,393,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,394,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,395,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,396,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,397,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,398,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,399,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,400,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,401,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,402,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,403,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,404,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,405,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,406,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,407,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+DCL02-C,408,sqlite,src/func.c,3453,FP,same dead-code `#if 0` block,,high
+INT14-C,409,sqlite,src/func.c,3453,FP,"INT14: `p` is a `FuncDef*` used only as `p->zName` and `p=p->u.pHash` — no bitwise op on p; analyzer misread, and code is dead (`#if 0`)",,high
+INT32-C,410,sqlite,src/func.c,3453,FP,"INT32: `p->zName[0]` is one char (0-255) + n (Strlen30 capped <1GB), no realistic overflow; also dead code in `#if 0`",,high

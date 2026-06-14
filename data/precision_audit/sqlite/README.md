@@ -1460,3 +1460,57 @@ the bifurcation is now confirmed across **4 large hardened-core files** (build.c
 VFS twins matched exactly — plus main.c) with **0 semantic TP / 0 FN** among 2828 core findings. Remaining
 ~113 in-scope files are core/glue; the genuine-untrusted-input subset (pager.c, wal.c, func.c, printf.c,
 vdbesort.c) is reserved for high-effort batches.
+
+## File-at-a-time — Batch 9 (2026-06-14, run #40, HIGH-effort genuine-untrusted-input core): pager.c, wal.c, func.c, printf.c, vdbesort.c
+
+The reserved high-effort batch: the five remaining core files that actually decode attacker-influenced bytes
+(on-disk page/journal/WAL-frame headers, SQL-function argument blobs/text, format strings, spilled sort
+records). Adjudicated with the **untrusted-input framework** (`/tmp/batch_framework.md`, attacker-mindset + a
+rigorous independent FN-hunt), not the hardened-core framework — 17 line-range reviewers. The
+source-verification integrity gate was applied to every semantic-TP and FN candidate. **1752 findings -> 79 TP
+/ 1673 FP, 0 semantic TP, 1 FN recorded.**
+
+| File | findings | TP | FP | FN |
+|------|---------:|---:|---:|---:|
+| src/pager.c (pager / journal-header decode) | 432 | 21 | 411 | 1 |
+| src/wal.c (WAL-frame / wal-index decode) | 429 | 22 | 407 | 0 |
+| src/func.c (SQL built-in functions over untrusted args) | 411 | 27 | 384 | 0 |
+| src/printf.c (format-string output engine) | 256 | 3 | 253 | 0 |
+| src/vdbesort.c (external merge-sort, spilled records) | 224 | 6 | 218 | 0 |
+
+All 79 TP are the established declaration/macro/recursion class — **DCL13** const-params (read-only SQL-function
+`argv`/`context`, WAL/pager getters), **MSC04** factual recursion (`patternCompare` GLOB/LIKE bounded by
+`SQLITE_LIMIT_LIKE_PATTERN_LENGTH`; `sqlite3PagerCheckpoint` re-entry via `PRAGMA table_list`; the vdbesort
+merge-tree build/step/populate cycles), **PRE00/01/12** macro hygiene (`SEH_*`, `BYTESWAP32` multi-eval),
+**DCL03** static_assert on `WAL_FRAME_HDRSIZE==24`. **Semantic-TP count: zero**, exactly as on the prior
+hardened-core batches — confirming the bifurcation holds even for the core files that *do* touch
+attacker-controlled bytes: the parsing here is hardened (szPage validated power-of-two 512..MAX before any
+sizing; frames salt+checksum-gated; length/precision clamped and promoted to i64/u64; `getVarint32NR` /
+record-header decodes bounded by record-size asserts). The recurring misfires were the known classes:
+`sqlite3Realloc(pWal->apWiData,…)` / `zOut=sqlite3Realloc(zOut,…)` member-realloc read as use-after-free of the
+parent handle; the `sizeof(aJournalMagic)` 8-byte static array read as a decayed param (≈25 bogus
+ARR/EXP/INT in pager.c alone); `#if 0` debug blocks (PAGERTRACE, the func.c hash-dump, the printf TCL header,
+the wal SEH macros) flagged for hygiene; loop induction variables (`ii`/`iPg`/`u`) read as uninitialized;
+`static char[]` return buffers read as dangling-local returns; bounded internal counters/lock-mask shifts read
+as overflow.
+
+**FN-hunt: one recorded (low confidence), one byte-level off-by-one sqc did not flag** —
+`src/pager.c:1335` `readSuperJournal`. The guard `len>=nSuper` admits `len==nSuper-1`, but the function then
+writes a **two-byte** terminator `zSuper[len]` *and* `zSuper[len+1]`, so `zSuper[len+1]` can reach index
+`nSuper`, which needs an `nSuper+1`-byte buffer while the guard only proves `nSuper`. Callers pass
+`nSuper = mxPathname+1` into `pPager->pTmpSpace` (size = `pageSize`; the line-2974 caller uses
+`&pTmpSpace[4]`, losing 4 bytes — the in-tree TODO at 2828-2832 already flags the `pageSize >= mxPathname+1`
+assumption). **Default VFSes are safe**: unix `mxPathname=512` -> `nSuper=513`, and the power-of-two `pageSize`
+minimum (1024) leaves ~2x slack. It becomes a reachable **1-5 byte OOB heap write** only with a custom VFS
+reporting `mxPathname == 2^k - 1` (e.g. 1023) **and** `pageSize` set to exactly that power of two, driven by an
+attacker-crafted hot-journal super-journal-name length field. Real but extremely narrow; recorded as an `FN`
+(ARR30-C, low confidence) rather than note-not-recorded (unlike the benign util.c:1328 value quirk) because it
+is an actual memory-safety OOB write under a constructible configuration. HEAD-status check deferred to the
+disclosure pass per the campaign's disclosure-backlog protocol.
+
+sqlite coverage **107 -> 112/220 (50.9%)** — half the in-scope corpus audited; **14 FNs** (+1, the pager.c
+off-by-one); confirmed real bugs still **13** (no new fixed-upstream bug this batch). The thesis now holds
+across **9 large hardened/core files** including the five genuine-untrusted-input ones: **0 production semantic
+TP** among the core's combined finding volume. Remaining ~108 in-scope files are pure core/glue
+(expr.c, wherecode.c, window.c, analyze.c, vdbemem.c, insert.c, alter.c, pragma.c, …) — medium-effort filler
+the bifurcation predicts will keep yielding only declaration/macro/const TPs.

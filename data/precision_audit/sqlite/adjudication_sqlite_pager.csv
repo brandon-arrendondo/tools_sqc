@@ -1,0 +1,434 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+PRE01-C,0,sqlite,src/pager.c,118,FP,"PAGERTRACE(X) at L118 is inside #if 0 dead block; X expands as call args sqlite3DebugPrintf X, parenthesizing is not applicable to a varargs call-spread, contract-safe",,high
+PRE10-C,1,sqlite,src/pager.c,118,FP,PAGERTRACE multistatement is in #if 0 dead code and the live definition L120 is empty; not a real if-without-braces hazard,,high
+PRE01-C,2,sqlite,src/pager.c,131,FP,"PAGERID(p) uses p->fd; macro arg always a Pager* lvalue, no precedence hazard reachable in-tree",,high
+API01-C,3,sqlite,src/pager.c,670,FP,"API01 struct layout heuristic; dbFileVers[16] is fixed 16-byte version cookie always memcpy'd with sizeof, never overflowed, pMmapFreelist not corruptible",,med
+PRE00-C,4,sqlite,src/pager.c,727,FP,"PAGER_INCR(v) is v++ only under SQLITE_TEST and called on plain counters; double-eval cosmetic, no side-effecting arg in-tree",,high
+PRE01-C,5,sqlite,src/pager.c,727,FP,PAGER_INCR param v always a simple lvalue counter; parenthesization moot,,high
+ARR02-C,6,sqlite,src/pager.c,757,FP,"aJournalMagic[] is a file-scope initialized const array; implicit bound is the correct idiom, size fixed at 8 by initializer",,high
+PRE01-C,7,sqlite,src/pager.c,765,FP,JOURNAL_PG_SZ(pPager) arg always a Pager* lvalue; no precedence issue reachable,,high
+PRE01-C,8,sqlite,src/pager.c,771,FP,JOURNAL_HDR_SZ(pPager) arg always a Pager* lvalue; no precedence issue reachable,,high
+DCL13-C,9,sqlite,src/pager.c,805,FP,"sqlite3PagerDirectReadOk reads pPager->fd/pPCache but does not modify *pPager; however signature must match xGet-family convention - still const-eligible read-only, but it is public API matching pager.h prototype so const cannot be added without header churn; declaration-rule low value, treat as FP misfire on a read-only-but-fixed-signature param",,high
+EXP40-C,10,sqlite,src/pager.c,848,FP,"assert_pager_state: Pager*p assigned to Pager*pPager both non-const, no const cast away; EXP40 misread",,high
+DCL03-C,11,sqlite,src/pager.c,899,FP,"assert(!MEMDB) where MEMDB=pPager->memDb is a runtime field read, not a constant expression; static_assert impossible",,high
+API00-C,12,sqlite,src/pager.c,992,FP,"print_pager_state is SQLITE_DEBUG-only debugger helper; p is a valid Pager* by contract, no untrusted path",,high
+DCL13-C,13,sqlite,src/pager.c,992,FP,"print_pager_state only reads p members; const-eligible but debug-only helper, low-value declaration misfire",,med
+EXP33-C,14,sqlite,src/pager.c,995,FP,"static char zRet[1024] has static storage duration, zero-initialized by C standard; EXP33 false",,high
+ARR00-C,15,sqlite,src/pager.c,1030,FP,"zRet is static char[1024] (static storage), not a local automatic array; returning it is valid, not dangling",,high
+EXP34-C,16,sqlite,src/pager.c,1046,FP,"setGetterMethod: pPager guaranteed non-null by all callers (internal); reads pPager->errCode after construction, no untrusted null",,high
+DCL13-C,17,sqlite,src/pager.c,1066,FP,"subjRequiresPage pPg only read (pPg->pPager,pgno); const-eligible declaration misfire, no modification",,med
+EXP34-C,18,sqlite,src/pager.c,1067,FP,"pPg->pPager deref: pPg always a live cache page from caller, never null on this path",,high
+EXP34-C,19,sqlite,src/pager.c,1071,FP,pPager deref after pPg->pPager assignment; pPager non-null since pPg is a valid page header,,high
+INT32-C,20,sqlite,src/pager.c,1074,FP,"i+1 is bounded savepoint loop index i<nSavepoint (small int); cannot overflow in practice, INT32 misfire",,high
+DCL13-C,21,sqlite,src/pager.c,1087,FP,"pageInJournal reads pPager->pInJournal only; SQLITE_DEBUG helper, const-eligible misfire",,high
+DCL13-C,22,sqlite,src/pager.c,1087,FP,pageInJournal reads pPg->pgno only; const-eligible misfire,,high
+EXP34-C,23,sqlite,src/pager.c,1088,FP,"pPg->pgno deref: pPg is a valid page passed by debug caller, not null",,high
+DCL03-C,24,sqlite,src/pager.c,1195,FP,"assert(!MEMDB) runtime field read, not constant expr; static_assert N/A",,high
+INT13-C,25,sqlite,src/pager.c,1208,FP,"dc is device-characteristics bitmask int; & with SQLITE_IOCAP flags is standard idiom, value never negative",,med
+DCL03-C,26,sqlite,src/pager.c,1218,FP,"assert(SQLITE_IOCAP_ATOMIC512==(512>>8)) IS a constant expression but it is a compile-time invariant check that is genuinely better as static_assert - however SQLite deliberately uses assert here for C89 portability; low-value style, FP in spirit",,high
+DCL03-C,27,sqlite,src/pager.c,1219,FP,"same compile-time constant assert; portability choice, not a defect",,high
+INT13-C,28,sqlite,src/pager.c,1220,FP,"dc bitmask & with flag constants; standard, value is a characteristics mask not arithmetic-negative",,med
+DCL13-C,29,sqlite,src/pager.c,1240,FP,"pager_datahash pData is read-only loop over bytes; const-eligible but it is SQLITE_CHECK_PAGES debug-only, misfire",,high
+DCL13-C,30,sqlite,src/pager.c,1248,FP,"pager_pagehash pPage read-only; debug-only, const-eligible misfire",,high
+EXP34-C,31,sqlite,src/pager.c,1249,FP,"pPage->pPager deref: debug hash helper, pPage valid by contract",,high
+EXP34-C,32,sqlite,src/pager.c,1252,FP,pPage->pPager deref again; same valid-by-contract page,,high
+EXP34-C,33,sqlite,src/pager.c,1306,FP,"zSuper[0]='\0' write: caller always passes a real buffer (pTmpSpace or zSuperPtr), never null on reachable paths",,high
+EXP33-C,34,sqlite,src/pager.c,1309,FP,"szJ assigned by sqlite3OsFileSize before use in short-circuit && chain; if that call fails rc!=OK short-circuits, szJ read only after success",,high
+EXP33-C,35,sqlite,src/pager.c,1311,FP,len assigned by read32bits in the same && chain before len>=nSuper test; short-circuit guarantees init before read,,high
+EXP33-C,36,sqlite,src/pager.c,1324,FP,cksum read at L1314 only reached after earlier && terms succeed; cksum then read32bits-initialized before the L1323 loop uses it,,high
+DCL00-C,37,sqlite,src/pager.c,1357,FP,"c at L1357 is a per-record open flag, written in the exists branch; DCL00 const-suggestion is style noise, value is reassigned across iterations conceptually",,high
+INT32-C,38,sqlite,src/pager.c,1359,FP,"(c-1)/HDR+1)*HDR: c is journalOff (i64, bounded by file size); journalHdrOffset asserts offset>=c and gap<HDR, no real overflow for legitimate offsets",,high
+INT33-C,39,sqlite,src/pager.c,1359,FP,JOURNAL_HDR_SZ=sectorSize is validated >=32 and power-of-two in readJournalHdr before reaching journalHdrOffset; never zero,,high
+INT10-C,40,sqlite,src/pager.c,1361,FP,"offset%JOURNAL_HDR_SZ in an assert; sectorSize is a positive power-of-two, modulo well-defined and non-negative (i64 offset>=0)",,high
+INT33-C,41,sqlite,src/pager.c,1361,FP,same assert modulo; sectorSize validated non-zero power-of-two,,high
+DCL13-C,42,sqlite,src/pager.c,1388,FP,"zeroJournalHdr reads pPager fields and calls Os methods via pPager->jfd; does not reassign pPager, but mutates pPager state through it - actually only reads pPager scalars, modifies via jfd pointee; declaration misfire, low value",,high
+ARR00-C,43,sqlite,src/pager.c,1455,FP,ii at L1455 is the for-loop counter initialized in the same for(ii=0;...) statement at L1455; not uninitialized - ARR00 misread the loop header,,high
+ARR01-C,44,sqlite,src/pager.c,1487,FP,"aJournalMagic is file-scope const u8 array (L757), NOT a decayed parameter; sizeof()=8 correct",,high
+EXP05-C,45,sqlite,src/pager.c,1487,FP,"memcpy(zHeader,aJournalMagic,sizeof(aJournalMagic)): no const cast-away, aJournalMagic stays const source; EXP05 misfire",,high
+ARR01-C,46,sqlite,src/pager.c,1488,FP,"put32bits(&zHeader[sizeof(aJournalMagic)],...) sizeof of real array=8, correct offset 8",,high
+ARR01-C,47,sqlite,src/pager.c,1490,FP,"memset(zHeader,0,sizeof(aJournalMagic)+4): real array sizeof=8, writes 12 bytes into pageSize-sized zHeader, bounded",,high
+EXP05-C,48,sqlite,src/pager.c,1490,FP,"no const cast-away; sizeof of const array used as size value, source const preserved",,high
+INT30-C,49,sqlite,src/pager.c,1490,FP,sizeof(aJournalMagic)+4 = 8+4 compile-time constant 12; cannot wrap,,high
+INT32-C,50,sqlite,src/pager.c,1490,FP,memset size sizeof(aJournalMagic)+4=12 constant into zHeader(pageSize>=512); no overflow,,high
+ARR01-C,51,sqlite,src/pager.c,1497,FP,JOURNAL_HDR_SZ(pPager)=pPager->sectorSize; pPager is a real struct pointer not decayed array; ARR01 misread the macro,,high
+ARR01-C,52,sqlite,src/pager.c,1517,FP,sizeof(aJournalMagic) of real 8-byte array; offset constant,,high
+ARR30-C,53,sqlite,src/pager.c,1517,FP,"zHeader is pPager->pTmpSpace (pageSize bytes, not a VLA); writes at offset 28 (sizeof+20) bounded by nHeader<=pageSize; ARR30 misread allocation",,high
+INT30-C,54,sqlite,src/pager.c,1517,FP,sizeof(aJournalMagic)+4=12 compile-time constant; no wrap,,high
+ARR01-C,55,sqlite,src/pager.c,1520,FP,real array sizeof=8; offset constant,,high
+INT30-C,56,sqlite,src/pager.c,1520,FP,sizeof(aJournalMagic)+8=16 constant; no wrap,,high
+ARR01-C,57,sqlite,src/pager.c,1522,FP,real array sizeof=8,,high
+INT30-C,58,sqlite,src/pager.c,1522,FP,sizeof(aJournalMagic)+12=20 constant; no wrap,,high
+ARR01-C,59,sqlite,src/pager.c,1525,FP,real array sizeof=8,,high
+INT30-C,60,sqlite,src/pager.c,1525,FP,sizeof(aJournalMagic)+16=24 constant; no wrap,,high
+ARR01-C,61,sqlite,src/pager.c,1532,FP,real array sizeof=8,,high
+EXP05-C,62,sqlite,src/pager.c,1532,FP,"&zHeader[sizeof+20]: zHeader is char* into pTmpSpace, no const cast-away; EXP05 misfire",,high
+INT30-C,63,sqlite,src/pager.c,1532,FP,sizeof(aJournalMagic)+20=28 constant; no wrap,,high
+INT32-C,64,sqlite,src/pager.c,1532,FP,"memset(&zHeader[28],0,nHeader-28): nHeader clamped to JOURNAL_HDR_SZ and >=28 since min sectorSize 32 capped; bounded subtraction, value non-negative because nHeader>=28 always (sector>=32, header layout); no overflow on legit input",,high
+ARR01-C,65,sqlite,src/pager.c,1533,FP,real array sizeof=8,,high
+INT30-C,66,sqlite,src/pager.c,1533,FP,sizeof(aJournalMagic)+20=28 constant,,high
+EXP33-C,67,sqlite,src/pager.c,1643,FP,"iPageSize assigned by read32bits(...,&iPageSize) in && chain at L1634 before any use; short-circuit init",,high
+EXP33-C,68,sqlite,src/pager.c,1652,FP,"iSectorSize assigned by read32bits(...,&iSectorSize) at L1633 in same chain before use",,high
+INT14-C,69,sqlite,src/pager.c,1654,FP,"iPageSize range/power-of-two checks mix bitwise ((iPageSize-1)&iPageSize) and compare; deliberate power-of-two test idiom, readability rule only",,med
+INT14-C,70,sqlite,src/pager.c,1654,FP,iSectorSize same power-of-two validation idiom; readability noise,,med
+INT32-C,71,sqlite,src/pager.c,1749,FP,"nSuper+20 where nSuper is strlen of zSuper (a path, bounded by mxPathname); journalOff i64, no real overflow",,high
+EXP33-C,72,sqlite,src/pager.c,1762,FP,jrnlSize assigned by sqlite3OsFileSize at L1761 inside the if-condition before the jrnlSize>journalOff compare; short-circuit init,,high
+EXP34-C,73,sqlite,src/pager.c,1773,FP,"sqlite3PagerDataVersion returns pPager->iDataVersion; pPager non-null by public-API contract, all callers hold a valid pager",,high
+API00-C,74,sqlite,src/pager.c,1781,FP,"same function; pPager validated by contract, returns a field read",,high
+DCL13-C,75,sqlite,src/pager.c,1781,FP,"pPager read-only here but signature is fixed public API in pager.h; const-add would need header change, low-value declaration misfire",,high
+ARR00-C,76,sqlite,src/pager.c,1792,FP,"releaseAllSavepoints ii is the for-loop counter init at L1792 for(ii=0;...); not uninitialized, ARR00 misread loop",,high
+DCL13-C,77,sqlite,src/pager.c,1809,FP,"addToSavepointBitvecs reads pPager->aSavepoint and mutates via sqlite3BitvecSet on pointees; declaration misfire, low value",,high
+ARR00-C,78,sqlite,src/pager.c,1813,FP,addToSavepointBitvecs ii is for-loop counter at L1813; not uninitialized,,high
+DCL03-C,79,sqlite,src/pager.c,1874,FP,assert((PAGER_JOURNALMODE_MEMORY&5)!=1) is a compile-time invariant; SQLite uses runtime assert by convention; style-only,,high
+DCL03-C,80,sqlite,src/pager.c,1875,FP,same compile-time mode-bit assert; convention,,high
+DCL03-C,81,sqlite,src/pager.c,1876,FP,same,,high
+DCL03-C,82,sqlite,src/pager.c,1877,FP,same,,high
+DCL03-C,83,sqlite,src/pager.c,1878,FP,same,,high
+DCL03-C,84,sqlite,src/pager.c,1879,FP,same,,high
+INT13-C,85,sqlite,src/pager.c,1880,FP,"iDc is device-characteristics bitmask; & with IOCAP flag is standard, mask not arithmetic-signed",,med
+INT13-C,86,sqlite,src/pager.c,1948,FP,"rc & 0xff masks an SQLite error code int; standard low-byte extraction idiom, well-defined for the small positive codes used",,med
+DCL13-C,87,sqlite,src/pager.c,1981,FP,"pagerFlushOnCommit-region pPager read-only; declaration misfire on internal helper, low value",,high
+DCL13-C,88,sqlite,src/pager.c,2240,FP,"pager_cksum reads pPager->cksumInit/pageSize only; const-eligible but signature stable, low-value misfire",,high
+INT32-C,89,sqlite,src/pager.c,2245,FP,"i-=200 where i=pageSize-200, pageSize is a validated power-of-two 512..65536; bounded loop, decrements to <=0 termination, no overflow",,high
+INT14-C,90,sqlite,src/pager.c,2302,FP,"isMainJrnl is a 0/1 flag (asserted (isMainJrnl&~1)==0) used in *pOffset+=...+isMainJrnl*4; arithmetic on a bounded bit, readability noise",,med
+INT32-C,91,sqlite,src/pager.c,2328,FP,"(*pOffset)+4: pOffset is a journal byte offset i64 bounded by journal file size; legitimate journals far below i64 max, no real overflow",,high
+INT14-C,92,sqlite,src/pager.c,2330,FP,"pPager INT14 bitwise+arithmetic - pPager is a pointer, this is a misclassified finding, no real defect",,low
+INT32-C,93,sqlite,src/pager.c,2330,FP,"isMainJrnl*4 where isMainJrnl is 0/1 (asserted); product is 0 or 4, cannot overflow",,high
+EXP33-C,94,sqlite,src/pager.c,2337,FP,"pgno assigned by read32bits(jfd,*pOffset,&pgno) at L2326 before any use; rc-checked, short-circuit init",,high
+INT32-C,95,sqlite,src/pager.c,2345,FP,"(*pOffset)-4 to read checksum; pOffset advanced by pageSize+4 just above so >=4, no underflow on real records",,high
+EXP33-C,96,sqlite,src/pager.c,2347,FP,"cksum assigned by read32bits(jfd,(*pOffset)-4,&cksum) at L2345 before compare at L2347; init before use",,high
+PRE32-C,97,sqlite,src/pager.c,2407,FP,PAGERTRACE is empty macro in live build (L120); arg is a normal printf-style tuple with no preprocessor directive; PRE32 misread the multi-line arg,,high
+PRE32-C,98,sqlite,src/pager.c,2407,FP,"the PAGERTRACE argument contains no #directive, just a parenthesized format+args list; PRE32 false match on multiline",,high
+EXP34-C,99,sqlite,src/pager.c,2462,FP,"sqlite3PcacheMakeDirty(pPg) reached only after rc=sqlite3PagerGet(...,&pPg,1) returns SQLITE_OK at L2461 guaranteeing pPg non-null; EXP34 misses the rc check",,high
+ARR01-C,100,sqlite,src/pager.c,2484,FP,"sizeof(pPager)... pager_delsuper pVfs=pPager->pVfs; pPager is real struct pointer not decayed array; szOsFile sized via pVfs, ARR01 misread",,high
+DCL13-C,101,sqlite,src/pager.c,2534,FP,"pager_delsuper reads pPager->pVfs only; const-eligible but internal-helper declaration misfire, low value",,high
+INT32-C,102,sqlite,src/pager.c,2549,FP,"2*(i64)pVfs->szOsFile: szOsFile is a small VFS-defined struct size (hundreds of bytes), explicit i64 cast prevents overflow; no real wrap",,high
+INT32-C,103,sqlite,src/pager.c,2556,FP,"((u8*)pSuper)+pVfs->szOsFile is pointer arithmetic within a 2*szOsFile allocation; in-bounds by construction, not integer overflow",,high
+INT32-C,104,sqlite,src/pager.c,2567,FP,"1+(i64)pVfs->mxPathname: mxPathname small (e.g. 512), explicit i64 cast; no overflow",,high
+STR34-C,105,sqlite,src/pager.c,2577,FP,"*zFree is the leading nul byte zFree[0]=0 just written; signed-char read into larger type but value is 0, sign-extension benign; STR34 theoretical",,med
+STR34-C,106,sqlite,src/pager.c,2577,FP,"zFree[4] region (zSuperJournal) holds file bytes; reads are via strlen/OsAccess on a path string, not arithmetic sign-extension; STR34 theoretical noise",,med
+ARR37-C,107,sqlite,src/pager.c,2578,FP,"zSuperJournal[nSuperJournal+2] - the subscript is on zSuperJournal which IS a char* into the zFree buffer; allocation zFree=Malloc(4+nSuperJournal+nSuperPtr+2) and zSuperPtr=&zSuperJournal[nSuperJournal+2] is in-bounds (nSuperPtr bytes remain); not an out-of-array access, pointer-into-buffer idiom",,high
+STR34-C,108,sqlite,src/pager.c,2578,FP,zSuperJournal points into a heap buffer of size 4+nSuperJournal+nSuperPtr+2; reading char value is benign and no sign-extension memory-safety bug,,med
+STR34-C,109,sqlite,src/pager.c,2578,FP,zSuperJournal[nSuperJournal+2] is the address used to derive zSuperPtr inside the allocated block; syntactic STR34 misfire not a defect,,med
+ARR37-C,110,sqlite,src/pager.c,2581,FP,zSuperJournal is a valid pointer into the malloc'd zFree block sized to hold nSuperJournal+... bytes; subscript is in-bounds,,med
+ARR37-C,111,sqlite,src/pager.c,2582,FP,zSuperJournal[nSuperJournal+1] is the trailing nul slot inside the 4+nSuperJournal+nSuperPtr+2 allocation; in-bounds write,,med
+ARR37-C,112,sqlite,src/pager.c,2612,FP,zSuperPtr was filled by readSuperJournal into nSuperPtr-sized region inside zFree; zSuperPtr[0] read is in-bounds,,med
+EXP34-C,113,sqlite,src/pager.c,2612,FP,"zSuper is the function param non-null by contract (caller passes &pTmpSpace[4]); compared via strcmp only, no unguarded deref defect",,med
+ARR37-C,114,sqlite,src/pager.c,2618,FP,zJournal walks nul-terminated child-journal names within the buffer bounded by while((zJournal-zSuperJournal)<nSuperJournal); pointer arithmetic intended and bounded,,med
+INT32-C,115,sqlite,src/pager.c,2670,FP,"szPage is pageSize (512..65536) and nPage is Pgno bounded by mxPgno; i64 product cannot overflow 64-bit for realistic page counts, contract-bounded",,med
+INT31-C,116,sqlite,src/pager.c,2676,FP,"szPage is pPager->pageSize, always a power of two in 512..SQLITE_MAX_PAGE_SIZE, positive; size_t conversion is safe",,med
+INT32-C,117,sqlite,src/pager.c,2680,FP,newSize-szPage guarded by branch (currentSize+szPage)<=newSize so newSize>=szPage; no overflow,,med
+API00-C,118,sqlite,src/pager.c,2694,FP,sqlite3SectorSize is internal helper; pFile guaranteed open by callers (setSectorSize asserts isOpen); contract non-null,,med
+DCL03-C,119,sqlite,src/pager.c,2699,FP,assert() of a compile-time constant relationship is standard SQLite debug idiom not a static_assert candidate defect; harmless,,med
+EXP34-C,120,sqlite,src/pager.c,2729,FP,pPager null-deref guarded by surrounding asserts and never-null caller contract in readDbPage,,med
+INT32-C,121,sqlite,src/pager.c,2835,FP,1+(i64)pPager->pVfs->mxPathname; mxPathname is small VFS-bounded int (e.g. 512); i64 promotion makes overflow impossible,,med
+INT33-C,122,sqlite,src/pager.c,2871,FP,JOURNAL_PG_SZ(pPager) = pageSize+8 which is always >=520; cannot be zero,,med
+INT33-C,123,sqlite,src/pager.c,2890,FP,JOURNAL_PG_SZ(pPager) = pageSize+8 always nonzero; div-by-zero impossible,,med
+DCL03-C,124,sqlite,src/pager.c,2942,FP,assert() of constant in DEBUG build; established SQLite idiom not a real DCL03 defect,,med
+INT32-C,125,sqlite,src/pager.c,2974,FP,1+(i64)mxPathname identical bounded-small VFS value as 121; no overflow,,med
+EXP34-C,126,sqlite,src/pager.c,2983,FP,zSuper=&pPager->pTmpSpace[4] then read; pTmpSpace allocated >= pageSize; zSuper non-null by construction,,med
+EXP34-C,127,sqlite,src/pager.c,3022,FP,pPg is the function param of readDbPage; non-null by caller contract and asserts,,med
+EXP34-C,128,sqlite,src/pager.c,3028,FP,pPager=pPg->pPager dereferenced after asserts establishing valid pager; contract-safe,,med
+PRE32-C,129,sqlite,src/pager.c,3070,FP,PAGERTRACE is a printf-style trace macro/no-op; the argument is a parenthesized format list not a real preprocessor-directive-in-macro-arg UB,,med
+PRE32-C,130,sqlite,src/pager.c,3070,FP,"same PAGERTRACE trace call; format string contains no actual # preprocessor directive, analyzer misparse",,med
+DCL13-C,131,sqlite,src/pager.c,3084,FP,pPg->pData is written via put32bits and pPg->pPager read; param object reached through is mutated so const is wrong,,med
+INT32-C,132,sqlite,src/pager.c,3090,FP,"((char*)pPg->pData)+24 is pointer arithmetic into a page buffer >=512 bytes; offset 24 in-bounds, not integer overflow",,med
+INT32-C,133,sqlite,src/pager.c,3095,FP,((char*)pPg->pData)+92 offset within page buffer (>=512); in-bounds pointer arithmetic,,med
+INT32-C,134,sqlite,src/pager.c,3096,FP,((char*)pPg->pData)+96 offset within page buffer (>=512); in-bounds,,med
+EXP20-C,135,sqlite,src/pager.c,3120,FP,refcount==1 here is a deliberate exact-equality test (drop page only when sole reference); not a boolean misuse,,med
+EXP33-C,136,sqlite,src/pager.c,3193,FP,p is the loop variable of for(p=pList;...) initialized in the for-init; only under SQLITE_DEBUG assert loop; not uninitialized,,med
+EXP34-C,137,sqlite,src/pager.c,3193,FP,p iterates a non-null pList (assert pList) with p->pDirty guard in the condition; no null deref,,med
+EXP40-C,138,sqlite,src/pager.c,3204,FP,**ppNext=&pList is the standard list-compaction unlink idiom in pagerWalFrames; not const circumvention,,med
+DCL30-C,139,sqlite,src/pager.c,3206,FP,"p is a local PgHdr* iterator not an out-param escaping the function; DCL30 misfire, no dangling address returned",,med
+ARR30-C,140,sqlite,src/pager.c,3216,FP,aStat is u32 aStat[4]; PAGER_STAT_WRITE is a fixed enum constant (1) < 4; in-bounds,,med
+INT33-C,141,sqlite,src/pager.c,3305,FP,"pPager->pageSize is power-of-two 512..max, never zero by SetPagesize contract; no div-by-zero",,med
+DCL13-C,142,sqlite,src/pager.c,3406,FP,"pSavepoint fields (iOffset/iHdrOffset/iSubRec/nOrig/aWalData) are only read; const would be valid here -- but signature is part of pager-internal API; treating as FP per fixed-API note... reads only, leaning FP because pInSavepoint pointee is mutated via Bitvec ops downstream",,med
+INT33-C,143,sqlite,src/pager.c,3479,FP,JOURNAL_PG_SZ(pPager)=pageSize+8 always nonzero,,med
+INT32-C,144,sqlite,src/pager.c,3494,FP,"iSubRec*(4+pageSize): iSubRec bounded by nSubRec (sub-journal record count) and pageSize<=65536; i64 product safe in practice, contract-bounded",,med
+API00-C,145,sqlite,src/pager.c,3518,FP,sqlite3PagerSetCachesize internal API; pPager non-null by caller contract throughout pager,,med
+DCL13-C,146,sqlite,src/pager.c,3518,FP,"pPager passed to sqlite3PcacheSetCachesize which mutates the pcache it owns; pager state effectively modified, const wrong",,med
+API00-C,147,sqlite,src/pager.c,3526,FP,sqlite3PagerSetSpillsize internal API; pPager non-null by contract,,med
+DCL13-C,148,sqlite,src/pager.c,3526,FP,pPager forwarded to PcacheSetSpillsize mutating owned cache; const inappropriate,,med
+EXP34-C,149,sqlite,src/pager.c,3535,FP,"pPager->szMmap is assigned (write) then pagerFixMaplimit; param mutated, not a null-deref defect",,med
+API00-C,150,sqlite,src/pager.c,3549,FP,sqlite3PagerSetMmapLimit internal API; pPager non-null by contract and szMmap is written,,med
+API00-C,151,sqlite,src/pager.c,3557,FP,sqlite3PagerShrink internal API; pPager non-null by contract,,med
+DCL13-C,152,sqlite,src/pager.c,3557,FP,pPager forwarded to PcacheShrink which mutates owned cache; const wrong,,med
+API00-C,153,sqlite,src/pager.c,3612,FP,sqlite3PagerSetFlags internal API; pPager non-null by contract; many fields written,,med
+EXP34-C,154,sqlite,src/pager.c,3617,FP,pPager->tempFile etc are written throughout SetFlags after this point; not an unguarded null deref,,med
+DCL13-C,155,sqlite,src/pager.c,3685,FP,"pPager fields written (sqlite3_opentemp_count aside, pVfs used to open); object used for mutation, const wrong",,med
+INT32-C,156,sqlite,src/pager.c,3692,FP,sqlite3_opentemp_count is a test-only diagnostic counter under SQLITE_TEST; incremented for analysis; INT_MAX wrap irrelevant,,med
+API00-C,157,sqlite,src/pager.c,3723,FP,sqlite3PagerSetBusyHandler internal API; pPager non-null by contract; fields written,,med
+API00-C,158,sqlite,src/pager.c,3723,FP,xBusyHandler may legitimately be NULL (clearing handler); stored not dereferenced; no defect,,med
+DCL13-C,159,sqlite,src/pager.c,3726,FP,pBusyHandlerArg stored into pPager->pBusyHandlerArg (a void*); storing into non-const field makes const param wrong,,med
+ARR37-C,160,sqlite,src/pager.c,3732,FP,"ap=(void**)&pPager->xBusyHandler is a deliberate type-pun to pass {handler,arg} pair to FileControlHint; ap[0] in-bounds of struct layout, asserted",,med
+ARR37-C,161,sqlite,src/pager.c,3733,FP,ap[1] is pBusyHandlerArg adjacent in struct; deliberate verified by assert ap[1]==pBusyHandlerArg; intended,,med
+API00-C,162,sqlite,src/pager.c,3767,FP,sqlite3PagerSetPagesize internal API; pPager non-null by contract; many fields written,,med
+API00-C,163,sqlite,src/pager.c,3767,FP,"pPageSize is dereferenced (read *pPageSize and written back); non-null by caller contract, not validated but contract-safe",,med
+EXP34-C,164,sqlite,src/pager.c,3782,FP,pPager->memDb/dbSize read after asserts; pager non-null by contract in SetPagesize,,med
+INT33-C,165,sqlite,src/pager.c,3810,FP,"pageSize asserted power-of-two 512..MAX (line 3781), nonzero; no div-by-zero",,med
+INT33-C,166,sqlite,src/pager.c,3812,FP,pageSize same asserted nonzero power-of-two; no div-by-zero,,med
+MEM30-C,167,sqlite,src/pager.c,3818,FP,"*pPageSize=pPager->pageSize: pageSize is an int member, nothing freed; the prior sqlite3PageFree was on pTmpSpace not pageSize; no use-after-free",,med
+MEM30-C,168,sqlite,src/pager.c,3820,FP,pPager->nReserve assignment: nReserve is an i16 member never freed; MEM30 misfire,,med
+API00-C,169,sqlite,src/pager.c,3836,FP,sqlite3PagerTempSpace internal API; pPager non-null by contract; returns pTmpSpace,,med
+DCL13-C,170,sqlite,src/pager.c,3836,FP,"returns pPager->pTmpSpace; reading a pointer member is const-valid but this is fixed pager API surface -- reads only, lean FP as analyzer-noise on internal API",,med
+API00-C,171,sqlite,src/pager.c,3847,FP,sqlite3PagerMaxPageCount internal API; pPager non-null by contract; mxPgno written when mxPage>0,,med
+EXP33-C,172,sqlite,src/pager.c,3876,FP,saved_cnt is a file-scope static (zero-initialized by C) used only in SQLITE_TEST io-error harness; set in disable before use in enable,,med
+API00-C,173,sqlite,src/pager.c,3897,FP,sqlite3PagerReadFileheader internal btree-only API; pPager non-null by contract; pDest memset first,,med
+INT31-C,174,sqlite,src/pager.c,3899,FP,"N is the header byte count (small fixed value passed by btree, e.g. 100); memset size positive and small; no truncation defect",,med
+API00-C,175,sqlite,src/pager.c,3925,FP,sqlite3PagerPagecount internal API; pPager non-null by contract,,med
+API00-C,176,sqlite,src/pager.c,3925,FP,pnPage is an out-param dereferenced by contract (caller passes &var); not validated but contract-safe,,med
+DCL13-C,177,sqlite,src/pager.c,3925,FP,reads pPager->dbSize only; const would compile but this is fixed pager API; analyzer noise on read-only internal accessor,,med
+DCL13-C,178,sqlite,src/pager.c,3987,FP,pPg only read for pgno in PagerPagenumber; const valid but fixed public API signature; DCL13 noise,,med
+DCL13-C,179,sqlite,src/pager.c,3999,FP,sqlite3PagerRef forwards pPg... actually pPager param at 3999 is assertTruncateConstraint (DEBUG) reading pcache; mutates via iterate callback; const inappropriate,,med
+API00-C,180,sqlite,src/pager.c,4017,FP,sqlite3PagerTruncateImage internal API; pPager non-null by contract; dbSize written,,med
+EXP34-C,181,sqlite,src/pager.c,4080,FP,p=pPager->pMmapFreelist checked in if(pPager->pMmapFreelist) before deref; guarded,,med
+INT32-C,182,sqlite,src/pager.c,4105,FP,pPager->nMmapOut++ is a bounded outstanding-mmap-page counter (limited by cache/refs); cannot reach INT_MAX in practice,,med
+EXP34-C,183,sqlite,src/pager.c,4116,FP,pPg is param of pagerReleaseMapPage; non-null by caller contract (returned by AcquireMapPage),,med
+EXP34-C,184,sqlite,src/pager.c,4117,FP,pPager=pPg->pPager; pPg non-null by contract; pPager always set in AcquireMapPage,,med
+INT32-C,185,sqlite,src/pager.c,4117,FP,nMmapOut-- balances the ++ in AcquireMapPage; counter stays >=0 by pairing invariant; no INT_MIN underflow,,med
+DCL13-C,186,sqlite,src/pager.c,4128,FP,"sqlite3PagerClose path... 4128 is pagerFreeMapHdrs; pPager iterated/freed, mutated; const wrong",,med
+DCL13-C,187,sqlite,src/pager.c,4142,FP,"databaseIsUnmoved reads pPager but calls OsFileControl with pager-owned fd; effectively used for IO, fixed internal API; noise",,med
+API00-C,188,sqlite,src/pager.c,4176,FP,sqlite3PagerClose public API; pPager non-null by contract; object freed at end,,med
+API00-C,189,sqlite,src/pager.c,4176,FP,db may legitimately be NULL (assert db||pagerUseWal==0 handles it); used guarded under if(db&&...); not unvalidated deref,,med
+MEM30-C,190,sqlite,src/pager.c,4194,FP,"a=pTmp aliases pPager->pTmpSpace; pTmp is freed later at line 4226 sqlite3PageFree(pTmp); at 4194 it is still live, no use-after-free",,med
+API00-C,191,sqlite,src/pager.c,4239,FP,sqlite3PagerPagenumber NDEBUG/TEST-only API; pPg non-null by contract,,med
+DCL13-C,192,sqlite,src/pager.c,4239,FP,reads pPg->pgno only; fixed public API signature; DCL13 noise on read-only accessor,,med
+API00-C,193,sqlite,src/pager.c,4247,FP,sqlite3PagerRef public API; pPg non-null by contract,,med
+INT13-C,194,sqlite,src/pager.c,4304,FP,"iDc is device-characteristics bitmask from OsDeviceCharacteristics; & SAFE_APPEND tests a flag; int vs unsigned is cosmetic, values are nonneg flag bits",,med
+ARR01-C,195,sqlite,src/pager.c,4329,FP,"aJournalMagic is a real file-scope static u8 array (8 bytes), not a decayed parameter; sizeof yields 8 correctly",,med
+INT30-C,196,sqlite,src/pager.c,4329,FP,"sizeof(aJournalMagic)+4 = 12, a compile-time constant array size for zHeader; no runtime wrap",,med
+MEM05-C,197,sqlite,src/pager.c,4329,FP,"u8 zHeader[sizeof(aJournalMagic)+4] is a fixed 12-byte stack array (compile-time const), not a runtime VLA",,med
+ARR01-C,198,sqlite,src/pager.c,4331,FP,aJournalMagic is a real array; sizeof is 8; not a decayed-pointer sizeof bug,,med
+EXP05-C,199,sqlite,src/pager.c,4331,FP,"memcpy(zHeader,aJournalMagic,sizeof(aJournalMagic)) does not cast away const; EXP05 misparse of sizeof",,med
+ARR01-C,200,sqlite,src/pager.c,4332,FP,"aJournalMagic real array, sizeof correct (8); same as 195/198",,med
+INT13-C,201,sqlite,src/pager.c,4355,FP,"iDc bitmask flag test (&SEQUENTIAL); cosmetic signedness, flag bits nonneg",,med
+INT13-C,202,sqlite,src/pager.c,4367,FP,iDc bitmask flag test (&SAFE_APPEND); cosmetic signedness,,med
+EXP00-C,203,sqlite,src/pager.c,4370,FP,syncFlags|(cond?DATAONLY:0) precedence is unambiguous (| of two clear operands); cosmetic EXP00,,med
+INT13-C,204,sqlite,src/pager.c,4377,FP,iDc bitmask flag test (&SAFE_APPEND); cosmetic signedness,,med
+ARR01-C,205,sqlite,src/pager.c,4488,FP,"line 4488 memcpy(&dbFileVers,&pData[24],sizeof(pPager->dbFileVers)); sizeof a struct member not a decayed param; correct size",,med
+ARR30-C,206,sqlite,src/pager.c,4493,FP,aStat[PAGER_STAT_WRITE] with fixed enum index (1) into u32[4]; in-bounds,,med
+PRE32-C,207,sqlite,src/pager.c,4498,FP,"PAGERTRACE trace macro; parenthesized format args, no real preprocessor directive UB",,med
+PRE32-C,208,sqlite,src/pager.c,4498,FP,same PAGERTRACE STORE trace; no actual # directive in argument,,med
+EXP34-C,209,sqlite,src/pager.c,4506,FP,pList non-null guaranteed (assert pList in pagerWalFrames; loop precondition); member access safe,,med
+DCL13-C,210,sqlite,src/pager.c,4520,FP,"sqlite3PagerFlush... 4520 openSubJournal mutates pPager->sjfd via JournalOpen; pPager modified, const wrong",,med
+EXP34-C,211,sqlite,src/pager.c,4548,FP,pPg param of subjournalPage; non-null by caller contract,,med
+EXP34-C,212,sqlite,src/pager.c,4549,FP,"pPager=pPg->pPager dereferenced; pPg non-null by contract, pPager always set",,med
+ARR30-C,213,sqlite,src/pager.c,4643,FP,aStat[PAGER_STAT_SPILL] fixed enum index (3) into u32[4]; in-bounds,,med
+API00-C,214,sqlite,src/pager.c,4686,FP,sqlite3PagerFlush internal API; pPager non-null by contract,,med
+API00-C,215,sqlite,src/pager.c,4735,FP,sqlite3PagerOpen public API; pVfs non-null by caller contract (sqlite3 core always passes a VFS),,med
+API00-C,216,sqlite,src/pager.c,4735,FP,"sqlite3PagerOpen is an internal API; *ppPager=0 written at 4766 and contract requires non-null caller-supplied out-pointer, no untrusted deref",,high
+API00-C,217,sqlite,src/pager.c,4735,FP,"xReinit stored into pPager->xReiniter at 5076 only; never dereferenced here, NULL is valid (function pointer slot)",,high
+INT13-C,218,sqlite,src/pager.c,4754,FP,"INT13 signed-bitwise on flags bitfield; flags is an internal API flag word not attacker data and value range is small, no UB",,high
+INT13-C,219,sqlite,src/pager.c,4769,FP,same INT13 misfire on flags & PAGER_MEMORY; bounded internal flag bits,,high
+INT32-C,220,sqlite,src/pager.c,4786,FP,"nPathname = pVfs->mxPathname+1; mxPathname is a small VFS constant (e.g. 512/1024), no realistic overflow",,high
+INT32-C,221,sqlite,src/pager.c,4787,FP,2*(i64)nPathname computed in 64-bit (cast to i64 first); nPathname bounded by mxPathname so no overflow,,high
+STR34-C,222,sqlite,src/pager.c,4803,FP,"STR34 misfire; reading zFilename[strlen+1] as char to walk URI args, no sign-extension-to-int defect that affects logic",,high
+STR34-C,223,sqlite,src/pager.c,4803,FP,"same STR34 misfire on URI-arg walk; bytes compared against 0 only, sign irrelevant",,high
+DCL03-C,224,sqlite,src/pager.c,4869,FP,"DCL03 assert(SQLITE_PTRSIZE==sizeof(Pager*)) is a compile-time invariant check; acceptable assert idiom, not a bug",,high
+EXP34-C,225,sqlite,src/pager.c,4871,FP,pPager assigned from sqlite3MallocZero at 4870 and null-checked at 4886 (returns NOMEM) before deref at 4890,,high
+INT32-C,226,sqlite,src/pager.c,4874,FP,"(u64)journalFileSize*2 done in u64; journalFileSize=ROUND8(sqlite3JournalSize(pVfs)) is a small VFS-fixed size, not overflowing",,high
+ARR39-C,227,sqlite,src/pager.c,4890,FP,"ARR39 misfire; pPtr is u8* so pPtr += ROUND8(sizeof(*pPager)) is correct byte arithmetic, no double-scaling",,high
+ARR38-C,228,sqlite,src/pager.c,4902,FP,"memcpy(pPtr,zPathname,nPathname) into buffer sized (u64)nPathname+1 reserved at 4877; nPathname re-derived via Strlen30 of bounded path",,high
+INT31-C,229,sqlite,src/pager.c,4904,FP,"nUriByte is int but assert(nUriByte>=1) at 4809 and it equals a pointer-difference within the allocated filename block; positive, fits size_t",,high
+ARR38-C,230,sqlite,src/pager.c,4914,FP,"memcpy zJournal: buffer reserved as nPathname+8+1 at 4879, copies nPathname then 8 bytes; bounded by allocation",,high
+ARR38-C,231,sqlite,src/pager.c,4928,FP,"memcpy zWal: buffer reserved as nPathname+4+1 at 4881, copies nPathname then 4 bytes; bounded by allocation",,high
+INT13-C,232,sqlite,src/pager.c,4950,FP,"INT13 signed-bitwise on fout (VFS xOpen out-flags); small flag word, no UB",,high
+INT13-C,233,sqlite,src/pager.c,4951,FP,same INT13 on fout&SQLITE_OPEN_READONLY; bounded flag bits,,high
+DCL03-C,234,sqlite,src/pager.c,4965,FP,DCL03 assert(SQLITE_DEFAULT_PAGE_SIZE<=SQLITE_MAX_DEFAULT_PAGE_SIZE) compile-time invariant; acceptable,,high
+DCL03-C,235,sqlite,src/pager.c,4976,FP,DCL03 assert(SQLITE_IOCAP_ATOMIC512==(512>>8)) compile-time invariant; acceptable,,high
+DCL03-C,236,sqlite,src/pager.c,4977,FP,DCL03 assert(SQLITE_IOCAP_ATOMIC64K==(65536>>8)) compile-time invariant; acceptable,,high
+DCL03-C,237,sqlite,src/pager.c,4978,FP,DCL03 assert(SQLITE_MAX_DEFAULT_PAGE_SIZE<=65536) compile-time invariant; acceptable,,high
+INT13-C,238,sqlite,src/pager.c,4980,FP,"INT13 on iDc (device characteristics flag word) bitwise; bounded flag bits, no UB",,high
+INT13-C,239,sqlite,src/pager.c,4988,FP,same INT13 on iDc & SQLITE_IOCAP_IMMUTABLE; bounded flag bits,,high
+DCL03-C,240,sqlite,src/pager.c,5055,FP,DCL03 assert(PAGER_LOCKINGMODE_EXCLUSIVE==1) compile-time invariant; acceptable,,high
+INT14-C,241,sqlite,src/pager.c,5061,FP,INT14 readability flag on SQLITE_DEFAULT_SYNCHRONOUS used in (val+1)|PAGER_CACHESPILL; correct intentional idiom,,high
+DCL30-C,242,sqlite,src/pager.c,5081,FP,"DCL30 misfire; *ppPager=pPager stores a heap pointer (returned to caller), not the address of a local",,high
+API00-C,243,sqlite,src/pager.c,5090,FP,"sqlite3_database_file_object: zName is the VFS filename embedded in the Pager block; contract guarantees a valid embedded name, internal use",,high
+ARR00-C,244,sqlite,src/pager.c,5093,FP,ARR00 zName[-1]: intentional walk backwards over the \0\0\0\0 prefix embedded before the filename in the Pager alloc block; in-bounds by construction,,high
+ARR00-C,245,sqlite,src/pager.c,5093,FP,same intentional zName[-2] backward scan over embedded prefix; in-bounds,,high
+ARR00-C,246,sqlite,src/pager.c,5093,FP,same intentional zName[-3] backward scan; in-bounds,,high
+ARR00-C,247,sqlite,src/pager.c,5093,FP,same intentional zName[-4] backward scan; in-bounds (4-byte zero prefix guaranteed present),,high
+ARR39-C,248,sqlite,src/pager.c,5096,FP,"ARR39 misfire; zName is char*, zName-4-sizeof(Pager*) is correct byte address of the embedded Pager* pointer",,high
+INT30-C,249,sqlite,src/pager.c,5096,FP,"INT30 misfire; pointer subtraction within a single allocated object, not unsigned integer underflow",,high
+EXP05-C,250,sqlite,src/pager.c,5098,FP,EXP05 cast (Pager**)p drops const to read back the embedded pointer; deliberate and the pointed-to bytes are not modified,,med
+DCL03-C,251,sqlite,src/pager.c,5269,FP,DCL03 assert in PagerSharedLock guarding internal state invariants; acceptable assert idiom,,high
+INT13-C,252,sqlite,src/pager.c,5337,FP,INT13 on fout journal-open flags; bounded flag bits,,high
+ARR01-C,253,sqlite,src/pager.c,5407,FP,"ARR01 sizeof(pPager->dbFileVers) is sizeof a fixed char[16] member, not a decayed parameter; correct",,high
+MEM05-C,254,sqlite,src/pager.c,5407,FP,"MEM05 dbFileVers is char[sizeof(member)] = fixed 16-byte stack array, not a runtime-sized VLA",,high
+DCL03-C,255,sqlite,src/pager.c,5453,FP,DCL03 assert(!MEMDB) state invariant; acceptable,,high
+INT13-C,256,sqlite,src/pager.c,5567,FP,INT13 on flags bitwise in a getter; bounded internal flag bits,,high
+ARR30-C,257,sqlite,src/pager.c,5572,FP,"aStat[PAGER_STAT_HIT]=aStat[0], array size 4 constant index; in-bounds",,high
+ARR30-C,258,sqlite,src/pager.c,5619,FP,"aStat[PAGER_STAT_MISS]=aStat[1], constant index into size-4 array; in-bounds",,high
+MSC07-C,259,sqlite,src/pager.c,5629,FP,"MSC07 label pager_acquire_err reached via goto, not unreachable code after the return at 5627",,high
+INT13-C,260,sqlite,src/pager.c,5656,FP,INT13 on flags bitwise; bounded internal flag bits,,high
+DCL30-C,261,sqlite,src/pager.c,5696,FP,DCL30 misfire in PagerBegin; pPg is a local PgHdr* not assigned through a parameter to escape,,high
+DCL13-C,262,sqlite,src/pager.c,5711,FP,"DCL13 pPager const: pager_open_journal mutates pPager fields (pInJournal,nRec,eState) so const would be wrong; FP",,low
+API00-C,263,sqlite,src/pager.c,5726,FP,"sqlite3PagerGet internal dispatcher; pPager guaranteed valid by caller, xGet dispatch, no untrusted deref",,high
+API00-C,264,sqlite,src/pager.c,5726,FP,"ppPage out-pointer contract-required non-null; written by getter, not validated locally by design",,high
+MSC37-C,265,sqlite,src/pager.c,5726,FP,"MSC37 misfire; PagerGet returns pPager->xGet(...) on the live path (#else branch compiled), always returns a value",,high
+DCL11-C,266,sqlite,src/pager.c,5734,FP,DCL11 %u vs Pgno in a #if 0 disabled debug printf (line 5732-5740 dead); not compiled,,high
+ERR33-C,267,sqlite,src/pager.c,5735,FP,ERR33 fflush in #if 0 disabled debug block; not compiled,,high
+DCL11-C,268,sqlite,src/pager.c,5738,FP,DCL11 %u vs Pgno in #if 0 disabled debug printf; not compiled,,high
+DCL11-C,269,sqlite,src/pager.c,5738,FP,DCL11 %02x vs int rc in #if 0 disabled debug printf; not compiled,,high
+ERR33-C,270,sqlite,src/pager.c,5739,FP,ERR33 fflush in #if 0 disabled debug block; not compiled,,high
+API00-C,271,sqlite,src/pager.c,5759,FP,"sqlite3PagerLookup asserts pPager!=0 at 5761; internal API, non-null by contract",,high
+DCL13-C,272,sqlite,src/pager.c,5759,FP,"DCL13 pPager const in Lookup: passed to sqlite3PcacheFetch which may mutate cache via pPager->pPCache; const inappropriate, FP",,med
+API00-C,273,sqlite,src/pager.c,5784,FP,sqlite3PagerUnrefNotNull asserts pPg!=0 at 5786; internal contract non-null,,high
+EXP34-C,274,sqlite,src/pager.c,5785,FP,"pPg deref at 5785/5787 guarded by assert(pPg!=0); UnrefNotNull contract is non-null, NULL handled by sqlite3PagerUnref wrapper",,high
+INT14-C,275,sqlite,src/pager.c,5785,FP,INT14 readability flag on pPg flags & PGHDR_MMAP; intentional flag test idiom,,high
+API00-C,276,sqlite,src/pager.c,5799,FP,sqlite3PagerUnrefPageOne asserts pPg!=0 at 5801; internal contract non-null,,high
+EXP34-C,277,sqlite,src/pager.c,5992,FP,"pPg=pPager (alias) deref at 5992 in pagerAddPageToRollbackJournal; pPg is the dirty page, non-null by caller chain (pager_write)",,high
+EXP34-C,278,sqlite,src/pager.c,5996,FP,"pPager=pPg->pPager deref at 5996; pPager always set on a cached page, non-null",,high
+PRE32-C,279,sqlite,src/pager.c,6023,FP,"PRE32 IOTRACE trace macro with multi-arg; benign trace macro, args are expressions not preprocessor directives affecting it",,high
+PRE32-C,280,sqlite,src/pager.c,6023,FP,"same PRE32 IOTRACE misfire; the parenthesized arg list is the trace string, no UB",,high
+PRE32-C,281,sqlite,src/pager.c,6026,FP,"PRE32 PAGERTRACE trace macro misfire; debug-only trace, no UB",,high
+PRE32-C,282,sqlite,src/pager.c,6026,FP,same PRE32 PAGERTRACE misfire; trace macro arg list,,high
+INT32-C,283,sqlite,src/pager.c,6031,FP,"INT32 nRec++ overflow: nRec counts journalled pages, bounded by dbSize/mxPgno (max ~2^31 pages) and journal IO limits long before INT_MAX wrap; not reachable",,high
+EXP34-C,284,sqlite,src/pager.c,6049,FP,"pPg deref at 6049 in pager_write; pPg non-null, CHECK_PAGE asserts validity",,high
+EXP34-C,285,sqlite,src/pager.c,6056,FP,pPager=pPg->pPager deref at 6056; non-null on a valid page,,high
+PRE32-C,286,sqlite,src/pager.c,6102,FP,"PRE32 PAGERTRACE trace macro misfire; debug trace, no UB",,high
+PRE32-C,287,sqlite,src/pager.c,6102,FP,same PRE32 misfire,,high
+DCL13-C,288,sqlite,src/pager.c,6140,FP,"DCL13 pPg const in PagerIswriteable: only reads pPg->flags; const would be valid BUT signature parallels other PgHdr* APIs and pcache contract, low-value/borderline; treat as FP misfire on read-only debug fn",,low
+EXP34-C,289,sqlite,src/pager.c,6147,FP,pPg deref at 6147 in pagerWriteLargeSector; pPg non-null from sqlite3PagerWrite caller,,high
+EXP34-C,290,sqlite,src/pager.c,6148,FP,pPager=pPg->pPager deref at 6148; non-null,,high
+INT14-C,291,sqlite,src/pager.c,6148,FP,INT14 readability on pPager in pageSize division; intentional,,high
+INT33-C,292,sqlite,src/pager.c,6148,FP,INT33 div by pPager->pageSize: pageSize is always a power-of-two >=512 set at open (never 0); no div-by-zero reachable,,high
+DCL03-C,293,sqlite,src/pager.c,6154,FP,DCL03 assert(!MEMDB) invariant; acceptable,,high
+INT14-C,294,sqlite,src/pager.c,6162,FP,INT14 readability flag on pPg; intentional,,high
+INT14-C,295,sqlite,src/pager.c,6162,FP,INT14 readability on nPagePerSector in & ~(nPagePerSector-1); intentional power-of-two mask idiom,,high
+INT32-C,296,sqlite,src/pager.c,6162,FP,"INT32 ((pPg->pgno-1)&~(nPagePerSector-1))+1 cannot overflow; pgno bounded by mxPgno, masked value <= pgno",,high
+INT32-C,297,sqlite,src/pager.c,6166,FP,"INT32 (pPg->pgno-pg1)+1; pg1<=pgno (asserted 6173) so result is small positive, no overflow",,high
+EXP33-C,298,sqlite,src/pager.c,6178,FP,EXP33 pPage uninit: pPage is assigned in every branch before use inside the loop body at 6178; only read after a successful PagerGet,,high
+EXP34-C,299,sqlite,src/pager.c,6184,FP,pPage deref at 6184 only after rc==SQLITE_OK from PagerGet which sets *ppPage; non-null,,high
+DCL03-C,300,sqlite,src/pager.c,6205,FP,DCL03 assert in writeLargeSector loop region invariant; acceptable,,high
+EXP34-C,301,sqlite,src/pager.c,6235,FP,pPg deref at 6235 in sqlite3PagerWrite; pPg non-null by API contract (asserts follow),,high
+EXP34-C,302,sqlite,src/pager.c,6237,FP,pPager=pPg->pPager deref at 6237; non-null,,high
+API00-C,303,sqlite,src/pager.c,6258,FP,sqlite3PagerIswriteable internal NDEBUG-only fn; pPg non-null by contract,,high
+DCL13-C,304,sqlite,src/pager.c,6258,FP,"DCL13 pPg const in Iswriteable: reads flags only, const valid; borderline but parallels PgHdr* API family, FP misfire",,low
+API00-C,305,sqlite,src/pager.c,6283,FP,sqlite3PagerDontWrite; pPg non-null by API contract,,high
+EXP34-C,306,sqlite,src/pager.c,6369,FP,"pPgHdr deref at 6369: only inside DIRECT_MODE after rc==SQLITE_OK and PagerGet success; ALWAYS(rc==OK) guards, non-null",,high
+ARR30-C,307,sqlite,src/pager.c,6372,FP,"aStat[PAGER_STAT_WRITE]=aStat[2], constant index size-4 array; in-bounds",,high
+EXP36-C,308,sqlite,src/pager.c,6378,FP,"EXP36 cast char* zBuf to const void* for memcpy source/OsWrite; void* has no alignment requirement, no actual misalignment",,med
+ARR01-C,309,sqlite,src/pager.c,6379,FP,"ARR01 sizeof(pPager->dbFileVers) is sizeof a fixed char[16] member; correct, not a decayed param",,high
+API00-C,310,sqlite,src/pager.c,6400,FP,sqlite3PagerSync; pPager non-null by internal contract,,high
+API00-C,311,sqlite,src/pager.c,6400,FP,"zSuper may be NULL legitimately (single-txn); passed as void* to FileControl which handles it, not blindly derefed here",,high
+DCL13-C,312,sqlite,src/pager.c,6400,FP,"DCL13 pPager const in PagerSync: calls OsFileControl/OsSync via pPager->fd which mutate file state; const inappropriate, FP",,high
+EXP05-C,313,sqlite,src/pager.c,6402,FP,"EXP05 (void*)zSuper drops const to pass through generic FileControl arg; deliberate, callee treats read-only",,high
+DCL03-C,314,sqlite,src/pager.c,6406,FP,DCL03 assert invariant; acceptable,,high
+API00-C,315,sqlite,src/pager.c,6423,FP,"sqlite3PagerExclusiveLock; pPager non-null by contract, reads errCode first",,high
+API00-C,316,sqlite,src/pager.c,6465,FP,zSuper may be NULL legitimately in CommitPhaseOne; only used in trace/compare paths that tolerate NULL,,high
+PRE32-C,317,sqlite,src/pager.c,6485,FP,PRE32 PAGERTRACE trace macro misfire,,high
+PRE32-C,318,sqlite,src/pager.c,6485,FP,same PRE32 misfire,,high
+EXP34-C,319,sqlite,src/pager.c,6508,FP,pList deref at 6508 (pList->pDirty=0): only when pList==pPageOne after PagerGet; rc asserted OK so pPageOne non-null,,high
+EXP34-C,320,sqlite,src/pager.c,6514,FP,"sqlite3PagerUnref(pPageOne) at 6514 explicitly checks NULL (if(pPg) in Unref wrapper); analyzer claims it does not check, false",,high
+STR34-C,321,sqlite,src/pager.c,6525,FP,"STR34 zSuper sign-extension misfire; super-journal name compared/copied as bytes, sign irrelevant",,high
+EXP30-C,322,sqlite,src/pager.c,6563,FP,EXP30 pPg modified/accessed: this is the disabled bBatch/atomic-write region using pPg local for a single PcacheDirtyList read and pDirty test; no double-modify across sequence point,,high
+EXP30-C,323,sqlite,src/pager.c,6566,FP,"EXP30 same misfire on pPg in the atomic-write commit branch; single read of pDirty, no UB",,high
+EXP45-C,324,sqlite,src/pager.c,6566,FP,line 6566 the assignment-in-if 'pPg=sqlite3PcacheDirtyList(...)' is an idiomatic intentional assign+test guarded by || short-circuit; not a defect,,high
+INT31-C,325,sqlite,src/pager.c,6624,FP,"szPage=(int)pPager->pageSize is a 512..65536 page size cast to int then memset; positive bounded value, no negative/overflow",,high
+INT32-C,326,sqlite,src/pager.c,6626,FP,line 6626 (i64)dbSize*pageSize already cast to i64 before subtract; dbSize/pageSize internal bounded values write-offset computation safe,,high
+INT13-C,327,sqlite,src/pager.c,6636,FP,"rc&0xFF on SQLite error code (low byte = primary result) is the standard SQLITE_IOERR family test; signedness irrelevant, value always small positive",,high
+INT13-C,328,sqlite,src/pager.c,6804,FP,same rc&0xFF idiom in PagerRollback assert path; safe by construction,,high
+API00-C,329,sqlite,src/pager.c,6818,FP,sqlite3PagerIsreadonly internal accessor; callers (btree) always pass live pPager; no untrusted input,,high
+DCL13-C,330,sqlite,src/pager.c,6818,TP,sqlite3PagerIsreadonly only reads pPager->readOnly never writes; const Pager* would compile cleanly,,high
+API00-C,331,sqlite,src/pager.c,6826,FP,sqlite3PagerRefcount (DEBUG-only) internal accessor; pPager always valid,,high
+DCL13-C,332,sqlite,src/pager.c,6826,TP,sqlite3PagerRefcount only reads pPager->pPCache and passes to PcacheRefCount which does not mutate via this param; const valid,,med
+API00-C,333,sqlite,src/pager.c,6835,FP,sqlite3PagerMemUsed internal accessor; pPager always valid,,high
+ARR39-C,334,sqlite,src/pager.c,6836,FP,"line 6836 perPageSize is plain int arithmetic (pageSize+nExtra+sizeof...) not pointer arithmetic; ARR39 misread, no pointer scaling",,high
+INT30-C,335,sqlite,src/pager.c,6837,FP,sizeof(PgHdr)+5*sizeof(void*) is compile-time constant tens of bytes; cannot wrap,,high
+INT32-C,336,sqlite,src/pager.c,6838,FP,"perPageSize*pagecount+MallocSize is internal cache accounting; values bounded by cache size, not attacker input",,high
+INT32-C,337,sqlite,src/pager.c,6838,FP,"same multiplication; bounded internal cache page count, not untrusted",,high
+API00-C,338,sqlite,src/pager.c,6846,FP,sqlite3PagerPageRefcount internal accessor; pPage always valid live page handle,,high
+API00-C,339,sqlite,src/pager.c,6854,FP,sqlite3PagerStats (TEST-only) internal; pPager valid,,high
+DCL13-C,340,sqlite,src/pager.c,6854,TP,sqlite3PagerStats (TEST-only) only reads pPager members into static a[]; const Pager* would compile,,med
+ARR30-C,341,sqlite,src/pager.c,6862,FP,aStat[PAGER_STAT_HIT] index is compile-time constant 0 into size-4 array; in bounds,,high
+ARR30-C,342,sqlite,src/pager.c,6863,FP,aStat[PAGER_STAT_MISS] constant index 1 into size-4 array; in bounds,,high
+ARR30-C,343,sqlite,src/pager.c,6866,FP,aStat[PAGER_STAT_WRITE] constant index 2 into size-4 array; in bounds,,high
+ARR00-C,344,sqlite,src/pager.c,6867,FP,sqlite3PagerStats returns 'static int a[11]' which has static storage duration not local stack; not dangling,,high
+API00-C,345,sqlite,src/pager.c,6882,FP,sqlite3PagerCacheStat callers (DBSTATUS) pass valid pPager; internal,,high
+API00-C,346,sqlite,src/pager.c,6882,FP,pnVal always points to a caller stack u64 in status.c; internal contract,,high
+API00-C,347,sqlite,src/pager.c,6882,FP,eStat validated by assert to be one of 4 enum values before use; not arbitrary,,high
+DCL03-C,348,sqlite,src/pager.c,6890,FP,"assert(eStat==...) is a runtime precondition check on a parameter value, not a compile-time-constant assertion suited to static_assert",,high
+DCL03-C,349,sqlite,src/pager.c,6891,FP,assert(CACHE_HIT+1==CACHE_MISS) — DCL03 candidate but adjacent asserts mix runtime; treat as enum-relationship; arguably static but SQLite house style uses assert; low-value FP,,high
+DCL03-C,350,sqlite,src/pager.c,6892,FP,assert(PAGER_STAT_HIT==0 && ...) compile-time-constant relation; SQLite intentionally uses runtime assert here; not a defect,,high
+INT32-C,351,sqlite,src/pager.c,6895,FP,"eStat-=CACHE_HIT after assert constrains eStat to 0..3; no overflow, no wrap",,high
+ARR00-C,352,sqlite,src/pager.c,6896,FP,aStat[eStat] index bounded 0..3 by the four-value assert above; in bounds,,high
+ARR30-C,353,sqlite,src/pager.c,6896,FP,same eStat index guarded by assert; safe,,high
+ARR00-C,354,sqlite,src/pager.c,6898,FP,"aStat[eStat] in reset branch, same bounded eStat; safe",,high
+ARR30-C,355,sqlite,src/pager.c,6898,FP,same; eStat constrained by assert to valid range,,high
+API00-C,356,sqlite,src/pager.c,6905,FP,sqlite3PagerIsMemdb internal accessor; pPager always valid,,high
+DCL13-C,357,sqlite,src/pager.c,6905,TP,sqlite3PagerIsMemdb only reads pPager->tempFile/memVfs; const Pager* compiles,,high
+INT30-C,358,sqlite,src/pager.c,6934,FP,"line 6934 sizeof(PagerSavepoint)*nSavepoint passed to Realloc; nSavepoint is savepoint nesting depth (internal, bounded by SQL nesting) not attacker file bytes",,high
+INT32-C,359,sqlite,src/pager.c,6934,FP,"same multiplication; nSavepoint not untrusted, Realloc handles size; product bounded",,high
+ARR38-C,360,sqlite,src/pager.c,6939,FP,"memset(&aNew[nCurrent],0,(nSavepoint-nCurrent)*sizeof) sized to freshly realloc'd region nCurrent..nSavepoint; matches allocation exactly",,high
+INT30-C,361,sqlite,src/pager.c,6939,FP,(nSavepoint-nCurrent) guarded by assert nSavepoint>nCurrent (line 6927) so positive small; no wrap,,high
+INT32-C,362,sqlite,src/pager.c,6939,FP,memset size matches the grown portion of the realloc above; not overflowing,,high
+INT32-C,363,sqlite,src/pager.c,6939,FP,"same product; nSavepoint-nCurrent small positive (asserted), sizeof const; no overflow",,high
+INT32-C,364,sqlite,src/pager.c,6939,FP,nSavepoint-nCurrent positive by assert nSavepoint>nCurrent at 6927,,high
+INT32-C,365,sqlite,src/pager.c,6959,FP,"ii+1 where ii<nSavepoint loop bound; nSavepoint small int savepoint depth, no realistic overflow",,high
+API00-C,366,sqlite,src/pager.c,7007,FP,sqlite3PagerSavepoint internal; pPager valid from btree layer,,high
+API00-C,367,sqlite,src/pager.c,7007,FP,iSavepoint guarded by iSavepoint<pPager->nSavepoint check (line 7017) before any array use,,high
+INT32-C,368,sqlite,src/pager.c,7025,FP,line 7025 nNew=iSavepoint+(0 or 1) where iSavepoint<nSavepoint (small); no overflow,,high
+ARR00-C,369,sqlite,src/pager.c,7026,FP,line 7026 ii is the for-loop counter initialized to nNew on this same line (for(ii=nNew;...)); not uninitialized — analyzer misread,,high
+INT32-C,370,sqlite,src/pager.c,7051,FP,nNew-1 only evaluated when nNew!=0 (ternary guards nNew==0?0:&aSavepoint[nNew-1]); safe,,high
+API00-C,371,sqlite,src/pager.c,7100,FP,sqlite3PagerVfs internal accessor; pPager valid,,high
+DCL13-C,372,sqlite,src/pager.c,7100,TP,sqlite3PagerVfs only reads pPager->pVfs; const Pager* compiles,,high
+API00-C,373,sqlite,src/pager.c,7109,FP,sqlite3PagerFile internal accessor; pPager valid,,high
+DCL13-C,374,sqlite,src/pager.c,7109,TP,sqlite3PagerFile only reads pPager->fd; const Pager* compiles,,high
+API00-C,375,sqlite,src/pager.c,7117,FP,sqlite3PagerJrnlFile internal accessor; pPager valid,,high
+DCL13-C,376,sqlite,src/pager.c,7117,TP,sqlite3PagerJrnlFile reads pPager->pWal/jfd only and passes member pWal (not pPager) to WalFile; const Pager* compiles,,med
+MSC37-C,377,sqlite,src/pager.c,7117,FP,MSC37 false: both #ifdef branches of sqlite3PagerJrnlFile end in a return statement; no fall-through path,,high
+API00-C,378,sqlite,src/pager.c,7128,FP,sqlite3PagerJournalname internal accessor; pPager valid,,high
+DCL13-C,379,sqlite,src/pager.c,7128,TP,sqlite3PagerJournalname only reads pPager->zJournal; const Pager* compiles,,high
+API00-C,380,sqlite,src/pager.c,7158,FP,sqlite3PagerMovepage internal autovacuum function; pPager/pPg valid live handles (asserts nRef>0),,high
+PRE32-C,381,sqlite,src/pager.c,7203,FP,"PAGERTRACE is a no-op or printf-style macro; the args are a normal printf format+args, the '#ifdef'-style ?: are C ternaries not preprocessor directives — analyzer misclassified",,high
+PRE32-C,382,sqlite,src/pager.c,7203,FP,"same PAGERTRACE arg; the (cond)?1:0 is a C conditional expression, no preprocessor directive present",,high
+EXP34-C,383,sqlite,src/pager.c,7281,FP,line 7281 pPgHdr dereferenced only after rc==SQLITE_OK early-return at 7274; sqlite3PagerGet sets pPgHdr non-NULL when returning OK,,high
+API00-C,384,sqlite,src/pager.c,7296,FP,sqlite3PagerRekey internal; pPg valid dirty page handle (assert pgno!=iNew),,high
+API00-C,385,sqlite,src/pager.c,7305,FP,sqlite3PagerGetData internal accessor; pPg valid (assert nRef>0 || memDb),,high
+DCL13-C,386,sqlite,src/pager.c,7305,TP,sqlite3PagerGetData only reads pPg->pData/pPager->memDb; const DbPage* compiles,,high
+EXP34-C,387,sqlite,src/pager.c,7306,FP,line 7306 pPg deref guarded by assert(pPg->nRef>0||pPg->pPager->memDb); caller contract ensures non-null,,high
+API00-C,388,sqlite,src/pager.c,7314,FP,sqlite3PagerGetExtra internal accessor; pPg valid,,high
+DCL13-C,389,sqlite,src/pager.c,7314,TP,sqlite3PagerGetExtra only reads pPg->pExtra; const DbPage* compiles,,high
+EXP34-C,390,sqlite,src/pager.c,7315,FP,line 7315 pPg->pExtra read; pPg non-null by caller contract (live page handle),,high
+API00-C,391,sqlite,src/pager.c,7328,FP,"sqlite3PagerLockingMode internal; pPager valid, eMode asserted valid",,high
+DCL03-C,392,sqlite,src/pager.c,7332,FP,"assert(PAGER_LOCKINGMODE_QUERY<0) compile-time constant — SQLite house style uses runtime assert; low-value, not a defect",,high
+DCL03-C,393,sqlite,src/pager.c,7333,FP,assert(NORMAL>=0 && EXCLUSIVE>=0) constant relation; runtime assert intentional,,high
+API00-C,394,sqlite,src/pager.c,7361,FP,"sqlite3PagerSetJournalMode internal; pPager valid, eMode asserted valid",,high
+DCL03-C,395,sqlite,src/pager.c,7398,FP,assert(TRUNCATE&5==1) constant; SQLite intentionally runtime-asserts these bit relations,,high
+DCL03-C,396,sqlite,src/pager.c,7399,FP,assert(PERSIST&5==1) constant relation; intentional runtime assert,,high
+DCL03-C,397,sqlite,src/pager.c,7400,FP,assert(DELETE&5==0) constant relation; intentional,,high
+DCL03-C,398,sqlite,src/pager.c,7401,FP,assert(MEMORY&5==4) constant relation; intentional,,high
+DCL03-C,399,sqlite,src/pager.c,7402,FP,assert(OFF&5==0) constant relation; intentional,,high
+DCL03-C,400,sqlite,src/pager.c,7403,FP,assert(WAL&5==5) constant relation; intentional,,high
+API00-C,401,sqlite,src/pager.c,7451,FP,sqlite3PagerGetJournalMode internal accessor; pPager valid,,high
+DCL13-C,402,sqlite,src/pager.c,7451,TP,sqlite3PagerGetJournalMode only reads pPager->journalMode; const Pager* compiles,,high
+API00-C,403,sqlite,src/pager.c,7473,FP,sqlite3PagerJournalSizeLimit internal; pPager valid (writes journalSizeLimit so not const),,high
+API00-C,404,sqlite,src/pager.c,7487,FP,sqlite3PagerBackupPtr internal accessor; pPager valid,,high
+DCL13-C,405,sqlite,src/pager.c,7487,FP,"sqlite3PagerBackupPtr returns &pPager->pBackup (sqlite3_backup**); a const Pager* would make this 'sqlite3_backup *const*' mismatching the non-const return type, so const would NOT compile",,high
+API00-C,406,sqlite,src/pager.c,7495,FP,sqlite3PagerClearCache internal vacuum function; pPager valid,,high
+API00-C,407,sqlite,src/pager.c,7510,FP,sqlite3PagerCheckpoint internal; pPager valid,,high
+MSC04-C,408,sqlite,src/pager.c,7510,TP,"sqlite3PagerCheckpoint->sqlite3_exec(""PRAGMA table_list"") at 7528 can re-enter via step->VdbeExec->Checkpoint->BtreeCheckpoint->PagerCheckpoint; indirect recursion factually exists (bounded by the pWal==0 guard)",,med
+DCL13-C,409,sqlite,src/pager.c,7511,FP,sqlite3PagerCheckpoint writes via sqlite3_exec/WalCheckpoint side effects and is not const-eligible; param also passed to non-const APIs,,high
+API00-C,410,sqlite,src/pager.c,7541,FP,sqlite3PagerWalCallback internal accessor; pPager valid,,high
+DCL13-C,411,sqlite,src/pager.c,7541,TP,sqlite3PagerWalCallback only reads pPager->pWal; const Pager* compiles,,high
+DCL13-C,412,sqlite,src/pager.c,7549,TP,sqlite3PagerWalSupported only reads pPager->fd->pMethods/noLock/exclusiveMode; const Pager* compiles,,med
+API00-C,413,sqlite,src/pager.c,7631,FP,sqlite3PagerOpenWal pbOpen is OUT param written via *pbOpen=1; callers per asserts pass valid pointer; not untrusted,,high
+EXP34-C,414,sqlite,src/pager.c,7655,FP,line 7655 *pbOpen=1 only in else-branch reached when assert(pbOpen==0||*pbOpen==0) plus asserts guarantee pbOpen non-null in that path (pbOpen required when not temp/wal),,high
+API00-C,415,sqlite,src/pager.c,7670,FP,sqlite3PagerCloseWal internal; pPager valid,,high
+API00-C,416,sqlite,src/pager.c,7727,FP,sqlite3PagerWalDb internal; pPager valid (writes dbWal so not const),,high
+API00-C,417,sqlite,src/pager.c,7727,FP,db param stored into pPager->dbWal and passed to WalDb; internal valid handle,,high
+API00-C,418,sqlite,src/pager.c,7740,FP,sqlite3PagerSnapshotGet internal; pPager valid,,high
+DCL13-C,419,sqlite,src/pager.c,7740,TP,sqlite3PagerSnapshotGet only reads pPager->pWal; const Pager* compiles,,high
+API00-C,420,sqlite,src/pager.c,7753,FP,sqlite3PagerSnapshotOpen internal; pPager valid,,high
+DCL13-C,421,sqlite,src/pager.c,7754,TP,"sqlite3PagerSnapshotOpen only reads pPager->pWal and passes it onward; pPager itself unmodified, const Pager* compiles",,med
+API00-C,422,sqlite,src/pager.c,7770,FP,sqlite3PagerSnapshotRecover internal; pPager valid,,high
+DCL13-C,423,sqlite,src/pager.c,7770,TP,sqlite3PagerSnapshotRecover only reads pPager->pWal; const Pager* compiles,,high
+API00-C,424,sqlite,src/pager.c,7792,FP,sqlite3PagerSnapshotCheck internal; pPager valid,,high
+DCL13-C,425,sqlite,src/pager.c,7792,TP,sqlite3PagerSnapshotCheck only reads pPager->pWal; const Pager* compiles,,high
+API00-C,426,sqlite,src/pager.c,7806,FP,sqlite3PagerSnapshotUnlock internal; pPager valid (assert pWal),,high
+DCL13-C,427,sqlite,src/pager.c,7806,TP,sqlite3PagerSnapshotUnlock only reads pPager->pWal; const Pager* compiles,,high
+API00-C,428,sqlite,src/pager.c,7822,FP,sqlite3PagerWalFramesize internal (ZIPVFS); pPager valid,,high
+DCL13-C,429,sqlite,src/pager.c,7822,TP,sqlite3PagerWalFramesize only reads pPager->pWal; const Pager* compiles,,high
+API00-C,430,sqlite,src/pager.c,7829,FP,sqlite3PagerWalSystemErrno internal (SEH); pPager valid,,high
+DCL13-C,431,sqlite,src/pager.c,7829,TP,sqlite3PagerWalSystemErrno only reads pPager->pWal; const Pager* compiles,,high
+ARR30-C,FN,sqlite,src/pager.c,1335,FN,readSuperJournal guard len>=nSuper admits len=nSuper-1 but writes 2-byte terminator zSuper[len]/zSuper[len+1]; zSuper[len+1] hits index nSuper needing nSuper+1 bytes (nSuper=mxPathname+1 into pTmpSpace; caller 2974 uses &pTmpSpace[4]). Reachable as 1-5 byte OOB heap write with custom VFS mxPathname==2^k-1 and pageSize==that power-of-two; default VFS safe,FN-hunt,low
