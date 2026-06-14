@@ -1,0 +1,167 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+ARR02-C,0,sqlite,src/pragma.c,75,FP,static const u8 iOffset[] initialized with brace-list at line 75 - implicit bound is fully determined by initializer; ARR02 misfire on idiomatic const lookup table,,high
+ARR02-C,1,sqlite,src/pragma.c,76,FP,static const u8 iLength[] same brace-initializer pattern as iOffset; size fixed by initializer,,high
+ARR02-C,2,sqlite,src/pragma.c,77,FP,static const u8 iValue[] same brace-initializer pattern; size fixed by initializer,,high
+EXP34-C,3,sqlite,src/pragma.c,80,FP,"getSafetyLevel callers (sqlite3GetBoolean, synchronous case line 1140) always pass non-null z; *z deref is safe",,high
+EXP34-C,4,sqlite,src/pragma.c,142,FP,"getTempStore reached only via changeTempStorage which is in the else branch of if(!zRight) at line 996, so z is non-null",,high
+STR34-C,5,sqlite,src/pragma.c,184,FP,"line 184 is 'int ts = getTempStore(zStorageType)' - a function call assignment, no char-to-int sign-extension conversion occurs",,high
+DCL13-C,6,sqlite,src/pragma.c,241,FP,"db is dereferenced as db->autoCommit and db->aDb and passed to sqlite3BtreeSetPagerFlags(pDb->pBt,...) reads but the Db* pDb=db->aDb aliases db storage that is mutated via pager flags; const would not reflect intent and db is connection handle, idiomatic non-const",,high
+DCL03-C,7,sqlite,src/pragma.c,248,FP,assert(SQLITE_FullFSync==PAGER_FULLFSYNC) is a compile-time macro-equality check but sqlite intentionally uses assert() not static_assert across its codebase; argument is constant so DCL03 technically fires but these are runtime asserts by design - treating as FP per established core profile (sqlite policy),,high
+INT32-C,8,sqlite,src/pragma.c,251,FP,"n=db->nDb (small db count, max SQLITE_MAX_ATTACHED+2 ~ 12); while((n--)>0) cannot reach INT_MIN",,high
+ARR37-C,9,sqlite,src/pragma.c,256,FP,"pDb++ walks db->aDb[] which is a real array of nDb Db structs; pointer is array-based, ARR37 misfire",,high
+DCL30-C,10,sqlite,src/pragma.c,279,FP,"actionName returns zName which points to string literals (""SET NULL"" etc), not automatic storage; DCL30 misreads literal-assigned local pointer",,high
+ARR02-C,11,sqlite,src/pragma.c,290,FP,static char *const azModeName[] initialized with string-literal brace list; size fixed by initializer,,high
+CON03-C,12,sqlite,src/pragma.c,290,FP,"azModeName is function-local static const array of string literals, single-threaded init by C semantics; CON03 misfire, not shared mutable state",,high
+DCL03-C,13,sqlite,src/pragma.c,296,FP,assert(PAGER_JOURNALMODE_DELETE==0) compile-time constant but sqlite policy uses runtime assert by design,,high
+DCL03-C,14,sqlite,src/pragma.c,297,FP,"same journal-mode enum assert, sqlite design choice",,high
+DCL03-C,15,sqlite,src/pragma.c,298,FP,same journal-mode enum assert,,high
+DCL03-C,16,sqlite,src/pragma.c,299,FP,same journal-mode enum assert,,high
+DCL03-C,17,sqlite,src/pragma.c,300,FP,same journal-mode enum assert,,high
+DCL03-C,18,sqlite,src/pragma.c,301,FP,same journal-mode enum assert,,high
+INT32-C,19,sqlite,src/pragma.c,314,FP,"ArraySize(aPragmaName)-1 is sizeof-based compile-time constant; the array has a fixed positive size, no overflow",,high
+INT32-C,20,sqlite,src/pragma.c,316,FP,lwr+upr in binary search bounded by ArraySize(aPragmaName) (small constant ~60); cannot overflow int,,high
+INT32-C,21,sqlite,src/pragma.c,320,FP,mid-1 where mid=(lwr+upr)/2 bounded by small array size; no underflow past INT_MIN,,high
+INT32-C,22,sqlite,src/pragma.c,322,FP,mid+1 bounded by small array size; no overflow,,high
+DCL13-C,23,sqlite,src/pragma.c,334,FP,"p is FuncDef* iterated p=p->pNext and fields read (p->xSFunc,p->zName,p->funcFlags); not modified but signature is internal helper - const-correctness suggestion only, but p->pNext traversal of mutable list is idiomatic; low-value, FP per profile",,high
+EXP33-C,24,sqlite,src/pragma.c,347,FP,zType assigned in all three branches of if/elseif/else at lines 362-366 before use at line 370; not uninitialized,,high
+ARR02-C,25,sqlite,src/pragma.c,348,FP,"static const char *azEnc[] initialized with brace list {0,""utf8"",...}; size fixed by initializer",,high
+DCL03-C,26,sqlite,src/pragma.c,350,FP,assert(SQLITE_FUNC_ENCMASK==0x3) compile-time constant; sqlite runtime-assert design,,high
+API00-C,27,sqlite,src/pragma.c,425,FP,"sqlite3Pragma pId1 comes from yacc parser grammar action, guaranteed non-null by caller invariant; internal contract not a trust boundary",,high
+API00-C,28,sqlite,src/pragma.c,425,FP,pId2 from parser; assert(pId2) at line 469 documents the non-null contract,,high
+API00-C,29,sqlite,src/pragma.c,425,FP,"pValue from parser grammar, may be null and code handles via sqlite3NameFromToken which tolerates null; internal contract",,high
+INT32-C,30,sqlite,src/pragma.c,508,FP,"pParse->nErr is bounded error counter, increments stop processing well before INT_MAX; intended",,high
+ARR02-C,31,sqlite,src/pragma.c,555,FP,static const VdbeOpList getCacheSize[] brace-initialized; size fixed by initializer,,high
+INT32-C,32,sqlite,src/pragma.c,569,FP,"pParse->nMem is a VDBE register counter bounded by query complexity / SQLITE_LIMIT, far below INT_MAX",,high
+STR34-C,33,sqlite,src/pragma.c,577,FP,line 577 'int size = sqlite3AbsInt32(sqlite3Atoi(zRight))' is function-call assignment; no char sign-extension,,high
+ARR00-C,34,sqlite,src/pragma.c,637,FP,ii is initialized at line 637 'for(ii=0; ii<db->nDb; ii++)' before use as index; not uninitialized,,high
+INT32-C,35,sqlite,src/pragma.c,667,FP,"++pParse->nMem register counter bounded by query size, not reaching INT_MAX",,high
+STR34-C,36,sqlite,src/pragma.c,689,FP,"line 689 'int eMode = getLockingMode(zRight)' is function-call assignment, no sign extension",,high
+STR34-C,37,sqlite,src/pragma.c,744,FP,"line 744 'int n = sqlite3Strlen30(zRight)' is function-call assignment, no char-to-int sign extension",,high
+ARR00-C,38,sqlite,src/pragma.c,764,FP,"aDb is db->aDb[], a real allocated array of db->nDb entries; loop 'for(ii=db->nDb-1; ii>=0; ii--)' indexes validly; sqc misread aDb size as 0",,high
+INT32-C,39,sqlite,src/pragma.c,764,FP,"db->nDb-1 where nDb>=1 (main db always present); no underflow, small attached-db count",,high
+STR34-C,40,sqlite,src/pragma.c,808,FP,"line 808 'int eAuto = getAutoVacuum(zRight)' function-call assignment, no sign extension",,high
+ARR02-C,41,sqlite,src/pragma.c,824,FP,static const VdbeOpList setMeta6[] brace-initialized; size fixed,,high
+INT32-C,42,sqlite,src/pragma.c,838,FP,"iAddr+4 where iAddr=sqlite3VdbeCurrentAddr(v), a bounded VDBE program counter; no overflow",,high
+INT32-C,43,sqlite,src/pragma.c,840,FP,"eAuto-1 with eAuto in [0,2] asserted at line 809; no underflow",,high
+DCL00-C,44,sqlite,src/pragma.c,855,FP,iLimit is reassigned at line 856-857 (iLimit=0x7fffffff) and passed by-value; DCL00 const suggestion is wrong - it is modified,,med
+STR34-C,45,sqlite,src/pragma.c,887,FP,"line 887 'int size = sqlite3Atoi(zRight)' function-call assignment, no sign extension",,high
+ARR00-C,46,sqlite,src/pragma.c,960,FP,aDb is real db->aDb[] array of db->nDb entries; loop indexes validly; sqc misread array size as 0,,high
+INT32-C,47,sqlite,src/pragma.c,960,FP,db->nDb-1 with nDb>=1; no underflow,,high
+INT32-C,48,sqlite,src/pragma.c,975,FP,pParse->nErr bounded error counter; intended increment,,high
+INT14-C,49,sqlite,src/pragma.c,1140,FP,"line 1140 zRight passed to getSafetyLevel which reads chars; +1 & MASK is integer arithmetic on a u8 result, not on zRight; INT14 misattribution",,high
+INT14-C,50,sqlite,src/pragma.c,1140,FP,"getSafetyLevel return is masked with PAGER_SYNCHRONOUS_MASK then +1 - bitwise+arith on small enum result by design; INT14 readability-only, not a defect",,high
+STR34-C,51,sqlite,src/pragma.c,1140,FP,"line 1140 zRight is passed as pointer arg to getSafetyLevel, no char-to-int conversion of zRight itself",,high
+INT14-C,52,sqlite,src/pragma.c,1225,FP,"pCol is Column* pointer; 'pCol->colFlags & COLFLAG_xxx' is bitwise on a struct field, pCol++ is pointer arith on array; INT14 conflates the two, readability-only",,high
+INT32-C,53,sqlite,src/pragma.c,1250,FP,"i-nHidden where both are bounded by pTab->nCol (i16, asserted <=32767 schema column count); no overflow",,high
+EXP34-C,54,sqlite,src/pragma.c,1297,FP,pTab guarded by 'if(pTab)' at line 1215 before member access at 1297; STATS loop pTab from sqliteHashData is non-null hash element,,high
+INT14-C,55,sqlite,src/pragma.c,1324,FP,pTab is Table*; 'pTab->tabFlags & TF_Shadow' bitwise on field; INT14 readability misfire on pointer member access,,high
+MEM30-C,56,sqlite,src/pragma.c,1347,FP,pParse is the live Parse context passed to sqlite3CodeVerifySchema; never freed - classic MEM30 context-arg misread,,high
+EXP34-C,57,sqlite,src/pragma.c,1356,FP,pIdx assigned from sqlite3FindIndex/sqlite3PrimaryKeyIndex and guarded by 'if(pIdx)' at line 1382 before member access at 1396,,high
+MEM30-C,58,sqlite,src/pragma.c,1377,FP,pParse live context to sqlite3CodeVerifySchema at 1377; not freed,,high
+MEM30-C,59,sqlite,src/pragma.c,1396,FP,pParse live context at 1396 sqlite3CodeVerifySchema; not freed,,high
+MEM30-C,60,sqlite,src/pragma.c,1397,FP,pParse->nMem assignment at 1397 (assert) on live Parse; not freed,,high
+MEM30-C,61,sqlite,src/pragma.c,1408,FP,pParse to sqlite3CodeVerifySchema at 1408 region (INDEX_INFO); live context not freed,,high
+MEM30-C,62,sqlite,src/pragma.c,1408,FP,pParse->nMem read at 1408; live Parse not freed,,high
+MEM30-C,63,sqlite,src/pragma.c,1422,FP,pParse to sqlite3CodeVerifySchema at 1422 (INDEX_LIST); live context,,high
+ARR02-C,64,sqlite,src/pragma.c,1424,FP,"const char *azOrigin[] = {""c"",""u"",""pk""} brace-initialized local; size fixed by initializer",,high
+FLP30-C,65,sqlite,src/pragma.c,1469,FP,"p at line 1469 is FuncDef* ('for(p=...; p; p=p->u.pHash)'), not a floating-point loop counter; FLP30 type misread",,high
+MEM30-C,66,sqlite,src/pragma.c,1516,FP,pParse to sqlite3CodeVerifySchema at 1516 (FOREIGN_KEY_LIST); live Parse context,,high
+EXP30-C,67,sqlite,src/pragma.c,1520,FP,line 1520 sqlite3VdbeMultiLoad args call actionName() (pure switch returning literals) and field reads; no side-effecting unsequenced calls,,high
+INT32-C,68,sqlite,src/pragma.c,1556,FP,pParse->nMem+1 register counter bounded by query complexity; no overflow,,high
+MEM30-C,69,sqlite,src/pragma.c,1556,FP,"pParse->nMem at 1556 is the live Parse register counter; pointer arithmetic claim is sqc misread, pParse never freed",,high
+MEM30-C,70,sqlite,src/pragma.c,1556,FP,"same line 1556, pParse live, not freed",,high
+MEM30-C,71,sqlite,src/pragma.c,1556,FP,"same line 1556, pParse->nMem member access on live context",,high
+INT32-C,72,sqlite,src/pragma.c,1557,FP,pParse->nMem += 4 register counter bounded; no overflow,,high
+INT32-C,73,sqlite,src/pragma.c,1558,FP,++pParse->nMem register counter bounded; no overflow,,high
+MEM30-C,74,sqlite,src/pragma.c,1558,FP,pParse->nMem read at 1558 on live Parse; not freed,,high
+MEM30-C,75,sqlite,src/pragma.c,1562,FP,pParse to sqliteHashFirst region / sqlite3LocateTable at 1562; live context,,high
+MEM30-C,76,sqlite,src/pragma.c,1571,FP,pParse to sqlite3CodeVerifySchema at 1571; live context,,high
+MEM30-C,77,sqlite,src/pragma.c,1572,FP,pParse to sqlite3TableLock at 1572; live context,,high
+MEM30-C,78,sqlite,src/pragma.c,1573,FP,pParse to sqlite3TouchRegister at 1573; live context,,high
+MEM30-C,79,sqlite,src/pragma.c,1574,FP,pParse to sqlite3OpenTable at 1574; live context,,high
+MEM30-C,80,sqlite,src/pragma.c,1581,FP,pParse to sqlite3TableLock at 1581; live context,,high
+MEM30-C,81,sqlite,src/pragma.c,1582,FP,pParse to sqlite3FkLocateIndex at 1582; live context,,high
+MEM30-C,82,sqlite,src/pragma.c,1585,FP,pParse to sqlite3OpenTable at 1585; live context,,high
+MEM30-C,83,sqlite,src/pragma.c,1588,FP,sqlite3VdbeSetP4KeyInfo reads pParse not freed; pParse is the live Parse object used through end of function|high,,med
+MEM30-C,84,sqlite,src/pragma.c,1595,FP,pParse->nErr in assert; pParse never freed in this function|high,,med
+MEM30-C,85,sqlite,src/pragma.c,1597,FP,pParse->nTab assignment; pParse live|high,,med
+MEM30-C,86,sqlite,src/pragma.c,1605,FP,"sqlite3TouchRegister(pParse,...) live Parse arg never freed|high",,med
+MEM30-C,87,sqlite,src/pragma.c,1608,FP,sqlite3VdbeMakeLabel(pParse) live Parse arg never freed|high,,med
+INT32-C,88,sqlite,src/pragma.c,1614,FP,regRow is a small VDBE register index plus pFK->nCol (column count bounded by SQLITE_LIMIT_COLUMN); no realistic INT_MAX overflow|high,,med
+MEM30-C,89,sqlite,src/pragma.c,1614,FP,"sqlite3TouchRegister(pParse,...) live Parse not freed|high",,med
+INT14-C,90,sqlite,src/pragma.c,1617,FP,j is a loop counter used as register offset regRow+j; bitwise/arith readability rule misfire no defect|high,,med
+INT32-C,91,sqlite,src/pragma.c,1617,FP,regRow+j register index arithmetic bounded by column count|high,,med
+INT32-C,92,sqlite,src/pragma.c,1618,FP,regRow+j register index arithmetic bounded by column count|high,,med
+INT32-C,93,sqlite,src/pragma.c,1637,FP,regResult+1 small register index; no overflow|high,,med
+INT32-C,94,sqlite,src/pragma.c,1639,FP,regResult+1 small register index; no overflow|high,,med
+INT32-C,95,sqlite,src/pragma.c,1641,FP,regResult+2 small register index; no overflow|high,,med
+INT32-C,96,sqlite,src/pragma.c,1641,FP,i-1 loop counter (FK index) small bounded value; no overflow|high,,med
+MEM30-C,97,sqlite,src/pragma.c,1644,FP,"sqlite3DbFree(db,aiCols) frees aiCols; db is the live handle context arg read first not freed|high",,med
+STR34-C,98,sqlite,src/pragma.c,1699,FP,zLeft[0] passed to sqlite3Tolower which takes int; sqlite uses its own 256-entry table safe for any char value|high,,med
+MEM30-C,99,sqlite,src/pragma.c,1725,FP,"sqlite3LocateTable(pParse,...) live Parse arg not freed|high",,med
+INT32-C,100,sqlite,src/pragma.c,1729,FP,mxErr-1 where mxErr>=1 (reset to 100 if <=0); no underflow|high,,med
+MEM30-C,101,sqlite,src/pragma.c,1741,FP,"sqlite3CodeVerifySchema(pParse,i) live Parse not freed|high",,med
+INT32-C,102,sqlite,src/pragma.c,1811,FP,8+cnt where cnt is bounded entry count used as register index; no INT_MAX risk|high,,med
+INT32-C,103,sqlite,src/pragma.c,1811,FP,8+iTab register index arithmetic; bounded|high,,med
+INT32-C,104,sqlite,src/pragma.c,1852,FP,8+j register index; j bounded by index count|high,,med
+INT32-C,105,sqlite,src/pragma.c,1855,FP,7+j register index; j bounded by index count|high,,med
+INT32-C,106,sqlite,src/pragma.c,1898,FP,r2+j register index; j bounded by nKeyCol|high,,med
+EXP30-C,107,sqlite,src/pragma.c,1937,FP,args to sqlite3ValueFromExpr/VdbeAddOp are not unsequenced side-effecting calls in a single expression; misfire|high,,med
+ARR02-C,108,sqlite,src/pragma.c,1988,FP,aStdTypeMask[] initialized with brace list so size is implied by initializer; valid C and intentional|high,,med
+CON03-C,109,sqlite,src/pragma.c,1988,FP,aStdTypeMask is a function-local static const lookup table read-only; no thread sync needed|high,,med
+INT30-C,110,sqlite,src/pragma.c,1998,FP,pCol->eCType-1 used as index; asserted eCType>=1 at line 1997 so no wrap|high,,med
+INT30-C,111,sqlite,src/pragma.c,2001,FP,pCol->eCType-1 index into sqlite3StdType; eCType>=1 guaranteed by assert|high,,med
+INT32-C,112,sqlite,src/pragma.c,2042,FP,iDataCur+1 cursor index assignment to pParse->iSelfTab; small bounded value|high,,med
+INT32-C,113,sqlite,src/pragma.c,2043,FP,pCheck->nExpr-1 loop bound; nExpr>=1 since pCheck non-null ExprList|high,,med
+INT32-C,114,sqlite,src/pragma.c,2068,FP,8+j register index arithmetic; bounded by index count|high,,med
+INT32-C,115,sqlite,src/pragma.c,2070,FP,iIdxCur+j cursor index; bounded|high,,med
+INT32-C,116,sqlite,src/pragma.c,2087,FP,iIdxCur+j cursor index; bounded|high,,med
+INT32-C,117,sqlite,src/pragma.c,2094,FP,jmp5-1 VDBE address arithmetic; jmp5 is a valid op address >=0|high,,med
+ARR00-C,118,sqlite,src/pragma.c,2101,FP,kk is initialized in for(kk=0;...) at the loop header; not uninitialized|high,,med
+INT32-C,119,sqlite,src/pragma.c,2104,FP,iIdxCur+j cursor index; bounded|high,,med
+INT32-C,120,sqlite,src/pragma.c,2105,FP,r1+kk register index; kk bounded by nKeyCol|high,,med
+INT32-C,121,sqlite,src/pragma.c,2113,FP,jmp5-1 VDBE address arithmetic; valid address|high,,med
+INT32-C,122,sqlite,src/pragma.c,2127,FP,r1+kk register index; kk bounded by nKeyCol|high,,med
+INT32-C,123,sqlite,src/pragma.c,2130,FP,iIdxCur+j cursor index; bounded|high,,med
+INT32-C,124,sqlite,src/pragma.c,2133,FP,iIdxCur+j cursor index; bounded|high,,med
+INT32-C,125,sqlite,src/pragma.c,2144,FP,loopTop-1 VDBE address; loopTop is a valid op address>=0|high,,med
+ARR02-C,126,sqlite,src/pragma.c,2185,FP,endCode[] is a static const VdbeOpList with brace initializer; size implied valid C|high,,med
+INT32-C,127,sqlite,src/pragma.c,2198,FP,1-mxErr where mxErr>=1; result <=0 intended as p2 operand no overflow|high,,med
+INT32-C,128,sqlite,src/pragma.c,2204,FP,sqlite3VdbeCurrentAddr(v)-2 address arithmetic; current addr large enough by construction|high,,med
+ARR02-C,129,sqlite,src/pragma.c,2237,FP,encnames[] static const struct array with brace initializer; size implied valid C|high,,med
+ARR37-C,130,sqlite,src/pragma.c,2262,FP,pEnc++ iterates the encnames[] array (pEnc declared as pointer into that array); legitimate array traversal|high,,med
+ARR02-C,131,sqlite,src/pragma.c,2317,FP,setCookie[] static const VdbeOpList brace initializer; size implied valid C|high,,med
+ARR02-C,132,sqlite,src/pragma.c,2337,FP,readCookie[] static const VdbeOpList brace initializer; size implied valid C|high,,med
+INT14-C,133,sqlite,src/pragma.c,2522,FP,opMask is a bitmask used with & and arithmetic offset; readability rule misfire no defect|high,,med
+INT32-C,134,sqlite,src/pragma.c,2534,FP,pParse->nTab++ cursor counter bounded by schema size far below INT_MAX|high,,med
+ARR00-C,135,sqlite,src/pragma.c,2535,FP,iDbLast is assigned in the for-init clause (iDbLast = zDb?iDb:db->nDb-1) before use; not uninitialized|high,,med
+INT32-C,136,sqlite,src/pragma.c,2535,FP,db->nDb-1 where nDb>=1 always (main db); no underflow|high,,med
+EXP34-C,137,sqlite,src/pragma.c,2539,FP,pSchema=db->aDb[iDb].pSchema; aDb entries for valid iDb always have non-null pSchema; guarded by schema invariant|high,,med
+INT32-C,138,sqlite,src/pragma.c,2581,FP,nBtree += nIndex+1 counts btrees; bounded by schema size far below INT_MAX|high,,med
+INT32-C,139,sqlite,src/pragma.c,2590,FP,sqlite3VdbeCurrentAddr(v)+2+(opMask&1) VDBE address arithmetic; bounded addresses|high,,med
+INT32-C,140,sqlite,src/pragma.c,2596,FP,same address arithmetic; bounded|high,,med
+DCL18-C,141,sqlite,src/pragma.c,2606,FP,the 00 in OP_SqlExec p2 (nLimit?0x02:00) is an intentional 0 literal aligned with 0x02; evaluates to 0 as intended|med,,med
+INT32-C,142,sqlite,src/pragma.c,2619,FP,100*nLimit where nLimit<=SQLITE_DEFAULT_OPTIMIZE_LIMIT (2000); 200000 no overflow|high,,med
+ARR02-C,143,sqlite,src/pragma.c,2732,FP,azLockName[] static const char* array brace initializer; size implied valid C|high,,med
+DCL13-C,144,sqlite,src/pragma.c,2805,FP,pAux param of pragmaVtabConnect fixed by sqlite3_module xConnect signature; cannot add const|high,,med
+INT30-C,145,sqlite,src/pragma.c,2841,FP,sizeof(zBuf)-1 where zBuf[200]; sizeof>=1 always no wrap|high,,med
+STR34-C,146,sqlite,src/pragma.c,2855,FP,*pzErr assigned a char* (sqlite3_mprintf result) not sign-extended; STR34 misfire on pointer assignment|high,,med
+DCL13-C,147,sqlite,src/pragma.c,2878,FP,tab param of pragmaVtabBestIndex fixed by sqlite3_module xBestIndex signature; cannot add const|high,,med
+EXP05-C,148,sqlite,src/pragma.c,2879,FP,(PragmaVtab*)tab downcast from base class sqlite3_vtab* the standard vtab idiom; pTab is mutated conceptually no const violation|high,,med
+FLP34-C,149,sqlite,src/pragma.c,2884,FP,estimatedCost is a double field; (double)1 assigns int literal to double field intentional no range issue|high,,med
+INT32-C,150,sqlite,src/pragma.c,2895,FP,i+1 loop counter as constraint index; bounded by nConstraint small|high,,med
+FLP34-C,151,sqlite,src/pragma.c,2898,FP,(double)2147483647 assigned to double field estimatedCost; representable exactly intentional|high,,med
+INT32-C,152,sqlite,src/pragma.c,2902,FP,seen[0]-1 where guarded by if(seen[0]==0) return earlier so seen[0]>=1; no underflow|high,,med
+FLP34-C,153,sqlite,src/pragma.c,2905,FP,(double)20 assigned to double field; intentional no range issue|high,,med
+INT32-C,154,sqlite,src/pragma.c,2908,FP,seen[1]-1 guarded by if(seen[1]) so seen[1]>=1; no underflow|high,,med
+DCL13-C,155,sqlite,src/pragma.c,2916,FP,pVtab param of pragmaVtabOpen fixed by sqlite3_module xOpen signature; cannot add const|high,,med
+EXP33-C,156,sqlite,src/pragma.c,2918,FP,pCsr assigned by sqlite3_malloc before any dereference and null-checked at line 2919; not uninitialized|high,,med
+MEM33-C,157,sqlite,src/pragma.c,2922,FP,pCsr->base.pVtab=pVtab is plain pointer-field assignment not flexible-array struct copy; MEM33 misfire|high,,med
+INT32-C,158,sqlite,src/pragma.c,2952,FP,pCsr->iRowid++ is sqlite_int64; xNext advances one row at a time never reaches INT64_MAX|high,,med
+DCL13-C,159,sqlite,src/pragma.c,2968,FP,argv param of pragmaVtabConnect fixed by sqlite3_module xConnect signature; already const const* anyway|high,,med
+DCL13-C,160,sqlite,src/pragma.c,3015,FP,pVtabCursor param fixed by sqlite3_module xNext signature; cannot add const|high,,med
+DCL13-C,161,sqlite,src/pragma.c,3024,FP,pVtabCursor param fixed by sqlite3_module xEof signature; cannot add const|high,,med
+DCL13-C,162,sqlite,src/pragma.c,3041,FP,pVtabCursor param fixed by sqlite3_module xColumn signature; cannot add const|high,,med
+API00-C,163,sqlite,src/pragma.c,3081,FP,db is internal SQLite handle; sqlite3PragmaVtabRegister called only with valid db via internal contract not a trust boundary|high,,med
+API00-C,164,sqlite,src/pragma.c,3081,FP,zName guaranteed non-null by caller; asserted via sqlite3_strnicmp at line 3083; internal contract|high,,med
+EXP05-C,165,sqlite,src/pragma.c,3088,FP,(void*)pName cast to pass through sqlite3VtabCreateModule pAux which discards const by API; standard idiom|high,,med

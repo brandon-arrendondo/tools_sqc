@@ -1,0 +1,151 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+MSC04-C,0,sqlite,src/whereexpr.c,28,TP,whereOrInfoDelete -> sqlite3WhereClauseClear -> whereOrInfoDelete is genuine indirect recursion over OR-tree nodes; depth-bounded by expr tree but real.,,high
+MSC04-C,1,sqlite,src/whereexpr.c,36,TP,whereAndInfoDelete -> sqlite3WhereClauseClear -> whereAndInfoDelete is genuine indirect recursion over AND-tree nodes.,,high
+ARR01-C,2,sqlite,src/whereexpr.c,67,FP,"pWC->a[0] is a WhereTerm element via the WhereClause* member; sizeof(element) is correct, no decayed-pointer sizeof.",,high
+INT30-C,3,sqlite,src/whereexpr.c,67,FP,nSlot is a small bounded slot count grown by doubling; sizeof*nSlot*2 is allocation sizing that never approaches SIZE_MAX in practice and malloc returns 0 on failure.,,high
+ARR01-C,4,sqlite,src/whereexpr.c,75,FP,"same as idx2: sizeof(pWC->a[0]) is element size of WhereTerm, not sizeof of a decayed pointer.",,high
+ARR38-C,5,sqlite,src/whereexpr.c,75,FP,"memcpy copies nTerm valid WhereTerm entries into the freshly doubled array; size = nTerm elements, well-formed.",,high
+EXP43-C,6,sqlite,src/whereexpr.c,75,FP,"src pOld and dst pWC->a are distinct buffers (pOld is the old array, pWC->a was just freshly allocated); no overlap.",,high
+INT30-C,7,sqlite,src/whereexpr.c,75,FP,nTerm <= nSlot is a small bounded term count; sizeof*nTerm cannot wrap for realistic clause sizes.,,high
+INT32-C,8,sqlite,src/whereexpr.c,75,FP,"same bounded nTerm; memcpy size is element-count * sizeof element, no overflow at WHERE-clause scale.",,high
+INT32-C,9,sqlite,src/whereexpr.c,76,FP,nSlot is a small int doubled on growth; cannot reach INT_MAX for a WHERE clause term array.,,high
+INT32-C,10,sqlite,src/whereexpr.c,78,FP,nTerm is a bounded term counter (int) incremented one per added term; cannot approach INT_MAX.,,high
+INT32-C,11,sqlite,src/whereexpr.c,81,FP,sqlite3LogEst returns a small LogEst (i16-range) value; subtracting 270 cannot overflow int.,,high
+INT32-C,12,sqlite,src/whereexpr.c,89,FP,"sizeof(WhereTerm) - offsetof(WhereTerm,eOperator) is a positive compile-time constant (eOperator is not the last member); no overflow.",,high
+EXP08-C,13,sqlite,src/whereexpr.c,90,FP,"memset(&pTerm->eOperator,...) uses address-of-member, not raw byte pointer arithmetic; idiomatic and well-defined.",,high
+INT30-C,14,sqlite,src/whereexpr.c,90,FP,"sizeof(WhereTerm) > offsetof(WhereTerm,eOperator) always since eOperator is an interior member; subtraction is a positive constant, no underflow.",,high
+DCL03-C,15,sqlite,src/whereexpr.c,100,FP,"assert(TK_GT>TK_EQ && TK_GT<TK_GE) uses token-code macros; though constant, these are documented runtime sanity asserts (style preference, not a defect).",,high
+DCL03-C,16,sqlite,src/whereexpr.c,101,FP,"assert on TK_LT ordering constants; runtime assert of compile-time relation, style-only.",,high
+DCL03-C,17,sqlite,src/whereexpr.c,102,FP,assert on TK_LE ordering constants; style-only.,,high
+DCL03-C,18,sqlite,src/whereexpr.c,103,FP,assert(TK_GE==TK_EQ+4); style-only.,,high
+DCL03-C,19,sqlite,src/whereexpr.c,104,FP,assert(TK_IN<TK_EQ); style-only.,,high
+DCL03-C,20,sqlite,src/whereexpr.c,105,FP,assert(TK_IS<TK_EQ); style-only.,,high
+DCL03-C,21,sqlite,src/whereexpr.c,106,FP,assert(TK_ISNULL<TK_EQ); style-only.,,high
+DCL03-C,22,sqlite,src/whereexpr.c,126,FP,assert(TK_LT==TK_GT+2) constant token relation; style-only.,,high
+INT14-C,23,sqlite,src/whereexpr.c,126,FP,"TK_GT is a token-code enum constant compared/added with int op; no real bitwise+arithmetic confusion, just enum arithmetic.",,high
+DCL03-C,24,sqlite,src/whereexpr.c,127,FP,assert(TK_GE==TK_LE+2) constant token relation; style-only.,,high
+DCL03-C,25,sqlite,src/whereexpr.c,128,FP,assert(TK_GT>TK_EQ) constant; style-only.,,high
+DCL03-C,26,sqlite,src/whereexpr.c,129,FP,assert(TK_GT<TK_LE) constant; style-only.,,high
+INT14-C,27,sqlite,src/whereexpr.c,131,FP,"pExpr is a pointer struct member accessed; not genuine bitwise+arithmetic on a numeric variable, misfire on op field arithmetic.",,high
+INT13-C,28,sqlite,src/whereexpr.c,143,FP,"op is a small bounded token code (TK_EQ..TK_GE range checked by allowedOp); WO_EQ<<(op-TK_EQ) shift is asserted < 0x7fff, well-defined.",,high
+INT14-C,29,sqlite,src/whereexpr.c,143,FP,"TK_EQ is a token constant used in (op-TK_EQ); enum arithmetic, not a readability defect.",,high
+INT34-C,30,sqlite,src/whereexpr.c,143,FP,"shift amount (op-TK_EQ) is guarded by allowedOp() and op>=TK_EQ branch, with assert((WO_EQ<<(op-TK_EQ))<0x7fff); bounded non-negative.",,high
+INT13-C,31,sqlite,src/whereexpr.c,144,FP,op is bounded token code; shift well-defined as above.,,high
+INT34-C,32,sqlite,src/whereexpr.c,144,FP,shift amount bounded by allowedOp invariant and the assert; well-defined.,,high
+EXP33-C,33,sqlite,src/whereexpr.c,196,FP,"wc[4] is filled by sqlite3IsLikeFunction(db,pExpr,pnoCase,(char*)wc) at line196 before any read at line229; not uninitialized.",,high
+EXP34-C,34,sqlite,src/whereexpr.c,207,FP,"pRight = sqlite3ExprSkipCollate(pList->a[0].pExpr); LIKE has exactly 2 args (parser invariant), pRight is non-null when dereferenced.",,high
+ARR00-C,35,sqlite,src/whereexpr.c,229,FP,wc[] is initialized by sqlite3IsLikeFunction before the loop; the loop reads wc[0..3] only after fill.,,high
+EXP30-C,36,sqlite,src/whereexpr.c,229,FP,c=z[cnt] is assigned in the while condition (a sequence point) before each read of c in the body; no unsequenced modify/access.,,high
+EXP30-C,37,sqlite,src/whereexpr.c,229,FP,same: c is assigned at the controlling expression then read; sequenced.,,high
+EXP30-C,38,sqlite,src/whereexpr.c,229,FP,"same: c modified in loop condition, read in body across the loop sequence point.",,high
+EXP33-C,39,sqlite,src/whereexpr.c,229,FP,c is assigned in while((c=z[cnt])!=0 ...) before any use; never read uninitialized.,,high
+INT32-C,40,sqlite,src/whereexpr.c,230,FP,cnt counts prefix bytes of a string literal bounded by token length; cannot reach INT_MAX.,,high
+ARR00-C,41,sqlite,src/whereexpr.c,231,FP,wc[] initialized before loop by sqlite3IsLikeFunction; reads are bounded indices 0..3.,,high
+INT32-C,42,sqlite,src/whereexpr.c,232,FP,cnt bounded by string length; no overflow.,,high
+EXP05-C,43,sqlite,src/whereexpr.c,261,FP,(char*)z strips const on a const u8* only to pass to sqlite3Expr(const char*) which re-adds const; pointee never modified through the cast.,,high
+INT32-C,44,sqlite,src/whereexpr.c,331,FP,sqlite3VdbeCurrentAddr(v) returns a small bounded VDBE program counter; minus 1 cannot overflow.,,high
+API00-C,45,sqlite,src/whereexpr.c,353,FP,"sqlite3ExprIsLikeOperator has documented contract pExpr is a non-null TK_FUNCTION (assert pExpr->op==TK_FUNCTION); internal invariant, not a trust boundary.",,high
+ARR02-C,46,sqlite,src/whereexpr.c,357,FP,aOp[] is a static const initializer array with explicit element list; size is implicit-by-initializer which is well-defined and idiomatic.,,high
+DCL03-C,47,sqlite,src/whereexpr.c,472,FP,assert(TK_NE<TK_EQ) constant token relation; style-only.,,high
+DCL03-C,48,sqlite,src/whereexpr.c,473,FP,assert(TK_ISNOT<TK_EQ) constant; style-only.,,high
+DCL03-C,49,sqlite,src/whereexpr.c,474,FP,assert(TK_NOTNULL<TK_EQ) constant; style-only.,,high
+ARR00-C,50,sqlite,src/whereexpr.c,516,FP,"markTermAsChild iChild is an index into pWC->a produced by whereClauseInsert and always valid by caller invariant; internal, not attacker-controlled.",,high
+ARR30-C,51,sqlite,src/whereexpr.c,516,FP,same internal invariant: iChild always a valid term index from prior insert.,,high
+ARR00-C,52,sqlite,src/whereexpr.c,517,FP,iChild valid term index; internal contract.,,high
+ARR00-C,53,sqlite,src/whereexpr.c,517,FP,iParent valid term index passed by callers from prior inserts; internal contract.,,high
+ARR30-C,54,sqlite,src/whereexpr.c,517,FP,iChild bounded by internal term-array invariant.,,high
+ARR30-C,55,sqlite,src/whereexpr.c,517,FP,iParent bounded by internal term-array invariant.,,high
+ARR00-C,56,sqlite,src/whereexpr.c,518,FP,iParent valid index into pWC->a; internal contract.,,high
+ARR30-C,57,sqlite,src/whereexpr.c,518,FP,iParent bounded by internal invariant.,,high
+DCL13-C,58,sqlite,src/whereexpr.c,526,FP,"pTerm in whereNthSubterm is only read (pTerm->eOperator, pTerm->u.pAndInfo->wc...); const-qualifying the param would compile and is harmless but signature is internal helper, low-value true const candidate.",,med
+MSC04-C,59,sqlite,src/whereexpr.c,556,TP,whereCombineDisjuncts -> exprAnalyze -> exprAnalyzeOrTerm -> whereCombineDisjuncts is genuine indirect recursion over OR-term decomposition.,,high
+DCL13-C,60,sqlite,src/whereexpr.c,559,FP,"pOne is read then passed to sqlite3ExprCompare etc; pOne->pExpr is read, but const propagation is not analyzed by sqc and pTerm fields feed non-const uses; declaration-style low-value, but pExpr is used as non-const arg making const unsafe.",,high
+DCL13-C,61,sqlite,src/whereexpr.c,560,FP,pTwo similarly read and its pExpr fed onward; const not cleanly applicable across callees.,,high
+INT14-C,62,sqlite,src/whereexpr.c,572,FP,"eOp is a u16 WO_xx bitmask; the | and arithmetic are bitmask operations, not a readability defect.",,high
+INT13-C,63,sqlite,src/whereexpr.c,595,FP,op is a bounded token code; shift well-defined (see idx28).,,high
+INT14-C,64,sqlite,src/whereexpr.c,595,FP,TK_EQ token constant in (op-TK_EQ); enum arithmetic.,,high
+INT34-C,65,sqlite,src/whereexpr.c,595,FP,shift amount (op-TK_EQ) bounded by the for-loop assert(op<TK_GE); non-negative and within width.,,high
+MSC04-C,66,sqlite,src/whereexpr.c,689,TP,exprAnalyzeOrTerm -> whereCombineDisjuncts -> exprAnalyze -> exprAnalyzeOrTerm is genuine indirect recursion over OR/AND term analysis.,,high
+ARR00-C,67,sqlite,src/whereexpr.c,697,FP,"idxTerm is an index into pWC->a passed by sqlite3WhereExprAnalyze loop bounded by nTerm; internal contract, not attacker-supplied.",,high
+ARR30-C,68,sqlite,src/whereexpr.c,697,FP,idxTerm bounded by caller loop over pWC->nTerm; internal invariant.,,high
+EXP30-C,69,sqlite,src/whereexpr.c,713,FP,pOrInfo is assigned (pTerm->u.pOrInfo = pOrInfo = sqlite3DbMallocZero(...)) then null-checked before any deref; no unsequenced access.,,high
+EXP33-C,70,sqlite,src/whereexpr.c,713,FP,pOrInfo assigned from sqlite3DbMallocZero and guarded by if(pOrInfo==0) return before use; not uninitialized.,,high
+EXP34-C,71,sqlite,src/whereexpr.c,713,FP,pOrInfo null-checked (if(pOrInfo==0) return) immediately after assignment; no null deref.,,high
+INT32-C,72,sqlite,src/whereexpr.c,729,FP,pOrWc->nTerm is asserted >=2 at line722; nTerm-1 cannot underflow.,,high
+EXP33-C,73,sqlite,src/whereexpr.c,734,FP,pAndInfo assigned from sqlite3DbMallocRawNN and the body is guarded by if(pAndInfo) before deref; not uninitialized.,,high
+EXP33-C,74,sqlite,src/whereexpr.c,737,FP,pAndTerm is declared in the if(pAndInfo) block and assigned before use in the subsequent loop over pAndWC; not used uninitialized.,,high
+INT32-C,75,sqlite,src/whereexpr.c,842,FP,"pOrWc->nTerm is a bounded WhereClause term count (i16-ish parser-built); loop counter int i, no wrap reachable",,high
+INT32-C,76,sqlite,src/whereexpr.c,917,FP,same pOrWc->nTerm-1 bounded term-count subtraction in TERM_OK pass; never near INT_MIN,,high
+DCL13-C,77,sqlite,src/whereexpr.c,964,FP,termIsEquivalence passes pSrc into pSrc->a[0].fg.jointype read only but pSrc is fixed by call convention and passed to nothing requiring const change matters not; pSrc not written yet const-correctness optional not a defect,,high
+DCL13-C,78,sqlite,src/whereexpr.c,998,TP,"exprSelectUsage pS only read (fields/pPrior traversed) never written and not stored; const Select* compiles, genuine DCL13",,med
+MEM05-C,79,sqlite,src/whereexpr.c,998,TP,exprSelectUsage recurses on subquery selects (line 1011) genuine direct recursion bounded by query nesting,,high
+MSC04-C,80,sqlite,src/whereexpr.c,998,TP,"exprSelectUsage calls itself directly at line 1011, real direct recursion",,high
+DCL13-C,81,sqlite,src/whereexpr.c,1040,FP,"exprMightBeIndexed2 pFrom only dereferenced for reads (a[j].iCursor, pSTab->pIndex); but it is also the SrcList passed unchanged; const would be fine yet not a defect not flagged write",,high
+ARR00-C,82,sqlite,src/whereexpr.c,1049,FP,j is caller-supplied start index but bounded by do/while ++j<pFrom->nSrc and exprMightBeIndexed only calls with valid i<nSrc; pFrom->a[j] in-bounds by loop invariant,,high
+ARR00-C,83,sqlite,src/whereexpr.c,1050,FP,same pFrom->a[j].pSTab access guarded by same nSrc bound as idx 82,,high
+FLP30-C,84,sqlite,src/whereexpr.c,1050,FP,"pIdx is Index* pointer loop variable over linked list, not floating point; FLP30 misfire on pointer name",,high
+DCL03-C,85,sqlite,src/whereexpr.c,1078,TP,assert(TK_GT+1==TK_LE && ...) is pure compile-time token-constant expression; static_assert applicable,,med
+DCL03-C,86,sqlite,src/whereexpr.c,1079,TP,assert(TK_IS<TK_GE && ...) also pure compile-time constant token relation; static_assert applicable,,med
+EXP34-C,87,sqlite,src/whereexpr.c,1081,FP,pExpr deref at 1081 guarded; pExpr is pTerm->pExpr asserted !=0 at 1153 and op already read; non-null by contract,,high
+FLP30-C,88,sqlite,src/whereexpr.c,1094,FP,pIdx again Index* linked-list pointer not float; FLP30 misfire,,high
+MEM05-C,89,sqlite,src/whereexpr.c,1122,FP,"exprAnalyze recursion exists but MEM05 stack concern is bounded by WHERE expr tree depth (parser-limited SQLITE_LIMIT_EXPR_DEPTH); not a defect, advisory at most -> FP per profile (semantic stack-exhaustion not reachable)",,high
+INT14-C,90,sqlite,src/whereexpr.c,1166,FP,pTerm used in & (bitwise wtFlags) and ++/array indexing; INT14 readability heuristic misfire on pointer,,high
+DCL03-C,91,sqlite,src/whereexpr.c,1184,FP,"assert(op<=TK_GE) where op is the runtime function parameter, not a compile-time constant; static_assert inapplicable, DCL03 misfire",,high
+EXP34-C,92,sqlite,src/whereexpr.c,1210,FP,"pLeft (pExpr->pLeft) deref guarded; in allowedOp branch pExpr structure validated, pLeft from sqlite3ExprSkipCollate non-null for allowed ops",,high
+INT14-C,93,sqlite,src/whereexpr.c,1219,FP,operatorMask used with bitwise & opMask and + eExtraOp arithmetic intentional bit-set math; INT14 readability misfire,,high
+EXP34-C,94,sqlite,src/whereexpr.c,1260,FP,pDup from sqlite3ExprDup checked via db->mallocFailed at 1233 before any deref; null path returns early,,high
+INT14-C,95,sqlite,src/whereexpr.c,1260,FP,pDup pointer in bitwise/arith INT14 readability misfire on pointer var,,high
+INT14-C,96,sqlite,src/whereexpr.c,1260,FP,"eExtraOp is u16 flag bits used in (operatorMask+eExtraOp)&opMask, intentional flag math; INT14 misfire",,high
+ARR02-C,97,sqlite,src/whereexpr.c,1294,FP,"static const u8 ops[]={TK_GE,TK_LE} initializer-sized array, size implicit-by-design and correct; ARR02 stylistic, idiomatic C not a defect",,high
+EXP30-C,98,sqlite,src/whereexpr.c,1302,FP,"sqlite3PExpr args include two sqlite3ExprDup calls; allocation side effects but order-independent (each allocates distinct node); no real unsequenced hazard, EXP30 misfire",,high
+EXP30-C,99,sqlite,src/whereexpr.c,1341,FP,"sqlite3PExpr(TK_GT, ExprDup, ExprAlloc) same independent-allocation pattern; no shared-state unsequenced defect",,high
+EXP34-C,100,sqlite,src/whereexpr.c,1391,FP,pStr1 set by isLikeOrGlob which returns true only when pStr1 assigned non-null; sqlite3ExprDup also null-tolerant; branch entered only on isLikeOrGlob true,,high
+EXP34-C,101,sqlite,src/whereexpr.c,1404,FP,pStr1->u.zToken deref at 1404 in noCase branch guarded by !mallocFailed and isLikeOrGlob guarantee pStr1 non-null,,high
+EXP34-C,102,sqlite,src/whereexpr.c,1406,FP,pStr2 is sqlite3ExprDup(pStr1); written under noCase loop but ExprDup of non-null pStr1 yields non-null unless mallocFailed which is excluded by guard at 1400,,high
+ARR37-C,103,sqlite,src/whereexpr.c,1427,FP,pC-- at 1427 walks back over pStr2->u.zToken bytes bounded by pC>(u8*)pStr2->u.zToken loop guard; pointer into heap token string not stray pointer,,high
+EXP34-C,104,sqlite,src/whereexpr.c,1436,FP,pStr1 passed to sqlite3PExpr at 1436 is non-null per isLikeOrGlob contract; sqlite3PExpr also tolerates null operands,,high
+EXP30-C,105,sqlite,src/whereexpr.c,1467,FP,nLeft assigned in condition (nLeft=sqlite3ExprVectorSize(...))>1 then read in same && chain across sequence points; EXP30 misfire on && short-circuit ordering,,high
+EXP30-C,106,sqlite,src/whereexpr.c,1467,FP,"duplicate of 105 same nLeft && chain, sequence-point safe",,high
+EXP30-C,107,sqlite,src/whereexpr.c,1467,FP,duplicate of 105/106 nLeft logical-AND sequence points well-defined,,high
+EXP33-C,108,sqlite,src/whereexpr.c,1469,FP,nLeft assigned via = inside if condition before any read; && is a sequence point so initialized-before-use; EXP33 misfire,,high
+INT32-C,109,sqlite,src/whereexpr.c,1514,FP,"i+1 at 1514 stores iField, i bounded by sqlite3ExprVectorSize loop (small vector width <= SQLITE_LIMIT_COLUMN); no overflow",,high
+INT32-C,110,sqlite,src/whereexpr.c,1533,FP,"res-- at 1533 where res is isAuxiliaryVtabOperator return (0,1,2); while(res-->0) bounded, never INT_MIN",,high
+EXP33-C,111,sqlite,src/whereexpr.c,1535,FP,pNewTerm assigned at 1535/1550 before use at 1551; only used inside if(idxNew) ... actually used within (prereqExpr&prereqColumn)==0 block where pNewTerm set; guarded,,high
+EXP34-C,112,sqlite,src/whereexpr.c,1538,FP,pRight passed to sqlite3WhereExprUsage at 1538 which is the null-tolerant wrapper (returns 0 if p==NULL); explicitly NULL-safe,,high
+EXP34-C,113,sqlite,src/whereexpr.c,1539,FP,"pLeft passed to sqlite3WhereExprUsage at 1539, same null-tolerant wrapper; safe by design",,high
+EXP34-C,114,sqlite,src/whereexpr.c,1543,FP,pRight to sqlite3ExprDup at 1543 inside guard; sqlite3ExprDup tolerates null and result handled; vtab branch only with valid operands,,high
+EXP34-C,115,sqlite,src/whereexpr.c,1552,FP,pLeft->iTable deref at 1552 inside (prereqExpr&prereqColumn)==0 block where isAuxiliaryVtabOperator set pLeft non-null; guarded,,high
+API00-C,116,sqlite,src/whereexpr.c,1596,FP,"sqlite3WhereSplit pWC internal caller-guaranteed non-null; internal contract not trust boundary, API00 misfire",,high
+API00-C,117,sqlite,src/whereexpr.c,1596,FP,"pExpr in sqlite3WhereSplit may be null but handled (pE2==0 return); API00 misfire, code explicitly null-checks",,high
+MEM05-C,118,sqlite,src/whereexpr.c,1596,TP,"sqlite3WhereSplit recurses on pLeft/pRight (1604-1605) genuine direct recursion, depth bounded by AND-tree",,high
+MSC04-C,119,sqlite,src/whereexpr.c,1596,TP,sqlite3WhereSplit calls itself directly at 1604-1605,,high
+API00-C,120,sqlite,src/whereexpr.c,1671,FP,sqlite3WhereAddLimit pWC internal non-null contract; API00 misfire,,high
+API00-C,121,sqlite,src/whereexpr.c,1671,FP,"p param asserted !=0 at 1672; API00 misfire, assert validates",,high
+DCL13-C,122,sqlite,src/whereexpr.c,1671,FP,"p (Select*) is read-only here (p->pGroupBy, p->selFlags, p->pSrc traversed) but const not required; passed to nothing; const-correctness optional, not a defect",,high
+EXP34-C,123,sqlite,src/whereexpr.c,1673,FP,p deref at 1673 immediately after assert(p!=0 && p->pLimit!=0) at 1672; guarded,,high
+ARR00-C,124,sqlite,src/whereexpr.c,1682,FP,ii initialized by for(ii=0;...) loop at 1682 before array use; not uninitialized; ARR00 misfire reading loop var as uninit,,high
+API00-C,125,sqlite,src/whereexpr.c,1741,FP,sqlite3WhereClauseInit pWC caller-allocated non-null; API00 misfire on internal init contract,,high
+API00-C,126,sqlite,src/whereexpr.c,1741,FP,"pWInfo stored into pWC->pWInfo, caller-guaranteed non-null internal contract; API00 misfire",,high
+DCL13-C,127,sqlite,src/whereexpr.c,1743,FP,pWInfo is stored into pWC->pWInfo (non-const field assignment); const param would break the store; DCL13 FP,,high
+API00-C,128,sqlite,src/whereexpr.c,1759,FP,sqlite3WhereClauseClear pWC non-null internal contract; API00 misfire,,high
+DCL13-C,129,sqlite,src/whereexpr.c,1759,FP,"pWC is read then its owned WhereTerm exprs are freed (sqlite3ExprDelete on a->pExpr); pWC contents mutated/freed, const inappropriate; DCL13 FP",,high
+MSC04-C,130,sqlite,src/whereexpr.c,1759,TP,sqlite3WhereClauseClear -> whereOrInfoDelete -> sqlite3WhereClauseClear genuine indirect recursion exists,,high
+INT14-C,131,sqlite,src/whereexpr.c,1764,FP,pWC->nTerm-1 pointer/index arithmetic; INT14 readability misfire on pointer member access,,high
+INT32-C,132,sqlite,src/whereexpr.c,1764,FP,"pWC->nTerm-1 at 1764 bounded term count guarded by if(pWC->nTerm>0); aLast computation safe, no signed overflow",,high
+MSC04-C,133,sqlite,src/whereexpr.c,1824,TP,sqlite3WhereExprUsageFull participates in indirect recursion via UsageNN/Usage cycle; genuine,,high
+EXP34-C,134,sqlite,src/whereexpr.c,1829,FP,p->pLeft etc at 1829 in UsageFull called only via UsageNN which is NN (not-null) contract; p non-null by name/contract,,high
+API00-C,135,sqlite,src/whereexpr.c,1850,FP,pMaskSet internal non-null contract in UsageNN; API00 misfire,,high
+MSC04-C,136,sqlite,src/whereexpr.c,1850,TP,sqlite3WhereExprUsageNN indirect recursion through UsageFull/ListUsage/Usage cycle; genuine,,high
+EXP34-C,137,sqlite,src/whereexpr.c,1851,FP,"p deref at 1851 in UsageNN; p is NN-contract non-null (callers guarantee), and Usage wrapper handles null before calling; safe",,high
+API00-C,138,sqlite,src/whereexpr.c,1859,FP,pMaskSet internal contract non-null in Usage wrapper; API00 misfire,,high
+API00-C,139,sqlite,src/whereexpr.c,1859,FP,"p in sqlite3WhereExprUsage explicitly null-checked (p? : 0) at 1860; API00 misfire, code null-guards",,high
+MSC04-C,140,sqlite,src/whereexpr.c,1859,TP,sqlite3WhereExprUsage indirect recursion through the Usage->UsageNN->UsageFull->ListUsage->Usage cycle; genuine,,high
+API00-C,141,sqlite,src/whereexpr.c,1862,FP,pList in sqlite3WhereExprListUsage explicitly null-checked if(pList) at 1865; API00 misfire,,high
+DCL13-C,142,sqlite,src/whereexpr.c,1862,FP,"pList read-only traversal (pList->nExpr, a[i].pExpr) const-correctness optional not a defect; DCL13 FP",,high
+MSC04-C,143,sqlite,src/whereexpr.c,1862,TP,sqlite3WhereExprListUsage indirect recursion via Usage cycle; genuine,,high
+API00-C,144,sqlite,src/whereexpr.c,1882,FP,pTabList passed to exprAnalyze as pSrc internal non-null contract; API00 misfire,,high
+API00-C,145,sqlite,src/whereexpr.c,1882,FP,pWC internal non-null contract in WhereExprAnalyze; API00 misfire,,high
+MSC04-C,146,sqlite,src/whereexpr.c,1882,TP,sqlite3WhereExprAnalyze -> exprAnalyze -> exprAnalyzeOrTerm -> sqlite3WhereExprAnalyze indirect recursion exists,,high
+INT32-C,147,sqlite,src/whereexpr.c,1887,FP,"pWC->nTerm-1 loop bound at 1887, nTerm bounded term count, for loop i decrements to 0; no signed overflow",,high
+API00-C,148,sqlite,src/whereexpr.c,1899,FP,pParse internal non-null contract in WhereTabFuncArgs; API00 misfire,,high
+API00-C,149,sqlite,src/whereexpr.c,1899,FP,pWC internal non-null contract; API00 misfire,,high

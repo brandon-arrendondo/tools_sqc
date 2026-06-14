@@ -1,0 +1,160 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,0,sqlite,src/prepare.c,24,FP,azObj is passed to sqlite3MPrintf as plain args and read only (azObj[0]/azObj[1]) never written but signature is the corruptSchema helper contract matching argv char** from callback so const is cosmetic and code never mutates it yet declaration churn risk low still not a defect,,high
+INT14-C,1,sqlite,src/prepare.c,32,FP,INITFLAG_AlterMask is a bitmask macro used in & then -1 indexing this is intentional bitmask-to-index idiom not a real INT14 readability defect,,high
+INT14-C,2,sqlite,src/prepare.c,32,FP,pData is a struct pointer not an integer the INT14 mixed-bitwise-arithmetic claim is a misparse of pData->mInitFlags & (INITFLAG_AlterMask),,high
+ARR02-C,3,sqlite,src/prepare.c,33,FP,azAlterType[] is a static const initializer-sized array implicit bound is correct C and intentional not a defect,,high
+API00-C,4,sqlite,src/prepare.c,62,FP,sqlite3IndexHasDuplicateRootPage caller (line 181) only reaches here after sqlite3FindIndex returned non-null pIndex internal contract guarantees non-null,,high
+DCL13-C,5,sqlite,src/prepare.c,62,FP,pIndex is read via pIndex->pTable->pIndex and compared but const Index* would require const on pTable->pIndex chain and p iterator API churn this is a benign read but signature is fine; not a reachable defect,,med
+EXP34-C,6,sqlite,src/prepare.c,64,FP,pIndex->pTable deref guarded by caller contract (non-null index from sqlite3FindIndex) and schema invariant pTable always set for indexes,,high
+API00-C,7,sqlite,src/prepare.c,96,FP,NotUsed is the sqlite3_exec callback 4th arg fixed by callback typedef and consumed by UNUSED_PARAMETER2 never dereferenced,,high
+FLP02-C,8,sqlite,src/prepare.c,147,FP,line 147 is assert((rc&0xFF)==(rcp&0xFF)) integer compare not floating point FLP02 is a total misfire,,high
+INT13-C,9,sqlite,src/prepare.c,147,FP,rc&0xFF is intentional masking of an int error code low byte not a signedness defect rc is always small positive SQLITE_ codes,,high
+INT13-C,10,sqlite,src/prepare.c,157,FP,same masking idiom rc&0xFF at line 157 intentional error-code low-byte test,,high
+API00-C,11,sqlite,src/prepare.c,199,FP,sqlite3InitOne db is asserted via sqlite3_mutex_held(db->mutex) and internal-only caller contract guarantees non-null,,high
+API00-C,12,sqlite,src/prepare.c,199,FP,pzErrMsg is written through initData.pzErrMsg internal caller always passes &pParse->zErrMsg non-null contract,,high
+API00-C,13,sqlite,src/prepare.c,199,FP,iDb is bounds-asserted assert(iDb>=0 && iDb<db->nDb) at line 214 no overflow possible,,high
+MEM05-C,14,sqlite,src/prepare.c,199,TP,sqlite3InitOne -> sqlite3Prepare -> sqlite3InitCallback -> sqlite3Prepare genuine indirect recursion through schema parse exists (depth bounded but real),,high
+MSC37-C,15,sqlite,src/prepare.c,199,FP,all paths set rc and reach return rc at line 426 via error_out/initone_error_out fallthrough MSC37 misfire,,high
+ARR00-C,16,sqlite,src/prepare.c,215,FP,iDb bounds-asserted at line 214 before any db->aDb[iDb] subscript,,high
+ARR00-C,17,sqlite,src/prepare.c,217,FP,same iDb assert(iDb>=0 && iDb<db->nDb) covers line 217 subscript,,high
+EXP05-C,18,sqlite,src/prepare.c,240,FP,(char**)azArg cast drops const for sqlite3InitCallback char** param which never writes the strings intentional and safe known SQLite idiom,,high
+ARR00-C,19,sqlite,src/prepare.c,249,FP,iDb bounds-asserted line 214 covers line 249 pDb=&db->aDb[iDb],,high
+ARR30-C,20,sqlite,src/prepare.c,288,FP,loop i<ArraySize(meta) bounds i to 0..4 meta[i] is exactly meta[5] no overflow,,high
+INT32-C,21,sqlite,src/prepare.c,288,FP,i+1 ranges 1..5 passed as page index to GetMeta no overflow i is tiny loop counter,,high
+INT14-C,22,sqlite,src/prepare.c,300,FP,BTREE_TEXT_ENCODING is a #define constant used as meta[BTREE_TEXT_ENCODING-1] index arithmetic on a macro constant not a runtime INT14 defect,,high
+EXP33-C,23,sqlite,src/prepare.c,306,FP,encoding assigned at line 305 before any use at 306/310 within the same #ifndef block fully initialized on the live path,,high
+STR30-C,24,sqlite,src/prepare.c,345,FP,sqlite3SetString copies the string into db-allocated memory does not modify the literal STR30 misfire the literal is read-only source,,high
+ARR00-C,25,sqlite,src/prepare.c,367,FP,iDb bounds-asserted line 214 covers line 367 db->aDb[iDb].zDbSName,,high
+EXP33-C,26,sqlite,src/prepare.c,379,FP,rc is assigned by sqlite3_exec at line 374 before the line 379 read on every path reaching it,,high
+ARR00-C,27,sqlite,src/prepare.c,387,FP,iDb bounds-asserted covers line 387 assert(pDb==&db->aDb[iDb]),,high
+ARR00-C,28,sqlite,src/prepare.c,391,FP,iDb bounds-asserted covers line 391 pDb=&db->aDb[iDb],,high
+API00-C,29,sqlite,src/prepare.c,438,FP,sqlite3Init db guarded by sqlite3_mutex_held(db->mutex) assert and internal caller contract,,high
+INT32-C,30,sqlite,src/prepare.c,453,FP,db->nDb-1 with assert(db->nDb>0) at line 446 so nDb>=1 result >=0 no underflow,,high
+API00-C,31,sqlite,src/prepare.c,470,FP,sqlite3ReadSchema pParse->db deref guarded by internal caller contract Parse always has db set,,high
+INT32-C,32,sqlite,src/prepare.c,478,FP,pParse->nErr is a small error counter bounded by parse limits never approaches INT_MAX intended increment,,high
+ARR00-C,33,sqlite,src/prepare.c,500,FP,iDb in schemaIsValid is the for-loop variable initialized iDb=0 at line 500 not uninitialized sqc misread the loop init,,high
+EXP33-C,34,sqlite,src/prepare.c,523,FP,cookie assigned by sqlite3BtreeGetMeta at line 521 before read at line 523 initialized on live path,,high
+API00-C,35,sqlite,src/prepare.c,542,FP,sqlite3SchemaToIndex db guarded by sqlite3_mutex_held assert internal caller contract non-null,,high
+DCL13-C,36,sqlite,src/prepare.c,542,FP,db param read via db->mutex/db->nDb/db->aDb only but signature stable and db is the active handle const churn not a defect,,high
+DCL13-C,37,sqlite,src/prepare.c,542,FP,pSchema only compared (db->aDb[i].pSchema==pSchema) never written const Schema* would compile but is cosmetic not a reachable defect,,med
+API00-C,38,sqlite,src/prepare.c,572,FP,sqlite3ParseObjectReset pParse deref guarded by assert(db!=0) and assert(db->pParse==pParse) caller contract,,high
+MEM30-C,39,sqlite,src/prepare.c,580,FP,pParse->pCleanup loop reads list head then advances via pNext read BEFORE free at 584 the freed object (pCleanup) is freed only after pNext captured; no UAF,,high
+MEM30-C,40,sqlite,src/prepare.c,581,FP,line 581 pParse->pCleanup=pCleanup->pNext reads pNext from not-yet-freed pCleanup standard safe list traversal,,high
+MEM30-C,41,sqlite,src/prepare.c,582,FP,line 582 pCleanup->pNext read before pCleanup is freed at line 584 no UAF,,high
+MEM30-C,42,sqlite,src/prepare.c,583,FP,"line 583 pCleanup->xCleanup(db,pCleanup->pPtr) reads members while pCleanup still live freed only at 584 sqc freed-arg misread (db is context not freed)",,high
+MEM30-C,43,sqlite,src/prepare.c,583,FP,same line 583 pCleanup->pPtr read while live no UAF,,high
+MEM30-C,44,sqlite,src/prepare.c,583,FP,same line 583 member access of live pCleanup before free,,high
+MEM30-C,45,sqlite,src/prepare.c,584,FP,"sqlite3DbNNFreeNN(db,pCleanup) db is the live handle context arg never freed only pCleanup is freed double-free claim false",,high
+MEM30-C,46,sqlite,src/prepare.c,584,FP,pCleanup freed exactly once per loop iteration each iteration a distinct node no double-free,,high
+MEM30-C,47,sqlite,src/prepare.c,586,FP,pParse->aLabel freed once at line 586 pParse itself never freed here sqc misread struct-member free as parent free,,high
+MEM30-C,48,sqlite,src/prepare.c,586,FP,"sqlite3DbNNFreeNN(db,pParse->aLabel) db is context arg not freed no double-free",,high
+MEM30-C,49,sqlite,src/prepare.c,587,FP,"pParse->pConstExpr passed to sqlite3ExprListDelete(db,...) which frees the list db is context not freed pParse live",,high
+MEM30-C,50,sqlite,src/prepare.c,588,FP,"sqlite3ExprListDelete(db,pParse->pConstExpr) pParse not freed it is read to fetch the member",,high
+MEM30-C,51,sqlite,src/prepare.c,588,FP,pParse->pConstExpr read to pass to delete pParse still live no UAF,,high
+MEM30-C,52,sqlite,src/prepare.c,590,FP,pParse->disableLookaside read at line 590 pParse fully live nothing freed it,,high
+MEM30-C,53,sqlite,src/prepare.c,591,FP,pParse->disableLookaside read/subtracted line 591 pParse live no free occurred,,high
+MEM30-C,54,sqlite,src/prepare.c,593,FP,pParse->db->pParse read at 593 in assert pParse and db both live,,high
+MEM30-C,55,sqlite,src/prepare.c,593,FP,pParse->db read at 593 db is the live handle no free,,high
+MEM30-C,56,sqlite,src/prepare.c,594,FP,pParse->pOuterParse read at 594 to restore db->pParse pParse live no UAF,,high
+API00-C,57,sqlite,src/prepare.c,625,FP,sqlite3ParserAddCleanup pParse deref via pParse->db guarded by internal caller contract,,high
+API00-C,58,sqlite,src/prepare.c,625,FP,pPtr is an opaque object pointer passed to xCleanup or stored never dereferenced here so no validation needed,,high
+MEM30-C,59,sqlite,src/prepare.c,633,FP,sqlite3OomFault(pParse->db) at line 633 pParse->db is the live handle context not freed,,high
+MEM30-C,60,sqlite,src/prepare.c,633,FP,pParse->db read at line 633 live handle no free occurred,,high
+EXP33-C,61,sqlite,src/prepare.c,635,FP,pCleanup at line 635 is assigned by sqlite3DbMallocRaw on this line not used uninitialized the assignment IS line 635,,high
+MEM30-C,62,sqlite,src/prepare.c,635,FP,"line 635 sqlite3DbMallocRaw(pParse->db,...) pParse->db live not freed",,high
+MEM30-C,63,sqlite,src/prepare.c,635,FP,pParse->db read at 635 live handle,,high
+MEM30-C,64,sqlite,src/prepare.c,635,FP,pCleanup is the malloc RESULT being assigned at 635 not a freed pointer being dereferenced sqc misread allocation as deref,,high
+MEM30-C,65,sqlite,src/prepare.c,638,FP,pParse->pCleanup read at line 638 pParse live (just allocated pCleanup) no free,,high
+DCL31-C,66,sqlite,src/prepare.c,643,FP,xCleanup is a function-pointer parameter called via xCleanup(...) at 643 it is declared in the param list line 627 DCL31 misfire,,high
+MEM30-C,67,sqlite,src/prepare.c,643,FP,"xCleanup(pParse->db,pPtr) pParse->db live handle not freed",,high
+MEM30-C,68,sqlite,src/prepare.c,643,FP,pParse->db read at 643 live handle,,high
+API00-C,69,sqlite,src/prepare.c,661,FP,sqlite3ParseObjectInit pParse guarded by memset/assert internal caller always passes valid stack Parse,,high
+API00-C,70,sqlite,src/prepare.c,661,FP,db guarded by assert(db->pParse!=pParse) and caller contract non-null,,high
+MEM30-C,71,sqlite,src/prepare.c,662,FP,"memset(PARSE_HDR(pParse),...) pParse is freshly provided buffer not freed it is being initialized",,high
+MEM30-C,72,sqlite,src/prepare.c,663,FP,"memset(PARSE_TAIL(pParse),...) pParse being initialized not freed",,high
+MEM30-C,73,sqlite,src/prepare.c,668,FP,db->pParse=pParse pParse live being linked not freed,,high
+MEM30-C,74,sqlite,src/prepare.c,751,FP,sqlite3BtreeSchemaLocked(pBt) pBt from db->aDb[i].pBt is live btree not freed sqc UAF misfire,,high
+MEM30-C,75,sqlite,src/prepare.c,752,FP,pBt read again at 752 live btree handle no free,,high
+MEM30-C,76,sqlite,src/prepare.c,767,FP,zSql is the const char* input SQL not freed here read at 767 zSql[nBytes-1] live input buffer,,high
+MEM30-C,77,sqlite,src/prepare.c,777,FP,zSql passed to sqlite3DbStrNDup at 777 as source it is the live input buffer not freed,,high
+MEM30-C,78,sqlite,src/prepare.c,780,FP,zSql[...] referenced at 780 to compute zTail offset live input buffer not freed (zSqlCopy is the one freed at 781),,high
+MEM30-C,79,sqlite,src/prepare.c,780,FP,same line 780 zSql array access live input the freed buffer is zSqlCopy not zSql sqc confused the two,,high
+STR34-C,80,sqlite,src/prepare.c,780,FP,zSql is const char* input never freed and the *zSql expression is pointer arithmetic (&zSql[...]) not a char-to-int conversion so no sign extension,,high
+STR34-C,81,sqlite,src/prepare.c,780,FP,same line 780 assignment is address arithmetic on const input zSql not a char value conversion,,high
+STR34-C,82,sqlite,src/prepare.c,780,FP,"duplicate of 80, address-of indexing into zSql, no sign extension",,high
+STR34-C,83,sqlite,src/prepare.c,780,FP,"duplicate of 81, pointer arithmetic not char conversion",,high
+MEM30-C,84,sqlite,src/prepare.c,781,FP,"sqlite3DbFree(db,zSqlCopy) frees zSqlCopy once, db is the context handle not the freed object",,high
+MEM30-C,85,sqlite,src/prepare.c,783,FP,"line 783 sets sParse.zTail=&zSql[nBytes]; zSql is unfreed const input, only zSqlCopy was freed at 781",,high
+MEM30-C,86,sqlite,src/prepare.c,783,FP,"zSql never freed, it is the const SQL input buffer; no UAF",,high
+STR34-C,87,sqlite,src/prepare.c,783,FP,&zSql[nBytes] is pointer arithmetic on const input not a char-to-int conversion,,high
+STR34-C,88,sqlite,src/prepare.c,783,FP,"same line, address arithmetic not sign extension",,high
+STR34-C,89,sqlite,src/prepare.c,783,FP,duplicate of 87,,high
+STR34-C,90,sqlite,src/prepare.c,783,FP,duplicate of 88,,high
+MEM30-C,91,sqlite,src/prepare.c,786,FP,"sqlite3RunParser(&sParse,zSql) passes unfreed const input zSql, no UAF",,high
+MEM30-C,92,sqlite,src/prepare.c,788,FP,"sParse is a stack ParseObject, never freed; member zTail read is valid",,high
+MEM30-C,93,sqlite,src/prepare.c,791,FP,sParse stack object members valid; pzTail write at 791 uses live data,,high
+STR34-C,94,sqlite,src/prepare.c,791,FP,*pzTail=sParse.zTail is a char* pointer assignment not a char value conversion,,high
+STR34-C,95,sqlite,src/prepare.c,791,FP,"duplicate of 94, pointer store no sign extension",,high
+MEM30-C,96,sqlite,src/prepare.c,795,FP,"sqlite3VdbeSetSql gets live stack sParse.pVdbe, nothing freed",,high
+MEM30-C,97,sqlite,src/prepare.c,795,FP,zSql is unfreed const input passed to VdbeSetSql,,high
+MEM30-C,98,sqlite,src/prepare.c,795,FP,sParse stack member access valid,,high
+MEM30-C,99,sqlite,src/prepare.c,795,FP,(sParse.zTail-zSql) is pointer subtraction on live data not freed-pointer arithmetic,,high
+MEM30-C,100,sqlite,src/prepare.c,795,FP,sParse stack member valid,,high
+MEM30-C,101,sqlite,src/prepare.c,812,FP,"sqlite3DbFree(db,sParse.zErrMsg) frees zErrMsg once, db is context handle",,high
+MEM30-C,102,sqlite,src/prepare.c,825,FP,"pTriggerPrg list head read into pT then advanced before free, no UAF",,high
+MEM30-C,103,sqlite,src/prepare.c,826,FP,sParse.pTriggerPrg=pT->pNext reads live node before pT freed at 828,,high
+MEM30-C,104,sqlite,src/prepare.c,828,FP,"sqlite3DbFree(db,pT) frees pT, db is context handle not freed",,high
+MEM30-C,105,sqlite,src/prepare.c,828,FP,"pT freed exactly once per loop iteration on distinct list nodes, no double-free",,high
+EXP20-C,106,sqlite,src/prepare.c,852,FP,"EXP20 implicit boolean on sqlite3SafetyCheckOk is idiomatic predicate use, style-only misfire on hardened core",,med
+MEM30-C,107,sqlite,src/prepare.c,861,FP,zSql is unfreed const input passed to sqlite3Prepare in retry loop,,high
+INT32-C,108,sqlite,src/prepare.c,864,FP,"cnt++ bounded by ALWAYS(cnt<=SQLITE_MAX_PREPARE_RETRY) loop guard, cannot reach INT_MAX",,high
+INT13-C,109,sqlite,src/prepare.c,870,FP,"rc&db->errMask is an intended error-code bitmask check, signed int operand is fine",,high
+API00-C,110,sqlite,src/prepare.c,886,FP,sqlite3Reprepare param p validated by asserts (mutex_held(VdbeDb(p)->mutex)) internal contract guarantees non-null,,high
+EXP34-C,111,sqlite,src/prepare.c,897,FP,"db obtained from sqlite3VdbeDb(p) with mutex_held assert, non-null by internal invariant",,high
+MEM30-C,112,sqlite,src/prepare.c,899,FP,"zSql from sqlite3_sql(p) asserted non-null at 895, not freed",,high
+API00-C,113,sqlite,src/prepare.c,925,FP,sqlite3_prepare public API; db validated downstream by sqlite3SafetyCheckOk in LockAndPrepare,,high
+API00-C,114,sqlite,src/prepare.c,925,FP,zSql checked zSql==0 in sqlite3LockAndPrepare before use,,high
+API00-C,115,sqlite,src/prepare.c,925,FP,ppStmt checked under API_ARMOR and *ppStmt=0 set in LockAndPrepare,,high
+API00-C,116,sqlite,src/prepare.c,925,FP,"pzTail is optional OUT param, guarded by if(pzTail) at 790",,high
+MEM30-C,117,sqlite,src/prepare.c,933,FP,zSql unfreed const input forwarded to LockAndPrepare,,high
+API00-C,118,sqlite,src/prepare.c,937,FP,"sqlite3_prepare_v2 public API, db validated by SafetyCheckOk downstream",,high
+API00-C,119,sqlite,src/prepare.c,937,FP,zSql null-checked in LockAndPrepare,,high
+API00-C,120,sqlite,src/prepare.c,937,FP,ppStmt set and checked in LockAndPrepare,,high
+API00-C,121,sqlite,src/prepare.c,937,FP,pzTail optional OUT guarded by if(pzTail),,high
+MEM30-C,122,sqlite,src/prepare.c,950,FP,zSql unfreed const input forwarded,,high
+API00-C,123,sqlite,src/prepare.c,955,FP,"sqlite3_prepare_v3 public API, db validated by SafetyCheckOk downstream",,high
+API00-C,124,sqlite,src/prepare.c,955,FP,zSql null-checked in LockAndPrepare,,high
+API00-C,125,sqlite,src/prepare.c,955,FP,ppStmt validated in LockAndPrepare,,high
+API00-C,126,sqlite,src/prepare.c,955,FP,pzTail optional OUT guarded,,high
+MEM30-C,127,sqlite,src/prepare.c,971,FP,zSql unfreed const input forwarded,,high
+EXP20-C,128,sqlite,src/prepare.c,1003,FP,"EXP20 implicit boolean on SafetyCheckOk idiomatic predicate, style misfire",,med
+MEM30-C,129,sqlite,src/prepare.c,1015,FP,"z is (const char*)zSql input buffer, never freed; loop reads input bytes",,high
+MEM30-C,130,sqlite,src/prepare.c,1015,FP,"duplicate of 129, z is unfreed input",,high
+INT32-C,131,sqlite,src/prepare.c,1020,FP,"sz+=2 bounded by sz<nBytes loop guard, no overflow",,high
+MEM30-C,132,sqlite,src/prepare.c,1020,FP,z is unfreed const input,,high
+MEM30-C,133,sqlite,src/prepare.c,1020,FP,"duplicate, z unfreed input",,high
+MEM30-C,134,sqlite,src/prepare.c,1025,FP,zSql8 freed at 1039 after this use at 1025 via LockAndPrepare; order is use-then-free no UAF,,high
+STR34-C,135,sqlite,src/prepare.c,1036,FP,"zSql8 passed to sqlite3Utf8CharLen as char* pointer, not a char value sign-extended to int",,high
+STR34-C,136,sqlite,src/prepare.c,1036,FP,zTail8-zSql8 is pointer subtraction not char conversion,,high
+STR34-C,137,sqlite,src/prepare.c,1036,FP,duplicate of 135,,high
+EXP05-C,138,sqlite,src/prepare.c,1037,FP,"(u8*)zSql casts away const but result is stored into *pzTail (const void**) with no write through it, benign idiomatic output-pointer cast",,med
+MEM30-C,139,sqlite,src/prepare.c,1037,FP,zSql is const void* input not freed; arithmetic to compute tail pointer is valid,,high
+MEM30-C,140,sqlite,src/prepare.c,1037,FP,zSql input not freed; sqlite3Utf16ByteLen reads live input,,high
+STR34-C,141,sqlite,src/prepare.c,1037,FP,*pzTail=(u8*)zSql+... is a pointer store not a char-to-int conversion,,high
+STR34-C,142,sqlite,src/prepare.c,1037,FP,duplicate of 141,,high
+MEM30-C,143,sqlite,src/prepare.c,1039,FP,"sqlite3DbFree(db,zSql8) frees zSql8 once, db is context handle",,high
+API00-C,144,sqlite,src/prepare.c,1053,FP,"sqlite3_prepare16 public API, db validated by SafetyCheckOk in Prepare16",,high
+API00-C,145,sqlite,src/prepare.c,1053,FP,zSql null-checked in sqlite3Prepare16 at 1003,,high
+API00-C,146,sqlite,src/prepare.c,1053,FP,ppStmt checked under API_ARMOR and set to 0 in Prepare16,,high
+API00-C,147,sqlite,src/prepare.c,1053,FP,pzTail optional OUT guarded by if(zTail8 && pzTail),,high
+MEM30-C,148,sqlite,src/prepare.c,1061,FP,zSql unfreed const input forwarded to Prepare16,,high
+API00-C,149,sqlite,src/prepare.c,1065,FP,"sqlite3_prepare16_v2 public API, db validated downstream",,high
+API00-C,150,sqlite,src/prepare.c,1065,FP,zSql null-checked in Prepare16,,high
+API00-C,151,sqlite,src/prepare.c,1065,FP,ppStmt validated in Prepare16,,high
+API00-C,152,sqlite,src/prepare.c,1065,FP,pzTail optional OUT guarded,,high
+MEM30-C,153,sqlite,src/prepare.c,1073,FP,zSql unfreed const input forwarded,,high
+API00-C,154,sqlite,src/prepare.c,1077,FP,"sqlite3_prepare16_v3 public API, db validated downstream",,high
+API00-C,155,sqlite,src/prepare.c,1077,FP,zSql null-checked in Prepare16,,high
+API00-C,156,sqlite,src/prepare.c,1077,FP,ppStmt validated in Prepare16,,high
+API00-C,157,sqlite,src/prepare.c,1077,FP,pzTail optional OUT guarded,,high
+MEM30-C,158,sqlite,src/prepare.c,1086,FP,zSql unfreed const input forwarded,,high

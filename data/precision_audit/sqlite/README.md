@@ -1556,3 +1556,62 @@ sqlite coverage **112 -> 118/220 (53.6%)** — over half done; **14 FNs** (0 new
 Remaining ~102 in-scope files are pure core/glue (trigger.c, alter.c, sqliteInt.h, pragma.c, prepare.c,
 whereexpr.c, os_kv.c, fkey.c, vtab.c, update.c, …) — medium-effort filler the thesis predicts will keep
 yielding only declaration/macro/const TPs.
+
+## File-at-a-time — Batch 11 (2026-06-14, run #40, MEDIUM-effort core/glue filler): trigger, alter, sqliteInt.h, pragma, prepare, whereexpr, os_kv, fkey, vtab, update
+
+Ten core/glue files via the hardened-core framework, 17 line-range reviewers, integrity gate kept. **1505
+findings -> 141 TP / 1364 FP, 0 semantic TP, 1 FN — and the FN is the campaign's most significant recall gap
+to date.**
+
+| File | findings | TP | FP | FN |
+|------|---------:|---:|---:|---:|
+| src/trigger.c (trigger codegen) | 181 | 12 | 169 | 0 |
+| src/alter.c (ALTER TABLE + rename-token) | 180 | 0 | 180 | 0 |
+| src/sqliteInt.h (core internal header) | 177 | 94 | 83 | 0 |
+| src/pragma.c (PRAGMA handling) | 166 | 0 | 166 | 0 |
+| src/prepare.c (prepare/compile + schema init) | 159 | 1 | 158 | 0 |
+| src/whereexpr.c (WHERE-term analysis) | 150 | 17 | 133 | 0 |
+| src/os_kv.c (kvvfs key-value VFS) | 140 | 6 | 134 | **1** |
+| src/fkey.c (foreign-key codegen) | 124 | 6 | 118 | 0 |
+| src/vtab.c (virtual-table glue) | 117 | 0 | 117 | 0 |
+| src/update.c (UPDATE codegen) | 111 | 5 | 106 | 0 |
+
+All 141 TP are declaration/macro/recursion. sqliteInt.h dominates (94) exactly as a macro-heavy header should —
+genuine **PRE00/PRE12 multi-eval** function-like macros (`MIN`/`MAX`/`SWAP`/`fabs`/`IsPowerOfTwo`/`SQLITE_WITHIN`/
+`getVarint32`/`DbMaskZero`…), **PRE10** non-do-while statement blocks (`SWAP`, inline `memcpy`, `testcase`,
+`IOTRACE`), **PRE01** unparenthesized macro params (the `FUNCTION`/`VFUNCTION`/`JFUNCTION` def-table macros'
+`bNC*FLAG` / `|flags`), and **PRE02** the bare `-1` `SQLITE_SO_UNDEFINED`. The rest is MSC04 recursion (trigger
+codegen cycle, WHERE OR/AND-tree clearers, fk action/delete, update→upsert) and DCL13 read-only helpers.
+**Semantic-TP count: zero** across all ten files — the misfires were the catalogued classes (the MEM30 `db`/
+`pParse`-context-arg swarm is enormous here: trigger/alter/pragma/prepare/fkey/update codegen all free buffers
+via `sqlite3DbFree(db,x)`/`sqlite3*Delete(db,x)` and sqc reads the live handle as freed).
+
+### FN — os_kv.c:469, a heap OOB WRITE in the shipped kvvfs, found via a reviewer disagreement the integrity gate caught
+
+The two os_kv.c reviewers reached **opposite** conclusions on `kvvfsDecode`: chunk-0 reported a heap overflow,
+chunk-1 declared the decode "properly bounds-checked." The integrity gate forced a direct source read, which
+settled it — chunk-0 was right. `kvvfsDecode` (os_kv.c:446) has two branches: the zero-run branch checks
+`if(j+n>nOut) return -1` (line 464), but the **hex-pair branch writes `aOut[j] = c<<4` (469) and `aOut[j++] += c`
+(472) with no `j<nOut` check at all.** Via `kvvfsDecodeJournal` (line 510) the output buffer is `pFile->aJrnl`,
+`sqlite3_malloc64(n)`-sized where `n` is a little-endian base-26 length header decoded from the *same untrusted
+kv text* (lines 499-504). A crafted journal whose header declares a small `n` but whose hex payload decodes to
+more than `n` bytes overruns the heap allocation — an **attacker-controlled heap out-of-bounds write**, reachable
+by anyone who can tamper with the key-value store backing kvvfs (the WASM/browser localStorage VFS — a standard
+corrupt-input threat, equivalent to a corrupt DB file). sqc flagged only the in-bounds hex table read at line 453
+and some INT lints, missing the actual write. A contributing oddity at line 500 (`n += (zTxt[i]-'a')*mult` reads
+`zTxt[i]` *after* `c=zTxt[i++]`, mis-deriving the length that feeds the `malloc`) compounds it. Recorded as an
+`FN` (ARR30-C, med confidence) and flagged a **priority disclosure candidate** — unlike the prior live-at-HEAD
+FN (amatch.c, which sqlite labels "unused demonstration code"), kvvfs is shipped production code. HEAD-status
+check deferred to the disclosure pass per protocol.
+
+This is the campaign's **14th confirmed real bug** and, notably, the first hardened-*core*-tree file to yield a
+genuine memory-safety defect — though os_kv.c is precisely a less-fuzzed untrusted-input decoder (text-encoded
+kv page/journal data) living in `src/`, so it actually *reinforces* the bifurcation rather than breaking it: the
+bug is in the decode path, not the VFS-method glue. It also re-demonstrates the value of the adversarial / two
+independent-reviewer integrity gate — a single rubber-stamping reviewer would have buried it.
+
+sqlite coverage **118 -> 128/220 (58.2%)**; **15 FNs** (+1); confirmed real bugs now **14**. The bifurcation
+holds across 25 audited core/glue files for the *hardened* parts; every confirmed bug + FN remains in a
+less-fuzzed untrusted-input decode path. Remaining ~92 in-scope files: ext/expert/sqlite3expert.c (228, the
+largest unaudited — an untrusted-SQL advisor, candidate for a higher-effort pass), then more core/glue filler
+(update done; resolve.c, treeview.c, mem2.c, dbstat.c, vacuum.c, …).

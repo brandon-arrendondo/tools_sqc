@@ -1,0 +1,181 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,0,sqlite,src/alter.c,31,FP,isAlterableTable does not write through pTab but pTab->db chains and pTab is passed to sqlite3ErrorMsg/StrNICmp as read-only yet const adds no value and SQLite never consts Table* params in this internal API family,,med
+EXP34-C,1,sqlite,src/alter.c,32,FP,pTab is the return of sqlite3LocateTableItem checked non-null at callers before isAlterableTable is invoked and dereference is guarded by caller contract,,high
+API00-C,2,sqlite,src/alter.c,124,FP,API00 internal contract pParse always non-null caller is the parser reduction action never a trust boundary,,high
+API00-C,3,sqlite,src/alter.c,124,FP,pSrc supplied by parser grammar action always non-null and asserted pSrc->nSrc==1 downstream,,high
+API00-C,4,sqlite,src/alter.c,124,FP,pName is a parser Token pointer always valid from grammar reduction not a trust boundary,,high
+EXP34-C,5,sqlite,src/alter.c,194,FP,pVTab set from sqlite3GetVTable under IsVirtual guard and SQLite invariant guarantees non-null vtab for virtual tables here,,high
+INT32-C,6,sqlite,src/alter.c,275,FP,++pParse->nMem is a bounded VDBE register counter not attacker-controlled and cannot reach INT_MAX in practice,,high
+API00-C,7,sqlite,src/alter.c,313,FP,pColDef is a parser Token always non-null from grammar action not a trust boundary,,high
+DCL13-C,8,sqlite,src/alter.c,313,FP,pColDef->z and ->n are read but signature is parser-facing internal API const not applied in this family no defect,,med
+INT30-C,9,sqlite,src/alter.c,409,FP,pColDef->n is u32 token length always >=1 for a real column-def token and zCol allocated of that length so subtraction is in-bounds,,high
+STR34-C,10,sqlite,src/alter.c,409,FP,zCol is char* from sqlite3DbStrNDup indexing produces a char lvalue assigned NUL not a sign-extension defect sqc misreads char store,,high
+ARR37-C,11,sqlite,src/alter.c,411,FP,zEnd is &zCol[..] into a heap buffer decremented within while(zEnd>zCol) guard so ARR37 on pointer is the intended idiom and bounded,,high
+STR34-C,12,sqlite,src/alter.c,411,FP,*zEnd-- = '\0' is a store of NUL char not a value read no sign extension occurs,,high
+API00-C,13,sqlite,src/alter.c,483,FP,API00 pParse parser context always non-null internal contract,,high
+API00-C,14,sqlite,src/alter.c,483,FP,pSrc parser SrcList always non-null from grammar action,,high
+INT32-C,15,sqlite,src/alter.c,532,FP,nCol is i16 column count asserted >0 and bounded by SQLITE_LIMIT_COLUMN well below INT_MAX so (((nCol-1)/8)*8)+8 cannot overflow,,high
+INT32-C,16,sqlite,src/alter.c,532,FP,same bounded nCol multiplication by 8 cannot overflow int given column-count limit,,high
+INT10-C,17,sqlite,src/alter.c,533,FP,nCol is positive (asserted nCol>0) so nAlloc%8 operands are non-negative implementation-defined negative-modulo concern does not apply,,high
+INT30-C,18,sqlite,src/alter.c,534,FP,nAlloc bounded by column limit cast to u32 sizeof(Column)*nAlloc cannot wrap size_t,,high
+ARR38-C,19,sqlite,src/alter.c,540,FP,memcpy size sizeof(Column)*pNew->nCol with nCol bounded by column limit cannot overflow allocation matches nAlloc>=nCol,,high
+INT30-C,20,sqlite,src/alter.c,540,FP,nCol bounded by SQLITE_LIMIT_COLUMN sizeof(Column)*nCol cannot wrap size_t,,high
+INT32-C,21,sqlite,src/alter.c,540,FP,same bounded nCol multiply no overflow allocation at 534 sized for nAlloc>=nCol,,high
+ARR02-C,22,sqlite,src/alter.c,579,FP,azMsg[] is a local const char* array with brace initializer giving 3 explicit elements bounds are explicit ArraySize used in assert,,high
+EXP34-C,23,sqlite,src/alter.c,584,FP,pTab dereference guarded zType non-null only inside if(zType) and pTab is the located table non-null by caller contract,,high
+API00-C,24,sqlite,src/alter.c,599,FP,API00 pParse internal contract non-null,,high
+API00-C,25,sqlite,src/alter.c,599,FP,API00 pSrc parser SrcList non-null,,high
+API00-C,26,sqlite,src/alter.c,599,FP,API00 pOld parser Token non-null,,high
+API00-C,27,sqlite,src/alter.c,599,FP,API00 pNew parser Token non-null,,high
+MEM30-C,28,sqlite,src/alter.c,681,FP,"sqlite3DbFree(db,zOld)/zNew at exit free zOld and zNew not db db is the live allocator context never freed sqc misreads context arg",,high
+DCL13-C,29,sqlite,src/alter.c,745,FP,pParse read-only in renameTokenCheckAll but SQLITE_DEBUG-only helper and parser API family does not const Parse* no real defect,,med
+API00-C,30,sqlite,src/alter.c,776,FP,API00 pParse internal contract non-null,,high
+API00-C,31,sqlite,src/alter.c,776,FP,pPtr asserted (pPtr || db->mallocFailed) and only stored never blindly deref here,,high
+API00-C,32,sqlite,src/alter.c,776,FP,pToken non-null caller contract token always supplied copied via *pToken under if(pNew),,high
+EXP34-C,33,sqlite,src/alter.c,788,FP,pToken dereferenced as *pToken only inside if(pNew) after malloc success and caller always passes valid token,,high
+API00-C,34,sqlite,src/alter.c,802,FP,API00 pParse internal contract non-null,,high
+API00-C,35,sqlite,src/alter.c,802,FP,API00 pTo just stored into p->p not dereferenced no validation needed,,high
+DCL13-C,36,sqlite,src/alter.c,816,FP,FP_typedef|high|pWalker is fixed by Walker xExprCallback function-pointer typedef cannot add const,,med
+DCL13-C,37,sqlite,src/alter.c,829,FP,FP_typedef|high|pSelect Walker callback signature is fixed by typedef and pSelect fields are walked const not applicable,,med
+ARR00-C,38,sqlite,src/alter.c,870,FP,ii is initialized in for(ii=0; ii<pIdList->nId; ii++) not uninitialized sqc false loop-bound read,,high
+API00-C,39,sqlite,src/alter.c,914,FP,API00 pParse internal contract non-null,,high
+API00-C,40,sqlite,src/alter.c,930,FP,API00 pEList may be null and is guarded by if(pEList) at line 931 no defect,,high
+DCL13-C,41,sqlite,src/alter.c,949,FP,pToken is the list head iterated and freed read-only param but renameTokenFree family not consted no real defect,,med
+DCL13-C,42,sqlite,src/alter.c,968,FP,pParse read-only but renameParseCleanup mutates *pParse via sub-frees so const would be wrong actually pParse IS modified,,med
+DCL13-C,43,sqlite,src/alter.c,1015,FP,FP_typedef|high|pWalker Walker callback typedef-fixed signature cannot const,,med
+DCL13-C,44,sqlite,src/alter.c,1041,FP,pCtx is RenameCtx* and renameColumnTokenNext mutates pCtx->pList so it is modified const wrong,,high
+DCL30-C,45,sqlite,src/alter.c,1052,FP,pBest = pCtx->pList is a heap RenameToken pointer from the list not automatic storage returning it is correct ownership transfer,,high
+DCL13-C,46,sqlite,src/alter.c,1086,FP,API00 pParse internal contract non-null,,high
+STR34-C,47,sqlite,src/alter.c,1173,FP,zDb passed to printf %Q/%w as char* not integer-promoted no sign-extension sqc misreads string format arg,,high
+STR34-C,48,sqlite,src/alter.c,1196,FP,zSql used in %Q format and Strlen30 not integer-promoted char no sign extension,,high
+INT32-C,49,sqlite,src/alter.c,1248,FP,nSql/nQuot are i64 and nList bounded by token count the sum is i64 arithmetic guarded by assert(nSql>=0) and allocation-size practical bounds no int overflow,,high
+INT32-C,50,sqlite,src/alter.c,1248,FP,i64 addition of bounded Strlen30 values cannot overflow i64 in practice and is intended size math,,high
+INT32-C,51,sqlite,src/alter.c,1248,FP,nList*(u64)nQuot is unsigned 64-bit token-count times quoted-len both small no wrap,,high
+INT32-C,52,sqlite,src/alter.c,1251,FP,(2*nSql+1)*3 is u64 arithmetic with nSql<0x15555554 asserted at 1291 so product fits no overflow,,high
+INT32-C,53,sqlite,src/alter.c,1251,FP,2*nSql+1 u64 with nSql bounded cannot overflow,,high
+INT32-C,54,sqlite,src/alter.c,1251,FP,2*nSql u64 bounded by Strlen30 result cannot overflow,,high
+STR34-C,55,sqlite,src/alter.c,1253,FP,*zOut store of bytes char buffer no sign extension sqc misreads char buffer write,,high
+STR34-C,56,sqlite,src/alter.c,1253,FP,zOut[nSql*2+1] is a heap-buffer address computation char assignment not sign extension,,high
+STR34-C,57,sqlite,src/alter.c,1254,FP,*zOut char store no sign extension,,high
+STR34-C,58,sqlite,src/alter.c,1254,FP,zOut[nSql*4+2] heap-buffer address char store within allocated 3*(2*nSql+1) buffer no defect,,high
+EXP34-C,59,sqlite,src/alter.c,1273,FP,pBest = renameColumnTokenNext returns a non-null list element (loop runs only while pRename->pList non-empty) so pBest->t deref safe,,high
+EXP34-C,60,sqlite,src/alter.c,1288,FP,zBuf1 non-null whenever zNew==0 branch taken because zOut allocation succeeded (guarded by if(zOut)) and zBuf1 set from zOut,,high
+ARR37-C,61,sqlite,src/alter.c,1289,FP,zBuf1[pBest->t.n] indexes into zOut sub-buffer sized 2*nSql+1 and token length <= nSql so in-bounds intended idiom,,high
+ARR38-C,62,sqlite,src/alter.c,1301,FP,memmove size nOut-(iOff+pBest->t.n) is i64 with token offsets within nSql allocation oversized by nList*nQuot no invalid size,,high
+INT30-C,63,sqlite,src/alter.c,1301,FP,iOff+pBest->t.n are token offset/len within zSql length both bounded by nSql no unsigned wrap,,high
+INT32-C,64,sqlite,src/alter.c,1301,FP,memmove size arithmetic i64 within allocated buffer bounded by nSql+nList*nQuot no overflow,,high
+INT30-C,65,sqlite,src/alter.c,1302,FP,iOff+pBest->t.n bounded by nSql no wrap,,high
+EXP34-C,66,sqlite,src/alter.c,1307,FP,zReplace assigned from zNew/zQuot/zBuf2 all non-null on the taken paths passed to memcpy with matching nReplace no null deref,,high
+MEM30-C,67,sqlite,src/alter.c,1312,FP,"sqlite3DbFree(db,zOut) frees zOut db is allocator context not freed sqc misreads context arg",,high
+ARR00-C,68,sqlite,src/alter.c,1366,FP,pStep initialized in for(pStep=pNew->step_list; ...) not uninitialized false loop-bound read,,high
+DCL13-C,69,sqlite,src/alter.c,1454,FP,FP_typedef|med|pTrigger walked read-only but renameWalkTrigger is internal not consted in family no real defect,,med
+EXP34-C,70,sqlite,src/alter.c,1497,FP,pIdx iterated from sParse.pNewIndex/pNewTable->pIndex in for-loop guarded non-null by loop condition no null deref,,high
+MEM30-C,71,sqlite,src/alter.c,1500,FP,renameParseCleanup(&sParse) at 1503 passes live db never freed sqc treats db context arg as freed object incorrectly,,high
+MEM30-C,72,sqlite,src/alter.c,1500,FP,pParse(sParse) is a live stack object passed to cleanup not freed UAF misfire,,high
+MEM30-C,73,sqlite,src/alter.c,1500,FP,sParse member access inside renameParseCleanup is on a live stack object no UAF,,high
+MEM30-C,74,sqlite,src/alter.c,1501,FP,"sqlite3DeleteTrigger(db,...) db is allocator context not freed double-free misread",,high
+MEM30-C,75,sqlite,src/alter.c,1502,FP,"sqlite3DbFree(db,pParse->zErrMsg) frees zErrMsg db context not freed misread",,high
+MEM30-C,76,sqlite,src/alter.c,1503,FP,sqlite3ParseObjectReset(pParse) operates on live stack Parse not freed no UAF,,high
+DCL13-C,77,sqlite,src/alter.c,1533,FP,FP_typedef|high|argv is sqlite3_value** fixed by SQLite UDF callback signature cannot add const,,med
+EXP34-C,78,sqlite,src/alter.c,1552,FP,db = sqlite3_context_db_handle(context) SQLite contract guarantees non-null inside a UDF invocation,,high
+EXP33-C,79,sqlite,src/alter.c,1584,FP,sParse initialized by renameParseSql->sqlite3ParseObjectInit at 1573 before any field use at 1584 guarded by rc check not uninitialized,,high
+STR34-C,80,sqlite,src/alter.c,1597,FP,zTable used in sqlite3_stricmp as char* not integer-promoted no sign extension sqc misreads string arg,,high
+EXP33-C,81,sqlite,src/alter.c,1617,FP,i declared at 1549 used in for(i=0;...) loops initialized before use not uninitialized,,high
+FLP30-C,82,sqlite,src/alter.c,1626,FP,pFKey is a FKey* pointer loop variable not floating-point FLP30 misclassification of pointer-typed for-loop iterator,,high
+DCL13-C,83,sqlite,src/alter.c,1696,FP,FP_typedef|high|pWalker Walker callback typedef-fixed signature cannot const,,med
+DCL13-C,84,sqlite,src/alter.c,1757,FP,FP_typedef|high|argv sqlite3_value** UDF callback signature cannot const,,med
+EXP34-C,85,sqlite,src/alter.c,1775,FP,db = sqlite3_context_db_handle contract non-null inside UDF,,high
+EXP33-C,86,sqlite,src/alter.c,1793,FP,sParse initialized by renameParseSql at 1789 before field access at 1793 not uninitialized,,high
+FLP30-C,87,sqlite,src/alter.c,1820,FP,pFKey is FKey* pointer not floating-point loop iterator FLP30 misclassification,,high
+DCL13-C,88,sqlite,src/alter.c,1903,FP,FP_typedef|high|pWalker Walker callback typedef-fixed signature cannot const,,med
+DCL13-C,89,sqlite,src/alter.c,1940,FP,FP_typedef|high|argv sqlite3_value** UDF callback signature cannot const,,med
+EXP34-C,90,sqlite,src/alter.c,1947,FP,db from sqlite3_context_db_handle() is the live non-null connection handle never freed not nulled,,high
+EXP33-C,91,sqlite,src/alter.c,1971,FP,sParse is a Parse passed by-address to renameParseSql which inits it via sqlite3ParseObjectInit before use,,high
+EXP33-C,92,sqlite,src/alter.c,1985,FP,i declared and assigned in for(i=0;...) init at 1985 before any use generated-columns loop,,high
+DCL13-C,93,sqlite,src/alter.c,2053,FP,argv param is fixed by the sqlite3_value** UDF callback signature stored in FuncDef cannot be const,,high
+EXP34-C,94,sqlite,src/alter.c,2059,FP,db from sqlite3_context_db_handle() returns the live non-null connection handle,,high
+EXP33-C,95,sqlite,src/alter.c,2078,FP,sParse initialized by renameParseSql before any field read,,high
+STR34-C,96,sqlite,src/alter.c,2092,FP,zDb is a char* pointer passed by value to sqlite3FindDbName not a char value widened no sign extension,,high
+INT32-C,97,sqlite,src/alter.c,2140,FP,iOff accumulates token byte-offsets over a SQL text bounded by SQLITE_LIMIT_LENGTH far below INT_MAX,,med
+INT32-C,98,sqlite,src/alter.c,2148,FP,iOff bounded by parenthesis-nesting scan over bounded SQL text cannot reach INT_MAX,,med
+INT32-C,99,sqlite,src/alter.c,2150,FP,nNest counts paren depth in finite bounded SQL string cannot approach INT_MAX,,med
+DCL13-C,100,sqlite,src/alter.c,2179,FP,argv fixed by sqlite3_value** UDF callback signature cannot be declared const,,high
+EXP34-C,101,sqlite,src/alter.c,2185,FP,db from sqlite3_context_db_handle() is live non-null handle,,high
+EXP33-C,102,sqlite,src/alter.c,2201,FP,sParse initialized by renameParseSql before use,,high
+EXP34-C,103,sqlite,src/alter.c,2212,FP,pEnd from renameTokenFind for an adjacent column name recorded during the successful parse of self-consistent schema sql,,med
+INT32-C,104,sqlite,src/alter.c,2220,FP,iCol-1 guarded by else-branch where iCol==pTab->nCol-1 and assert(iCol!=0) so iCol>=1 no underflow,,med
+EXP34-C,105,sqlite,src/alter.c,2222,FP,pCol from renameTokenFind for a column name present in the just-parsed table post rc==SQLITE_OK,,med
+EXP34-C,106,sqlite,src/alter.c,2225,FP,zSql is argv[1] text already validated and used to build the string indices bounded by parse offsets,,med
+API00-C,107,sqlite,src/alter.c,2250,FP,pParse is the internal parser context guaranteed non-null by the yacc grammar action caller not a trust boundary,,high
+API00-C,108,sqlite,src/alter.c,2250,FP,pSrc is built by the parser and guaranteed non-null for DROP COLUMN grammar rule,,high
+API00-C,109,sqlite,src/alter.c,2250,FP,pName token pointer supplied by the parser grammar action non-null by contract,,high
+INT32-C,110,sqlite,src/alter.c,2331,FP,pParse->nTab cursor counter bounded by schema/statement size far below INT_MAX,,high
+INT32-C,111,sqlite,src/alter.c,2334,FP,pParse->nMem register counter bounded by statement complexity not attacker-unbounded,,high
+INT32-C,112,sqlite,src/alter.c,2337,FP,nMem += pTab->nCol where nCol is an i16 column count asserted <=32767,,high
+EXP34-C,113,sqlite,src/alter.c,2340,FP,pPk from sqlite3PrimaryKeyIndex on a WITHOUT ROWID table guaranteed non-null in that branch,,med
+INT32-C,114,sqlite,src/alter.c,2340,FP,nMem += pPk->nColumn bounded small index column count no realistic overflow,,high
+INT14-C,115,sqlite,src/alter.c,2342,FP,INT14 readability note reg+i+1 mixes no bitwise ops here just additions analyzer misclassification non-defect,,low
+INT32-C,116,sqlite,src/alter.c,2342,FP,reg+i+1 are small VDBE register indices bounded by statement size,,high
+INT32-C,117,sqlite,src/alter.c,2342,FP,reg+i small register index arithmetic bounded by statement size,,high
+INT32-C,118,sqlite,src/alter.c,2346,FP,++pParse->nMem register counter bounded by statement size,,high
+INT32-C,119,sqlite,src/alter.c,2354,FP,register offset arithmetic over bounded column/key counts no overflow,,high
+INT32-C,120,sqlite,src/alter.c,2354,FP,reg+1+iPos register offset bounded by small key-column count,,high
+INT32-C,121,sqlite,src/alter.c,2354,FP,reg+1 small register index no overflow,,high
+INT32-C,122,sqlite,src/alter.c,2356,FP,reg+1+nField register offset bounded by column count i16,,high
+INT32-C,123,sqlite,src/alter.c,2356,FP,reg+1 small register index no overflow,,high
+INT32-C,124,sqlite,src/alter.c,2373,FP,pParse->nMem++ register counter bounded by statement size,,high
+INT32-C,125,sqlite,src/alter.c,2374,FP,reg+1 small register index no overflow,,high
+INT32-C,126,sqlite,src/alter.c,2377,FP,reg+1 small register index no overflow,,high
+INT32-C,127,sqlite,src/alter.c,2379,FP,reg+1 small register index no overflow,,high
+MEM30-C,128,sqlite,src/alter.c,2391,FP,"sqlite3DbFree(db,zCol) frees zCol the db arg is the live handle context not the freed pointer",,high
+INT32-C,129,sqlite,src/alter.c,2403,FP,nRet accumulates whitespace token lengths over bounded SQL text cannot reach INT_MAX,,med
+INT32-C,130,sqlite,src/alter.c,2439,FP,iOff accumulates token byte lengths over a bounded SQL string,,med
+INT32-C,131,sqlite,src/alter.c,2470,FP,nQuote+1 is a token length plus one bounded by SQL text length far below INT_MAX,,med
+INT31-C,132,sqlite,src/alter.c,2475,FP,nQuote is a non-negative token byte length from sqlite3GetToken safe to widen to size_t in memcpy,,med
+EXP40-C,133,sqlite,src/alter.c,2477,FP,pRes is a non-const int* output parameter writing through it is intended not a const object,,high
+INT32-C,134,sqlite,src/alter.c,2496,FP,iOff token offset accumulation over bounded SQL text no overflow,,med
+DCL13-C,135,sqlite,src/alter.c,2522,FP,argv fixed by sqlite3_value** UDF callback signature cannot be const,,high
+INT32-C,136,sqlite,src/alter.c,2555,FP,iOff token offset accumulation over bounded SQL text no overflow,,med
+INT32-C,137,sqlite,src/alter.c,2562,FP,iOff whitespace-skip accumulation over bounded SQL text no overflow,,med
+INT32-C,138,sqlite,src/alter.c,2570,FP,iOff += nTok token offset over bounded SQL text no overflow,,med
+INT32-C,139,sqlite,src/alter.c,2592,FP,iOff += nTok token offset over bounded SQL text no overflow,,med
+INT32-C,140,sqlite,src/alter.c,2593,FP,iOff += getConstraint over bounded SQL text no overflow,,med
+INT32-C,141,sqlite,src/alter.c,2606,FP,iOff + getConstraint over bounded SQL text no overflow,,med
+INT32-C,142,sqlite,src/alter.c,2632,FP,iEnd whitespace-skip accumulation over bounded SQL text no overflow,,med
+INT32-C,143,sqlite,src/alter.c,2636,FP,"iStart-- only when zSql[iStart-1]==',' so iStart>=1 guaranteed no INT_MIN underflow",,med
+DCL13-C,144,sqlite,src/alter.c,2657,FP,argv fixed by sqlite3_value** UDF callback signature cannot be const,,high
+EXP34-C,145,sqlite,src/alter.c,2672,FP,zSql is argv[0] text validated non-null at 2536/2669 indices bounded by parse offsets,,med
+INT32-C,146,sqlite,src/alter.c,2672,FP,iOff token offset accumulation over bounded SQL text no overflow,,med
+INT32-C,147,sqlite,src/alter.c,2680,FP,iOff += nTok token offset over bounded SQL text no overflow,,med
+INT32-C,148,sqlite,src/alter.c,2684,FP,iOff whitespace-skip accumulation over bounded SQL text no overflow,,med
+STR34-C,149,sqlite,src/alter.c,2755,FP,*pzDb assigned a char* pointer value pointer assignment not a sign-extended char value,,high
+API00-C,150,sqlite,src/alter.c,2783,FP,pParse internal parser context non-null by grammar-action contract not a trust boundary,,high
+API00-C,151,sqlite,src/alter.c,2783,FP,pSrc parser-built SrcList non-null by contract asserted nSrc==1,,high
+DCL13-C,152,sqlite,src/alter.c,2786,FP,pCons is a Token* fixed by the sqlite3AlterDropConstraint API contract and is read only here const-ok-but-API-fixed,,high
+EXP34-C,153,sqlite,src/alter.c,2813,FP,zDb is alterFindTable output set from db->aDb[iDb].zDbSName always non-null when pTab returned non-null,,high
+MEM30-C,154,sqlite,src/alter.c,2818,FP,sqlite3DbFree at 2815 frees zArg not pParse pParse is the live context passed to renameReloadSchema after,,high
+DCL13-C,155,sqlite,src/alter.c,2829,FP,argv fixed by sqlite3_value** UDF callback signature cannot be const,,high
+INT32-C,156,sqlite,src/alter.c,2867,FP,iOff+nToken token offset over bounded constraint text no overflow,,med
+INT32-C,157,sqlite,src/alter.c,2869,FP,iOff += nToken token offset over bounded constraint text no overflow,,med
+API00-C,158,sqlite,src/alter.c,2881,FP,pSrc parser-built non-null by contract asserted nSrc==1,,high
+API00-C,159,sqlite,src/alter.c,2881,FP,pFirst NOT-token pointer supplied by parser grammar action non-null by contract,,high
+DCL13-C,160,sqlite,src/alter.c,2885,FP,pFirst is a Token* fixed by sqlite3AlterSetNotNull API contract read-only but signature-fixed,,high
+EXP34-C,161,sqlite,src/alter.c,2912,FP,zDb is alterFindTable output non-null whenever pTab is non-null which is checked before use,,high
+EXP34-C,162,sqlite,src/alter.c,2920,FP,zDb is alterFindTable output non-null whenever pTab non-null checked,,high
+DCL13-C,163,sqlite,src/alter.c,2939,FP,argv fixed by sqlite3_value** UDF callback signature cannot be const,,high
+INT32-C,164,sqlite,src/alter.c,2952,FP,iOff token offset accumulation over bounded SQL text no overflow,,med
+INT32-C,165,sqlite,src/alter.c,2956,FP,iOff token offset accumulation over bounded SQL text no overflow,,med
+INT32-C,166,sqlite,src/alter.c,2960,FP,iOff whitespace-skip accumulation over bounded SQL text no overflow,,med
+API00-C,167,sqlite,src/alter.c,2983,FP,pParse internal parser context non-null by grammar-action contract,,high
+API00-C,168,sqlite,src/alter.c,2983,FP,pSrc parser-built non-null by contract asserted nSrc==1,,high
+API00-C,169,sqlite,src/alter.c,2983,FP,pFirst token pointer supplied by parser non-null by contract,,high
+API00-C,170,sqlite,src/alter.c,2983,FP,pExpr CHECK-expression text pointer supplied by parser non-null by contract,,high
+DCL13-C,171,sqlite,src/alter.c,2986,FP,pFirst Token* fixed by sqlite3AlterAddConstraint API contract read-only but signature-fixed,,high
+EXP34-C,172,sqlite,src/alter.c,3012,FP,zDb is alterFindTable output non-null whenever pTab non-null checked at 3000,,high
+EXP34-C,173,sqlite,src/alter.c,3021,FP,zDb is alterFindTable output non-null whenever pTab non-null checked,,high
+MEM30-C,174,sqlite,src/alter.c,3026,FP,pParse->db is the live connection handle alterRtrimConstraint frees its own zTmp not pParse->db,,high
+MEM30-C,175,sqlite,src/alter.c,3026,FP,pParse->sLastToken.z is a pointer into the live SQL text not freed pointer arithmetic only,,high
+MEM30-C,176,sqlite,src/alter.c,3026,FP,pParse->sLastToken is a struct member of the live Parse not a freed object,,high
+EXP34-C,177,sqlite,src/alter.c,3032,FP,zDb is alterFindTable output non-null whenever pTab non-null checked,,high
+ARR02-C,178,sqlite,src/alter.c,3043,FP,aAlterTableFuncs[] has an explicit initializer giving it a complete bound ArraySize works correctly,,high
+CON03-C,179,sqlite,src/alter.c,3043,FP,aAlterTableFuncs is a function-local static const FuncDef table read once at startup not a shared mutable variable,,high

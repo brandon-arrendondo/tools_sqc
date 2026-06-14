@@ -1,0 +1,182 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API00-C,0,sqlite,src/trigger.c,19,FP,db is an internal sqlite3 handle guaranteed non-null by caller invariant not a trust boundary API00 misfire,,high
+API00-C,1,sqlite,src/trigger.c,19,FP,pTriggerStep may legitimately be NULL and the while(pTriggerStep) loop guards every deref no validation needed,,high
+MEM30-C,2,sqlite,src/trigger.c,32,FP,"sqlite3DbFree(db,pTmp) frees pTmp not db db is the live context handle freed once per node never double-freed",,high
+API00-C,3,sqlite,src/trigger.c,50,FP,pParse is internal parser context guaranteed non-null no trust boundary API00 misfire,,high
+DCL13-C,4,sqlite,src/trigger.c,50,FP,pParse not written here but flows by SQLite convention as mutable parser context and reaches trigger object mutation const violates pervasive Parse contract,,med
+DCL13-C,5,sqlite,src/trigger.c,50,FP,pTab read-only here but Table* is conventionally mutable and its pTrigger list nodes are mutated const not used in SQLite for Table*,,med
+ERR33-C,6,sqlite,src/trigger.c,90,FP,fflush(stdout) at line 90 is inside an #if 0 debug block never compiled dead code,,high
+DCL30-C,7,sqlite,src/trigger.c,93,FP,return pList at line 93 is inside #if 0 dead code and pList is a heap Trigger* pointer not an automatic array,,high
+API00-C,8,sqlite,src/trigger.c,104,FP,pColumns may be NULL by design (only set for UPDATE OF) and is null-safe through sqlite3IdListDelete API00 misfire,,high
+API00-C,9,sqlite,src/trigger.c,104,FP,pTableName NULL is explicitly handled at line 143 if(!pTableName) goto cleanup not a trust boundary,,high
+API00-C,10,sqlite,src/trigger.c,104,FP,pWhen may legitimately be NULL (no WHEN clause) and sqlite3ExprDelete/Dup are null-safe API00 misfire,,high
+MEM30-C,11,sqlite,src/trigger.c,158,FP,"sqlite3DbFree(db,pTableName->a[0].u4.zDatabase) frees zDatabase not pTableName which stays live UAF misread",,high
+MEM30-C,12,sqlite,src/trigger.c,158,FP,pTableName->a array is not freed only the zDatabase member string is freed UAF misread of free arg vs context,,high
+MEM30-C,13,sqlite,src/trigger.c,167,FP,"sqlite3SrcListLookup(pParse,pTableName) does not free pParse no free occurred UAF misfire",,high
+MEM30-C,14,sqlite,src/trigger.c,168,FP,db is never freed in this function it is the live connection handle reading db->init.busy is safe,,high
+MEM30-C,15,sqlite,src/trigger.c,168,FP,same as 14 db is live connection handle not freed,,high
+MEM30-C,16,sqlite,src/trigger.c,169,FP,db->aDb[1].pSchema read on live db handle never freed,,high
+MEM30-C,17,sqlite,src/trigger.c,169,FP,db->aDb array is part of live db never freed UAF misfire on DbFree context arg,,high
+MEM30-C,18,sqlite,src/trigger.c,174,FP,db->mallocFailed read on live handle no free occurred,,high
+MEM30-C,19,sqlite,src/trigger.c,176,FP,sqlite3FixInit does not free pParse no free in scope,,high
+MEM30-C,20,sqlite,src/trigger.c,180,FP,"sqlite3FixSrcList(&sFix,pTableName) does not free pParse",,high
+MEM30-C,21,sqlite,src/trigger.c,186,FP,sqlite3SrcListLookup does not free pParse,,high
+MEM30-C,22,sqlite,src/trigger.c,189,FP,"sqlite3ErrorMsg(pParse,...) reads live db via pParse db not freed",,high
+MEM30-C,23,sqlite,src/trigger.c,190,FP,sqlite3ErrorMsg does not free pParse,,high
+MEM30-C,24,sqlite,src/trigger.c,196,FP,sqlite3ReadOnlyShadowTables(db) reads live db handle not freed,,high
+MEM30-C,25,sqlite,src/trigger.c,198,FP,"sqlite3NameFromToken(db,pName) allocates from db does not free db",,high
+MEM30-C,26,sqlite,src/trigger.c,198,FP,db->mallocFailed read on live handle,,high
+MEM30-C,27,sqlite,src/trigger.c,201,FP,"sqlite3CheckObjectName(pParse,...) does not free pParse",,high
+MEM30-C,28,sqlite,src/trigger.c,204,FP,"sqlite3SchemaMutexHeld(db,...) only inspects db never frees it",,high
+MEM30-C,29,sqlite,src/trigger.c,206,FP,IN_RENAME_OBJECT macro reads pParse->eParseMode db not freed,,high
+MEM30-C,30,sqlite,src/trigger.c,206,FP,sqlite3HashFind(&db->aDb[iDb]...) reads live db schema not freed,,high
+MEM30-C,31,sqlite,src/trigger.c,206,FP,db->aDb member access on live handle,,high
+MEM30-C,32,sqlite,src/trigger.c,206,FP,db->aDb member access on live handle,,high
+MEM30-C,33,sqlite,src/trigger.c,206,FP,db->aDb array read on live handle not freed,,high
+MEM30-C,34,sqlite,src/trigger.c,208,FP,"sqlite3ErrorMsg(pParse,...) does not free pParse",,high
+MEM30-C,35,sqlite,src/trigger.c,210,FP,db->init.busy read on live handle,,high
+MEM30-C,36,sqlite,src/trigger.c,210,FP,sqlite3CodeVerifySchema reads live db not freed,,high
+MEM30-C,37,sqlite,src/trigger.c,211,FP,VVA_ONLY/pParse->ifNotExists writes pParse field pParse not freed,,high
+MEM30-C,38,sqlite,src/trigger.c,224,FP,"sqlite3ErrorMsg(pParse,...) system-table check does not free pParse",,high
+MEM30-C,39,sqlite,src/trigger.c,233,FP,"sqlite3ErrorMsg(pParse,...) view-trigger check does not free pParse",,high
+MEM30-C,40,sqlite,src/trigger.c,238,FP,"sqlite3ErrorMsg(pParse,...) INSTEAD-OF check does not free pParse",,high
+MEM30-C,41,sqlite,src/trigger.c,245,FP,"sqlite3SchemaToIndex(db,...) reads live db not freed",,high
+MEM30-C,42,sqlite,src/trigger.c,247,FP,db->aDb[iTabDb].zDbSName read on live handle,,high
+MEM30-C,43,sqlite,src/trigger.c,247,FP,db->aDb array read on live handle,,high
+MEM30-C,44,sqlite,src/trigger.c,248,FP,db->aDb[1].zDbSName read on live handle,,high
+MEM30-C,45,sqlite,src/trigger.c,248,FP,db->aDb array read on live handle,,high
+MEM30-C,46,sqlite,src/trigger.c,250,FP,"sqlite3AuthCheck(pParse,...) does not free pParse",,high
+MEM30-C,47,sqlite,src/trigger.c,253,FP,sqlite3AuthCheck second call does not free pParse,,high
+MEM30-C,48,sqlite,src/trigger.c,253,FP,zDb is a const char* into db->aDb not freed; AuthCheck reads it,,high
+MEM30-C,49,sqlite,src/trigger.c,269,FP,"sqlite3DbMallocZero(db,...) allocates from db never frees it",,high
+MEM30-C,50,sqlite,src/trigger.c,273,FP,"sqlite3DbStrDup(db,...) reads/allocs from db not freed",,high
+MEM30-C,51,sqlite,src/trigger.c,274,FP,db->aDb[iDb].pSchema read on live handle,,high
+MEM30-C,52,sqlite,src/trigger.c,274,FP,db->aDb array read on live handle,,high
+MEM30-C,53,sqlite,src/trigger.c,279,FP,"sqlite3RenameTokenRemap(pParse,...) does not free pParse",,high
+MEM30-C,54,sqlite,src/trigger.c,279,FP,sqlite3RenameTokenRemap arg pTrigger->table not freed pTrigger is live new object,,high
+MEM30-C,55,sqlite,src/trigger.c,279,FP,pTrigger->table member read on live newly-allocated trigger not freed,,high
+MEM30-C,56,sqlite,src/trigger.c,283,FP,"sqlite3ExprDup(db,...) reads from db not freed",,high
+MEM30-C,57,sqlite,src/trigger.c,287,FP,pParse->pNewTrigger written on live pParse not freed,,high
+MEM30-C,58,sqlite,src/trigger.c,292,FP,"sqlite3DbFree(db,zName) frees zName not db at cleanup label",,high
+MEM30-C,59,sqlite,src/trigger.c,293,FP,"sqlite3SrcListDelete(db,pTableName) frees pTableName db is context not freed",,high
+MEM30-C,60,sqlite,src/trigger.c,294,FP,"sqlite3IdListDelete(db,pColumns) frees pColumns not db",,high
+MEM30-C,61,sqlite,src/trigger.c,295,FP,pParse->pNewTrigger read at cleanup pParse not freed,,high
+MEM30-C,62,sqlite,src/trigger.c,296,FP,"sqlite3DeleteTrigger(db,pTrigger) frees pTrigger db is context not freed",,high
+MEM30-C,63,sqlite,src/trigger.c,296,FP,sqlite3DeleteTrigger frees pTrigger which is the intended cleanup of an error path not a UAF,,high
+MEM30-C,64,sqlite,src/trigger.c,298,FP,pParse->pNewTrigger read in else branch pParse not freed,,high
+MSC07-C,65,sqlite,src/trigger.c,302,FP,line 302 trigger_orphan_error is a goto label reachable via goto from many sites not dead code after return,,high
+MEM30-C,66,sqlite,src/trigger.c,303,FP,db->init.iDb read on live handle in orphan path,,high
+MEM30-C,67,sqlite,src/trigger.c,303,FP,db->init.iDb read on live handle,,high
+MEM30-C,68,sqlite,src/trigger.c,314,FP,db->init.orphanTrigger written on live handle,,high
+API00-C,69,sqlite,src/trigger.c,323,FP,pParse internal parser context guaranteed non-null no trust boundary,,high
+API00-C,70,sqlite,src/trigger.c,323,FP,pStepList may be NULL (empty trigger body) and is null-handled downstream API00 misfire,,high
+API00-C,71,sqlite,src/trigger.c,323,FP,pAll is the CREATE TRIGGER token always supplied by parser non-null by contract,,high
+DCL13-C,72,sqlite,src/trigger.c,326,FP,pAll read via pAll->z/pAll->n not written but Token* params are not const by SQLite convention and value passed to DbStrNDup,,med
+DCL18-C,73,sqlite,src/trigger.c,339,TP,assert(iDb>=00) uses literal 00 which is octal zero harmless but genuinely a leading-zero octal literal matching DCL18,,low
+MEM30-C,74,sqlite,src/trigger.c,399,FP,"sqlite3SchemaToIndex(pParse->db,...) reads live db not freed",,high
+MEM30-C,75,sqlite,src/trigger.c,402,FP,db->nDb read in assert on live handle,,high
+MEM30-C,76,sqlite,src/trigger.c,402,FP,db->aDb member read on live handle,,high
+MEM30-C,77,sqlite,src/trigger.c,404,FP,db->init.busy read on live handle,,high
+MEM30-C,78,sqlite,src/trigger.c,404,FP,db->init.busy member read on live handle,,high
+MEM30-C,79,sqlite,src/trigger.c,404,FP,db->aDb member read on live handle,,high
+MEM30-C,80,sqlite,src/trigger.c,404,FP,db->aDb array read on live handle,,high
+MEM30-C,81,sqlite,src/trigger.c,405,FP,sqlite3ReadOnlyShadowTables(db) reads live db not freed,,high
+MEM30-C,82,sqlite,src/trigger.c,407,FP,pHash points into db->aDb schema trigHash sqlite3HashInsert mutates hash not frees pHash,,high
+MEM30-C,83,sqlite,src/trigger.c,409,FP,sqlite3OomFault(db) flags OOM on live db does not free it,,high
+MEM30-C,84,sqlite,src/trigger.c,420,FP,"sqlite3HashFind(&pLink->pTabSchema->tblHash,...) reads via db not freed",,high
+MEM30-C,85,sqlite,src/trigger.c,422,FP,"sqlite3DeleteTrigger(db,pTrig) at cleanup frees pTrig not db",,high
+ARR00-C,86,sqlite,src/trigger.c,433,FP,z is char* from sqlite3DbSpanDup a heap allocation not a local array returning it is correct,,high
+DCL30-C,87,sqlite,src/trigger.c,433,FP,z is a heap pointer from DbSpanDup not automatic storage returning the pointer is correct,,high
+API00-C,88,sqlite,src/trigger.c,443,FP,db internal handle guaranteed non-null by parser caller no trust boundary,,high
+API00-C,89,sqlite,src/trigger.c,443,FP,pSelect always supplied by parser when entering SELECT trigger step non-null by contract,,high
+API00-C,90,sqlite,src/trigger.c,443,FP,zStart points into SQL text buffer supplied by parser non-null by contract,,high
+API00-C,91,sqlite,src/trigger.c,443,FP,API00 zEnd is parser-supplied SQL text span end internal contract not a trust boundary,,high
+API00-C,92,sqlite,src/trigger.c,513,FP,API00 pParse internal Parse context guaranteed non-null by parser caller invariant,,high
+API00-C,93,sqlite,src/trigger.c,513,FP,API00 pTabList parser-supplied SrcList internal contract not trust boundary,,high
+API00-C,94,sqlite,src/trigger.c,513,FP,API00 pSelect asserted non-null unless mallocFailed at line 526 internal contract,,high
+API00-C,95,sqlite,src/trigger.c,513,FP,API00 pUpsert may legitimately be null and is null-checked at line 539,,high
+API00-C,96,sqlite,src/trigger.c,513,FP,API00 zStart parser SQL text span pointer internal contract,,high
+API00-C,97,sqlite,src/trigger.c,513,FP,API00 zEnd parser SQL text span pointer internal contract,,high
+DCL30-C,98,sqlite,src/trigger.c,550,FP,DCL30 pTriggerStep is heap from sqlite3DbMallocZero not automatic storage no dangling return,,high
+API00-C,99,sqlite,src/trigger.c,558,FP,API00 pParse internal Parse context non-null by caller invariant,,high
+API00-C,100,sqlite,src/trigger.c,558,FP,API00 pTabList parser SrcList internal contract,,high
+API00-C,101,sqlite,src/trigger.c,558,FP,API00 pEList parser ExprList internal contract may be null and handled by dup,,high
+API00-C,102,sqlite,src/trigger.c,558,FP,API00 pWhere may be null and sqlite3ExprDup handles null internal contract,,high
+API00-C,103,sqlite,src/trigger.c,558,FP,API00 zStart parser SQL span pointer internal contract,,high
+API00-C,104,sqlite,src/trigger.c,558,FP,API00 zEnd parser SQL span pointer internal contract,,high
+DCL30-C,105,sqlite,src/trigger.c,605,FP,DCL30 pTriggerStep is heap allocated via sqlite3DbMallocZero not auto storage,,high
+API00-C,106,sqlite,src/trigger.c,613,FP,API00 pParse internal Parse context non-null by caller invariant,,high
+API00-C,107,sqlite,src/trigger.c,613,FP,API00 pTabList parser SrcList internal contract,,high
+API00-C,108,sqlite,src/trigger.c,613,FP,API00 pWhere may be null and sqlite3ExprDup handles null,,high
+API00-C,109,sqlite,src/trigger.c,613,FP,API00 zStart parser SQL span pointer internal contract,,high
+API00-C,110,sqlite,src/trigger.c,613,FP,API00 zEnd parser SQL span pointer internal contract,,high
+DCL30-C,111,sqlite,src/trigger.c,634,FP,DCL30 pTriggerStep is heap allocated via triggerStepAllocate not auto storage,,high
+API00-C,112,sqlite,src/trigger.c,640,FP,API00 db is the live connection handle guaranteed valid by caller mutex held,,high
+MEM30-C,113,sqlite,src/trigger.c,644,FP,"MEM30 sqlite3DbFree(db,pTrigger->table) frees table arg the db context handle is never freed",,high
+MEM30-C,114,sqlite,src/trigger.c,645,FP,MEM30 db is the allocator-context arg to sqlite3ExprDelete not the freed object,,high
+MEM30-C,115,sqlite,src/trigger.c,645,FP,MEM30 pTrigger->pWhen is the object passed to be deleted read before free not UAF,,high
+MEM30-C,116,sqlite,src/trigger.c,646,FP,MEM30 db is allocator-context arg to sqlite3IdListDelete not freed object,,high
+MEM30-C,117,sqlite,src/trigger.c,646,FP,MEM30 pTrigger->pColumns is the object being deleted read before free not UAF,,high
+MEM30-C,118,sqlite,src/trigger.c,647,FP,"MEM30 sqlite3DbFree(db,pTrigger) frees pTrigger the db handle is not freed",,high
+API00-C,119,sqlite,src/trigger.c,658,FP,API00 pParse internal Parse context non-null by caller invariant,,high
+API00-C,120,sqlite,src/trigger.c,658,FP,API00 pName parser SrcList asserted nSrc==1 at line 670 internal contract,,high
+INT13-C,121,sqlite,src/trigger.c,676,FP,"INT13 i^1 toggles low bit of small bounded loop index i in [0,2) intended TEMP-before-MAIN swap",,high
+API00-C,122,sqlite,src/trigger.c,709,FP,API00 pParse internal Parse context non-null by caller invariant,,high
+API00-C,123,sqlite,src/trigger.c,747,FP,API00 db live connection handle valid by caller schema-mutex-held assert line 751,,high
+ARR00-C,124,sqlite,src/trigger.c,752,FP,ARR00 iDb bounded by caller schema invariant sqlite3SchemaMutexHeld asserted line 751,,high
+ARR30-C,125,sqlite,src/trigger.c,752,FP,ARR30 iDb is a valid attached-db index by caller contract mutex-held assert,,high
+EXP34-C,126,sqlite,src/trigger.c,755,FP,EXP34 pTrigger guarded by ALWAYS(pTrigger) at line 754 before member access,,high
+DCL13-C,127,sqlite,src/trigger.c,781,TP,DCL13 pEList read-only only nExpr and a[e].zEName read const ExprList* would compile,,med
+ARR00-C,128,sqlite,src/trigger.c,784,FP,ARR00 e initialized to 0 in for-loop at line 784 not uninitialized analyzer misread,,high
+EXP34-C,129,sqlite,src/trigger.c,784,FP,EXP34 pEList guarded by NEVER(pEList==0) return at line 783 before deref,,high
+EXP34-C,130,sqlite,src/trigger.c,818,FP,EXP34 pList assigned from sqlite3TriggerList then guarded by if(pList!=0) at line 819,,high
+API00-C,131,sqlite,src/trigger.c,868,FP,API00 pChanges may be null (DELETE) and is null-handled in checkColumnOverlap,,high
+API00-C,132,sqlite,src/trigger.c,868,FP,API00 pMask out-param may be null and is null-checked at line 863 and 879,,high
+DCL13-C,133,sqlite,src/trigger.c,892,TP,DCL13 pTerm read-only only op pRight pLeft read const Expr* would compile,,med
+DCL13-C,134,sqlite,src/trigger.c,912,FP,DCL13 pList->a[i].pExpr propagated to non-const sqlite3ExprDup and isAsteriskTerm callees,,med
+DCL13-C,135,sqlite,src/trigger.c,913,TP,DCL13 pTab read-only only nCol and aCol[].zCnName read const Table* would compile,,med
+ARR00-C,136,sqlite,src/trigger.c,924,FP,ARR00 jj initialized to 0 in for-loop at line 924 not uninitialized analyzer misread,,high
+EXP33-C,137,sqlite,src/trigger.c,925,FP,EXP33 pNewExpr assigned by sqlite3Expr at line 927 before use at 928 sequence point,,high
+EXP34-C,138,sqlite,src/trigger.c,930,FP,EXP34 pNew->a access guarded by if(!db->mallocFailed) ensuring append succeeded line 929,,high
+INT32-C,139,sqlite,src/trigger.c,930,FP,INT32 pNew->nExpr-1 is a small register/column count not near INT_MIN no underflow,,high
+INT32-C,140,sqlite,src/trigger.c,939,FP,INT32 pNew->nExpr-1 small column count cannot underflow append guarantees nExpr>=1,,high
+DCL13-C,141,sqlite,src/trigger.c,999,FP,DCL13 pTab stored into non-const Walker field w.u.pTab at line 1005,,high
+DCL13-C,142,sqlite,src/trigger.c,1021,TP,DCL13 pTrigger read-only only compared to &retTrig and op read const Trigger* would compile,,med
+EXP34-C,143,sqlite,src/trigger.c,1069,FP,EXP34 pNew guarded by pParse->nErr==0 and ALWAYS(!db->mallocFailed) ensuring expand succeeded,,high
+INT32-C,144,sqlite,src/trigger.c,1070,FP,INT32 pParse->nTab cursor counter bounded by schema/statement size cannot reach INT_MAX,,high
+INT32-C,145,sqlite,src/trigger.c,1082,FP,INT32 pParse->nMem register counter bounded by query size cannot reach INT_MAX,,high
+INT32-C,146,sqlite,src/trigger.c,1084,FP,INT32 nMem+=nCol+2 register counts bounded by SQLITE_LIMIT_COLUMN cannot overflow,,high
+INT32-C,147,sqlite,src/trigger.c,1084,FP,INT32 nCol+2 column count bounded by SQLITE_LIMIT_COLUMN (default 2000) no overflow,,high
+INT32-C,148,sqlite,src/trigger.c,1089,FP,INT32 reg+i register indices bounded by allocated register range no overflow,,high
+INT32-C,149,sqlite,src/trigger.c,1091,FP,INT32 reg+i bounded register index no overflow,,high
+INT32-C,150,sqlite,src/trigger.c,1094,FP,INT32 reg+i bounded register index no overflow,,high
+INT32-C,151,sqlite,src/trigger.c,1095,FP,INT32 reg+i+1 bounded register index no overflow,,high
+INT32-C,152,sqlite,src/trigger.c,1095,FP,INT32 reg+i bounded register index no overflow,,high
+INT32-C,153,sqlite,src/trigger.c,1096,FP,INT32 reg+i bounded register index no overflow,,high
+INT32-C,154,sqlite,src/trigger.c,1096,FP,INT32 reg+i+1 bounded register index no overflow,,high
+INT32-C,155,sqlite,src/trigger.c,1096,FP,INT32 reg+i bounded register index no overflow,,high
+MSC04-C,156,sqlite,src/trigger.c,1110,TP,MSC04 codeTriggerProgram genuinely participates in indirect recursion via trigger codegen chain,,high
+DCL13-C,157,sqlite,src/trigger.c,1112,FP,DCL13 pStepList nodes aliased by pStep whose fields pass to non-const dup callees,,med
+EXP30-C,158,sqlite,src/trigger.c,1149,FP,EXP30 sqlite3Update args are independent sqlite3*Dup calls on distinct fields no shared side-effect aliasing,,high
+EXP30-C,159,sqlite,src/trigger.c,1159,FP,EXP30 sqlite3Insert args independent dup calls no unsequenced shared-state hazard,,high
+EXP30-C,160,sqlite,src/trigger.c,1170,FP,EXP30 sqlite3DeleteFrom args independent dup calls no unsequenced shared-state hazard,,high
+DCL13-C,161,sqlite,src/trigger.c,1214,TP,DCL13 pFrom read-only fields zErrMsg nErr rc db read pointer copied not pFrom mutated const would compile,,med
+MSC04-C,162,sqlite,src/trigger.c,1230,TP,MSC04 codeRowTrigger genuinely participates in indirect trigger codegen recursion,,high
+DCL13-C,163,sqlite,src/trigger.c,1233,FP,DCL13 pTab stored into non-const sSubParse.pTriggerTab field at line 1269,,high
+DCL30-C,164,sqlite,src/trigger.c,1337,FP,DCL30 pPrg is heap from sqlite3DbMallocZero not automatic storage no dangling return,,high
+MSC04-C,165,sqlite,src/trigger.c,1346,TP,MSC04 getRowTrigger genuinely participates in indirect trigger codegen recursion,,high
+DCL30-C,166,sqlite,src/trigger.c,1372,FP,DCL30 pPrg is heap allocated via codeRowTrigger/sqlite3DbMallocZero not auto storage,,high
+API00-C,167,sqlite,src/trigger.c,1381,FP,API00 pParse internal Parse context non-null by caller invariant,,high
+API00-C,168,sqlite,src/trigger.c,1381,FP,API00 p Trigger pointer guaranteed valid by caller iteration contract,,high
+MSC04-C,169,sqlite,src/trigger.c,1381,TP,MSC04 sqlite3CodeRowTriggerDirect genuinely participates in indirect trigger codegen recursion,,high
+INT32-C,170,sqlite,src/trigger.c,1399,FP,INT32 ++pParse->nMem register counter bounded by query size cannot reach INT_MAX,,high
+API00-C,171,sqlite,src/trigger.c,1453,FP,API00 pParse internal Parse context non-null by caller invariant,,high
+API00-C,172,sqlite,src/trigger.c,1453,FP,API00 pTrigger list head may be null and for-loop handles null safely line 1470,,high
+MSC04-C,173,sqlite,src/trigger.c,1453,TP,MSC04 sqlite3CodeRowTrigger genuinely participates in indirect trigger codegen recursion,,high
+DCL13-C,174,sqlite,src/trigger.c,1455,FP,DCL13 pTrigger list head iterated as p whose nodes pass to non-const sqlite3CodeRowTriggerDirect,,med
+API00-C,175,sqlite,src/trigger.c,1523,FP,API00 pTrigger list head may be null for-loop handles null at line 1540,,high
+API00-C,176,sqlite,src/trigger.c,1523,FP,API00 pChanges may be null (DELETE) and checkColumnOverlap handles null,,high
+MSC04-C,177,sqlite,src/trigger.c,1523,TP,MSC04 sqlite3TriggerColmask genuinely participates in indirect trigger codegen recursion via getRowTrigger,,high
+DCL13-C,178,sqlite,src/trigger.c,1525,FP,DCL13 pTrigger list head iterated as p whose nodes pass to non-const getRowTrigger,,med
+ARR00-C,179,sqlite,src/trigger.c,1551,FP,ARR00 isNew asserted ==0 or ==1 at line 1536 bounding aColmask[isNew] (size 2) access,,high
+ARR30-C,180,sqlite,src/trigger.c,1551,FP,"ARR30 isNew asserted in {0,1} at line 1536 valid index for aColmask[2]",,high

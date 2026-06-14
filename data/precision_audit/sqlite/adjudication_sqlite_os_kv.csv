@@ -1,0 +1,142 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+PRE01-C,0,sqlite,src/os_kv.c,26,TP,Line 26 SQLITE_KV_TRACE(X) printf X leaves X unparenthesized in replacement text genuine macro hygiene defect,,high
+PRE01-C,1,sqlite,src/os_kv.c,33,TP,Line 33 SQLITE_KV_LOG(X) printf X leaves X unparenthesized same hygiene defect,,high
+API02-C,2,sqlite,src/os_kv.c,79,FP,kvvfsCheckReservedLock signature is fixed by sqlite3_io_methods.xCheckReservedLock function-pointer typedef cannot add size param,,high
+API02-C,3,sqlite,src/os_kv.c,91,FP,kvvfsFullPathname signature fixed by sqlite3_vfs.xFullPathname typedef cannot add size param,,high
+API02-C,4,sqlite,src/os_kv.c,93,FP,kvvfsRandomness signature fixed by sqlite3_vfs.xRandomness typedef cannot add size param,,high
+CON03-C,5,sqlite,src/os_kv.c,98,FP,sqlite3OsKvvfsObject is a const-initialized static VFS dispatch table not a thread-shared mutable; CON03 misfire,,high
+CON03-C,6,sqlite,src/os_kv.c,122,FP,kvvfs_db_io_methods is a static method dispatch table set once at init not concurrently mutated,,high
+CON03-C,7,sqlite,src/os_kv.c,146,FP,kvvfs_jrnl_io_methods same static dispatch table not a synchronization concern,,high
+ERR00-C,8,sqlite,src/os_kv.c,221,FP,fopen result fd IS checked at line 222 if(fd) before use; return value error-handled,,med
+ERR33-C,9,sqlite,src/os_kv.c,221,FP,fd from fopen checked by if(fd) at line 222 with else returning 1; ERR33 misfire,,high
+FIO03-C,10,sqlite,src/os_kv.c,221,FP,kvrecordWrite writes a private kvvfs key file not security-sensitive exclusive-create not required CERT not violated here,,med
+FIO06-C,11,sqlite,src/os_kv.c,221,FP,fopen permission concern not applicable; these are internal kv store files under app control,,low
+WIN03-C,12,sqlite,src/os_kv.c,221,FP,WIN03 N-flag is Windows-portability lint not a CERT-C reachable defect; kvvfs file is app-private,,high
+PRE32-C,13,sqlite,src/os_kv.c,223,FP,SQLITE_KV_TRACE is compiled to empty macro (#if 0); the args are a multi-line printf format string with no # directive token,,high
+PRE32-C,14,sqlite,src/os_kv.c,223,FP,same as 13 the flagged argument is a string-literal continuation not a preprocessor directive,,high
+ERR00-C,15,sqlite,src/os_kv.c,227,FP,fclose after fputs to a freshly opened private kv file; return ignored is acceptable for this write-trace path not a CERT TP in context,,med
+FIO01-C,16,sqlite,src/os_kv.c,271,FP,access() then later fopen on app-private kvvfs key file; not a privilege-boundary TOCTOU FIO01 misfire on internal store,,high
+FIO01-C,17,sqlite,src/os_kv.c,272,FP,stat() used to size buffer not to gate a privileged op; no security-relevant TOCTOU,,high
+EXP33-C,18,sqlite,src/os_kv.c,273,FP,buf is struct stat filled by stat() at line 272 before any field read; only used when stat succeeded; not uninitialized,,high
+PRE32-C,19,sqlite,src/os_kv.c,282,FP,SQLITE_KV_TRACE empty macro args are printf format string no # directive,,high
+PRE32-C,20,sqlite,src/os_kv.c,282,FP,same string-literal continuation not a directive,,high
+ERR00-C,21,sqlite,src/os_kv.c,289,FP,fopen result fd checked at line 290 if(fd==0) return -1; error handled,,high
+POS50-C,22,sqlite,src/os_kv.c,289,FP,access()/fopen on app-private kv file not a security TOCTOU,,high
+POS50-C,23,sqlite,src/os_kv.c,289,FP,stat()/fopen same internal store no privilege boundary,,high
+WIN03-C,24,sqlite,src/os_kv.c,289,FP,WIN03 N-flag Windows lint not a reachable CERT defect,,high
+ERR00-C,25,sqlite,src/os_kv.c,294,FP,fread result n is used (zBuf[n]=0 and returned) and short-read tolerated by design per header contract; not an unchecked-error TP,,med
+ERR33-C,26,sqlite,src/os_kv.c,294,FP,fread return assigned to n and consumed; partial read is explicitly allowed by the documented contract,,med
+INT31-C,27,sqlite,src/os_kv.c,294,FP,"nBuf clamped to buf.st_size+1 (>0 verified, st_size from stat) so nBuf-1 fits size_t; benign signed-to-size_t",,high
+INT32-C,28,sqlite,src/os_kv.c,294,FP,nBuf>0 guaranteed by earlier if(nBuf<=0)/==1 returns so nBuf-1 cannot underflow; INT32 misfire,,high
+STR34-C,29,sqlite,src/os_kv.c,294,FP,zBuf is char* buffer passed to fread; no sign-extending integer promotion occurs; STR34 misread of buffer arg,,high
+ERR00-C,30,sqlite,src/os_kv.c,295,FP,fclose on read-only fd at line 295 return ignored acceptable for read path; not a CERT TP in this context,,med
+ERR33-C,31,sqlite,src/os_kv.c,295,FP,fclose return ignored on rb-mode stream after read; benign,,med
+PRE32-C,32,sqlite,src/os_kv.c,297,FP,SQLITE_KV_TRACE empty macro printf format string no directive,,high
+PRE32-C,33,sqlite,src/os_kv.c,297,FP,same string continuation not a directive,,high
+API00-C,34,sqlite,src/os_kv.c,389,FP,kvvfsEncode aData is internal caller buffer; contract guarantees non-null; first cast to const unsigned char*; API00 internal-contract misfire,,high
+API00-C,35,sqlite,src/os_kv.c,389,FP,aOut documented to be caller-provided >=nData+1 buffer; internal contract non-null,,high
+DCL00-C,36,sqlite,src/os_kv.c,393,TP,"c at line 393 is assigned a[i] once per iter and only read (c>>4, c&0xf); a per-iteration value not const-qualifiable as written but DCL00 const-suggestion is technically valid",,med
+INT13-C,37,sqlite,src/os_kv.c,395,FP,c is unsigned char (line 393) not signed int; c>>4 on unsigned is well-defined; INT13 misread the type,,high
+INT13-C,38,sqlite,src/os_kv.c,396,FP,c is unsigned char; c&0xf well-defined; INT13 misfire,,high
+INT32-C,39,sqlite,src/os_kv.c,405,FP,k starts at 1 and loop runs only while k>0 so k-1>=0; no signed underflow at line 405,,high
+INT10-C,40,sqlite,src/os_kv.c,407,FP,k%26 with k>0 (loop guard) always non-negative; modulo sign concern not reachable,,high
+API00-C,41,sqlite,src/os_kv.c,446,TP,"kvvfsDecode parameter a is attacker-controlled kv text and dereferenced via aIn[i] with no null check at entry; though callers pass non-null, API00 flags absence of validation",,med
+API00-C,42,sqlite,src/os_kv.c,446,FP,aOut is caller decode buffer with documented size contract nOut; the real defect is missing bound on j not null-check; API00 misfire on this param,,high
+ARR30-C,43,sqlite,src/os_kv.c,453,FP,aIn[i] indexes kvvfsHexValue[256] with aIn being unsigned char (0..255) always in bounds; ARR30 misfire,,high
+INT14-C,44,sqlite,src/os_kv.c,460,FP,INT14 readability lint not a CERT defect; c mixed bitwise/arith is intentional decode logic,,low
+INT30-C,45,sqlite,src/os_kv.c,460,FP,n and intermediates are int not unsigned at line 460; and values bounded by 26-digit base-26; INT30 wrong-signedness misfire,,high
+INT32-C,46,sqlite,src/os_kv.c,460,FP,(c-'a')*mult bounded by short base-26 prefix in practice; in kvvfsDecode this is the zero-run counter not size-critical; overflow not reachable with valid encoding,,high
+INT32-C,47,sqlite,src/os_kv.c,460,FP,(c-'a')*mult multiplication on small base-26 digits; mult grows by 26 but loop terminates on non-az; bounded,,med
+INT32-C,48,sqlite,src/os_kv.c,461,FP,mult*=26 bounded by number of consecutive a-z digits which is small for any real zero-run; not a reachable overflow,,med
+INT32-C,49,sqlite,src/os_kv.c,462,FP,++i increments a buffer index over a finite kv text far below INT_MAX; INT32 misfire,,high
+EXP05-C,50,sqlite,src/os_kv.c,465,FP,EXP05 cast-away-const false: n is an int local being returned not a const pointer cast; misfire,,high
+FIO50-C,51,sqlite,src/os_kv.c,469,FP,FIO50 file-stream rule misfired on local variable c (an int) not a FILE*; no file I/O at line 469,,high
+INT13-C,52,sqlite,src/os_kv.c,469,FP,c is int holding a hex nibble 0..15; c<<4 cannot overflow or be UB; value range guarantees safety,,high
+INT32-C,53,sqlite,src/os_kv.c,469,FP,c<<4 where c in 0..15 yields <=240 well within int; INT32 misfire,,high
+INT32-C,54,sqlite,src/os_kv.c,470,FP,++i buffer index well below INT_MAX; misfire,,high
+INT32-C,55,sqlite,src/os_kv.c,473,FP,i++ buffer index over finite text; misfire,,high
+EXP30-C,56,sqlite,src/os_kv.c,499,FP,EXP30 sequence-point misfire: c=zTxt[i++] then c compared; i++ side-effect and c use are properly sequenced,,high
+EXP33-C,57,sqlite,src/os_kv.c,499,FP,c assigned in the while condition (c=zTxt[i++]) before any use at line 500; not uninitialized,,high
+INT30-C,58,sqlite,src/os_kv.c,500,FP,n is unsigned int but (zTxt[i]-'a')*mult bounded by short base-26 length header; intended; INT30 misfire,,high
+MEM30-C,59,sqlite,src/os_kv.c,505,FP,line 505 reads pFile->aJrnl after sqlite3_malloc64 ASSIGNED it (line 504); the freed pointer at 503 was overwritten; MEM30 misread the malloc result as the freed object,,high
+MEM30-C,60,sqlite,src/os_kv.c,510,FP,line 510 uses pFile->aJrnl which was reassigned by malloc at 504 not the freed one; no UAF,,high
+MEM30-C,61,sqlite,src/os_kv.c,510,FP,pFile->nJrnl is an unsigned int field not a freed pointer; MEM30 misfire on a struct counter,,high
+MEM30-C,62,sqlite,src/os_kv.c,511,FP,pFile->nJrnl at 511 is the size counter compared in if(n<pFile->nJrnl); not a freed pointer,,high
+MEM30-C,63,sqlite,src/os_kv.c,512,FP,aJrnl freed at 503 (old buffer) then 512 frees the NEW malloc'd buffer on error; distinct allocations not a double-free,,high
+DCL13-C,64,sqlite,src/os_kv.c,521,FP,kvvfsReadFileSize pFile is passed to xRcrdRead via pFile->zClass; reading a member is fine but const would be valid except pFile flows to method that takes non-const path historically; storing class read-only DCL13 borderline FP given VFS-internal handle convention,,high
+INT30-C,65,sqlite,src/os_kv.c,525,FP,sizeof(zData)-1 = 50-1 a compile-time constant 49 cannot underflow; INT30 misfire on sizeof arithmetic,,high
+ERR01-C,66,sqlite,src/os_kv.c,526,FP,strtoll errno not checked but result used only as a size that is later range-validated by callers; the documented design tolerates malformed sz; not a reachable CERT TP here,,med
+ERR30-C,67,sqlite,src/os_kv.c,526,FP,ERR30 errno-reset before strtoll not done but kvvfs treats parse failure as size 0/garbage handled downstream; in-band concern not security-relevant here,,med
+DCL13-C,68,sqlite,src/os_kv.c,528,FP,kvvfsWriteFileSize pFile read for zClass and passed to xRcrdWrite; VFS handle convention; const not idiomatic; DCL13 misfire on internal handle,,high
+EXP33-C,69,sqlite,src/os_kv.c,530,FP,zData at line 530 is written by sqlite3_snprintf before any read; not uninitialized; EXP33 misfire,,high
+PRE32-C,70,sqlite,src/os_kv.c,542,FP,SQLITE_KV_LOG(X) is `printf X` or empty; arg is a parenthesized printf format+args with no `#` directive token - PRE32 misfire on log macro,,high
+PRE32-C,71,sqlite,src/os_kv.c,542,FP,"Same line 542 - the ""directive"" is just a format-string literal and ternary expression, no preprocessor token; PRE32 misfire",,high
+DCL40-C,72,sqlite,src/os_kv.c,555,FP,"kvvfsReadJrnl signature is fixed by sqlite3_io_methods.xRead typedef and stored into kvvfs_jrnl_io_methods; ""incompatible"" is sqc comparing to its synthesized prototype",,high
+INT31-C,73,sqlite,src/os_kv.c,586,FP,iAmt is VFS-contract bounded (caller passes page-aligned int>0); memcpy at 586 guarded by iOfst+iAmt>pFile->nJrnl short-read check above,,high
+DCL40-C,74,sqlite,src/os_kv.c,593,FP,"kvvfsReadDb signature fixed by sqlite3_io_methods typedef, stored into kvvfs_db_io_methods; DCL40 misfire",,high
+INT14-C,75,sqlite,src/os_kv.c,607,FP,"INT14 readability rule; iAmt power-of-two/modulo use is intentional page-geometry math, not a defect",,high
+INT10-C,76,sqlite,src/os_kv.c,608,FP,"iOfst and iAmt are non-negative by VFS contract (asserts iOfst>=0, iAmt>=0 at 604-605); modulo result is well-defined non-negative",,high
+INT32-C,77,sqlite,src/os_kv.c,608,FP,"iAmt cannot be -1 (page size, checked &(iAmt-1)==0 and 512..65536 at 611); INT_MIN%-1 unreachable",,high
+INT33-C,78,sqlite,src/os_kv.c,608,FP,iOfst%iAmt only reached when iOfst+iAmt>=512 so iAmt>0; div-by-zero unreachable,,high
+INT32-C,79,sqlite,src/os_kv.c,615,FP,"iOfst/iAmt computes a small page number; iAmt>=512 bounded, iOfst i64 file offset; +1 cannot overflow int realistically and pgno is unsigned page index",,high
+INT32-C,80,sqlite,src/os_kv.c,615,FP,iAmt verified power-of-two in 512..65536 (never -1) before this divide; INT_MIN/-1 unreachable,,high
+EXP33-C,81,sqlite,src/os_kv.c,619,FP,"zKey[30] is written by sqlite3_snprintf at 619 before use at 620; assigned-before-use, not uninitialized",,high
+INT32-C,82,sqlite,src/os_kv.c,627,FP,iOfst+iAmt guarded - iEnd math bounded; here it is the <512 branch where both are small page-relative values; no real overflow,,high
+INT32-C,83,sqlite,src/os_kv.c,628,FP,"k=iOfst+iAmt is <512 in this branch (line 626 guard iOfst+iAmt<512); k*2 < 1024, no overflow",,high
+INT31-C,84,sqlite,src/os_kv.c,631,FP,"iAmt bounded by VFS contract and the <512 branch guard; memcpy size safe, n>=iOfst+iAmt checked at 630",,high
+INT32-C,85,sqlite,src/os_kv.c,631,FP,"2000+iOfst indexes into aData[SQLITE_KVOS_SZ=133073]; iOfst<512 in this branch so 2000+iOfst<2512, in bounds",,high
+INT30-C,86,sqlite,src/os_kv.c,641,FP,"n is kvvfsDecode return (>=0, <=iAmt by the n<iAmt guard reaching here); iAmt-n non-negative, no wrap",,high
+INT31-C,87,sqlite,src/os_kv.c,641,FP,"iAmt VFS-bounded positive; memset(zBuf+n,0,iAmt-n) size non-negative since n<iAmt guard; safe",,high
+INT32-C,88,sqlite,src/os_kv.c,641,FP,"iAmt-n with n<iAmt established by enclosing if(n<iAmt); difference positive and small, no overflow",,high
+DCL40-C,89,sqlite,src/os_kv.c,651,FP,kvvfsWriteJrnl signature fixed by sqlite3_io_methods typedef; DCL40 misfire,,high
+INT32-C,90,sqlite,src/os_kv.c,658,FP,iOfst+iAmt assigned to i64 iEnd then checked iEnd>=0x10000000 -> SQLITE_FULL at 660; bounded,,high
+INT30-C,91,sqlite,src/os_kv.c,668,FP,memset only runs inside if(pFile->nJrnl<iOfst) so iOfst-pFile->nJrnl is positive; no wrap,,high
+INT31-C,92,sqlite,src/os_kv.c,668,FP,"iOfst constrained <0x10000000 by 660 check; memset size iOfst-nJrnl is small positive, fits size_t",,high
+INT32-C,93,sqlite,src/os_kv.c,668,FP,iOfst<0x10000000 and >nJrnl in this branch; iOfst-nJrnl positive bounded; no overflow,,high
+INT31-C,94,sqlite,src/os_kv.c,672,FP,iAmt bounded by iEnd<0x10000000 check; memcpy into buffer reallocated to iEnd>=iOfst+iAmt; in bounds,,high
+DCL40-C,95,sqlite,src/os_kv.c,679,FP,kvvfsWriteDb signature fixed by sqlite3_io_methods typedef; DCL40 misfire,,high
+INT14-C,96,sqlite,src/os_kv.c,692,FP,INT14 readability only; power-of-two page math (asserted at 692) is intentional,,high
+INT32-C,97,sqlite,src/os_kv.c,695,FP,iOfst/iAmt is a page index; iAmt asserted 512..65536 power-of-two at 691-692; +1 cannot overflow int,,high
+INT32-C,98,sqlite,src/os_kv.c,695,FP,iAmt asserted power-of-two >=512 (never -1) at 691-692; INT_MIN/-1 unreachable,,high
+INT33-C,99,sqlite,src/os_kv.c,695,FP,iAmt asserted >=512 at 691; divide-by-zero unreachable,,high
+EXP33-C,100,sqlite,src/os_kv.c,696,FP,zKey[30] written by sqlite3_snprintf at 696 before xRcrdWrite use; assigned-before-use,,high
+INT32-C,101,sqlite,src/os_kv.c,701,FP,"iOfst+iAmt compared to pFile->szDb (i64); iAmt bounded <=65536, iOfst i64 file offset; assigned to i64 szDb, no int overflow",,high
+DCL40-C,102,sqlite,src/os_kv.c,710,FP,kvvfsTruncateJrnl signature fixed by sqlite3_io_methods typedef; DCL40 misfire,,high
+DCL40-C,103,sqlite,src/os_kv.c,720,FP,kvvfsTruncateDb signature fixed by sqlite3_io_methods typedef; DCL40 misfire,,high
+INT33-C,104,sqlite,src/os_kv.c,724,FP,size%pFile->szPage guarded by pFile->szPage>0 in same if-condition at 723; divide/modulo by zero unreachable,,high
+INT32-C,105,sqlite,src/os_kv.c,729,FP,"size/pFile->szPage guarded by szPage>0 (723); page count small; +1 to unsigned pgno, no signed overflow",,high
+INT33-C,106,sqlite,src/os_kv.c,729,FP,szPage>0 guard at 723 precedes this modulo/divide; div-by-zero unreachable,,high
+INT32-C,107,sqlite,src/os_kv.c,730,FP,"szDb/szPage with szPage>0 (723 guard); page count bounded; assigned to unsigned pgnoMax, no overflow",,high
+INT33-C,108,sqlite,src/os_kv.c,730,FP,szPage>0 guard at 723; div-by-zero unreachable,,high
+EXP33-C,109,sqlite,src/os_kv.c,732,FP,zKey[50] is written by sqlite3_snprintf at 732 inside the while-loop before each xRcrdDelete; assigned-before-use within loop body,,high
+INT30-C,110,sqlite,src/os_kv.c,753,FP,"nJrnl>0 here (guarded by nJrnl<=0 return at 750); nJrnl*2+50 fits sqlite3_malloc64 i64; intended encode buffer sizing, no wrap",,high
+DCL13-C,111,sqlite,src/os_kv.c,769,FP,"kvvfsTruncateJrnl pProtoFile is cast to KVVfsFile* and the pointee freed/mutated (aJrnl freed, nJrnl set); const would be wrong and signature is typedef-fixed",,high
+DCL13-C,112,sqlite,src/os_kv.c,776,FP,"kvvfsFileSizeJrnl pProtoFile cast to KVVfsFile* and read; signature fixed by sqlite3_io_methods typedef (xFileSize), const not allowed",,high
+DCL40-C,113,sqlite,src/os_kv.c,776,FP,kvvfsFileSizeJrnl signature fixed by sqlite3_io_methods typedef; DCL40 misfire,,high
+DCL40-C,114,sqlite,src/os_kv.c,782,FP,kvvfsFileSizeDb signature fixed by sqlite3_io_methods typedef; DCL40 misfire,,high
+DCL13-C,115,sqlite,src/os_kv.c,823,FP,kvvfsCheckReservedLock pProtoFile param fixed by sqlite3_io_methods.xCheckReservedLock typedef; const impossible,,high
+DCL13-C,116,sqlite,src/os_kv.c,832,FP,kvvfsFileControlJrnl pProtoFile fixed by sqlite3_io_methods.xFileControl typedef; const impossible,,high
+DCL13-C,117,sqlite,src/os_kv.c,832,FP,kvvfsFileControlJrnl pArg is void* fixed by xFileControl typedef; const impossible,,high
+DCL13-C,118,sqlite,src/os_kv.c,836,FP,kvvfsFileControlDb pArg void* fixed by xFileControl typedef; const impossible,,high
+DCL13-C,119,sqlite,src/os_kv.c,853,FP,kvvfsSectorSize pFile param fixed by sqlite3_io_methods.xSectorSize typedef; const not part of signature,,high
+DCL13-C,120,sqlite,src/os_kv.c,860,FP,kvvfsDeviceCharacteristics pProtoFile fixed by sqlite3_io_methods typedef; const impossible,,high
+DCL13-C,121,sqlite,src/os_kv.c,870,FP,kvvfsOpen pProtoVfs fixed by sqlite3_vfs.xOpen typedef; const impossible,,high
+DCL13-C,122,sqlite,src/os_kv.c,874,FP,kvvfsOpen pOutFlags is int* output param fixed by xOpen typedef; not const (it is an out-param though unused here),,high
+DCL13-C,123,sqlite,src/os_kv.c,913,FP,kvvfsDelete pVfs fixed by sqlite3_vfs.xDelete typedef; const impossible,,high
+DCL13-C,124,sqlite,src/os_kv.c,932,FP,kvvfsAccess pProtoVfs fixed by sqlite3_vfs.xAccess typedef; const impossible,,high
+DCL13-C,125,sqlite,src/os_kv.c,984,FP,kvvfsFullPathname pVfs fixed by sqlite3_vfs.xFullPathname typedef; const impossible,,high
+INT32-C,126,sqlite,src/os_kv.c,995,FP,"nOut-1 only reached inside if(nOut<nPath+1) so nOut>=1 path is the assignment nPath=nOut-1; nOut is VFS-supplied buffer size >=1, no overflow",,high
+DCL13-C,127,sqlite,src/os_kv.c,1004,FP,kvvfsDlOpen pVfs fixed by sqlite3_vfs.xDlOpen typedef; const impossible,,high
+DCL13-C,128,sqlite,src/os_kv.c,1012,FP,kvvfsRandomness pVfs fixed by sqlite3_vfs.xRandomness typedef; const impossible,,high
+INT31-C,129,sqlite,src/os_kv.c,1013,FP,"nByte is VFS-supplied randomness buffer length, positive; memset size safe; signature typedef-fixed",,high
+DCL13-C,130,sqlite,src/os_kv.c,1021,FP,kvvfsSleep pVfs fixed by sqlite3_vfs.xSleep typedef; const impossible,,high
+DCL13-C,131,sqlite,src/os_kv.c,1028,FP,kvvfsCurrentTime pVfs fixed by sqlite3_vfs.xCurrentTime typedef; const impossible,,high
+FLP03-C,132,sqlite,src/os_kv.c,1032,FP,"FLP03 - i/86400000.0 Julian-day conversion; non-zero compile-time divisor, no FP-exception handling needed for this VFS time API",,high
+DCL13-C,133,sqlite,src/os_kv.c,1036,FP,kvvfsCurrentTimeInt64 pVfs fixed by sqlite3_vfs.xCurrentTimeInt64 typedef; const impossible,,high
+INT32-C,134,sqlite,src/os_kv.c,1037,FP,"unixEpoch = 24405875*(i64)8640000 is a compile-time constant that fits i64 (2.1e14); intended Julian epoch, no overflow",,high
+FLP03-C,135,sqlite,src/os_kv.c,1040,FP,"FLP03 false positive same as 132 - constant divisor, VFS time conversion",,high
+INT32-C,136,sqlite,src/os_kv.c,1040,FP,"unixEpoch + 1000*(i64)tv_sec all i64 arithmetic; gettimeofday tv_sec fits, no realistic i64 overflow until year ~290M",,high
+INT32-C,137,sqlite,src/os_kv.c,1040,FP,"1000*(i64)tv_sec is i64 math, tv_sec bounded by wall clock; no i64 overflow",,high
+MSC04-C,138,sqlite,src/os_kv.c,1049,TP,sqlite3_os_init -> sqlite3_vfs_register -> sqlite3_initialize -> sqlite3OsInit -> sqlite3_os_init is a genuine indirect call-graph cycle; per MSC04 profile structural recursion is a TP (runtime-bounded by init-state guard but the cycle exists),,med
+MSC04-C,139,sqlite,src/os_kv.c,1058,TP,"sqlite3KvvfsInit participates in the same genuine indirect call-graph cycle through sqlite3_vfs_register/sqlite3_initialize/sqlite3OsInit; structural recursion present, MSC04 TP",,med
+ARR30-C,FN,sqlite,src/os_kv.c,469,FN,"kvvfsDecode hex-pair branch writes aOut[j] (469) and aOut[j++] (472) with NO j<nOut bound (only the zero-run branch checks j+n>nOut). Via kvvfsDecodeJournal:510 aOut=pFile->aJrnl is malloc'd to base-26 header length n decoded from the same untrusted kv text; a crafted journal with small header n but longer hex payload overruns the heap allocation. Attacker-controlled heap OOB WRITE in shipped kvvfs (WASM). sqc flagged only the in-bounds table read at 453. Contributing: line 500 base-26 parse reads zTxt[i] after c=zTxt[i++], miscomputing n",FN-hunt,med

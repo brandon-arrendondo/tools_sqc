@@ -1,0 +1,118 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API00-C,0,sqlite,src/vtab.c,39,FP,db is internal handle guaranteed non-null by caller invariant (mutex/contract) not a trust boundary,,high
+DCL13-C,1,sqlite,src/vtab.c,43,FP,pAux is stored into non-const field pMod->pAux=pAux line 63 so const would be wrong,,high
+EXP05-C,2,sqlite,src/vtab.c,50,FP,zCopy=(char*)zName cast only used when pModule==0 to feed HashInsert delete path no const object written,,high
+STR34-C,3,sqlite,src/vtab.c,53,FP,nName=sqlite3Strlen30(zName) is a strlen call not sign-extension of a char value,,high
+INT30-C,4,sqlite,src/vtab.c,54,FP,sizeof(Module)+nName uses size_t and int nName bounded by Strlen30 (<2^30) no realistic wrap,,high
+ARR38-C,5,sqlite,src/vtab.c,60,FP,memcpy size nName+1 is a validated strlen result of the just-measured zName,,high
+INT31-C,6,sqlite,src/vtab.c,60,FP,nName from Strlen30 is bounded and non-negative conversion to size_t is safe,,high
+INT32-C,7,sqlite,src/vtab.c,60,FP,nName+1 where nName<2^30 from Strlen30 cannot overflow int,,high
+EXP05-C,8,sqlite,src/vtab.c,68,FP,(void*)pMod cast for HashInsert generic pointer not casting away const of a const object,,high
+EXP34-C,9,sqlite,src/vtab.c,68,FP,db non-null per caller contract (createModule holds db->mutex); OOM path returns before deref,,high
+DCL30-C,10,sqlite,src/vtab.c,79,FP,pMod is heap result of sqlite3Malloc not an automatic local; returning it is correct,,high
+EXP34-C,11,sqlite,src/vtab.c,96,FP,db non-null internal handle guaranteed by caller; sqlite3OomFault/DbFree tolerate state,,high
+API00-C,12,sqlite,src/vtab.c,108,FP,pModule may legitimately be 0 (delete semantics) and is not dereferenced before storage,,high
+API00-C,13,sqlite,src/vtab.c,108,FP,pAux is opaque context pointer passed through not dereferenced no validation needed,,high
+EXP20-C,14,sqlite,src/vtab.c,115,FP,sqlite3SafetyCheckOk returns bool by design; implicit test is idiomatic and clear,,high
+API00-C,15,sqlite,src/vtab.c,123,FP,pModule passed through to createModule may be 0 by contract no deref pre-validate needed,,high
+API00-C,16,sqlite,src/vtab.c,123,FP,pAux opaque context pointer passed through not dereferenced,,high
+API00-C,17,sqlite,src/vtab.c,123,FP,xDestroy is optional function pointer may be 0 by API contract,,high
+EXP20-C,18,sqlite,src/vtab.c,131,FP,sqlite3SafetyCheckOk boolean predicate implicit test idiomatic,,high
+API00-C,19,sqlite,src/vtab.c,140,FP,azNames optional NULL-terminated list explicitly checked with if(azNames) line 148,,high
+EXP20-C,20,sqlite,src/vtab.c,143,FP,sqlite3SafetyCheckOk boolean predicate implicit test idiomatic,,high
+API00-C,21,sqlite,src/vtab.c,162,FP,pMod non-null by caller invariant; assert(pMod->nRefModule>0) documents contract,,high
+INT32-C,22,sqlite,src/vtab.c,164,FP,nRefModule decrement guarded by assert(nRefModule>0) so value>=1 cannot hit INT_MIN,,high
+INT32-C,23,sqlite,src/vtab.c,183,FP,nRef is a bounded lock/ref counter never approaches INT_MAX in practice,,high
+DCL13-C,24,sqlite,src/vtab.c,192,FP,db is a live connection handle used mutably across the codebase const is non-idiomatic and inconsistent,,med
+DCL30-C,25,sqlite,src/vtab.c,196,FP,pVtab is assigned from heap list pTab->u.vtab.p not an automatic local; returning it is correct,,high
+INT32-C,26,sqlite,src/vtab.c,211,FP,nRef decrement guarded by assert(pVTab->nRef>0) so cannot underflow to INT_MIN,,high
+MEM30-C,27,sqlite,src/vtab.c,218,FP,pVTab freed once via sqlite3DbFree after refcount hits 0; no double free path,,high
+API00-C,28,sqlite,src/vtab.c,272,FP,p non-null per caller (assert IsVirtual(p) and mutex asserts) internal contract,,high
+API00-C,29,sqlite,src/vtab.c,340,FP,db guaranteed non-null by assert(db!=0) line 342,,high
+MEM30-C,30,sqlite,src/vtab.c,349,FP,db is the context handle to sqlite3DbFree not the freed object; azArg entries are freed,,high
+MEM30-C,31,sqlite,src/vtab.c,349,FP,p->u.vtab.azArg[i] are freed not p->u.vtab itself; no use after free of the union,,high
+MEM30-C,32,sqlite,src/vtab.c,349,FP,p->u union accessed to read azArg/nArg before freeing its elements not freed itself,,high
+INT30-C,33,sqlite,src/vtab.c,365,FP,nArg is a small column-count bounded by SQLITE_LIMIT_COLUMN check; size_t mul cannot wrap,,high
+INT32-C,34,sqlite,src/vtab.c,375,FP,i is loop-bounded small index (nArg+1) i+1 cannot overflow,,high
+API00-C,35,sqlite,src/vtab.c,385,FP,pParse non-null by parser invariant; sqlite3StartTable tolerates and pTable==0 returns,,high
+API00-C,36,sqlite,src/vtab.c,385,FP,pName1 token from grammar action non-null by parser contract,,high
+API00-C,37,sqlite,src/vtab.c,385,FP,pName2 may be NULL by design handled by sqlite3StartTable name resolution,,high
+API00-C,38,sqlite,src/vtab.c,385,FP,pModuleName token from grammar non-null by parser contract,,high
+API00-C,39,sqlite,src/vtab.c,447,FP,pParse non-null parser invariant; early pTab==0 return guards rest,,high
+API00-C,40,sqlite,src/vtab.c,447,FP,pEnd may legitimately be NULL checked with if(pEnd) line 473,,high
+DCL13-C,41,sqlite,src/vtab.c,447,FP,pEnd is read only here but pEnd may be NULL; const-correctness aside sqc just reads it - still it is dereffed read-only so const possible but token args are conventionally non-const grammar contract,,high
+INT30-C,42,sqlite,src/vtab.c,474,FP,pointer subtraction of token offsets cast to int bounded by parsed SQL length no wrap,,high
+INT32-C,43,sqlite,src/vtab.c,506,FP,nMem is a VM register counter bounded by schema/compilation never near INT_MAX,,high
+MEM30-C,44,sqlite,src/vtab.c,507,FP,pTab read for zName before sqlite3DeleteTable decrements ref; nTabRef>1 asserted so not freed,,high
+MEM30-C,45,sqlite,src/vtab.c,507,FP,pTab->zName accessed while nTabRef>1 (assert line 616) so object still live not freed,,high
+API00-C,46,sqlite,src/vtab.c,531,FP,pParse non-null parser invariant; only delegates to addArgumentToVtab,,high
+API00-C,47,sqlite,src/vtab.c,541,FP,pParse non-null parser invariant,,high
+API00-C,48,sqlite,src/vtab.c,541,FP,p is a Token from grammar non-null by parser contract,,high
+DCL13-C,49,sqlite,src/vtab.c,541,FP,pParse is propagated/used to reach pParse->sArg fields and db; handle not const-idiomatic,,high
+DCL13-C,50,sqlite,src/vtab.c,541,FP,p (Token*) fields p->z p->n are read but Token args are conventionally mutable grammar contract; also p->z stored into pArg,,high
+EXP40-C,51,sqlite,src/vtab.c,580,FP,*pzErr=sqlite3MPrintf assigns a freshly allocated char* through a char** out-param not a const object,,high
+STR34-C,52,sqlite,src/vtab.c,580,FP,*pzErr assignment of a heap char* pointer not a char value; no sign extension,,high
+EXP40-C,53,sqlite,src/vtab.c,624,FP,*pzErr=sqlite3MPrintf writes char* out-param not const object modification,,high
+STR34-C,54,sqlite,src/vtab.c,624,FP,*pzErr char* pointer assignment from MPrintf not a char value sign extension misread,,high
+STR34-C,55,sqlite,src/vtab.c,626,FP,*pzErr char* pointer assignment from MPrintf not a char value,,high
+INT32-C,56,sqlite,src/vtab.c,635,FP,nRefModule increment is a small module ref counter never near INT_MAX,,high
+STR34-C,57,sqlite,src/vtab.c,639,FP,*pzErr char* pointer assignment from MPrintf not a char value,,high
+ARR00-C,58,sqlite,src/vtab.c,653,FP,iCol is initialized by the for-loop header iCol=0 line 653 not uninitialized,,high
+EXP34-C,59,sqlite,src/vtab.c,659,FP,"zType from sqlite3ColumnType is non-null (returns """" default); index i bounded by nType strlen",,high
+INT32-C,60,sqlite,src/vtab.c,668,FP,6+(ternary 0 or 1) is a tiny constant max 7 cannot overflow int,,high
+STR34-C,61,sqlite,src/vtab.c,668,FP,zType[i+6] compared to char literals not converted to larger int; no sign extension defect,,high
+INT32-C,62,sqlite,src/vtab.c,670,FP,j+nDel bounded by loop condition (j+nDel)<=nType small string offsets no overflow,,high
+MEM30-C,63,sqlite,src/vtab.c,686,FP,"db is the context handle for sqlite3DbFree(db,zErr) not the freed object",,high
+API00-C,64,sqlite,src/vtab.c,697,FP,pParse non-null parser invariant; assert(pTab) and IsVirtual guard,,high
+EXP34-C,65,sqlite,src/vtab.c,721,FP,zErr passed to sqlite3ErrorMsg in error path where rc!=OK; ErrorMsg handles NULL fmt args,,high
+INT30-C,66,sqlite,src/vtab.c,739,FP,nBytes is sqlite3_int64 with (i64)db->nVTrans+ARRAY_INCR small array growth cannot wrap i64,,high
+INT32-C,67,sqlite,src/vtab.c,740,FP,addition done in sqlite3_int64 with small nVTrans no overflow,,high
+MEM30-C,68,sqlite,src/vtab.c,741,FP,db is the context handle to sqlite3DbRealloc not freed; on failure returns NOMEM no UAF,,high
+ARR38-C,69,sqlite,src/vtab.c,745,FP,memset size sizeof(ptr)*ARRAY_INCR constant 5 elements no invalid size,,high
+EXP05-C,70,sqlite,src/vtab.c,745,FP,sizeof()*ARRAY_INCR is a size_t computation no const object cast-away here,,high
+API00-C,71,sqlite,src/vtab.c,770,FP,db internal handle non-null by caller (vdbe) invariant,,high
+API00-C,72,sqlite,src/vtab.c,770,FP,zTab looked up via sqlite3FindTable result asserted non-null line 777 contract,,high
+API00-C,73,sqlite,src/vtab.c,770,FP,pzErr is an out-param written via sqlite3MPrintf not dereferenced for read first,,high
+ARR00-C,74,sqlite,src/vtab.c,776,FP,iDb is a validated database index from compiler internals always within db->aDb bounds,,high
+ARR30-C,75,sqlite,src/vtab.c,776,FP,iDb bounded by schema/compiler invariants db->aDb[iDb] always valid internally,,high
+EXP34-C,76,sqlite,src/vtab.c,780,FP,pTab from sqlite3FindTable asserted non-null and IsVirtual line 777,,high
+STR34-C,77,sqlite,src/vtab.c,788,FP,*pzErr char* pointer assignment from MPrintf not char value sign extension,,high
+ARR02-C,78,sqlite,src/vtab.c,819,FP,aKeyword[] static const initialized with brace list so size is implicit-by-design idiomatic C,,high
+EXP20-C,79,sqlite,src/vtab.c,822,FP,sqlite3SafetyCheckOk boolean predicate implicit test idiomatic,,high
+MEM30-C,80,sqlite,src/vtab.c,906,FP,sParse.pVdbe checked with if(sParse.pVdbe) before finalize; not freed before this read,,high
+MEM30-C,81,sqlite,src/vtab.c,907,FP,sParse.pVdbe is finalized here (consumed) not previously freed; no UAF,,high
+MEM30-C,82,sqlite,src/vtab.c,909,FP,sParse.pNewTable passed to sqlite3DeleteTable as the object to delete not a prior-freed ptr,,high
+INT13-C,83,sqlite,src/vtab.c,913,FP,rc&0xff masks low byte of error code; intentional bit masking on small bounded rc not a defect,,high
+API00-C,84,sqlite,src/vtab.c,926,FP,db internal handle non-null by caller (vdbe) invariant,,high
+API00-C,85,sqlite,src/vtab.c,926,FP,zTab passed to sqlite3FindTable which handles lookup; ALWAYS(pTab) guards,,high
+ARR00-C,86,sqlite,src/vtab.c,930,FP,iDb validated database index from vdbe internals within db->aDb bounds,,high
+ARR30-C,87,sqlite,src/vtab.c,930,FP,iDb bounded by internal invariants,,high
+EXP34-C,88,sqlite,src/vtab.c,933,FP,pTab guarded by ALWAYS(pTab!=0) before member access line 931,,high
+EXP34-C,89,sqlite,src/vtab.c,944,FP,p=vtabDisconnectAll returns non-null when db!=0 (assert !db||pRet line 260) so p non-null,,high
+ARR39-C,90,sqlite,src/vtab.c,980,FP,(char*)p->pModule+offset where offset is offsetof; byte arithmetic on char* is intentional dispatch not double scaling,,high
+INT32-C,91,sqlite,src/vtab.c,980,FP,char* + offsetof byte offset pointer arithmetic intended no integer overflow,,high
+API00-C,92,sqlite,src/vtab.c,998,FP,db internal handle non-null caller invariant,,high
+API00-C,93,sqlite,src/vtab.c,1029,FP,db internal handle non-null caller invariant,,high
+INT32-C,94,sqlite,src/vtab.c,1075,FP,db->nStatement+db->nSavepoint are small bounded nesting counters no overflow,,high
+INT32-C,95,sqlite,src/vtab.c,1079,FP,iSvpt-1 where iSvpt>0 guard (if(iSvpt)) so subtraction safe,,high
+API00-C,96,sqlite,src/vtab.c,1102,FP,db internal handle non-null caller invariant,,high
+API00-C,97,sqlite,src/vtab.c,1102,FP,iSavepoint asserted >=-1 line 1106 and used in bounded savepoint math no overflow,,high
+INT32-C,98,sqlite,src/vtab.c,1118,FP,iSavepoint+1 where iSavepoint>=-1 bounded small savepoint counter no overflow,,high
+API00-C,99,sqlite,src/vtab.c,1153,FP,db internal handle non-null caller invariant,,high
+API00-C,100,sqlite,src/vtab.c,1153,FP,pDef non-null per caller (function-resolution invariant); fields read after guards,,high
+DCL13-C,101,sqlite,src/vtab.c,1155,FP,pDef is copied (*pNew=*pDef) and its fields read into a new FuncDef; not const-correct to mark const as it represents a mutable funcdef contract; also pDef->zName propagated to memcpy non-const,,high
+WIN04-C,102,sqlite,src/vtab.c,1162,FP,WIN04 EncodePointer guidance is Windows-hardening not applicable; storing function pointer is normal C,,high
+INT30-C,103,sqlite,src/vtab.c,1203,FP,sizeof(*pNew)+Strlen30 size_t addition with bounded strlen no wrap,,high
+MEM33-C,104,sqlite,src/vtab.c,1208,FP,*pNew=*pDef is a normal struct copy of FuncDef; zName flexible-tail copied separately by memcpy line 1210,,high
+ARR38-C,105,sqlite,src/vtab.c,1210,FP,memcpy size Strlen30(zName)+1 is a validated strlen result safe,,high
+INT32-C,106,sqlite,src/vtab.c,1210,FP,Strlen30 result bounded <2^30 so +1 cannot overflow,,high
+DCL30-C,107,sqlite,src/vtab.c,1214,FP,pNew is heap result of sqlite3DbMallocZero not an automatic local; returning it is correct,,high
+API00-C,108,sqlite,src/vtab.c,1223,FP,pParse non-null parser invariant,,high
+INT30-C,109,sqlite,src/vtab.c,1232,FP,(nVtabLock+1)*sizeof(ptr) small lock-array growth no realistic wrap,,high
+API00-C,110,sqlite,src/vtab.c,1257,FP,pParse non-null parser invariant,,high
+EXP34-C,111,sqlite,src/vtab.c,1286,FP,zErr passed to sqlite3ErrorMsg only on rc error path; ErrorMsg tolerates NULL fmt arg,,high
+MEM30-C,112,sqlite,src/vtab.c,1289,FP,"db is the context handle for sqlite3DbFree(db,zErr) not the object freed",,high
+API00-C,113,sqlite,src/vtab.c,1298,FP,pMod non-null per caller; pMod->pEpoTab read then NULLed safely,,high
+ARR02-C,114,sqlite,src/vtab.c,1318,FP,aMap[] static const brace-initialized so implicit size is idiomatic correct C,,high
+EXP20-C,115,sqlite,src/vtab.c,1322,FP,sqlite3SafetyCheckOk boolean predicate implicit test idiomatic,,high
+EXP20-C,116,sqlite,src/vtab.c,1341,FP,sqlite3SafetyCheckOk boolean predicate implicit test idiomatic,,high

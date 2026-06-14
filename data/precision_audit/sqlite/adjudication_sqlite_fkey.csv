@@ -1,0 +1,125 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API00-C,0,sqlite,src/fkey.c,183,FP,sqlite3FkLocateIndex is internal codegen; pParse non-null guaranteed by callers and assert(pParse) at line 198 - not a trust boundary,,high
+API00-C,1,sqlite,src/fkey.c,183,FP,pFKey is a live schema FKey from caller iteration (never null at call sites); internal contract not a trust boundary,,high
+API00-C,2,sqlite,src/fkey.c,183,FP,ppIdx non-null guaranteed by assert(ppIdx && *ppIdx==0) at line 196; internal contract,,high
+DCL13-C,3,sqlite,src/fkey.c,186,FP,pFKey members read AND pFKey->pFrom/zTo passed into sqlite3ErrorMsg formatting; SQLite never declares schema FKey const so signature is by-convention non-const,,med
+INT30-C,4,sqlite,src/fkey.c,224,FP,nCol is pFKey->nCol bounded by schema column count (max SQLITE_LIMIT_COLUMN 32767); nCol*sizeof(int) cannot wrap size_t,,high
+INT32-C,5,sqlite,src/fkey.c,224,FP,nCol bounded by column-count limit; product fits int and is passed to DbMallocRawNN which itself guards OOM,,high
+DCL30-C,6,sqlite,src/fkey.c,226,FP,"aiCol is a heap allocation from sqlite3DbMallocRawNN stored into *paiCol for the caller - it is intentionally returned to caller, not a stack address",,high
+EXP33-C,7,sqlite,src/fkey.c,254,FP,zDfltColl assigned at line 262 (and fallback 263) before any use at 264; assigned on all reaching paths within the loop body,,high
+EXP33-C,8,sqlite,src/fkey.c,255,FP,zIdxCol assigned at line 266 before its use at 268; no use precedes assignment,,high
+DCL30-C,9,sqlite,src/fkey.c,290,FP,pIdx is a schema Index pointer (heap/schema lifetime) returned via *ppIdx; not a stack object,,high
+DCL13-C,10,sqlite,src/fkey.c,325,FP,pFKey read-only here but members propagated to fkLookupParent helpers; by-convention non-const schema pointer,,med
+DCL13-C,11,sqlite,src/fkey.c,326,FP,aiCol is read for indexing but the int* is an owned register-map buffer; const not applied by SQLite convention and array contents conceptually mutable,,med
+INT14-C,12,sqlite,src/fkey.c,333,FP,pParse->nTab-1 is a struct field arithmetic; INT14 bitwise/arith conflation is a misfire - no bitwise op on pParse here,,high
+INT32-C,13,sqlite,src/fkey.c,333,FP,"pParse->nTab is a bounded VDBE cursor counter (small positive), minus 1 cannot signed-overflow",,high
+EXP34-C,14,sqlite,src/fkey.c,354,FP,"aiCol non-null whenever nCol>1 (allocated at 224, else fkLookupParent only reached for nCol==1 with synthesized aiCol); asserts guarantee validity",,high
+INT32-C,15,sqlite,src/fkey.c,354,FP,"operands are small VDBE register indices (regData, storage column index) bounded by SQLITE_LIMIT - addition cannot overflow int",,high
+INT32-C,16,sqlite,src/fkey.c,354,FP,same register-index arithmetic bounded by limits; intended VDBE addressing,,high
+INT32-C,17,sqlite,src/fkey.c,371,FP,register-index arithmetic on bounded small ints; no overflow,,high
+INT32-C,18,sqlite,src/fkey.c,387,FP,"sqlite3VdbeCurrentAddr returns current op count (bounded program size); minus 2 is a fixed back-patch offset, cannot overflow",,high
+INT32-C,19,sqlite,src/fkey.c,398,FP,register/column-index addition bounded by SQLITE_LIMIT; intended addressing,,high
+INT32-C,20,sqlite,src/fkey.c,399,FP,regTemp+i where i<nCol (bounded); temp register range allocated contiguously - no overflow,,high
+INT32-C,21,sqlite,src/fkey.c,413,FP,VDBE address + nCol + 1 jump target; program size and nCol both bounded small ints,,high
+INT32-C,22,sqlite,src/fkey.c,413,FP,same bounded VDBE-address arithmetic; intended jump-offset computation,,high
+INT32-C,23,sqlite,src/fkey.c,415,FP,register/column-index addition bounded by column-count limit,,high
+INT32-C,24,sqlite,src/fkey.c,417,FP,1+regData small register-index addition; bounded,,high
+INT32-C,25,sqlite,src/fkey.c,418,FP,"iParent += storage-index; bounded column index and register base, no overflow",,high
+INT32-C,26,sqlite,src/fkey.c,486,FP,regBase + storage column index + 1; register addressing bounded by SQLITE_LIMIT,,high
+INT32-C,27,sqlite,src/fkey.c,486,FP,same bounded register-base arithmetic,,high
+DCL30-C,28,sqlite,src/fkey.c,496,FP,"exprTableRegister returns pExpr from sqlite3Expr (heap allocation via sqlite3DbMallocZero), not a stack-local; DCL30 misfire",,high
+DCL13-C,29,sqlite,src/fkey.c,505,FP,pTab read-only but pCol=&pTab->aCol[iCol] taken and members read by callee chain; by-convention non-const schema pointer,,med
+DCL30-C,30,sqlite,src/fkey.c,516,FP,"exprTableColumn returns pExpr from sqlite3Expr (heap), not automatic storage; DCL30 misfire",,high
+DCL13-C,31,sqlite,src/fkey.c,551,FP,pIdx is read-only here but used to build VDBE/Expr and pIdx->pTable dereferenced; SQLite convention non-const schema pointer,,med
+DCL13-C,32,sqlite,src/fkey.c,552,FP,pFKey read-only but its members feed Expr construction; by-convention non-const,,med
+DCL13-C,33,sqlite,src/fkey.c,553,FP,"aiCol read for column mapping; owned int* buffer, const not applied by convention",,med
+MSC04-C,34,sqlite,src/fkey.c,688,TP,fkTriggerDelete genuinely participates in indirect recursion via the schema-delete cycle; depth bounded by schema nesting but recursion is real,,high
+API00-C,35,sqlite,src/fkey.c,705,FP,"db is the live connection handle, non-null by internal contract (mutex held); not a trust boundary",,high
+ARR00-C,36,sqlite,src/fkey.c,707,FP,"iDb is an internal database index validated by callers (sqlite3SchemaToIndex result, 0<=iDb<db->nDb); not external input",,high
+ARR30-C,37,sqlite,src/fkey.c,707,FP,"same internal iDb index; db->aDb[iDb] access guarded by caller invariant, asserted elsewhere as iDb<db->nDb",,high
+EXP33-C,38,sqlite,src/fkey.c,710,FP,pFKey is a for-loop induction variable assigned in the loop header (line 712) before any use; not uninitialized,,high
+FLP30-C,39,sqlite,src/fkey.c,712,FP,"pFKey is a FKey* pointer used as list-traversal cursor, not a floating-point loop counter; FLP30 misfire",,high
+API00-C,40,sqlite,src/fkey.c,736,FP,pParse non-null internal contract; codegen entry point with pParse->db dereferenced under caller invariant,,high
+FLP30-C,41,sqlite,src/fkey.c,751,FP,"p is an FKey* list cursor, not floating-point; FLP30 misfire",,high
+DCL13-C,42,sqlite,src/fkey.c,800,FP,pTab read-only but aCol/iPKey members read and propagated; by-convention non-const schema pointer,,med
+DCL13-C,43,sqlite,src/fkey.c,801,FP,p (FKey*) read-only but members feed comparison; by-convention non-const,,med
+DCL13-C,44,sqlite,src/fkey.c,802,FP,aChange int* read as aChange[iChildKey]; could be const int* but SQLite convention does not apply const to these change arrays,,med
+EXP34-C,45,sqlite,src/fkey.c,808,FP,aChange indexed by iChildKey=p->aCol[i].iFrom which is a valid child-column index (< nCol); caller passes non-null aChange for UPDATE path; bounded,,high
+DCL13-C,46,sqlite,src/fkey.c,827,FP,pTab read-only but members read/propagated; by-convention non-const,,med
+DCL13-C,47,sqlite,src/fkey.c,828,FP,p read-only but members read; by-convention non-const,,med
+DCL13-C,48,sqlite,src/fkey.c,829,FP,aChange read-only indexable; const-by-convention not applied,,med
+ARR00-C,49,sqlite,src/fkey.c,836,FP,iKey is the for-loop counter initialized to 0 at line 836 (for(iKey=0;...)); not uninitialized - ARR00 misfire,,high
+EXP34-C,50,sqlite,src/fkey.c,837,FP,aChange[iKey] with iKey<pTab->nCol bounded by loop; aChange sized to nCol for UPDATE; in bounds,,high
+DCL13-C,51,sqlite,src/fkey.c,855,FP,pFKey read-only but apTrigger/aAction members read; by-convention non-const,,med
+API00-C,52,sqlite,src/fkey.c,889,FP,sqlite3FkCheck pParse non-null internal contract; pParse->db dereferenced under caller invariant,,high
+API00-C,53,sqlite,src/fkey.c,889,FP,"regOld is a VDBE register index, bounded; assert((regOld==0)!=(regNew==0)) and limit bounds preclude overflow",,high
+DCL18-C,54,sqlite,src/fkey.c,911,TP,"iDb>=00 - the literal 00 is octal (==0) per DCL18; harmless here since value is 0, but it is a genuine leading-zero octal literal",,low
+FLP30-C,55,sqlite,src/fkey.c,916,FP,"pFKey is FKey* list cursor in for-loop, not floating point; FLP30 misfire",,high
+EXP33-C,56,sqlite,src/fkey.c,917,FP,pTo assigned at lines 937/939 before use at 941; assigned on all reaching paths,,high
+EXP33-C,57,sqlite,src/fkey.c,920,FP,aiCol assigned at 967 or 970 (both branches) before use at 972; definitely assigned,,high
+INT32-C,58,sqlite,src/fkey.c,953,FP,VDBE current addr + pFKey->nCol + 1 jump target; both bounded small ints,,high
+INT32-C,59,sqlite,src/fkey.c,953,FP,same bounded VDBE-address arithmetic,,high
+INT32-C,60,sqlite,src/fkey.c,957,FP,storage column index + regOld + 1 register addressing; bounded by SQLITE_LIMIT,,high
+INT32-C,61,sqlite,src/fkey.c,957,FP,same bounded register arithmetic,,high
+EXP33-C,62,sqlite,src/fkey.c,1021,FP,pSrc assigned by sqlite3SrcListAppend at 1045 and guarded by if(pSrc) at 1046 before any use; not uninitialized,,high
+MEM30-C,63,sqlite,src/fkey.c,1028,FP,"db->flags/db->aDb read; db is the LIVE connection, never freed - sqc misreads sqlite3DbFree(db,aiFree) context arg; aiFree is the freed object, db is fine",,high
+MEM30-C,64,sqlite,src/fkey.c,1029,FP,pParse never freed here; sqlite3DbFree frees aiFree not pParse - MEM30 context-arg misread,,high
+MEM30-C,65,sqlite,src/fkey.c,1029,FP,"same - pParse is live, only aiFree freed via sqlite3DbFree(db,aiFree)",,high
+MEM30-C,66,sqlite,src/fkey.c,1037,FP,"pParse passed to fkLookupParent is live; the only free is sqlite3DbFree(db,aiFree) on the buffer, not pParse",,high
+MEM30-C,67,sqlite,src/fkey.c,1038,FP,"db member access on live connection; aiFree is freed, db is not - misread context arg",,high
+MEM30-C,68,sqlite,src/fkey.c,1045,FP,"pParse live when passed to fkLookupParent; sqlite3DbFree(db,aiFree) frees only the int buffer",,high
+MEM30-C,69,sqlite,src/fkey.c,1051,FP,pParse live; misread of sqlite3DbFree context argument,,high
+EXP34-C,70,sqlite,src/fkey.c,1054,FP,aiCol is non-null for nCol>1 (asserted aiCol||pFKey->nCol==1 at 1041) and fkScanChildren handles aiCol==0 for nCol==1 via pFKey->aCol[0].iFrom; not an unchecked null,,high
+MEM30-C,71,sqlite,src/fkey.c,1054,FP,"pParse live; sqlite3DbFree(db,aiCol) at 1085 frees only the buffer, not pParse",,high
+MEM30-C,72,sqlite,src/fkey.c,1058,FP,db is live connection; sqlite3DbFree frees aiCol not db,,high
+EXP34-C,73,sqlite,src/fkey.c,1060,FP,aiCol null only when nCol==1 where fkScanChildren reads pFKey->aCol[0].iFrom instead; safe,,high
+MEM30-C,74,sqlite,src/fkey.c,1060,FP,pParse live; only the aiCol buffer is freed,,high
+MEM30-C,75,sqlite,src/fkey.c,1079,FP,pParse live when passed to fkScanChildren; misread free context,,high
+MEM30-C,76,sqlite,src/fkey.c,1083,FP,"db live; sqlite3DbFree(db,aiCol) frees the buffer, db handle unaffected",,high
+MEM30-C,77,sqlite,src/fkey.c,1085,FP,"db is not double-freed; sqlite3DbFree(db,aiCol) uses db as the allocator-context arg, the freed object is aiCol each iteration",,high
+PRE00-C,78,sqlite,src/fkey.c,1089,TP,"COLUMN_MASK(x) expands (((x)>31)?...:((u32)1<<(x))) - parameter x evaluated up to twice; genuine PRE00 multiple-evaluation (args here are pure so benign, but macro is unsafe)",,high
+PRE12-C,79,sqlite,src/fkey.c,1089,TP,same macro COLUMN_MASK evaluates x multiple times; genuine PRE12,,high
+FLP30-C,80,sqlite,src/fkey.c,1103,FP,"p is FKey* list cursor, not floating point; FLP30 misfire",,high
+API00-C,81,sqlite,src/fkey.c,1145,FP,sqlite3FkRequired pParse non-null internal contract,,high
+DCL13-C,82,sqlite,src/fkey.c,1146,FP,pParse read (pParse->db->flags) only here but pParse passed to fkChildIsModified-style helpers reading pTab; const-by-convention not applied; arguably FP,,med
+FLP30-C,83,sqlite,src/fkey.c,1165,FP,"p is FKey* list cursor, not floating point; FLP30 misfire",,high
+DCL13-C,84,sqlite,src/fkey.c,1221,FP,pChanges (ExprList*) only tested for non-null (iAction=(pChanges!=0)) and passed through; could be const but SQLite convention; also passed to recursive codegen - by-convention non-const,,med
+EXP30-C,85,sqlite,src/fkey.c,1270,FP,"sqlite3PExpr nested with sqlite3ExprAlloc args are ordered allocation calls; no unsequenced side-effect UB - args evaluated in any order produce independent Expr nodes, EXP30 misfire",,high
+EXP30-C,86,sqlite,src/fkey.c,1271,FP,same independent allocation calls as Expr args; no shared-object side-effect dependency,,high
+EXP30-C,87,sqlite,src/fkey.c,1284,FP,independent Expr allocation calls as arguments; no unsequenced UB,,high
+EXP30-C,88,sqlite,src/fkey.c,1285,FP,same independent allocations; EXP30 misfire,,high
+EXP30-C,89,sqlite,src/fkey.c,1288,FP,independent allocation arguments; no side-effect ordering hazard,,high
+EXP30-C,90,sqlite,src/fkey.c,1298,FP,independent Expr allocations as arguments; no unsequenced UB,,high
+MEM30-C,91,sqlite,src/fkey.c,1329,FP,db live connection; the comma expression at 1333 and frees elsewhere target Expr/Src objects not db,,high
+MEM30-C,92,sqlite,src/fkey.c,1333,FP,"db live; passed as allocator context to sqlite3DbStrDup, not freed",,high
+EXP33-C,93,sqlite,src/fkey.c,1334,FP,"pRaise assigned at 1333 (comma operator) before use at 1334; the comma is intentional (pRaise=...,pRaise=...); not uninitialized",,high
+MEM30-C,94,sqlite,src/fkey.c,1334,FP,"pParse live; passed to sqlite3PExpr as codegen context, not freed",,high
+MEM30-C,95,sqlite,src/fkey.c,1338,FP,pParse live; passed as context to sqlite3SrcListAppend,,high
+MEM30-C,96,sqlite,src/fkey.c,1341,FP,db live; allocator-context arg to sqlite3DbStrDup,,high
+MEM30-C,97,sqlite,src/fkey.c,1343,FP,db live; allocator context arg,,high
+MEM30-C,98,sqlite,src/fkey.c,1343,FP,"db live; allocator context arg, not freed",,high
+MEM30-C,99,sqlite,src/fkey.c,1343,FP,db->aDb[iDb] member access on live connection; not freed,,high
+MEM30-C,100,sqlite,src/fkey.c,1343,FP,db->aDb is a live array on the live connection; no free of db occurred,,high
+MEM30-C,101,sqlite,src/fkey.c,1345,FP,pParse live; codegen context to sqlite3SelectNew,,high
+MEM30-C,102,sqlite,src/fkey.c,1346,FP,pParse live; context arg,,high
+MEM30-C,103,sqlite,src/fkey.c,1357,FP,"db live; sqlite3DbMallocZero uses db as allocator context, allocates Trigger - db not freed",,high
+INT30-C,104,sqlite,src/fkey.c,1358,FP,sizeof(Trigger)+sizeof(TriggerStep) is a compile-time constant sum of small struct sizes; cannot wrap size_t,,high
+MEM30-C,105,sqlite,src/fkey.c,1363,FP,pParse live; context arg to sqlite3SrcListAppend,,high
+MEM30-C,106,sqlite,src/fkey.c,1365,FP,db live; sqlite3DbStrNDup allocator context,,high
+MEM30-C,107,sqlite,src/fkey.c,1367,FP,db live; sqlite3ExprDup allocator context,,high
+MEM30-C,108,sqlite,src/fkey.c,1368,FP,db live; sqlite3ExprListDup allocator context,,high
+MEM30-C,109,sqlite,src/fkey.c,1369,FP,db live; sqlite3SelectDup allocator context,,high
+MEM30-C,110,sqlite,src/fkey.c,1371,FP,pParse live; sqlite3PExpr context,,high
+MEM30-C,111,sqlite,src/fkey.c,1372,FP,db live; sqlite3ExprDup context,,high
+MEM30-C,112,sqlite,src/fkey.c,1379,FP,"db live; sqlite3ExprDelete frees pWhere, db is allocator context",,high
+MEM30-C,113,sqlite,src/fkey.c,1380,FP,"db live; sqlite3ExprDelete frees pWhen, db is context",,high
+MEM30-C,114,sqlite,src/fkey.c,1381,FP,"db live; sqlite3ExprListDelete frees pList, db is context",,high
+MEM30-C,115,sqlite,src/fkey.c,1382,FP,"db live; sqlite3SelectDelete frees pSelect, db is context",,high
+MEM30-C,116,sqlite,src/fkey.c,1383,FP,db->mallocFailed read on live connection; not freed,,high
+MEM30-C,117,sqlite,src/fkey.c,1384,FP,"db live; fkTriggerDelete frees pTrigger, db passed as allocator context",,high
+DCL30-C,118,sqlite,src/fkey.c,1410,FP,"fkActionTrigger returns pTrigger from sqlite3DbMallocZero (heap), not automatic storage; DCL30 misfire",,high
+API00-C,119,sqlite,src/fkey.c,1417,FP,sqlite3FkActions pParse non-null internal contract,,high
+MSC04-C,120,sqlite,src/fkey.c,1417,TP,sqlite3FkActions genuinely participates in indirect recursion through the trigger-codegen cycle back to sqlite3FkActions; real recursion,,high
+API00-C,121,sqlite,src/fkey.c,1449,FP,sqlite3FkDelete db non-null guaranteed by assert(db!=0) at line 1454; internal contract,,high
+MSC04-C,122,sqlite,src/fkey.c,1449,TP,sqlite3FkDelete genuinely participates in indirect recursion via the table/FK delete cycle; real recursion,,high
+FLP30-C,123,sqlite,src/fkey.c,1455,FP,"pFKey is FKey* list cursor in for-loop at 1455, not floating point; FLP30 misfire",,high

@@ -1,0 +1,112 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API02-C,0,sqlite,src/update.c,19,FP,updateVirtualTable is a fixed-signature internal codegen helper taking typed pointers not an array+size buffer; API02 size-param advice is inapplicable,,high
+ARR00-C,1,sqlite,src/update.c,65,FP,line 65 pCol=&pTab->aCol[i] guarded by assert(pTab->nCol>i) at line 64; i is a validated column index,,high
+EXP30-C,2,sqlite,src/update.c,72,FP,"sqlite3ValueFromExpr args (sqlite3VdbeDb(v), sqlite3ColumnExpr(...)) are independent calls with no shared mutable state crossing a sequence point",,high
+DCL13-C,3,sqlite,src/update.c,98,TP,pIdx in indexColumnIsBeingUpdated is only read (aiColumn/aColExpr) and not passed to an Index*-taking callee so const would compile,,low
+ARR00-C,4,sqlite,src/update.c,103,FP,pIdx->aiColumn[iCol] iCol is index-column ordinal bounded by caller loop i<pIdx->nKeyCol/nColumn plus assert invariants,,high
+ARR30-C,5,sqlite,src/update.c,103,FP,same as idx4 iCol is a bounded index-column ordinal not attacker-controlled,,high
+ARR00-C,6,sqlite,src/update.c,110,FP,line 110 aColExpr->a[iCol] bounded by index nColumn invariant guarded by assert(pIdx->aColExpr!=0),,high
+ARR30-C,7,sqlite,src/update.c,110,FP,same bounded index-column ordinal as idx6,,high
+ARR00-C,8,sqlite,src/update.c,111,FP,line 111 same aColExpr->a[iCol] read bounded by index column count,,high
+ARR30-C,9,sqlite,src/update.c,111,FP,same bounded index-column ordinal,,high
+DCL13-C,10,sqlite,src/update.c,128,TP,pIdx in indexWhereClauseMightChange only reads pPartIdxWhere and is not passed to an Index*-taking callee so const compiles,,low
+INT32-C,11,sqlite,src/update.c,145,FP,iCol+1 stores into Expr.iColumn a column ordinal bounded by table column count far below INT_MAX,,high
+DCL30-C,12,sqlite,src/update.c,146,FP,pRet is an Expr* returned by sqlite3PExpr (heap allocation) not the address of a local automatic object,,high
+DCL13-C,13,sqlite,src/update.c,190,TP,pPk in updateFromSelect only read (nKeyCol/aiColumn) and not passed to an Index*-taking callee so const compiles,,low
+DCL13-C,14,sqlite,src/update.c,191,FP,pChanges entries are read but the ExprList is iterated and dup'd by value; signature stylistically uniform with sqlite3Update API contract const adds little and pChanges semantics are owned/consumed elsewhere,,med
+EXP34-C,15,sqlite,src/update.c,266,FP,sqlite3SelectNew tolerates NULL pGroupBy; pGrp is a valid optional GROUP-BY arg NULL is a documented accepted value,,high
+EXP34-C,16,sqlite,src/update.c,266,FP,sqlite3SelectNew accepts NULL pOrderBy; pOrderBy2 NULL is an accepted optional argument,,high
+EXP34-C,17,sqlite,src/update.c,267,FP,sqlite3SelectNew accepts NULL pLimit; pLimit2 NULL is an accepted optional argument,,high
+API00-C,18,sqlite,src/update.c,285,FP,internal API; pParse non-null is a caller invariant (parser always supplies it) not a trust boundary; db=pParse->db deref guarded by surrounding assert(db->pParse==pParse),,high
+API00-C,19,sqlite,src/update.c,285,FP,pTabList guaranteed non-null by parser grammar for UPDATE; internal contract not a trust boundary,,high
+API00-C,20,sqlite,src/update.c,285,FP,pChanges non-null by grammar (asserted at 257 pChanges!=0 || mallocFailed); internal contract,,high
+API00-C,21,sqlite,src/update.c,285,FP,pWhere is explicitly allowed NULL and all derefs are guarded; no unconditional deref,,high
+API00-C,22,sqlite,src/update.c,285,FP,pOrderBy explicitly may be null and is handled conditionally,,high
+API00-C,23,sqlite,src/update.c,285,FP,pLimit explicitly may be null and is handled conditionally,,high
+API00-C,24,sqlite,src/update.c,285,FP,pUpsert explicitly may be null and checked with if(pUpsert) before use,,high
+MSC04-C,25,sqlite,src/update.c,285,TP,genuine indirect recursion sqlite3Update->...->sqlite3UpsertDoUpdate->sqlite3Update exists bounded by trigger/upsert nesting depth,,high
+DCL22-C,26,sqlite,src/update.c,312,FP,aToOpen is a normal pointer into a heap buffer; volatile is wrong remedy and there is no async/signal/longjmp aliasing concern,,high
+DCL00-C,27,sqlite,src/update.c,349,FP,regRowSet is reassigned at line 608 (regRowSet=aRegIdx[nAllIdx]) so it is modified after init; const would not compile,,med
+INT32-C,28,sqlite,src/update.c,420,FP,pParse->nTab is a bounded compile-time cursor counter limited by SQLITE_LIMIT/schema size never approaches INT_MAX,,high
+INT32-C,29,sqlite,src/update.c,421,FP,iDataCur+1 is a small cursor-number arithmetic bounded by nTab counter not near INT_MAX,,high
+INT14-C,30,sqlite,src/update.c,441,FP,INT14 readability heuristic; pTab is a pointer used in sizeof/pointer arithmetic not a bitwise+arithmetic signed integer abuse,,high
+INT30-C,31,sqlite,src/update.c,441,FP,sizeof(int)*(pTab->nCol+nIdx+1) nCol is i16 (<=32767) and nIdx bounded by index count; product cannot wrap size_t,,high
+INT32-C,32,sqlite,src/update.c,441,FP,same allocation size; operands bounded by i16 column count and index count cannot overflow,,high
+INT32-C,33,sqlite,src/update.c,441,FP,same bounded allocation arithmetic,,high
+INT32-C,34,sqlite,src/update.c,441,FP,same bounded allocation arithmetic; sizeof yields size_t and bounds are tiny,,high
+INT32-C,35,sqlite,src/update.c,444,FP,aRegIdx+nIdx+1 is pointer arithmetic into the just-allocated buffer sized for exactly these elements,,high
+INT32-C,36,sqlite,src/update.c,444,FP,aRegIdx+nIdx pointer arithmetic within allocated buffer bounds,,high
+ARR38-C,37,sqlite,src/update.c,445,FP,"memset(aToOpen,1,nIdx+1) size nIdx+1 matches allocated aToOpen region (nIdx+2 bytes reserved at line 441)",,high
+INT31-C,38,sqlite,src/update.c,445,FP,nIdx is a small non-negative index count; conversion to size_t for memset is benign and value is bounded,,high
+INT32-C,39,sqlite,src/update.c,445,FP,nIdx+1 cannot overflow; nIdx bounded by number of table indexes,,high
+INT32-C,40,sqlite,src/update.c,445,FP,nIdx+1 bounded small index count,,high
+INT32-C,41,sqlite,src/update.c,446,FP,line 446 aToOpen[nIdx+1]=0 index within reserved nIdx+2 bytes; nIdx+1 cannot overflow,,high
+INT14-C,42,sqlite,src/update.c,479,FP,INT14 readability; j is a loop counter used normally not a bitwise/arith abuse,,high
+ARR00-C,43,sqlite,src/update.c,484,FP,"line 484 pTab->aCol[j] j from sqlite3ColumnIndex(pTab,...) guaranteed valid column index (j>=0 branch)",,high
+ARR00-C,44,sqlite,src/update.c,485,FP,same aCol[j] with validated column index j,,high
+ARR00-C,45,sqlite,src/update.c,488,FP,same aCol[j] validated column index,,high
+INT14-C,46,sqlite,src/update.c,519,FP,INT14 readability; chngRowid is a 0/1 flag combined with chngPk via addition into chngKey both bounded 0/1,,high
+INT14-C,47,sqlite,src/update.c,519,FP,INT14 readability; chngPk is a 0/1 flag asserted ==0||==1,,high
+INT14-C,48,sqlite,src/update.c,540,FP,INT14 readability; i is a normal loop counter,,high
+INT32-C,49,sqlite,src/update.c,573,FP,pParse->nMem += pIdx->nColumn bounded register counter; nColumn small (<=column count) cannot overflow INT_MAX in practice,,high
+INT32-C,50,sqlite,src/update.c,579,FP,same bounded register-count accumulation,,high
+INT32-C,51,sqlite,src/update.c,587,FP,nAllIdx+1 small index-count arithmetic,,high
+INT32-C,52,sqlite,src/update.c,590,FP,++pParse->nMem bounded register counter cannot reach INT_MAX,,high
+ARR38-C,53,sqlite,src/update.c,594,FP,"memset(aToOpen,1,nIdx+1) at 594 same as idx37 size matches allocated region",,high
+INT31-C,54,sqlite,src/update.c,594,FP,nIdx->size_t conversion benign bounded value (idx38 dup),,high
+INT32-C,55,sqlite,src/update.c,594,FP,nIdx+1 cannot overflow bounded,,high
+INT32-C,56,sqlite,src/update.c,594,FP,nIdx+1 bounded,,high
+INT32-C,57,sqlite,src/update.c,609,FP,++pParse->nMem bounded register counter,,high
+INT32-C,58,sqlite,src/update.c,611,FP,pParse->nMem+1 bounded register counter arithmetic,,high
+INT32-C,59,sqlite,src/update.c,612,FP,nMem += pTab->nCol; nCol is i16 <=32767 register counter bounded,,high
+INT32-C,60,sqlite,src/update.c,615,FP,++pParse->nMem bounded,,high
+INT32-C,61,sqlite,src/update.c,617,FP,pParse->nMem+1 bounded,,high
+INT32-C,62,sqlite,src/update.c,618,FP,nMem += pTab->nCol bounded i16 column count,,high
+INT32-C,63,sqlite,src/update.c,666,FP,++pParse->nMem bounded register counter,,high
+INT32-C,64,sqlite,src/update.c,672,FP,pParse->nTab++ bounded cursor counter,,high
+INT32-C,65,sqlite,src/update.c,677,FP,pParse->nMem+1 bounded,,high
+INT32-C,66,sqlite,src/update.c,678,FP,nMem += nPk; nPk is i16 PK column count bounded,,high
+INT32-C,67,sqlite,src/update.c,679,FP,nMem += nChangeFrom; nChangeFrom = pChanges->nExpr bounded by parsed expression-list count,,high
+INT32-C,68,sqlite,src/update.c,680,FP,++pParse->nMem bounded,,high
+INT32-C,69,sqlite,src/update.c,683,FP,pParse->nTab++ bounded cursor counter,,high
+ARR00-C,70,sqlite,src/update.c,761,FP,iCur and iBaseCur are int cursor numbers not pointers; iCur-iBaseCur is integer subtraction misclassified as pointer diff,,high
+INT32-C,71,sqlite,src/update.c,761,FP,iCur-iBaseCur both bounded cursor numbers (<nTab) subtraction cannot overflow,,high
+INT32-C,72,sqlite,src/update.c,775,FP,++pParse->nMem bounded register counter,,high
+INT32-C,73,sqlite,src/update.c,789,FP,iPk+i iPk is a register base and i<nPk bounded small sum,,high
+INT32-C,74,sqlite,src/update.c,815,FP,aiCurOnePass[0]-iBaseCur both bounded cursor numbers,,high
+INT32-C,75,sqlite,src/update.c,816,FP,aiCurOnePass[1]-iBaseCur both bounded cursor numbers,,high
+INT32-C,76,sqlite,src/update.c,855,FP,iPk+i bounded register base plus small loop counter,,high
+INT32-C,77,sqlite,src/update.c,906,FP,"sqlite3TableColumnToStorage(pTab,i)+regOld bounded column-storage index plus register base both small",,high
+INT32-C,78,sqlite,src/update.c,952,FP,nOff+j nOff is a column/PK offset and j a column index both bounded by table column count,,high
+INT13-C,79,sqlite,src/update.c,956,FP,INT13 tmask is a small TRIGGER_BEFORE|AFTER bitmask using & is idiomatic; signed-int bitwise on a controlled flag set is safe,,high
+INT13-C,80,sqlite,src/update.c,956,FP,INT13 newmask is a column bitmask &-tested idiomatically; value bounded and sign bit not used as data,,high
+INT13-C,81,sqlite,src/update.c,982,FP,INT13 tmask bitmask test idiomatic safe,,high
+EXP00-C,82,sqlite,src/update.c,1076,FP,EXP00 OPFLAG_ISUPDATE | (ternary) precedence is correct as written; | binds looser than ?: only via the parenthesization already present; advisory not a defect,,med
+INT13-C,83,sqlite,src/update.c,1076,FP,INT13 hasFK is a small 0/1/2 flag; | with OPFLAG bits is intentional flag composition,,high
+EXP00-C,84,sqlite,src/update.c,1099,FP,EXP00 advisory; the ternary is already parenthesized so precedence is unambiguous,,med
+INT13-C,85,sqlite,src/update.c,1099,FP,INT13 eOnePass is a small enum ONEPASS_* compared then used in flag math safe,,high
+STR30-C,86,sqlite,src/update.c,1149,FP,"STR30 sqlite3CodeChangeCount takes const char* zName and does not modify the literal ""rows updated""",,high
+MEM30-C,87,sqlite,src/update.c,1155,FP,MEM30 misfire; db is the live connection handle (context arg) the freed object is aXRef at line 1154 not db,,high
+MEM30-C,88,sqlite,src/update.c,1156,FP,"MEM30 db is live handle passed to sqlite3SrcListDelete(db,pTabList); freed arg is pTabList not db",,high
+MEM30-C,89,sqlite,src/update.c,1157,FP,"MEM30 db live handle to sqlite3ExprListDelete(db,pChanges); db not freed",,high
+MEM30-C,90,sqlite,src/update.c,1159,FP,MEM30 db live handle to sqlite3ExprListDelete/ExprDelete; db not freed,,high
+MEM30-C,91,sqlite,src/update.c,1160,FP,MEM30 db live handle; nothing frees db here it is freed by the caller of sqlite3Update much later,,high
+DCL13-C,92,sqlite,src/update.c,1200,FP,pChanges in updateVirtualTable read via pChanges->a[aXRef[i]].pExpr; const stylistically uniform but signature parallels owned-consumed API; low-value,,med
+DCL13-C,93,sqlite,src/update.c,1202,TP,aXRef in updateVirtualTable is only read (aXRef[i]) and not passed to an int*-mutating callee so const would compile,,low
+INT14-C,94,sqlite,src/update.c,1212,FP,INT14 readability; pTab pointer used in arithmetic context not bitwise+arith signed abuse,,high
+INT32-C,95,sqlite,src/update.c,1225,FP,pParse->nTab++ bounded cursor counter,,high
+INT32-C,96,sqlite,src/update.c,1227,FP,pParse->nMem+1 bounded register counter,,high
+INT32-C,97,sqlite,src/update.c,1228,FP,nMem += nArg; nArg = 2+pTab->nCol bounded by i16 column count,,high
+INT32-C,98,sqlite,src/update.c,1269,FP,++pParse->nMem bounded,,high
+INT32-C,99,sqlite,src/update.c,1270,FP,++pParse->nMem bounded,,high
+INT14-C,100,sqlite,src/update.c,1280,FP,INT14 readability; i is a normal loop counter,,high
+INT32-C,101,sqlite,src/update.c,1282,FP,regArg+2+i register-base plus bounded column index i<pTab->nCol small sum,,high
+INT32-C,102,sqlite,src/update.c,1282,FP,regArg+2 register base small constant offset,,high
+INT32-C,103,sqlite,src/update.c,1284,FP,regArg+2+i bounded register arithmetic,,high
+INT32-C,104,sqlite,src/update.c,1284,FP,regArg+2 bounded register base,,high
+INT32-C,105,sqlite,src/update.c,1291,FP,regArg+1 bounded register arithmetic,,high
+INT32-C,106,sqlite,src/update.c,1293,FP,regArg+1 bounded register arithmetic,,high
+EXP43-C,107,sqlite,src/update.c,1303,FP,EXP43 sqlite3VdbeAddOp2 takes scalar int operands not overlapping restrict buffers; no aliasing UB,,high
+INT32-C,108,sqlite,src/update.c,1303,FP,regArg+2 bounded register base,,high
+INT32-C,109,sqlite,src/update.c,1303,FP,regArg+1 bounded register base,,high
+INT32-C,110,sqlite,src/update.c,1344,FP,regArg+i bounded register base plus loop counter i<nArg,,high
