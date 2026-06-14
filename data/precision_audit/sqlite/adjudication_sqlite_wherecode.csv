@@ -1,0 +1,232 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,0,sqlite,src/wherecode.c,28,TP,explainIndexColumnName reads pIdx->aiColumn/pTable->aCol only never writes pIdx and const Index* compiles,,med
+INT32-C,1,sqlite,src/wherecode.c,59,FP,"iTerm+i indexes index columns bounded by nTerm/index nColumn (i16, asserted small) no realistic INT overflow",,high
+DCL13-C,2,sqlite,src/wherecode.c,87,TP,explainIndexRange only reads pLoop->u.btree fields never mutates pLoop so const WhereLoop* is valid,,med
+API00-C,3,sqlite,src/wherecode.c,117,FP,API00 pParse is internal codegen context guaranteed non-null by caller invariant not a trust boundary,,high
+API00-C,4,sqlite,src/wherecode.c,117,FP,API00 pTabList internal codegen context non-null by caller contract not a trust boundary,,high
+API00-C,5,sqlite,src/wherecode.c,117,FP,API00 pLevel internal codegen context non-null by caller contract not a trust boundary,,high
+DCL13-C,6,sqlite,src/wherecode.c,120,TP,pTabList only read via pTabList->a[pLevel->iFrom] never modified const SrcList* would compile,,low
+DCL13-C,7,sqlite,src/wherecode.c,121,TP,pLevel only read (pLevel->pWLoop pLevel->iFrom) never modified const WhereLevel* would compile,,low
+MEM30-C,8,sqlite,src/wherecode.c,229,FP,"sqlite3DbFree(db,pOp->p4.z) frees p4.z but pOp itself is live VdbeOp the freed arg is read first not UAF",,high
+MEM30-C,9,sqlite,src/wherecode.c,231,FP,pOp->p4.z reassigned after free with new sqlite3StrAccumFinish result pOp is live VdbeOp not freed object,,high
+API00-C,10,sqlite,src/wherecode.c,245,FP,API00 pParse internal context non-null by caller invariant not a trust boundary,,high
+API00-C,11,sqlite,src/wherecode.c,245,FP,API00 pLevel internal context non-null by caller invariant not a trust boundary,,high
+API00-C,12,sqlite,src/wherecode.c,280,FP,API00 pParse declared const here internal context non-null by contract not trust boundary,,high
+API00-C,13,sqlite,src/wherecode.c,280,FP,API00 pWInfo internal context non-null by caller contract not trust boundary,,high
+API00-C,14,sqlite,src/wherecode.c,280,FP,API00 pLevel internal context non-null by caller contract not trust boundary,,high
+EXP34-C,15,sqlite,src/wherecode.c,286,FP,pWInfo non-null by caller contract (WHERE codegen never passes null) deref guarded by invariant,,high
+INT32-C,16,sqlite,src/wherecode.c,318,FP,sqlite3VdbeCurrentAddr returns monotonically increasing op count minus 1 cannot underflow in practice,,high
+API00-C,17,sqlite,src/wherecode.c,333,FP,API00 pSrclist internal STMT_SCANSTATUS context non-null by contract not trust boundary,,high
+API00-C,18,sqlite,src/wherecode.c,333,FP,API00 pLvl internal context non-null by contract not trust boundary,,high
+DCL13-C,19,sqlite,src/wherecode.c,335,TP,pSrclist only read via pSrclist->a[pLvl->iFrom] never modified const SrcList* would compile,,low
+DCL13-C,20,sqlite,src/wherecode.c,336,TP,pLvl only read (pWLoop addrBody addrVisit iFrom iTabCur) never modified const WhereLevel* compiles,,low
+INT13-C,21,sqlite,src/wherecode.c,345,FP,wsFlags is int holding WHERE_* bitmask all values fit positive range bitwise-and on it is intended idiom,,high
+INT13-C,22,sqlite,src/wherecode.c,356,FP,wsFlags & WHERE_* mask is the established SQLite flag idiom no signedness defect,,high
+INT13-C,23,sqlite,src/wherecode.c,359,FP,wsFlags & WHERE_INDEXED intended bitmask test on internal flags word not a real INT13 defect,,high
+INT32-C,24,sqlite,src/wherecode.c,367,FP,addr-1 is a VDBE op address (monotonic counter) decrement cannot underflow given prior AddOp4 added one,,high
+EXP34-C,25,sqlite,src/wherecode.c,368,FP,pOp from sqlite3VdbeGetOp non-null unless mallocFailed which the following asserts guard; deref safe,,high
+INT32-C,26,sqlite,src/wherecode.c,370,FP,pOp->p2 is an op operand (InitCoroutine target) asserted >addr so p2-1 is non-negative no overflow,,high
+DCL13-C,27,sqlite,src/wherecode.c,419,TP,disableTerm only reads pLevel->iLeftJoin/notReady never writes pLevel const WhereLevel* would compile,,med
+INT14-C,28,sqlite,src/wherecode.c,422,FP,INT14 pTerm used in flag-test and pointer reassignment is normal tree-walk idiom not a real readability defect,,high
+INT32-C,29,sqlite,src/wherecode.c,442,FP,nLoop counts WHERE-term parent chain depth bounded by clause nesting never approaches INT_MAX,,high
+DCL13-C,30,sqlite,src/wherecode.c,457,FP,pParse passed to sqlite3VdbeAddOp4 and pParse->pVdbe used as codegen sink propagated to non-const callees,,high
+DCL03-C,31,sqlite,src/wherecode.c,468,TP,assert(SQLITE_AFF_NONE<SQLITE_AFF_BLOB) compares two compile-time char constants pure constant expression,,high
+INT32-C,32,sqlite,src/wherecode.c,471,FP,base++ is a VDBE register index bounded by pParse->nMem (SQLITE_LIMIT-bounded) never near INT_MAX,,high
+INT32-C,33,sqlite,src/wherecode.c,475,FP,n-- is affinity-string length bounded by index column count (i16) loop guarded n>1 cannot go INT_MIN,,high
+EXP34-C,34,sqlite,src/wherecode.c,502,FP,zAff indexed by i<n where caller passes affinity string of matching length; null zAff guarded by mallocFailed assert,,high
+DCL13-C,35,sqlite,src/wherecode.c,525,TP,adjustOrderByCol only reads pEList->a[j].u.x.iOrderByCol/nExpr never writes pEList const ExprList* compiles,,med
+EXP34-C,36,sqlite,src/wherecode.c,531,FP,pEList deref guarded by caller contract; loop only runs when pOrderBy nonzero and pEList is the new result set,,high
+INT32-C,37,sqlite,src/wherecode.c,533,FP,j+1 stores into iOrderByCol where j<pEList->nExpr (i32 column count) far below INT_MAX,,high
+DCL13-C,38,sqlite,src/wherecode.c,576,TP,removeUnindexableInClauseTerms only reads pLoop->aLTerm/nLTerm never mutates pLoop const WhereLoop* compiles,,med
+EXP34-C,39,sqlite,src/wherecode.c,584,FP,pNew checked via db->mallocFailed==0 before deref (sqlite3ExprDup returns null only on OOM which sets mallocFailed),,high
+INT14-C,40,sqlite,src/wherecode.c,601,FP,INT14 pLoop flag-test plus aLTerm[i] subscript is normal idiom not a real readability defect,,high
+INT14-C,41,sqlite,src/wherecode.c,601,FP,INT14 i loop counter used as subscript and increment is ordinary loop idiom not a defect,,high
+INT32-C,42,sqlite,src/wherecode.c,608,FP,pRhs->nExpr-1 indexes a list just appended to (nExpr>=1 guaranteed) no underflow,,high
+INT32-C,43,sqlite,src/wherecode.c,608,FP,iField+1 stored into iOrderByCol; iField is a vector field index bounded by index column count no overflow,,high
+DCL30-C,44,sqlite,src/wherecode.c,652,FP,pNew is heap allocated by sqlite3ExprDup not an automatic local; returning it transfers ownership as documented,,high
+MSC04-C,45,sqlite,src/wherecode.c,668,TP,codeINTerm genuinely participates in indirect recursion via sqlite3FindInIndex->CodeRhsOfIN->ExprCode chain,,high
+ARR00-C,46,sqlite,src/wherecode.c,688,FP,iEq indexes pLoop->u.btree.pIndex->aSortOrder; caller passes iEq<nEq<=index nKeyCol bounded by schema invariant,,high
+INT32-C,47,sqlite,src/wherecode.c,714,FP,sizeof(int)*nEq where nEq counts matching IN terms bounded by nLTerm (small i16) no multiply overflow,,high
+ARR01-C,48,sqlite,src/wherecode.c,742,FP,ARR01 sizeof(pLevel->u.in.aInLoop[0]) is sizeof element type not the decayed pointer correct idiom,,high
+INT30-C,49,sqlite,src/wherecode.c,742,FP,sizeof(elem)*nIn where nIn is accumulated IN-term count bounded by clause size; size_t product safe,,high
+INT32-C,50,sqlite,src/wherecode.c,749,FP,iTarget+i-iEq computes a register index bounded by pParse->nMem allocation no overflow,,high
+INT32-C,51,sqlite,src/wherecode.c,749,FP,iTarget+i is register index loop-bounded by nLTerm well below INT_MAX,,high
+INT32-C,52,sqlite,src/wherecode.c,761,FP,iTarget-i computes base register iBase guaranteed >=0 by register allocation invariant,,high
+MSC04-C,53,sqlite,src/wherecode.c,803,TP,codeEqualityTerm genuinely participates in indirect recursion via codeINTerm->FindInIndex chain,,high
+ARR00-C,54,sqlite,src/wherecode.c,814,FP,iEq indexes pLevel->pWLoop->aLTerm; asserted aLTerm[iEq]==pTerm by caller invariant index valid,,high
+ARR30-C,55,sqlite,src/wherecode.c,814,FP,same aLTerm[iEq] access guarded by assert(aLTerm[iEq]==pTerm) caller-validated index,,high
+MSC04-C,56,sqlite,src/wherecode.c,892,TP,codeAllEqualityTerms genuinely participates in indirect recursion via codeEqualityTerm->ExprCodeTarget chain,,high
+INT32-C,57,sqlite,src/wherecode.c,920,FP,pParse->nMem+1 is register counter bounded by SQLITE_LIMIT_COLUMN/expr count never near INT_MAX,,high
+INT32-C,58,sqlite,src/wherecode.c,922,FP,pParse->nMem+=nReg register allocation bounded by SQLITE_LIMIT never overflows in practice,,high
+INT32-C,59,sqlite,src/wherecode.c,942,FP,regBase+j register index j<nEq bounded by index key columns no overflow,,high
+INT32-C,60,sqlite,src/wherecode.c,959,FP,regBase+j register index bounded by nEq no overflow,,high
+INT32-C,61,sqlite,src/wherecode.c,965,FP,regBase+j register index bounded by nEq no overflow,,high
+INT32-C,62,sqlite,src/wherecode.c,979,FP,regBase+j register index bounded by nEq no overflow,,high
+EXP34-C,63,sqlite,src/wherecode.c,984,FP,zAff[j] guarded by assert(zAff!=0 || mallocFailed) and pParse->nErr==0 check before deref,,high
+DCL30-C,64,sqlite,src/wherecode.c,993,FP,*pzAff=zAff sets OUT parameter to heap-allocated affinity string (sqlite3DbStrDup) not a stack local; documented contract,,high
+STR34-C,65,sqlite,src/wherecode.c,993,FP,*pzAff=zAff is char* pointer assignment of a heap string not a char value; no sign-extension occurs,,high
+DCL13-C,66,sqlite,src/wherecode.c,1017,TP,whereLikeOptimizationStringFixup only reads pLevel->iLikeRepCntr never writes pLevel const WhereLevel* compiles,,med
+DCL13-C,67,sqlite,src/wherecode.c,1018,FP,pTerm->wtFlags read but pTerm->pWC->pWInfo... read only; however pTerm is dereferenced through pWC chain read-only so const could compile but pTerm->pWC->pWInfo->pParse path nonconst-typedef risk; treat as FP signature-coupled,,high
+EXP34-C,68,sqlite,src/wherecode.c,1020,FP,pTerm->wtFlags deref guarded by caller contract pTerm non-null (asserted in callers) invariant safe,,high
+DCL13-C,69,sqlite,src/wherecode.c,1053,FP,codeCursorHintCheckExpr signature is fixed by Walker xExprCallback function-pointer typedef cannot add const,,high
+INT32-C,70,sqlite,src/wherecode.c,1121,FP,++pWalker->pParse->nMem register counter bounded by SQLITE_LIMIT never near INT_MAX,,high
+INT32-C,71,sqlite,src/wherecode.c,1132,FP,++pWalker->pParse->nMem register counter bounded by SQLITE_LIMIT never overflows,,high
+DCL13-C,72,sqlite,src/wherecode.c,1147,TP,pTabItem only read (fg.jointype iCursor) never modified const SrcItem* would compile,,low
+DCL13-C,73,sqlite,src/wherecode.c,1148,FP,pWInfo mutated through pWC=&pWInfo->sWC then pWC->a[i] term wtFlags modified so cannot be const,,high
+DCL13-C,74,sqlite,src/wherecode.c,1149,TP,pLevel only read (iTabCur iIdxCur pWLoop) never modified const WhereLevel* would compile,,low
+DCL13-C,75,sqlite,src/wherecode.c,1150,TP,pEndRange only compared (pTerm!=pEndRange) never dereferenced/modified const WhereTerm* would compile,,low
+EXP34-C,76,sqlite,src/wherecode.c,1152,FP,pWInfo->pParse deref non-null by caller contract codegen context always valid,,high
+EXP34-C,77,sqlite,src/wherecode.c,1153,FP,pParse deref non-null derived from pWInfo->pParse caller-guaranteed valid context,,high
+DCL13-C,78,sqlite,src/wherecode.c,1278,TP,codeDeferredSeek only reads pIdx->aiColumn/pTable/nColumn never mutates pIdx const Index* compiles,,med
+EXP34-C,79,sqlite,src/wherecode.c,1282,FP,pWInfo->pParse non-null by caller contract codegen always valid,,high
+EXP34-C,80,sqlite,src/wherecode.c,1283,FP,pParse non-null derived from pWInfo->pParse caller-guaranteed,,high
+EXP34-C,81,sqlite,src/wherecode.c,1286,FP,pIdx->aiColumn deref guarded by assert(pIdx->aiColumn[pIdx->nColumn-1]==-1) and non-null caller contract,,high
+EXP34-C,82,sqlite,src/wherecode.c,1295,FP,pTab=pIdx->pTable non-null by schema invariant (every index has a table) deref safe,,high
+INT30-C,83,sqlite,src/wherecode.c,1295,FP,sizeof(u32)*(pTab->nCol+1) nCol is i16 column count asserted <=32767 product cannot wrap size_t,,high
+INT32-C,84,sqlite,src/wherecode.c,1304,FP,i+1 stored into ai[x2+1] where i<pIdx->nColumn-1 bounded by index column count no overflow,,high
+MSC04-C,85,sqlite,src/wherecode.c,1320,TP,codeExprOrVector genuinely participates in indirect recursion via sqlite3ExprCode->ExprCodeTarget chain,,high
+INT32-C,86,sqlite,src/wherecode.c,1329,FP,nReg-1 where assert(nReg>0) at function entry guarantees nReg>=1 so nReg-1>=0 no underflow,,high
+INT32-C,87,sqlite,src/wherecode.c,1339,FP,iReg+i register index i<nReg bounded by vector element count no overflow,,high
+MEM05-C,88,sqlite,src/wherecode.c,1355,TP,whereApplyPartialIndexConstraints is genuinely directly recursive on AND-tree; stack use bounded by expr depth but recursion exists,,med
+MSC04-C,89,sqlite,src/wherecode.c,1355,TP,whereApplyPartialIndexConstraints calls itself directly on pTruth->pLeft genuine direct recursion,,high
+ARR37-C,90,sqlite,src/wherecode.c,1366,FP,pTerm++ walks pWC->a[] contiguous WhereTerm array (real array of nTerm elements) pointer increment is valid array traversal,,high
+EXP33-C,91,sqlite,src/wherecode.c,1367,FP,pExpr assigned pTerm->pExpr before use on every loop iteration (sequence point) never used uninitialized,,high
+MSC04-C,92,sqlite,src/wherecode.c,1391,TP,filterPullDown genuinely participates in indirect recursion via codeEqualityTerm->ExprCodeTarget chain,,high
+DCL13-C,93,sqlite,src/wherecode.c,1393,FP,pWInfo mutated through pLevel=&pWInfo->a[iLevel] then pLevel->addrBrk/regFilter modified cannot be const,,high
+EXP34-C,94,sqlite,src/wherecode.c,1399,FP,pWInfo->nLevel deref non-null by caller contract codegen context valid,,high
+INT32-C,95,sqlite,src/wherecode.c,1399,FP,++iLevel is loop level index bounded by pWInfo->nLevel (number of FROM tables) never near INT_MAX,,high
+ARR00-C,96,sqlite,src/wherecode.c,1400,FP,iLevel indexes pWInfo->a[]; loop guard ++iLevel<pWInfo->nLevel bounds it within allocated levels,,high
+MEM30-C,97,sqlite,src/wherecode.c,1432,FP,pParse->pVdbe is the live Vdbe being built not freed; sqlite3DbFree elsewhere targets other objects not pVdbe,,high
+MEM30-C,98,sqlite,src/wherecode.c,1434,FP,pParse->pVdbe is the live prepared statement never freed here; not a UAF,,high
+DCL13-C,99,sqlite,src/wherecode.c,1446,TP,whereLoopIsOneRow only reads pLoop->u.btree/nSkip/aLTerm never mutates pLoop const WhereLoop* compiles,,med
+ARR00-C,100,sqlite,src/wherecode.c,1452,FP,ii is initialized in the for(ii=0;...) loop header that contains the array access not uninitialized,,high
+API00-C,101,sqlite,src/wherecode.c,1466,FP,API00 pParse internal codegen context non-null by caller invariant not a trust boundary,,high
+API00-C,102,sqlite,src/wherecode.c,1466,FP,API00 v (Vdbe) internal context non-null by caller contract not a trust boundary,,high
+API00-C,103,sqlite,src/wherecode.c,1466,FP,API00 pWInfo internal context non-null by caller contract not a trust boundary,,high
+API00-C,104,sqlite,src/wherecode.c,1466,FP,API00 pLevel internal context non-null by caller contract not a trust boundary,,high
+API00-C,105,sqlite,src/wherecode.c,1466,FP,iLevel is loop-level index 0..nLevel-1 bounded by FROM table count no overflow possible,,high
+MSC04-C,106,sqlite,src/wherecode.c,1466,TP,sqlite3WhereCodeOneLoopStart genuinely participates in indirect recursion via filterPullDown->codeEqualityTerm chain,,high
+EXP34-C,107,sqlite,src/wherecode.c,1490,FP,pWInfo->revMask deref non-null by caller contract codegen context valid,,high
+INT14-C,108,sqlite,src/wherecode.c,1495,FP,INT14 iCur used in mask computation and assignment is normal idiom not a real readability defect,,high
+INT14-C,109,sqlite,src/wherecode.c,1495,FP,INT14 pWInfo flagged spuriously (pointer used in mask helper call) not a real bitwise/arithmetic mix defect,,high
+INT14-C,110,sqlite,src/wherecode.c,1496,FP,INT14 iLevel used as shift amount and index is normal idiom not a defect,,high
+INT34-C,111,sqlite,src/wherecode.c,1496,FP,revMask>>iLevel where iLevel is 0..nLevel-1 nLevel bounded by 64 (Bitmask width) shift always in-range,,high
+ARR37-C,112,sqlite,src/wherecode.c,1535,FP,pTabItem[0] accesses the single SrcItem the pointer addresses (a[pLevel->iFrom] element) valid one-element access,,high
+ARR37-C,113,sqlite,src/wherecode.c,1537,FP,pTabItem[0] same single-element access of valid SrcItem pointer not OOB,,high
+INT32-C,114,sqlite,src/wherecode.c,1538,FP,++pParse->nMem register counter bounded by SQLITE_LIMIT never near INT_MAX,,high
+INT32-C,115,sqlite,src/wherecode.c,1566,FP,nConstraint+2 where nConstraint=pLoop->nLTerm bounded by WHERE term count (small) no overflow,,high
+ARR36-C,116,sqlite,src/wherecode.c,1568,FP,pIdx->aiColumn[nEq] and nEq are not pointers being compared; loop bound j<nConstraint with int operands; analyzer misparse of subscript expr,,high
+EXP33-C,117,sqlite,src/wherecode.c,1568,FP,j is function-scope loop counter set by for(j=0;j<nConstraint;j++) before any use,,high
+INT14-C,118,sqlite,src/wherecode.c,1569,FP,INT14 readability style flag on loop index j used in iReg+j+2; no defect,,high
+INT32-C,119,sqlite,src/wherecode.c,1569,FP,iReg=sqlite3GetTempRange register number bounded by SQLITE_MAX_COLUMN; tiny VDBE register index cannot approach INT_MAX,,high
+INT32-C,120,sqlite,src/wherecode.c,1569,FP,same bounded register arithmetic iReg+j; register counts are small bounded ints,,high
+EXP33-C,121,sqlite,src/wherecode.c,1571,FP,pTerm assigned pLoop->aLTerm[j] on line 1570 before the NEVER() check and deref,,high
+EXP34-C,122,sqlite,src/wherecode.c,1572,FP,pTerm deref guarded by if(NEVER(pTerm==0)) continue at line 1571 immediately prior,,high
+ARR36-C,123,sqlite,src/wherecode.c,1614,FP,aiColumn[nEq] vs nEq are not array pointers; loop bound comparison of ints; analyzer misparse,,high
+INT13-C,124,sqlite,src/wherecode.c,1616,FP,"j is small loop index (0..nConstraint, guarded j<16); >>j on signed but value tiny and non-negative",,high
+INT34-C,125,sqlite,src/wherecode.c,1616,FP,shift amount j guarded by j<16 on the same line; omitMask>>j well within u32 width,,high
+INT32-C,126,sqlite,src/wherecode.c,1657,FP,iFld=pTerm->u.x.iField guarded iFld>0 and assert(iFld<=pLeft->x.pList->nExpr); iFld-1 cannot underflow,,high
+INT32-C,127,sqlite,src/wherecode.c,1663,FP,"iReg+j+2 bounded VDBE register index, far from INT_MAX",,high
+INT32-C,128,sqlite,src/wherecode.c,1663,FP,iReg+j bounded VDBE register index,,high
+INT32-C,129,sqlite,src/wherecode.c,1697,FP,++pParse->nMem register counter bounded by query size and SQLITE_LIMIT; not attacker-unbounded,,high
+ARR02-C,130,sqlite,src/wherecode.c,1741,FP,aMoveOp[] size fixed by 4-element initializer; ARR02 implicit-bound is style FP on initialized const array,,high
+DCL03-C,131,sqlite,src/wherecode.c,1747,TP,assert(TK_LE==TK_GT+1) is a pure compile-time constant expr of TK_ macros; static_assert applicable,,med
+INT14-C,132,sqlite,src/wherecode.c,1747,FP,"INT14 readability flag on macro constant TK_GT used in arithmetic; compile-time const, no defect",,high
+DCL03-C,133,sqlite,src/wherecode.c,1748,TP,assert(TK_LT==TK_GT+2) pure compile-time constant expr; static_assert applicable,,med
+DCL03-C,134,sqlite,src/wherecode.c,1749,TP,assert(TK_GE==TK_GT+3) pure compile-time constant expr; static_assert applicable,,med
+INT32-C,135,sqlite,src/wherecode.c,1792,FP,++pParse->nMem bounded register counter,,high
+INT32-C,136,sqlite,src/wherecode.c,1811,FP,++pParse->nMem bounded register counter,,high
+ARR02-C,137,sqlite,src/wherecode.c,1852,FP,aStartOp[] size fixed by 8-element initializer; ARR02 style FP,,high
+ARR02-C,138,sqlite,src/wherecode.c,1862,FP,aEndOp[] size fixed by 4-element initializer; ARR02 style FP,,high
+INT32-C,139,sqlite,src/wherecode.c,1898,FP,j++ here is index counting aLTerm terms (nLTerm small); cannot reach INT_MAX,,high
+INT32-C,140,sqlite,src/wherecode.c,1905,FP,"j++ counting WHERE terms, bounded small",,high
+EXP34-C,141,sqlite,src/wherecode.c,1910,FP,pRangeStart deref guarded by assert(pRangeStart!=0) at line 1909 immediately prior,,high
+INT32-C,142,sqlite,src/wherecode.c,1911,FP,++pParse->nMem bounded register counter,,high
+INT13-C,143,sqlite,src/wherecode.c,1919,FP,bRev is 0 or 1 (assert (bRev&~1)==0 at 1919); &1 on it is well-defined,,high
+INT14-C,144,sqlite,src/wherecode.c,1919,FP,INT14 readability flag on bRev (0/1); no defect,,high
+EXP00-C,145,sqlite,src/wherecode.c,1921,FP,EXP00 precedence advisory on bRev ^ (cmp); expression is correct and parenthesized as intended,,high
+EXP46-C,146,sqlite,src/wherecode.c,1921,FP,EXP46 advisory; XOR of two 0/1 boolean ints is intentional ASC/DESC bit computation,,high
+INT13-C,147,sqlite,src/wherecode.c,1921,FP,bRev is 0/1; ^ on signed small value well-defined,,high
+INT14-C,148,sqlite,src/wherecode.c,1921,FP,INT14 readability flag on nEq index; no defect,,high
+INT14-C,149,sqlite,src/wherecode.c,1921,FP,INT14 readability flag on pIdx; no defect,,high
+INT32-C,150,sqlite,src/wherecode.c,1948,FP,++pParse->nMem bounded register counter,,high
+INT32-C,151,sqlite,src/wherecode.c,2006,FP,nConstraint+=nBtm where nBtm is u16 vector length bounded by index column count; small,,high
+INT32-C,152,sqlite,src/wherecode.c,2018,FP,"nConstraint++ bounded by index/constraint count, small",,high
+INT32-C,153,sqlite,src/wherecode.c,2022,FP,nConstraint++ bounded small,,high
+ARR00-C,154,sqlite,src/wherecode.c,2024,FP,"nConstraint, nEq, bSeekPastNull are scalar ints not array pointers; ARR00 misparse of int subtraction",,high
+INT13-C,155,sqlite,src/wherecode.c,2041,FP,start_constraints is 0/1 boolean; <<2 well within int range,,high
+INT13-C,156,sqlite,src/wherecode.c,2041,FP,startEq is 0/1 boolean; <<1 well-defined,,high
+INT14-C,157,sqlite,src/wherecode.c,2041,FP,INT14 readability flag on boolean start_constraints; no defect,,high
+INT14-C,158,sqlite,src/wherecode.c,2041,FP,INT14 readability flag on boolean startEq; no defect,,high
+INT32-C,159,sqlite,src/wherecode.c,2041,FP,"(start_constraints<<2)+(startEq<<1)+bRev computes aStartOp index 0..7; all operands 0/1, sum small",,high
+INT32-C,160,sqlite,src/wherecode.c,2041,FP,"same small index computation, max 6",,high
+INT32-C,161,sqlite,src/wherecode.c,2041,FP,"start_constraints<<2 with start_constraints in {0,1}; max 4, no overflow/UB",,high
+INT32-C,162,sqlite,src/wherecode.c,2041,FP,"startEq<<1 with startEq in {0,1}; max 2, no UB",,high
+INT32-C,163,sqlite,src/wherecode.c,2054,FP,aiRowLogEst[0] is i16 estimate (LogEst); +9 cannot overflow int,,high
+INT32-C,164,sqlite,src/wherecode.c,2077,FP,"(nConstraint>1)*4+2+bRev computes small index; relational result 0/1, sum small",,high
+INT32-C,165,sqlite,src/wherecode.c,2077,FP,same small index arithmetic,,high
+INT32-C,166,sqlite,src/wherecode.c,2077,FP,(nConstraint>1)*4 with boolean operand; max 4,,high
+ARR00-C,167,sqlite,src/wherecode.c,2079,FP,"nConstraint, nEq, startEq scalar ints; ARR00 misparse of integer subtraction",,high
+ARR36-C,168,sqlite,src/wherecode.c,2079,FP,nEq and aLTerm[j++] are not subtracted as pointers; analyzer misparse of unrelated exprs on this line,,high
+INT32-C,169,sqlite,src/wherecode.c,2079,FP,nConstraint-startEq both small bounded ints; no overflow,,high
+INT32-C,170,sqlite,src/wherecode.c,2111,FP,"nConstraint+=nTop where nTop is u16 vector length, small",,high
+INT32-C,171,sqlite,src/wherecode.c,2124,FP,nConstraint++ bounded small,,high
+MEM30-C,172,sqlite,src/wherecode.c,2127,FP,"db is the sqlite3 handle context arg of sqlite3DbNNFreeNN(db,zStartAff)/(db,zEndAff); handle never freed, only zStartAff/zEndAff freed",,high
+INT32-C,173,sqlite,src/wherecode.c,2140,FP,bRev*2+endEq computes aEndOp index 0..3; operands 0/1,,high
+EXP34-C,174,sqlite,src/wherecode.c,2179,FP,pPk=sqlite3PrimaryKeyIndex() returns non-null for a WITHOUT-ROWID table here; guaranteed by schema invariant,,high
+INT32-C,175,sqlite,src/wherecode.c,2182,FP,iRowidReg+j bounded VDBE register index,,high
+INT32-C,176,sqlite,src/wherecode.c,2276,FP,"pParse->nTab++ bounded cursor counter, small",,high
+INT32-C,177,sqlite,src/wherecode.c,2278,FP,++pParse->nMem bounded register counter,,high
+DCL00-C,178,sqlite,src/wherecode.c,2279,FP,"regRowset is conditionally reassigned in the if/else at 2331-2336; not provably const, DCL00 advisory",,low
+INT32-C,179,sqlite,src/wherecode.c,2304,FP,nNotReady=pWInfo->nLevel-iLevel-1 small loop-level count; +1 cannot overflow,,high
+MEM30-C,180,sqlite,src/wherecode.c,2304,FP,"db is sqlite3 handle passed as context to sqlite3DbMallocRawNN(db,...); handle live, nothing freed",,high
+INT32-C,181,sqlite,src/wherecode.c,2306,FP,nNotReady+1 small bounded,,high
+EXP33-C,182,sqlite,src/wherecode.c,2310,FP,k is function-scope counter assigned by for(k=1;k<=nNotReady;k++) before use; only entered when nLevel>1,,high
+INT32-C,183,sqlite,src/wherecode.c,2331,FP,++pParse->nMem bounded register counter,,high
+INT32-C,184,sqlite,src/wherecode.c,2335,FP,pParse->nTab++ bounded cursor counter,,high
+INT32-C,185,sqlite,src/wherecode.c,2339,FP,++pParse->nMem bounded register counter,,high
+ARR00-C,186,sqlite,src/wherecode.c,2373,FP,iTerm is for(iTerm=0;iTerm<pWC->nTerm;iTerm++) loop var initialized in the loop header; not uninitialized,,high
+INT14-C,187,sqlite,src/wherecode.c,2376,FP,INT14 readability flag on pWC; no defect,,high
+MEM30-C,188,sqlite,src/wherecode.c,2384,FP,"db is sqlite3 handle context arg of sqlite3ExprDup(db,...); handle live",,high
+ARR00-C,189,sqlite,src/wherecode.c,2402,FP,ii is for(ii=0;ii<pOrWc->nTerm;ii++) loop var initialized in loop header,,high
+ARR37-C,190,sqlite,src/wherecode.c,2409,FP,"pTabItem[0] is valid subscript of SrcItem* into SrcList.a[]; pTabItem points into array, [0] well-defined",,high
+EXP30-C,191,sqlite,src/wherecode.c,2412,FP,pOrExpr assigned pDelete=pOrExpr=sqlite3ExprDup(...) single assignment; no sequence-point violation,,high
+MEM30-C,192,sqlite,src/wherecode.c,2412,FP,"db is sqlite3 handle context arg of sqlite3ExprDelete(db,pDelete); handle live, pDelete freed",,high
+MEM30-C,193,sqlite,src/wherecode.c,2413,FP,db->mallocFailed read on live handle; db not freed,,high
+MEM30-C,194,sqlite,src/wherecode.c,2414,FP,"db is sqlite3 handle context arg of sqlite3ExprDup(db,...); handle live",,high
+INT32-C,195,sqlite,src/wherecode.c,2422,FP,ii+1 small OR-term index,,high
+INT32-C,196,sqlite,src/wherecode.c,2456,FP,r+iPk bounded VDBE register index,,high
+MEM30-C,197,sqlite,src/wherecode.c,2531,FP,"db is sqlite3 handle context arg of sqlite3ExprDelete(db,pDelete); handle live",,high
+MEM30-C,198,sqlite,src/wherecode.c,2542,FP,"db is sqlite3 handle context arg of sqlite3ExprDelete(db,pAndExpr); handle live",,high
+MEM30-C,199,sqlite,src/wherecode.c,2556,FP,"db is sqlite3 handle context arg of sqlite3DbFreeNN(db,pOrTab); handle never freed, pOrTab freed",,high
+ARR02-C,200,sqlite,src/wherecode.c,2565,FP,aStep[] size fixed by 2-element initializer; ARR02 style FP,,high
+ARR02-C,201,sqlite,src/wherecode.c,2566,FP,aStart[] size fixed by 2-element initializer; ARR02 style FP,,high
+INT14-C,202,sqlite,src/wherecode.c,2576,FP,INT14 readability flag on pLevel; no defect,,high
+ARR37-C,203,sqlite,src/wherecode.c,2610,FP,pTerm++ walks pWC->a[] term array (for loop pTerm=pWC->a); valid array pointer increment,,high
+EXP33-C,204,sqlite,src/wherecode.c,2611,FP,pE assigned pTerm->pExpr at 2622/2699 before use; assert(pE!=0) present,,high
+INT32-C,205,sqlite,src/wherecode.c,2669,FP,pWC->nTerm-j with j>0 loop counter decrementing to >0; subtraction of small term counts,,high
+INT32-C,206,sqlite,src/wherecode.c,2673,FP,same bounded term-count subtraction,,high
+ARR37-C,207,sqlite,src/wherecode.c,2691,FP,pTerm++ walks pWC->a[] array (for pTerm=pWC->a); valid pointer increment,,high
+EXP33-C,208,sqlite,src/wherecode.c,2693,FP,pAlt assigned sqlite3WhereFindTerm(...) and guarded if(pAlt==0)continue before use,,high
+INT32-C,209,sqlite,src/wherecode.c,2703,FP,pWC->nTerm-j bounded term-count subtraction,,high
+INT32-C,210,sqlite,src/wherecode.c,2753,FP,nPk+1 small key-column count (pPk->nKeyCol bounded by columns),,high
+INT32-C,211,sqlite,src/wherecode.c,2756,FP,r+1+iPk bounded VDBE register index,,high
+EXP43-C,212,sqlite,src/wherecode.c,2762,FP,"EXP43 restrict advisory; sqlite3VdbeAddOp3 params are scalar ints/handle, no restrict aliasing UB",,high
+EXP43-C,213,sqlite,src/wherecode.c,2763,FP,"EXP43 restrict advisory; sqlite3VdbeAddOp4Int scalar params, no aliasing",,high
+ARR37-C,214,sqlite,src/wherecode.c,2801,FP,pTerm++ walks pWC->a[] array; valid pointer increment,,high
+API00-C,215,sqlite,src/wherecode.c,2834,FP,API00 internal contract: pWInfo always non-null from caller sqlite3WhereEnd; not a trust boundary,,high
+API00-C,216,sqlite,src/wherecode.c,2834,FP,API00 internal contract: pLevel always non-null from caller; not a trust boundary,,high
+MSC04-C,217,sqlite,src/wherecode.c,2834,TP,"sqlite3WhereRightJoinLoop genuinely participates in indirect recursion via sqlite3WhereBegin->...->WhereEnd->RightJoinLoop, depth-bounded by join nesting",,med
+DCL13-C,218,sqlite,src/wherecode.c,2835,FP,"pWInfo passed to non-const callees (sqlite3WhereBegin, sqlite3WhereContinueLabel) and pWInfo->pParse used to mutate state; const would not compile/propagate",,high
+DCL13-C,219,sqlite,src/wherecode.c,2837,FP,pLevel->pRJ accessed and pLevel passed through; signature reads pLevel->iFrom/iTabCur/iIdxCur and pRJ mutated indirectly; const inappropriate,,high
+EXP34-C,220,sqlite,src/wherecode.c,2839,FP,"pWInfo is internal non-null param; pParse=pWInfo->pParse used immediately, guaranteed valid by caller",,high
+EXP34-C,221,sqlite,src/wherecode.c,2840,FP,pParse=pWInfo->pParse non-null internal contract; mutex/caller invariant,,high
+INT32-C,222,sqlite,src/wherecode.c,2871,FP,pSubq->regResult + nExpr-1 are bounded register/column counts (nExpr bounded by SQLITE_MAX_COLUMN); no overflow,,high
+INT32-C,223,sqlite,src/wherecode.c,2871,FP,regResult + nExpr bounded register/column counts,,high
+EXP33-C,224,sqlite,src/wherecode.c,2895,FP,uSrc is a union of SrcList/u8 buffer; uSrc.sSrc fields written (nSrc/nAlloc/a[0]) before use; not uninitialized read,,high
+DCL00-C,225,sqlite,src/wherecode.c,2906,FP,"r=++pParse->nMem then used as register number; DCL00 const advisory, value not modified but const on register int is noise",,low
+INT32-C,226,sqlite,src/wherecode.c,2906,FP,++pParse->nMem bounded register counter,,high
+EXP34-C,227,sqlite,src/wherecode.c,2917,FP,pPk=sqlite3PrimaryKeyIndex(pTab) returns non-null for WITHOUT-ROWID table; schema invariant,,high
+INT32-C,228,sqlite,src/wherecode.c,2918,FP,pParse->nMem += nPk-1 where nPk=pPk->nKeyCol bounded by column count; small,,high
+INT32-C,229,sqlite,src/wherecode.c,2918,FP,nPk-1 with nPk>=1 (key column count) cannot underflow,,high
+INT32-C,230,sqlite,src/wherecode.c,2921,FP,r+iPk bounded VDBE register index,,high

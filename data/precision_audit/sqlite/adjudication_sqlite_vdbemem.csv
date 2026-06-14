@@ -1,0 +1,199 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+PRE00-C,0,sqlite,src/vdbemem.c,24,TP,ISPOWEROF2(X) expands to ((X)&((X)-1))==0 which evaluates X twice; genuine multi-eval function-like macro,,high
+PRE12-C,1,sqlite,src/vdbemem.c,24,TP,same macro multi-evaluates parameter X; PRE12 duplicate of PRE00 finding but valid,,high
+API00-C,2,sqlite,src/vdbemem.c,33,FP,sqlite3VdbeCheckMemInvariants is a debug-only assert helper; p guaranteed non-null by internal caller contract not a trust boundary,,high
+DCL13-C,3,sqlite,src/vdbemem.c,33,TP,p only read (asserts on p->flags/p->xDel etc); never written nor propagated as non-const so const would compile; debug-only function,,low
+EXP34-C,4,sqlite,src/vdbemem.c,37,FP,p->flags access guarded by caller invariant (called inside assert with valid Mem); no null path,,high
+INT14-C,5,sqlite,src/vdbemem.c,37,FP,MEM_Dyn is a flag bitmask constant; bitwise mask test then logical compare is intended flag testing not INT14 readability defect,,high
+INT14-C,6,sqlite,src/vdbemem.c,37,FP,same flag-mask test on MEM_Dyn constant; intended bit-flag idiom,,high
+INT14-C,7,sqlite,src/vdbemem.c,60,FP,MEM_Static flag-constant bit test; intended idiom not a defect,,high
+INT14-C,8,sqlite,src/vdbemem.c,60,FP,MEM_Ephem flag-constant bit test; intended idiom,,high
+EXP34-C,9,sqlite,src/vdbemem.c,108,FP,p->flags in vdbeMemRenderNum guarded by assert(p->flags & ...) and caller contract; non-null,,high
+INT14-C,10,sqlite,src/vdbemem.c,108,FP,MEM_Int flag-mask bit test; intended idiom,,high
+INT14-C,11,sqlite,src/vdbemem.c,108,FP,p->flags bit test on valid Mem; non-null by contract,,high
+ARR30-C,12,sqlite,src/vdbemem.c,131,FP,"zBuf[acc.nChar] safe: StrAccum bounded by sz (>22 asserted, sz=sizeof(zBuf)); nChar<=mxAlloc bound, no OOB",,high
+INT14-C,13,sqlite,src/vdbemem.c,164,FP,p->flags bit test; intended flag idiom,,high
+ARR00-C,14,sqlite,src/vdbemem.c,190,FP,zBuf fully written by vdbeMemRenderNum (line 182) before the while loop reads it; not uninitialized,,high
+ARR00-C,15,sqlite,src/vdbemem.c,191,FP,same zBuf populated by vdbeMemRenderNum before read at line 191; z[i] is p->z not zBuf,,high
+INT32-C,16,sqlite,src/vdbemem.c,192,FP,i+=incr where incr is 1 or 2 and loop bounded by zBuf NUL terminator within 100-byte rendered numeric buffer; no overflow,,high
+MSC37-C,17,sqlite,src/vdbemem.c,211,FP,sqlite3VdbeChangeEncoding all paths return (SQLITE_OK/NOMEM/ERROR/rc); analyzer missed conditional-compiled returns,,high
+EXP34-C,18,sqlite,src/vdbemem.c,253,FP,pMem asserted non-null at line 215 before use; sqlite3VdbeChangeEncoding,,high
+MEM30-C,19,sqlite,src/vdbemem.c,269,FP,"sqlite3VdbeMemGrow realloc pattern; pMem->zMalloc reassigned by ReallocOrFree, the live handle not a freed dangling read",,high
+MEM30-C,20,sqlite,src/vdbemem.c,275,FP,pMem->db is the allocator context arg to sqlite3DbFreeNN/MallocRaw not the freed object; db never freed,,high
+MEM30-C,21,sqlite,src/vdbemem.c,277,FP,pMem->zMalloc reassigned from sqlite3DbMallocRaw after free; reading the new allocation not freed memory,,high
+MEM30-C,22,sqlite,src/vdbemem.c,283,FP,pMem->db is allocator handle context not freed object,,high
+MEM30-C,23,sqlite,src/vdbemem.c,283,FP,pMem->zMalloc is the new MallocRaw result; not UAF,,high
+MEM30-C,24,sqlite,src/vdbemem.c,286,FP,pMem->z reassigned/checked; null-set path; no use of freed pointer,,high
+MEM30-C,25,sqlite,src/vdbemem.c,287,FP,pMem->z read after bPreserve guard and z!=0 check; points to old buffer still valid until memcpy then freed via xDel,,high
+MEM30-C,26,sqlite,src/vdbemem.c,287,FP,pMem->zMalloc is freshly allocated dest of memcpy; not freed,,high
+EXP43-C,27,sqlite,src/vdbemem.c,288,FP,"memcpy(zMalloc,z,n) sources are distinct buffers (assert z!=zMalloc at 287); no overlap; sqlite3ValueNew misattribution",,high
+MEM30-C,28,sqlite,src/vdbemem.c,288,FP,pMem->zMalloc is the new allocation (memcpy dest); not freed,,high
+MEM30-C,29,sqlite,src/vdbemem.c,288,FP,"pMem->z is old preserved buffer, distinct from zMalloc; valid read",,high
+MEM30-C,30,sqlite,src/vdbemem.c,288,FP,pMem->n is an int field copy count not a freed pointer,,high
+MEM30-C,31,sqlite,src/vdbemem.c,290,FP,pMem->flags is a bitfield not freed memory; MEM_Dyn check,,high
+MEM30-C,32,sqlite,src/vdbemem.c,291,FP,pMem->xDel is a function-pointer field guarded by assert xDel!=0; not freed memory,,high
+MEM30-C,33,sqlite,src/vdbemem.c,291,FP,pMem->xDel invoked as destructor on pMem->z; field not freed,,high
+MEM30-C,34,sqlite,src/vdbemem.c,292,FP,pMem->xDel function pointer; not a freed allocation,,high
+MEM30-C,35,sqlite,src/vdbemem.c,292,FP,pMem->z passed to xDel destructor; this is the intended free not a UAF read,,high
+MEM30-C,36,sqlite,src/vdbemem.c,295,FP,pMem->zMalloc assigned to pMem->z at line 295 is the live new buffer; not freed,,high
+EXP34-C,37,sqlite,src/vdbemem.c,315,FP,pMem->flags in sqlite3VdbeMemZeroTerminateIfAble; caller passes valid Mem; no null path,,high
+EXP34-C,38,sqlite,src/vdbemem.c,336,FP,pMem->flags bit test on valid Mem (MakeWriteable context); non-null by contract,,high
+INT14-C,39,sqlite,src/vdbemem.c,336,FP,pMem->flags bit-mask test; intended flag idiom,,high
+EXP43-C,40,sqlite,src/vdbemem.c,373,FP,"sqlite3VdbeMemGrow takes (Mem*,int,int) no restrict qualifiers; single Mem pointer, no overlapping-region UB",,high
+INT14-C,41,sqlite,src/vdbemem.c,416,FP,pMem->flags bit test in MemExpandBlob; intended idiom,,high
+API00-C,42,sqlite,src/vdbemem.c,505,FP,pFunc non-null guaranteed by assert(pFunc!=0) at 508 and internal caller; not a trust boundary,,high
+DCL13-C,43,sqlite,src/vdbemem.c,505,FP,pFunc stored into non-const ctx.pFunc field and called via pFunc->xFinalize; const would break assignment/call,,high
+API00-C,44,sqlite,src/vdbemem.c,538,FP,pAccum asserted db!=0/mutex held; internal contract non-null,,high
+API00-C,45,sqlite,src/vdbemem.c,538,FP,pOut passed to sqlite3VdbeMemSetNull which writes it; internal contract non-null,,high
+API00-C,46,sqlite,src/vdbemem.c,538,FP,pFunc asserted non-null (508) and dereferenced via contract; not trust boundary,,high
+DCL13-C,47,sqlite,src/vdbemem.c,538,FP,pAccum stored into non-const ctx.pMem field; const would break assignment,,high
+DCL13-C,48,sqlite,src/vdbemem.c,538,FP,pFunc stored into non-const ctx.pFunc and called; const breaks usage,,high
+EXP34-C,49,sqlite,src/vdbemem.c,566,FP,p in vdbeMemClearExternAndSetNull guarded by assert VdbeMemDynamic(p); internal helper non-null,,high
+EXP34-C,50,sqlite,src/vdbemem.c,592,FP,p in vdbeMemClear from sqlite3VdbeMemRelease; caller passes valid Mem,,high
+API00-C,51,sqlite,src/vdbemem.c,609,FP,sqlite3VdbeMemRelease p validated by assert(CheckMemInvariants(p)); internal contract,,high
+EXP34-C,52,sqlite,src/vdbemem.c,611,FP,p->szMalloc read after VdbeMemDynamic check; valid Mem by contract,,high
+API00-C,53,sqlite,src/vdbemem.c,619,FP,sqlite3VdbeMemReleaseMalloc p validated by assert; internal contract non-null,,high
+EXP34-C,54,sqlite,src/vdbemem.c,637,FP,pMem->z in memIntValue; const Mem* passed by sqlite3VdbeIntValue after flag/z!=0 checks,,high
+API00-C,55,sqlite,src/vdbemem.c,640,FP,sqlite3VdbeIntValue pMem asserted non-null at 642; internal contract,,high
+API00-C,56,sqlite,src/vdbemem.c,666,FP,sqlite3MemRealValueRC pMem asserted db!=0 (669) and flags set; caller contract non-null,,high
+API00-C,57,sqlite,src/vdbemem.c,666,FP,pRC is optional out param explicitly null-checked at 712 (if(pRC)); no unguarded deref,,high
+FLP34-C,58,sqlite,src/vdbemem.c,667,FP,(double)0 init and sqlite3AtoF/sqlite3RealToI64 are range-safe conversions; FLP34 misfire on benign double assignment,,high
+EXP34-C,59,sqlite,src/vdbemem.c,669,FP,pMem->z null-checked at 671 (if pMem->z==0) before any deref; guarded,,high
+INT32-C,60,sqlite,src/vdbemem.c,691,FP,n/2+2 where n=pMem->n&~1 bounded by string length (i32); allocation size math safe in practice,,high
+EXP34-C,61,sqlite,src/vdbemem.c,696,FP,z indexed within for-loop bounded by i<n-1; z=pMem->z non-null in this UTF16 branch by prior checks,,high
+INT32-C,62,sqlite,src/vdbemem.c,702,FP,i+1 indexing within loop bounded i<n-1 over the UTF16 buffer; no overflow,,high
+FLP34-C,63,sqlite,src/vdbemem.c,730,FP,(double)pMem->u.i exact-ish int-to-double; benign conversion FLP34 misfire,,high
+FLP34-C,64,sqlite,src/vdbemem.c,735,FP,(double)0 fallback return; benign FLP34 misfire,,high
+EXP34-C,65,sqlite,src/vdbemem.c,744,FP,pMem->flags in BooleanValue; caller passes valid register Mem; non-null contract,,high
+API00-C,66,sqlite,src/vdbemem.c,754,FP,sqlite3VdbeIntegerAffinity pMem asserted non-null at 755; internal contract,,high
+API00-C,67,sqlite,src/vdbemem.c,786,FP,sqlite3VdbeMemIntegerify pMem asserted non-null at 787; internal contract,,high
+API00-C,68,sqlite,src/vdbemem.c,801,FP,sqlite3VdbeMemRealify pMem asserted non-null at 802; internal contract,,high
+FLP34-C,69,sqlite,src/vdbemem.c,821,FP,double r2=(double)i benign conversion; FLP34 misfire,,high
+EXP42-C,70,sqlite,src/vdbemem.c,823,FP,"memcmp(&r1,&r2,sizeof(r1)) compares two double locals not structs; no padding bytes involved; EXP42 misfire",,high
+API00-C,71,sqlite,src/vdbemem.c,845,FP,sqlite3VdbeMemNumerify pMem asserted non-null at 846; internal contract,,high
+EXP30-C,72,sqlite,src/vdbemem.c,857,FP,ix assigned in the || sub-expression then used; short-circuit sequencing makes the assignment+use well-defined per C eval order,,high
+EXP33-C,73,sqlite,src/vdbemem.c,857,FP,"rc assigned by sqlite3MemRealValueRC(pMem,&rc) at 856 before any read at 857; not uninitialized",,high
+EXP45-C,74,sqlite,src/vdbemem.c,858,FP,ix=sqlite3RealToI64(...) assignment inside if condition is intentional sqlite idiom (computes ix as side effect); EXP45 stylistic not a defect,,med
+EXP34-C,75,sqlite,src/vdbemem.c,879,FP,pMem->flags in MemCast; caller passes valid Mem; non-null contract,,high
+API00-C,76,sqlite,src/vdbemem.c,925,FP,sqlite3VdbeMemInit writes pMem fields; caller passes bulk Mem buffer; internal contract non-null,,high
+API00-C,77,sqlite,src/vdbemem.c,925,FP,db stored into pMem->db; internal init contract; not trust boundary,,high
+DCL13-C,78,sqlite,src/vdbemem.c,925,FP,db assigned to non-const pMem->db field; const would break the store,,high
+API00-C,79,sqlite,src/vdbemem.c,945,FP,sqlite3VdbeMemSetNull pMem deref guarded by VdbeMemDynamic; internal contract,,high
+EXP34-C,80,sqlite,src/vdbemem.c,949,FP,pMem->flags in SetNull else-branch; valid Mem by contract,,high
+API00-C,81,sqlite,src/vdbemem.c,952,FP,sqlite3ValueSetNull casts p to Mem* and delegates; internal API contract,,high
+API00-C,82,sqlite,src/vdbemem.c,961,FP,sqlite3VdbeMemSetZeroBlob pMem passed to Release first; valid Mem contract,,high
+EXP34-C,83,sqlite,src/vdbemem.c,963,FP,pMem->flags write after Release; valid Mem,,high
+DCL40-C,84,sqlite,src/vdbemem.c,971,FP,two SetZeroBlob defs are mutually exclusive via #ifndef/#else SQLITE_OMIT_INCRBLOB; not conflicting declarations,,high
+EXP34-C,85,sqlite,src/vdbemem.c,976,FP,pMem->z deref in OMIT_INCRBLOB variant after MemGrow success assert(z!=0 at 976); guarded,,high
+ARR38-C,86,sqlite,src/vdbemem.c,978,FP,"memset(pMem->z,0,nByte) size nByte=n>0?n:1 validated and szMalloc>=nByte asserted at 977; safe",,high
+INT31-C,87,sqlite,src/vdbemem.c,978,FP,nByte is n>0?n:1 so strictly positive int to size_t; no negative-to-size_t wrap,,high
+EXP34-C,88,sqlite,src/vdbemem.c,993,FP,pMem->z deref after MemGrow null-return guard; valid,,high
+API00-C,89,sqlite,src/vdbemem.c,1001,FP,sqlite3VdbeMemSetInt64 pMem deref via VdbeMemDynamic; internal contract non-null,,high
+EXP34-C,90,sqlite,src/vdbemem.c,1005,FP,pMem->u.i write in else-branch; valid register Mem,,high
+API00-C,91,sqlite,src/vdbemem.c,1013,FP,sqlite3MemSetArrayInt64 aMem is internal Mem array (Vdbe registers); caller-supplied valid base,,high
+ARR30-C,92,sqlite,src/vdbemem.c,1014,FP,aMem[iIdx] index supplied by internal VDBE caller within allocated register array; bounded by invariant,,high
+API00-C,93,sqlite,src/vdbemem.c,1024,FP,sqlite3VdbeMemSetPointer pMem asserts flags==MEM_Null at 1030; valid Mem contract,,high
+API00-C,94,sqlite,src/vdbemem.c,1024,FP,xDestructor optional; null-coalesced to sqlite3NoopDestructor at 1036; explicitly handled,,high
+DCL13-C,95,sqlite,src/vdbemem.c,1026,FP,pPtr stored into pMem->z (char*) non-const field; const would break the store,,high
+EXP34-C,96,sqlite,src/vdbemem.c,1030,FP,pMem->flags asserted ==MEM_Null at 1030; valid Mem,,high
+API00-C,97,sqlite,src/vdbemem.c,1044,FP,sqlite3VdbeMemSetDouble pMem passed to SetNull first; valid Mem contract,,high
+API00-C,98,sqlite,src/vdbemem.c,1058,FP,sqlite3VdbeMemIsRowSet const Mem* asserted-only helper; caller passes valid Mem,,high
+EXP34-C,99,sqlite,src/vdbemem.c,1059,FP,pMem deref guarded by SQLITE_DEBUG assert path and internal contract; sqlite3VdbeMemIsRowSet caller always passes valid Mem,,high
+API00-C,100,sqlite,src/vdbemem.c,1071,FP,sqlite3VdbeMemSetRowSet is internal; pMem->db non-null asserted line 1074; never a trust boundary,,high
+EXP34-C,101,sqlite,src/vdbemem.c,1072,FP,pMem->db read after assert db!=0; internal contract guarantees valid pMem,,high
+DCL13-C,102,sqlite,src/vdbemem.c,1089,FP,"sqlite3VdbeMemTooBig signature is conventional internal Mem helper; though p only read, const not applied project-wide for Mem* and pointee logically owned; analyzer-style cleanliness only not a defect",,med
+EXP34-C,103,sqlite,src/vdbemem.c,1090,FP,p->db deref guarded by assert p->db!=0 at line 1090,,high
+INT32-C,104,sqlite,src/vdbemem.c,1094,FP,n is int from p->n plus u.nZero with values bounded by SQLITE_LIMIT_LENGTH check immediately following at 1096; intended size math,,high
+API00-C,105,sqlite,src/vdbemem.c,1110,FP,SQLITE_DEBUG-only debug helper; pVdbe from internal VDBE engine always valid,,high
+API00-C,106,sqlite,src/vdbemem.c,1110,FP,pMem internal engine register pointer always valid in debug helper,,high
+DCL13-C,107,sqlite,src/vdbemem.c,1110,FP,"pVdbe is dereferenced for aMem/nMem/db reads but is a fixed internal debug-helper signature; pVdbe->db->flags etc read through it, const-correctness not required and pointee considered mutable engine state",,high
+INT14-C,108,sqlite,src/vdbemem.c,1114,FP,INT14 readability heuristic; pointer arithmetic pX=pVdbe->aMem+1 plus pointer subtraction is normal C not a defect,,high
+INT14-C,109,sqlite,src/vdbemem.c,1119,FP,INT14 readability heuristic on normal pointer/flag operations; no defect,,high
+MSC04-C,110,sqlite,src/vdbemem.c,1148,TP,vdbeClrCopy calls sqlite3VdbeMemShallowCopy which calls vdbeClrCopy; genuine indirect recursion bounded by VdbeMemDynamic becoming false,,high
+API00-C,111,sqlite,src/vdbemem.c,1153,FP,internal copy helper; pFrom validity guaranteed by VDBE engine; asserts at 1154-1155,,high
+MSC04-C,112,sqlite,src/vdbemem.c,1153,TP,"genuine mutual recursion sqlite3VdbeMemShallowCopy<->vdbeClrCopy (single re-entry, terminates when !VdbeMemDynamic)",,high
+EXP34-C,113,sqlite,src/vdbemem.c,1155,FP,pTo->db read but guarded by assert pTo->db==pFrom->db line 1155 and engine contract,,high
+EXP34-C,114,sqlite,src/vdbemem.c,1155,FP,pFrom deref guarded by asserts at 1154-1155; internal contract,,high
+API00-C,115,sqlite,src/vdbemem.c,1169,FP,internal full-copy helper; pFrom always valid per VDBE contract,,high
+API00-C,116,sqlite,src/vdbemem.c,1192,FP,sqlite3VdbeMemMove internal; pTo validity asserted via mutex asserts 1193-1195,,high
+API00-C,117,sqlite,src/vdbemem.c,1192,FP,pFrom internal engine pointer; mutex/db asserts guarantee validity,,high
+EXP34-C,118,sqlite,src/vdbemem.c,1193,FP,pFrom->db deref guarded by assert at 1193,,high
+EXP34-C,119,sqlite,src/vdbemem.c,1194,FP,pTo->db deref guarded by assert at 1194,,high
+INT14-C,120,sqlite,src/vdbemem.c,1257,FP,INT14 readability on nByte size math; i64 arithmetic intended no defect,,high
+EXP05-C,121,sqlite,src/vdbemem.c,1269,FP,"EXP05 cast (void*)z to pass to sqlite3DbFree/xDel destructor; required by destructor void* signature, intentional",,high
+DCL31-C,122,sqlite,src/vdbemem.c,1271,FP,xDel is a function-pointer parameter void(*)(void*) invoked indirectly; DCL31 misfire treating call-through-pointer as undeclared function,,high
+EXP05-C,123,sqlite,src/vdbemem.c,1271,FP,(void*)z cast required for xDel destructor call; intentional const removal for free,,high
+MEM30-C,124,sqlite,src/vdbemem.c,1275,FP,"sqlite3DbFree(pMem->db, z) frees z not pMem->db; the db handle is context arg never freed; classic MEM30 misread",,high
+EXP43-C,125,sqlite,src/vdbemem.c,1294,FP,"EXP43 memcpy(pMem->z, z, nAlloc): src z is caller string, dst is freshly resized pMem->z; distinct regions not both from sqlite3ValueNew",,high
+EXP05-C,126,sqlite,src/vdbemem.c,1297,FP,"(char*)z cast assigning const char* to pMem->z which is char*; required ownership transfer, intentional",,high
+EXP05-C,127,sqlite,src/vdbemem.c,1355,FP,same destructor void* cast as idx121; intentional,,high
+DCL31-C,128,sqlite,src/vdbemem.c,1357,FP,xDel function-pointer call same as idx122; DCL31 misfire,,high
+EXP05-C,129,sqlite,src/vdbemem.c,1357,FP,(void*)z destructor cast intentional,,high
+MEM30-C,130,sqlite,src/vdbemem.c,1361,FP,"sqlite3DbFree(pMem->db, z) frees z; db handle never freed; MEM30 misread",,high
+INT14-C,131,sqlite,src/vdbemem.c,1369,FP,INT14 readability on nByte; intended size math,,high
+ARR38-C,132,sqlite,src/vdbemem.c,1376,FP,"memcpy(pMem->z, z, nByte): dst sized via ClearAndResize MAX(nAlloc,32)>=nByte+? bounded; nByte<=iLimit checked at 1352; not invalid",,high
+EXP43-C,133,sqlite,src/vdbemem.c,1376,FP,EXP43 src z is caller buffer dst is resized pMem->z; distinct regions,,high
+EXP05-C,134,sqlite,src/vdbemem.c,1380,FP,(char*)z ownership transfer cast; intentional,,high
+API00-C,135,sqlite,src/vdbemem.c,1414,FP,sqlite3VdbeMemFromBtree internal; pMem OUT param always valid per caller contract,,high
+EXP34-C,136,sqlite,src/vdbemem.c,1421,FP,pMem->flags written (not read uninit) at 1421; OUT param valid,,high
+ARR00-C,137,sqlite,src/vdbemem.c,1433,FP,amt bounded: amt>=SQLITE_MAX_ALLOCATION_SIZE rejected 1424 and amt+offset<=MaxRecordSize checked 1427; pMem->z[amt] write into buffer sized amt+1 at 1430,,high
+API00-C,138,sqlite,src/vdbemem.c,1442,FP,internal; pCur valid per BtreeCursorIsValid assert 1450,,high
+API00-C,139,sqlite,src/vdbemem.c,1442,FP,pMem OUT param valid per engine contract,,high
+EXP34-C,140,sqlite,src/vdbemem.c,1456,FP,pMem->z written from BtreePayloadFetch then asserted non-null 1457; not uninit deref,,high
+API00-C,141,sqlite,src/vdbemem.c,1553,FP,sqlite3ValueNew(db): db may legitimately be null and sqlite3DbMallocZero handles null db; not a trust boundary,,high
+ARR39-C,142,sqlite,src/vdbemem.c,1595,FP,ARR39 misfire: sizeof(Mem)*nCol+ROUND8(...) is i64 byte count assigned to nByte then to malloc; no pointer scaling,,high
+INT30-C,143,sqlite,src/vdbemem.c,1595,FP,nCol=pIdx->nColumn bounded by schema (<=2000 cols); i64 product cannot wrap; intended,,high
+ARR39-C,144,sqlite,src/vdbemem.c,1602,FP,(u8*)pRec+ROUND8(sizeof(UnpackedRecord)) is correct byte-offset pointer arithmetic for aMem placement; not double scaling,,high
+MEM30-C,145,sqlite,src/vdbemem.c,1613,FP,pRec freed only in else branch (DbFreeNN line 1608) then set 0 and returns 0 at 1612; line 1613 uses live pRec; no UAF,,high
+INT32-C,146,sqlite,src/vdbemem.c,1616,FP,p->iVal+1 where iVal is bounded array index (alloc.iVal=iVal+i within nElem loop); intended nField set,,high
+MEM30-C,147,sqlite,src/vdbemem.c,1616,FP,p is ValueNewStat4Ctx* never freed; pRec is the allocation; MEM30 misread of context pointer,,high
+MEM30-C,148,sqlite,src/vdbemem.c,1616,FP,same as 147; p is context not freed,,high
+MEM30-C,149,sqlite,src/vdbemem.c,1616,FP,p->iVal access on live context pointer; not freed,,high
+MSC04-C,150,sqlite,src/vdbemem.c,1647,TP,valueFromFunction->sqlite3Stat4ValueFromExpr->stat4ValueFromExpr->valueFromExpr->valueFromFunction genuine indirect recursion (STAT4),,high
+EXP34-C,151,sqlite,src/vdbemem.c,1665,FP,p (ValueNewStat4Ctx) deref guarded by assert pCtx!=0 line 1664,,high
+INT30-C,152,sqlite,src/vdbemem.c,1682,FP,sizeof(apVal[0])*nVal: nVal=pList->nExpr bounded by SQLITE_LIMIT_FUNCTION_ARG; i64-ish product no wrap; intended,,high
+INT32-C,153,sqlite,src/vdbemem.c,1714,FP,pCtx->pParse->nErr++ is a bounded parser error counter; cannot reach INT_MAX in practice; intended,,high
+DCL30-C,154,sqlite,src/vdbemem.c,1730,FP,DCL30 misfire: *ppVal=pVal stores heap pointer into caller out-param; pVal is malloc not a local address,,high
+MEM05-C,155,sqlite,src/vdbemem.c,1747,TP,"valueFromExpr is recursive (lines 1776,1849,1992 path); MEM05 stack-depth warning valid though depth bounded by expression nesting",,high
+MSC04-C,156,sqlite,src/vdbemem.c,1747,TP,valueFromExpr calls valueFromExpr directly at 1776 and 1849; genuine direct recursion,,high
+EXP30-C,157,sqlite,src/vdbemem.c,1763,FP,EXP30 misfire: op assigned in while-cond (op=pExpr->op) then read; sequence points in loop condition are well-defined,,high
+EXP33-C,158,sqlite,src/vdbemem.c,1763,FP,op assigned at 1763 while-condition before any use; not uninitialized,,high
+INT14-C,159,sqlite,src/vdbemem.c,1770,FP,INT14 readability heuristic on pExpr flag/pointer ops; no defect,,high
+INT32-C,160,sqlite,src/vdbemem.c,1813,FP,(i64)pExpr->u.iValue*negInt where negInt is +/-1; cannot overflow i64; intended negative-literal handling,,high
+FLP34-C,161,sqlite,src/vdbemem.c,1857,FP,sqlite3AtoF on a validated TK_FLOAT token string; conversion to double of a numeric literal; not unchecked range defect,,high
+ARR37-C,162,sqlite,src/vdbemem.c,1882,FP,zVal[nVal] is a read of blob-literal token char buffer; assert zVal[nVal]=='\'' line 1882 validates index; bounded by token,,high
+EXP34-C,163,sqlite,src/vdbemem.c,1882,FP,zVal points to pExpr->u.zToken[2] always valid (asserts 1876-1877); not null,,high
+DCL30-C,164,sqlite,src/vdbemem.c,1902,FP,DCL30 misfire same as 154; *ppVal=pVal stores heap pointer,,high
+MSC07-C,165,sqlite,src/vdbemem.c,1905,FP,MSC07 misfire: no_mem label after return at 1903 is a goto target reachable via goto no_mem; not unreachable,,high
+MEM30-C,166,sqlite,src/vdbemem.c,1915,FP,pVal freed once on no_mem path (sqlite3ValueFree guarded by pCtx==0); not double free; the two #ifdef branches are mutually exclusive,,high
+API00-C,167,sqlite,src/vdbemem.c,1930,FP,sqlite3ValueFromExpr: db passed to allocator that tolerates null; pExpr null-checked at 1937 (ternary); not a trust boundary,,high
+API00-C,168,sqlite,src/vdbemem.c,1930,FP,pExpr null-checked at line 1937 ternary returns 0 if null; safe,,high
+MSC04-C,169,sqlite,src/vdbemem.c,1959,TP,stat4ValueFromExpr->valueFromExpr->valueFromFunction->sqlite3Stat4ValueFromExpr->stat4ValueFromExpr genuine indirect recursion,,high
+DCL13-C,170,sqlite,src/vdbemem.c,1960,FP,"pParse is dereferenced (pParse->db 1968, pParse->pVdbe 1982, pParse->pReprepare 1983) and propagated to non-const callees sqlite3VdbeSetVarmask/sqlite3ErrorMsg; const would not compile",,high
+EXP34-C,171,sqlite,src/vdbemem.c,1973,FP,pExpr->op deref after !pExpr branch handled at 1974; in else-if pExpr guaranteed non-null,,high
+EXP34-C,172,sqlite,src/vdbemem.c,1986,FP,v=pParse->pReprepare assigned and checked !=0 at 1983 before v->aVar deref 1986,,high
+INT32-C,173,sqlite,src/vdbemem.c,1986,FP,iBindVar-1 indexes v->aVar; iBindVar=pExpr->iColumn is a validated bind-variable index >=1; intended,,high
+DCL30-C,174,sqlite,src/vdbemem.c,1996,FP,DCL30 misfire; *ppVal=pVal stores heap value pointer not local address,,high
+API00-C,175,sqlite,src/vdbemem.c,2034,FP,sqlite3Stat4ProbeSetValue internal STAT4; pParse always valid from optimizer,,high
+API00-C,176,sqlite,src/vdbemem.c,2034,FP,pExpr null-tolerant: checked pExpr==0 at 2046 and ternary at 2056; not a trust boundary,,high
+API00-C,177,sqlite,src/vdbemem.c,2034,FP,pnExtract is OUT param written at 2065; engine contract guarantees non-null,,high
+API00-C,178,sqlite,src/vdbemem.c,2034,FP,iVal is a small column/field index from optimizer; iVal+i bounded by nElem loop and schema column count; no overflow,,high
+DCL13-C,179,sqlite,src/vdbemem.c,2037,FP,ppRec is dereferenced and written via alloc.ppRec=ppRec then valueNew writes ppRec[0]; const would break write; FP,,high
+EXP34-C,180,sqlite,src/vdbemem.c,2056,FP,sqlite3VectorFieldSubexpr called only when pExpr!=0 (ternary at 2056 guards null); not passing null,,high
+INT32-C,181,sqlite,src/vdbemem.c,2057,FP,iVal+i bounded by schema column count and nElem; intended index math,,high
+INT18-C,182,sqlite,src/vdbemem.c,2058,FP,INT18 misfire: iVal+i both int passed to sqlite3IndexColumnAffinity(int); no widening overflow; bounded indices,,high
+INT32-C,183,sqlite,src/vdbemem.c,2058,FP,same iVal+i bounded index; no overflow,,high
+API00-C,184,sqlite,src/vdbemem.c,2079,FP,internal STAT4 entry; pParse always valid,,high
+API00-C,185,sqlite,src/vdbemem.c,2079,FP,ppVal OUT param; engine contract non-null,,high
+MSC04-C,186,sqlite,src/vdbemem.c,2079,TP,sqlite3Stat4ValueFromExpr->stat4ValueFromExpr->valueFromExpr->valueFromFunction->sqlite3Stat4ValueFromExpr genuine indirect recursion,,high
+API00-C,187,sqlite,src/vdbemem.c,2101,FP,sqlite3Stat4Column: db passed to allocator tolerant of null; internal contract,,high
+API00-C,188,sqlite,src/vdbemem.c,2101,FP,ppVal dereffed *ppVal at 2115 and written 2133; engine contract non-null,,high
+API00-C,189,sqlite,src/vdbemem.c,2101,FP,"nRec compared as bound (nHdr>(u32)nRec 2119, iField>nRec 2131); validated not unchecked arithmetic",,high
+EXP05-C,190,sqlite,src/vdbemem.c,2114,FP,"(u8*)pRec cast of const void* to u8* for record byte access a; read-only typecast, intentional",,high
+EXP33-C,191,sqlite,src/vdbemem.c,2118,FP,"nHdr assigned by getVarint32(a,nHdr) macro at 2118 which writes nHdr by reference; not uninitialized",,high
+API00-C,192,sqlite,src/vdbemem.c,2146,FP,sqlite3Stat4ProbeFree: pRec null-checked at 2147 (if pRec); not a trust boundary,,high
+MEM30-C,193,sqlite,src/vdbemem.c,2156,FP,pRec freed once at 2156 (DbFreeNN) after release loop; single free path; not double free,,high
+EXP05-C,194,sqlite,src/vdbemem.c,2171,FP,(Mem*)v cast of sqlite3_value* to Mem* (same underlying struct); intentional internal cast not const-cast defect,,high
+EXP34-C,195,sqlite,src/vdbemem.c,2189,FP,pVal->flags via p=(Mem*)pVal; assert at 2193 documents invariant; not uninit/null deref of validated value,,high
+INT14-C,196,sqlite,src/vdbemem.c,2193,FP,INT14 readability on p->flags bitwise plus n arithmetic; no defect,,high
+EXP34-C,197,sqlite,src/vdbemem.c,2194,FP,pVal->n read after MEM_Str/MEM_Blob flag checks; p is cast of caller value; not null in valueBytes path,,high

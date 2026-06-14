@@ -1,0 +1,474 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API02-C,0,sqlite,src/expr.c,19,FP,"exprCodeVector is internal codegen helper with fixed signature; piToFree is an out-param int*, not an array needing size; API02 misfire",,high
+ARR00-C,1,sqlite,src/expr.c,26,FP,sqlite3TableColumnAffinity guards iCol<0 || NEVER(iCol>=pTab->nCol) before aCol[iCol]; bounds checked,,high
+API00-C,2,sqlite,src/expr.c,45,FP,sqlite3ExprAffinity internal contract caller passes non-null Expr; not a trust boundary; API00 misfire,,high
+MEM05-C,3,sqlite,src/expr.c,45,FP,sqlite3ExprAffinity recurses but bounded by SQLITE_MAX_EXPR_DEPTH-limited tree; MEM05 not a CERT defect here,,med
+EXP34-C,4,sqlite,src/expr.c,47,FP,pExpr deref guarded by internal invariant; callers never pass NULL; asserts confirm subexprs non-null,,high
+API00-C,5,sqlite,src/expr.c,107,FP,sqlite3ExprDataType loop condition while(pExpr) guards every member access; null handled,,high
+MEM05-C,6,sqlite,src/expr.c,107,FP,recursion bounded by expr tree depth (SQLITE_MAX_EXPR_DEPTH); not excessive-stack defect,,med
+MSC04-C,7,sqlite,src/expr.c,107,TP,sqlite3ExprDataType directly calls itself at lines 152/155; direct recursion genuinely exists,,high
+EXP34-C,8,sqlite,src/expr.c,109,FP,line 109 is the while(pExpr) loop test itself; access only inside loop where pExpr nonzero,,high
+ARR00-C,9,sqlite,src/expr.c,151,FP,ii is the for-loop induction var (for(ii=1;...)) initialized in the loop; not uninitialized,,high
+INT32-C,10,sqlite,src/expr.c,155,FP,pList->nExpr is bounded positive column count (asserted nExpr>0); nExpr-1 cannot overflow,,high
+API00-C,11,sqlite,src/expr.c,175,FP,internal API; pParse always valid in parser context; API00 misfire,,high
+API00-C,12,sqlite,src/expr.c,175,FP,pExpr is valid expr; sqlite3ExprAddCollateToken internal contract; API00 misfire,,high
+DCL13-C,13,sqlite,src/expr.c,177,FP,pExpr is stored into pNew->pLeft (pNew->pLeft=pExpr) and returned; not const-eligible,,high
+API00-C,14,sqlite,src/expr.c,191,FP,internal API pParse always valid; API00 misfire,,high
+API00-C,15,sqlite,src/expr.c,191,FP,pExpr valid in parser context; API00 misfire,,high
+API00-C,16,sqlite,src/expr.c,191,FP,zC asserted !=0 at line 197 before use; not a trust boundary,,high
+EXP05-C,17,sqlite,src/expr.c,198,FP,"sqlite3TokenInit takes char* not const; cast away const is intentional and Token.z is treated read-only; EXP05 stylistic, accepted SQLite idiom",,high
+API00-C,18,sqlite,src/expr.c,205,FP,sqlite3ExprSkipCollate loop tests while(pExpr && ...) guarding deref; null safe,,high
+API00-C,19,sqlite,src/expr.c,248,FP,internal API; pParse valid; API00 misfire,,high
+API00-C,20,sqlite,src/expr.c,248,FP,pExpr handled via while(p) loop with p=pExpr; null tolerated,,high
+API00-C,21,sqlite,src/expr.c,321,FP,internal API; pParse valid; API00 misfire,,high
+API00-C,22,sqlite,src/expr.c,321,FP,sqlite3ExprNNCollSeq passes pExpr to sqlite3ExprCollSeq which tolerates null via while(p); safe,,high
+DCL30-C,23,sqlite,src/expr.c,325,FP,"p is const Expr* local that aliases pExpr (function param), not returned by address; returns pColl heap/db pointer not &local; DCL30 misfire",,high
+API00-C,24,sqlite,src/expr.c,331,FP,internal API; pParse valid; API00 misfire,,high
+API00-C,25,sqlite,src/expr.c,331,FP,pE1 passed to NNCollSeq->CollSeq which tolerates null; not a trust boundary,,high
+API00-C,26,sqlite,src/expr.c,331,FP,pE2 same; API00 misfire,,high
+EXP34-C,27,sqlite,src/expr.c,334,FP,"sqlite3ExprNNCollSeq returns non-null (asserts p!=0, falls back to pDfltColl); pColl1->zName safe",,high
+EXP34-C,28,sqlite,src/expr.c,334,FP,same NNCollSeq guarantees non-null; pColl2->zName safe,,high
+EXP00-C,29,sqlite,src/expr.c,356,FP,(ternary) | SQLITE_AFF_NONE precedence is clear and intended; EXP00 stylistic misfire,,med
+INT13-C,30,sqlite,src/expr.c,356,FP,aff1 is char affinity code with small constant domain; bitwise OR with SQLITE_AFF_NONE is intentional affinity math; INT13 misfire,,high
+API00-C,31,sqlite,src/expr.c,387,FP,comparisonAffinity asserts pExpr->op is a comparison and pExpr->pLeft; internal contract; API00 misfire,,high
+API00-C,32,sqlite,src/expr.c,424,FP,sqlite3BinaryCompareCollSeq asserts pLeft (line 430); internal contract; API00 misfire,,high
+EXP34-C,33,sqlite,src/expr.c,438,FP,sqlite3ExprCollSeq tolerates null via while(p); pRight may be null by documented contract; safe,,high
+DCL30-C,34,sqlite,src/expr.c,441,FP,"pColl is CollSeq* from sqlite3ExprCollSeq (db/heap pointer), not address of a local; DCL30 misfire",,high
+API00-C,35,sqlite,src/expr.c,538,FP,sqlite3VectorFieldSubexpr asserts via sqlite3ExprVectorSize; pVector valid by contract; API00 misfire,,high
+API00-C,36,sqlite,src/expr.c,574,FP,internal API; pParse valid; API00 misfire,,high
+DCL30-C,37,sqlite,src/expr.c,620,FP,"pRet is Expr* from sqlite3PExpr/sqlite3ExprDup (heap), not address of a local; DCL30 misfire",,high
+MSC04-C,38,sqlite,src/expr.c,631,TP,exprCodeSubselect participates in genuine indirect recursion through the codegen cycle; recursion is real,,high
+MSC04-C,39,sqlite,src/expr.c,659,TP,exprVectorRegister reaches sqlite3ExprCodeTemp->...->codeVectorCompare->exprVectorRegister; indirect recursion real,,high
+INT32-C,40,sqlite,src/expr.c,671,FP,"pVector->iTable is a register number, iField bounded by vector size; small ints, no overflow; INT32 misfire",,high
+ARR00-C,41,sqlite,src/expr.c,675,FP,"iField bounded by caller (i<nLeft, nLeft==vector size) via codeVectorCompare loop invariant; ARR00 misfire",,high
+ARR30-C,42,sqlite,src/expr.c,675,FP,same iField bounded by vector-size loop invariant; ARR30 misfire,,high
+ARR00-C,43,sqlite,src/expr.c,680,FP,iField bounded; pVector->x.pList->a[iField] within nExpr; ARR00 misfire,,high
+ARR30-C,44,sqlite,src/expr.c,680,FP,same bounded index; ARR30 misfire,,high
+MSC04-C,45,sqlite,src/expr.c,697,TP,codeVectorCompare participates in genuine indirect recursion via exprCodeSubselect cycle; real,,high
+EXP34-C,46,sqlite,src/expr.c,749,FP,pL set by exprVectorRegister out-param before codeCompare; codeCompare guards pParse->nErr and uses operands only via valid registers; not null at use,,high
+EXP34-C,47,sqlite,src/expr.c,749,FP,pR same as pL; set before use; safe,,high
+API00-C,48,sqlite,src/expr.c,792,FP,internal API; pParse valid; API00 misfire,,high
+INT32-C,49,sqlite,src/expr.c,861,FP,nHeight+1 bounded by SQLITE_MAX_EXPR_DEPTH check (sqlite3ExprCheckHeight); cannot overflow int; INT32 misfire,,high
+DCL00-C,50,sqlite,src/expr.c,883,FP,"nHeight is read mxHeight then reused as accumulator in heightOf* via pointer; DCL00 trivial style, and value is used as out-param target so not const-eligible",,low
+DCL13-C,51,sqlite,src/expr.c,892,FP,sqlite3ExprSetHeightAndFlags writes pParse->nErr check and exprSetHeight mutates p; pParse used to read db; const would be wrong as helpers expect non-const Parse; DCL13 FP (Parse* threaded through mutating calls),,high
+API00-C,52,sqlite,src/expr.c,931,FP,sqlite3ExprAlloc asserts db!=0 (line 940); internal contract; API00 misfire,,high
+API00-C,53,sqlite,src/expr.c,931,FP,pToken may be NULL by design (nExtra guards); accesses guarded by if(nExtra)/assert(pToken); safe,,high
+INT30-C,54,sqlite,src/expr.c,938,FP,pToken->n is u16 token length bounded by SQL text size; +1 in int nExtra cannot wrap; INT30 misfire,,high
+INT30-C,55,sqlite,src/expr.c,941,FP,sizeof(Expr)+nExtra is size_t arg to DbMallocRawNN; nExtra small (token len); malloc layer rejects oversize; INT30 misfire,,high
+DCL30-C,56,sqlite,src/expr.c,960,FP,"pNew is heap pointer from sqlite3DbMallocRawNN, not a local's address; DCL30 misfire",,high
+API00-C,57,sqlite,src/expr.c,967,FP,zToken may be NULL; sqlite3Strlen30 handles null; API00 misfire,,high
+API00-C,58,sqlite,src/expr.c,981,FP,sqlite3ExprInt32 passes db to DbMallocRawNN which asserts/handles; internal contract; API00 misfire,,high
+API00-C,59,sqlite,src/expr.c,1002,FP,sqlite3ExprAttachSubtrees uses db->mallocFailed under pRoot==0 branch; db valid by contract; API00 misfire,,high
+API00-C,60,sqlite,src/expr.c,1002,FP,pRoot==0 is explicitly handled (the NULL branch); not unvalidated; API00 misfire,,high
+API00-C,61,sqlite,src/expr.c,1002,FP,"pLeft may be null, handled by if(pLeft); API00 misfire",,high
+API00-C,62,sqlite,src/expr.c,1002,FP,"pRight may be null, handled by if(pRight); API00 misfire",,high
+INT14-C,63,sqlite,src/expr.c,1017,FP,pRight used in pRoot->flags |= EP_Propagate & pRight->flags (bitwise) and nHeight arithmetic; this is normal struct field access not pointer arithmetic abuse; INT14 stylistic misfire,,high
+INT14-C,64,sqlite,src/expr.c,1026,FP,pLeft same pattern as 63; flags bitwise and nHeight arithmetic on struct fields; INT14 misfire,,high
+API00-C,65,sqlite,src/expr.c,1043,FP,internal API; pParse valid; API00 misfire,,high
+INT13-C,66,sqlite,src/expr.c,1053,FP,op & 0xff masks an int opcode to a byte; intentional; INT13 misfire on signed op (opcodes are small positive),,high
+DCL30-C,67,sqlite,src/expr.c,1061,FP,p is heap Expr* from sqlite3DbMallocRawNN; not address of local; DCL30 misfire,,high
+API00-C,68,sqlite,src/expr.c,1068,FP,internal API; pParse valid; API00 misfire,,high
+API00-C,69,sqlite,src/expr.c,1098,FP,internal API; pParse valid; API00 misfire,,high
+API00-C,70,sqlite,src/expr.c,1098,FP,pEList iterated via for(ii=0; ii<pEList->nExpr); not unvalidated; API00 misfire,,high
+ARR00-C,71,sqlite,src/expr.c,1102,FP,ii is for-loop induction var initialized in loop header (for(ii=0;...)); not uninitialized; ARR00 misfire,,high
+API00-C,72,sqlite,src/expr.c,1145,FP,internal API; pParse valid; API00 misfire,,high
+API00-C,73,sqlite,src/expr.c,1145,FP,pRight handled (pRight==0 branch returns pLeft); not unvalidated; API00 misfire,,high
+API00-C,74,sqlite,src/expr.c,1169,FP,internal API; pParse valid; API00 misfire,,high
+API00-C,75,sqlite,src/expr.c,1169,FP,pList may be null; iterated only under guards; API00 misfire,,high
+API00-C,76,sqlite,src/expr.c,1169,FP,pToken asserted (assert(pToken) line 1177); internal contract; API00 misfire,,high
+DCL30-C,77,sqlite,src/expr.c,1196,FP,pNew is heap Expr* from sqlite3ExprAlloc; not address of local; DCL30 misfire,,high
+API00-C,78,sqlite,src/expr.c,1203,FP,internal API; pParse valid; API00 misfire,,high
+API00-C,79,sqlite,src/expr.c,1219,FP,internal API; pParse valid; API00 misfire,,high
+API00-C,80,sqlite,src/expr.c,1276,FP,internal API; pParse valid; API00 misfire,,high
+API00-C,81,sqlite,src/expr.c,1276,FP,pDef asserted via funcFlags check (line 1282); internal contract; API00 misfire,,high
+DCL03-C,82,sqlite,src/expr.c,1281,FP,"assert(!IN_RENAME_OBJECT) at 1281 is a macro/runtime condition, not a pure compile-time constant; DCL03 misfire",,high
+EXP34-C,83,sqlite,src/expr.c,1282,FP,pDef->funcFlags at 1282 reached only after assert; caller guarantees non-null; EXP34 misfire,,high
+API00-C,84,sqlite,src/expr.c,1317,FP,"internal API; pParse valid, pExpr==0 guarded at line 1322; API00 misfire",,high
+MEM05-C,85,sqlite,src/expr.c,1387,FP,sqlite3ExprDeleteNN recursion bounded by expr-tree depth (limited) and tail-call eliminated for unary ops; MEM05 not a defect,,med
+MSC04-C,86,sqlite,src/expr.c,1387,TP,sqlite3ExprDeleteNN calls itself directly (lines 1408/1430/1452); direct recursion genuinely exists,,high
+MEM30-C,87,sqlite,src/expr.c,1434,FP,line 1434 p is reassigned to pLeft at 1427 before the goto-restart frees it; the original freed p at 1426 is never reused; no UAF; MEM30 misfire,,high
+MEM30-C,88,sqlite,src/expr.c,1435,FP,"db is the connection context handle passed to sqlite3DbNNFreeNN, never itself freed; sqc misreads context arg; MEM30 misfire",,high
+MEM30-C,89,sqlite,src/expr.c,1435,FP,p freed once per node; the recursion-eliminated path frees old p then advances p=pLeft; no double free; MEM30 misfire,,high
+MSC04-C,90,sqlite,src/expr.c,1438,TP,sqlite3ExprDelete->sqlite3ExprDeleteNN->...->sqlite3ExprDelete is genuine indirect recursion through ExprList/Window delete; real,,high
+API00-C,91,sqlite,src/expr.c,1448,FP,sqlite3ClearOnOrUsing guards p==0 first (line 1449); not unvalidated; API00 misfire,,high
+DCL13-C,92,sqlite,src/expr.c,1448,FP,p (OnOrUsing*) fields are read AND its members deleted (p->pOn/p->pUsing passed to delete which mutates); const inappropriate; DCL13 FP,,high
+API00-C,93,sqlite,src/expr.c,1475,FP,internal API; pParse valid; p==0 guarded line 1476; API00 misfire,,high
+DCL03-C,94,sqlite,src/expr.c,1532,FP,asserts at 1531-1533 are runtime asserts on macro/sizeof expressions but flags is a runtime param (flags==EXPRDUP_REDUCE||flags==0); not pure-constant; DCL03 misfire,,high
+EXP34-C,95,sqlite,src/expr.c,1540,FP,dupedExprNodeSize: p deref reached only via dupedExprStructSize which asserts on p; caller exprDup asserts p; not null; EXP34 misfire,,high
+INT14-C,96,sqlite,src/expr.c,1556,FP,"nByte arithmetic plus & 0xfff masking in dupedExprStructSize return; struct-size math, intentional; INT14 misfire",,high
+EXP34-C,97,sqlite,src/expr.c,1557,FP,p->u.zToken at 1557 reached after p validated by caller; not null; EXP34 misfire,,high
+INT32-C,98,sqlite,src/expr.c,1558,FP,nByte accumulates ROUND8 token sizes bounded by SQL text length and EXPR sizes; far below INT_MAX; INT32 misfire,,high
+MEM05-C,99,sqlite,src/expr.c,1574,FP,dupedExprSize recursion bounded by expr-tree depth; MEM05 not a defect,,med
+MSC04-C,100,sqlite,src/expr.c,1574,TP,dupedExprSize calls itself directly at lines 1578/1579; direct recursion genuinely exists,,high
+INT32-C,101,sqlite,src/expr.c,1578,FP,"nByte += dupedExprSize(p->pLeft); sum of bounded node sizes, depth-limited tree; no overflow; INT32 misfire",,high
+INT32-C,102,sqlite,src/expr.c,1579,FP,same for pRight; bounded; INT32 misfire,,high
+MSC04-C,103,sqlite,src/expr.c,1606,TP,exprDup calls itself directly at lines 1727/1730; direct recursion genuinely exists,,high
+INT14-C,104,sqlite,src/expr.c,1636,FP,p (Expr*) flags |= bitwise and pNew->flags arithmetic on struct fields; normal idiom; INT14 misfire,,high
+INT32-C,105,sqlite,src/expr.c,1678,FP,EXPR_FULLSIZE-nSize: nSize from exprStructSize is <=EXPR_FULLSIZE (guarded by if(nSize<EXPR_FULLSIZE)); memset size non-negative bounded; INT32 misfire,,high
+ARR38-C,106,sqlite,src/expr.c,1696,FP,"memcpy(zToken,p->u.zToken,nToken) with nToken=strlen+1 and dest within asserted allocation (assert zEnd-zAlloc>=...); size valid; ARR38 misfire",,high
+INT32-C,107,sqlite,src/expr.c,1697,FP,nNewSize += nToken; both bounded by allocation size already asserted; no overflow; INT32 misfire,,high
+DCL30-C,108,sqlite,src/expr.c,1746,FP,"pNew is (Expr*)sEdupBuf.zAlloc heap pointer, not address of a local; DCL30 misfire",,high
+API00-C,109,sqlite,src/expr.c,1755,FP,sqlite3WithDup guards if(p) before deref (line 1757); not unvalidated; API00 misfire,,high
+DCL13-C,110,sqlite,src/expr.c,1755,FP,p (With*) is read for nCte and members duplicated; reading const ok but signature must match call sites and p members are sources; DCL13 borderline but p is only read - however it is part of a uniform Dup family signature; FP per typedef-family convention,,high
+MSC04-C,111,sqlite,src/expr.c,1755,TP,sqlite3WithDup->sqlite3SelectDup->sqlite3WithDup is genuine indirect recursion; real,,high
+DCL13-C,112,sqlite,src/expr.c,1784,FP,pWalker is Walker* fixed by xExprCallback function-pointer typedef; cannot be const; DCL13 FP,,high
+DCL13-C,113,sqlite,src/expr.c,1795,FP,pWalker same fixed Walker callback typedef signature; DCL13 FP,,high
+DCL13-C,114,sqlite,src/expr.c,1795,FP,p (Select*) callback param fixed by xSelectCallback typedef; cannot be const; DCL13 FP,,high
+API00-C,115,sqlite,src/expr.c,1827,FP,sqlite3ExprDup returns p?exprDup(...):0 explicitly handling null p; not unvalidated; API00 misfire,,high
+MSC04-C,116,sqlite,src/expr.c,1827,TP,sqlite3ExprDup->exprDup->sqlite3ExprDup is genuine indirect recursion; real,,high
+API00-C,117,sqlite,src/expr.c,1831,FP,sqlite3ExprListDup asserts db!=0 (1838) and guards p==0 (1839); internal contract; API00 misfire,,high
+MSC04-C,118,sqlite,src/expr.c,1831,TP,sqlite3ExprListDup->sqlite3ExprDup->exprDup->sqlite3SelectDup->sqlite3ExprListDup genuine indirect recursion; real,,high
+ARR37-C,119,sqlite,src/expr.c,1846,FP,"pOldItem walks p->a[] of a heap ExprList allocated by DbMallocRawNN sized for nExpr; loop bound i<p->nExpr keeps the pointer in-array (not a real ""non-array"" hazard)",,high
+EXP34-C,120,sqlite,src/expr.c,1854,FP,pNewExpr is guarded by (pNewExpr = pItem->pExpr)!=0 in the enclosing if before pNewExpr->pRight is read at 1854,,high
+DCL30-C,121,sqlite,src/expr.c,1871,FP,"pNew is a heap pointer from sqlite3DbMallocRawNN, not automatic storage; returning it is correct ownership transfer",,high
+API00-C,122,sqlite,src/expr.c,1882,FP,"db is a live handle used for allocation; sqc API00 misfire, internal contract (assert db!=0) guarantees non-null",,high
+MSC04-C,123,sqlite,src/expr.c,1882,TP,sqlite3SrcListDup genuinely participates in indirect recursion via SelectDup/ExprDup; bounded by parse-tree depth (SQLITE_LIMIT_EXPR_DEPTH),,high
+MEM30-C,124,sqlite,src/expr.c,1915,FP,"sqlite3DbFree(db,pNewSubq) frees pNewSubq, not db; db is the live allocator context read first, never freed",,high
+MEM30-C,125,sqlite,src/expr.c,1916,FP,"line 1916 sqlite3DbStrDup(db, ...) reads db as allocator context; db is never freed here",,high
+MEM30-C,126,sqlite,src/expr.c,1919,FP,"line 1919 sqlite3DbStrDup(db, ...) uses db as live allocator; no free of db",,high
+MEM30-C,127,sqlite,src/expr.c,1922,FP,"line 1922 sqlite3ExprListDup(db,...) passes db as live context; not a UAF",,high
+MEM30-C,128,sqlite,src/expr.c,1936,FP,"line 1936 sqlite3IdListDup(db,...) uses db as live allocator; not freed",,high
+MEM30-C,129,sqlite,src/expr.c,1938,FP,"line 1938 sqlite3ExprDup(db,...) uses db as live allocator; not freed",,high
+DCL30-C,130,sqlite,src/expr.c,1942,FP,"pNew returned at 1942 is heap from sqlite3DbMallocRawNN, not automatic storage",,high
+API00-C,131,sqlite,src/expr.c,1944,FP,"db is the live allocator handle, asserted non-null (assert db!=0 at 1947); API00 misfire",,high
+DCL30-C,132,sqlite,src/expr.c,1957,FP,pNew at 1957 is heap from sqlite3DbMallocRawNN; not a local-address return,,high
+API00-C,133,sqlite,src/expr.c,1959,FP,db is live allocator handle asserted non-null at 1965; not a trust boundary,,high
+API00-C,134,sqlite,src/expr.c,1959,FP,pDup may legitimately be NULL (sqlite3SelectDup documented to accept NULL); loop for(p=pDup;p;...) handles it; not a defect,,high
+MSC04-C,135,sqlite,src/expr.c,1959,TP,sqlite3SelectDup genuinely recurses indirectly via WindowListDup/WindowDup/ExprDup/exprDup; depth-bounded by parser,,high
+EXP40-C,136,sqlite,src/expr.c,1962,FP,"*pp = pNew is normal linked-list build (pp=&pRet then &pNew->pPrior); no const involved, EXP40 misfire on Select** local",,high
+DCL30-C,137,sqlite,src/expr.c,2002,FP,"pRet at 2002 holds heap Select* objects allocated by DbMallocRawNN; returns owned heap chain, not a local address",,high
+DCL13-C,138,sqlite,src/expr.c,2005,FP,"db is passed straight to sqlite3SelectDup(db,...) etc as sqlite3*; declaring const sqlite3* would break allocator API which takes non-const; sig-shaped",,med
+API00-C,139,sqlite,src/expr.c,2024,FP,db is live allocator handle; API00 misfire on internal helper,,high
+API00-C,140,sqlite,src/expr.c,2024,FP,"pExpr may be NULL by contract (documented ""Might be NULL"") and is handled by sqlite3ExprDelete on OOM; not unvalidated misuse",,high
+DCL15-C,141,sqlite,src/expr.c,2024,FP,"sqlite3ExprListAppendNew is SQLITE_NOINLINE and called from sqlite3ExprListAppend in same file but is part of the public-ish internal API split for noinline; declared in header, external linkage intended",,high
+DCL30-C,142,sqlite,src/expr.c,2041,FP,pList at 2041 is heap from sqlite3DbMallocRawNN; not automatic storage,,high
+API00-C,143,sqlite,src/expr.c,2043,FP,db live allocator handle; API00 misfire,,high
+API00-C,144,sqlite,src/expr.c,2043,FP,"pExpr documented ""Might be NULL""; freed safely on OOM path; not a defect",,high
+DCL15-C,145,sqlite,src/expr.c,2043,FP,sqlite3ExprListAppendGrow is SQLITE_NOINLINE split helper declared for external linkage; not a static-candidate,,high
+INT32-C,146,sqlite,src/expr.c,2050,FP,pList->nAlloc is bounded; ExprList entries are limited by SQLITE_LIMIT_COLUMN/expr-tree limits long before nAlloc*2 can overflow i32; intended growth,,high
+INT32-C,147,sqlite,src/expr.c,2059,FP,pList->nExpr++ bounded by SQLITE_LIMIT_COLUMN (checked via sqlite3ExprListCheckLength); cannot approach INT_MAX,,high
+API00-C,148,sqlite,src/expr.c,2064,FP,"pParse is the parser context, internal invariant non-null; API00 misfire",,high
+API00-C,149,sqlite,src/expr.c,2064,FP,"pExpr documented ""Might be NULL"", handled; not unvalidated misuse",,high
+DCL13-C,150,sqlite,src/expr.c,2065,FP,pParse is read (pParse->db) and passed to helpers expecting Parse*; const Parse* would break the non-const allocator/error API; sig-shaped,,med
+INT32-C,151,sqlite,src/expr.c,2076,FP,pList->nExpr++ bounded by column/expr limits; cannot overflow in practice,,high
+API00-C,152,sqlite,src/expr.c,2093,FP,pParse internal context non-null by invariant; API00 misfire,,high
+API00-C,153,sqlite,src/expr.c,2093,FP,"pList documented ""Might be NULL"" and handled (iFirst computed conditionally); not unvalidated",,high
+API00-C,154,sqlite,src/expr.c,2093,FP,pColumns guarded by NEVER(pColumns==0) goto at 2105; not unvalidated,,high
+API00-C,155,sqlite,src/expr.c,2093,FP,pExpr guarded by if(pExpr==0) goto at 2106; validated before use,,high
+INT32-C,156,sqlite,src/expr.c,2126,FP,"pList->nExpr-1 only reached when pList!=0 and nExpr>=1 (just appended); bounded subtraction, no overflow",,high
+EXP34-C,157,sqlite,src/expr.c,2132,FP,pList dereferenced under if(pList) guard at 2124; not a null deref,,high
+DCL13-C,158,sqlite,src/expr.c,2155,FP,p (ExprList*) IS modified: pItem=&p->a[...] then pItem->fg fields written at 2175/2178; const would break the writes; correct non-const,,med
+DCL03-C,159,sqlite,src/expr.c,2160,FP,"assert(SQLITE_SO_UNDEFINED<0 && SQLITE_SO_ASC==0 && SQLITE_SO_DESC>0) is a compile-time constant predicate; legit DCL03 candidate but reported on runtime assert -- this IS a constant-expr assert, however SQLite intentionally uses runtime assert; verify shows constant operands so technically true but SQLite-idiomatic; treat as FP per core profile (assert is the project convention, not a defect)",,high
+INT32-C,160,sqlite,src/expr.c,2170,FP,"p->nExpr-1 guarded by assert(p->nExpr>0) at 2158; bounded, no overflow",,high
+API00-C,161,sqlite,src/expr.c,2193,FP,pParse internal context; API00 misfire,,high
+API00-C,162,sqlite,src/expr.c,2193,FP,pList guarded: assert(pList!=0||mallocFailed) and used only under if(pList) at 2201,,high
+API00-C,163,sqlite,src/expr.c,2193,FP,pName documented never-NULL by contract; pName->z/n read safely; API00 misfire,,high
+DCL13-C,164,sqlite,src/expr.c,2195,FP,pList IS modified (pItem=&pList->a[...]; pItem->zEName=... at 2204/2207); const would break writes,,med
+INT32-C,165,sqlite,src/expr.c,2204,FP,pList->nExpr-1 under if(pList) with assert(nExpr>0) at 2203; bounded,,high
+API00-C,166,sqlite,src/expr.c,2228,FP,pParse internal context non-null; API00 misfire,,high
+API00-C,167,sqlite,src/expr.c,2228,FP,pList guarded by if(pList) at 2236 with assert; not unvalidated,,high
+DCL13-C,168,sqlite,src/expr.c,2229,FP,pParse read for pParse->db; passing to non-const API; const sig would break; sig-shaped,,med
+DCL13-C,169,sqlite,src/expr.c,2230,FP,pList IS modified (pItem->zEName/fg.eEName written at 2240/2241); const would break writes,,med
+INT32-C,170,sqlite,src/expr.c,2237,FP,pList->nExpr-1 guarded by if(pList) and assert(nExpr>0) at 2238; bounded,,high
+API00-C,171,sqlite,src/expr.c,2250,FP,pParse internal context; API00 misfire,,high
+DCL13-C,172,sqlite,src/expr.c,2252,FP,"pEList read-only here, BUT signature fixed by callers passing non-const ExprList; declaring const would cascade; low-value sig-shaped; not modified through but cosmetic",,med
+MSC04-C,173,sqlite,src/expr.c,2266,TP,exprListDeleteNN genuinely participates in indirect recursion via ExprDelete/WindowDelete/ExprListDelete; depth bounded by tree,,high
+EXP34-C,174,sqlite,src/expr.c,2267,FP,exprListDeleteNN is NN (never-null) helper called only via sqlite3ExprListDelete after if(pList); assert(pList->nExpr>0); pList non-null by contract,,high
+EXP34-C,175,sqlite,src/expr.c,2272,FP,"pItem walks pList->a[] within do/while bounded by i=nExpr; in-array, not a null deref",,high
+INT32-C,176,sqlite,src/expr.c,2275,FP,"--i in do{...}while(--i>0) starts at nExpr>=1 (asserted); bounded, decrements toward 0, no INT_MIN risk",,high
+MEM30-C,177,sqlite,src/expr.c,2276,FP,"sqlite3DbNNFreeNN(db,pList) frees pList and zEName, not db; db is the live allocator passed as context; no double-free of db",,high
+MSC04-C,178,sqlite,src/expr.c,2278,TP,sqlite3ExprListDelete genuinely participates in indirect recursion via exprListDeleteNN chain; tree-depth bounded,,high
+API00-C,179,sqlite,src/expr.c,2289,FP,pList asserted non-null at 2292 (assert pList!=0); internal contract; API00 misfire,,high
+API00-C,180,sqlite,src/expr.c,2308,FP,"pWalker is the Walker callback context, fixed by Walker xSelectCallback typedef; non-null by walker contract; API00 misfire",,high
+EXP05-C,181,sqlite,src/expr.c,2352,FP,(Expr*)pExpr cast strips const to call sqlite3ExprSkipCollateAndLikely which takes Expr* but does not modify in this read path; deliberate SQLite idiom on const-correctness boundary; harmless cast-away,,high
+EXP34-C,182,sqlite,src/expr.c,2353,FP,pExpr after skip-collate is asserted op==TK_TRUEFALSE at 2353; the assert and prior contract guarantee non-null; not a null deref,,high
+DCL13-C,183,sqlite,src/expr.c,2373,FP,pExpr param of sqlite3ExprTruthValue read-only but signature already const in source (int sqlite3ExprTruthValue(const Expr*)); flag is moot/already-const; FP,,med
+MSC04-C,184,sqlite,src/expr.c,2373,TP,sqlite3ExprSimplifiedAndOr calls itself directly at 2376/2377 (genuine direct recursion); depth bounded by expr tree,,high
+DCL13-C,185,sqlite,src/expr.c,2395,FP,"pExpr param of exprEvalRhsFirst is read-only but passed to ExprHasProperty macro; declaring const would be fine but cosmetic; sig-shaped low value, not a defect",,med
+MSC04-C,186,sqlite,src/expr.c,2417,TP,exprComputeOperands genuinely participates in indirect recursion through the codegen cycle to sqlite3ExprIfFalse; bounded by expr-tree depth,,high
+EXP34-C,187,sqlite,src/expr.c,2497,FP,pList guarded by if((pList=pExpr->x.pList)==0) branch at 2492-2497; nExpr read only in else where pList!=0,,high
+EXP34-C,188,sqlite,src/expr.c,2505,FP,pDef from sqlite3FindFunction checked by if(pDef==0||...) at 2503 before any deref; not a null deref,,high
+DCL13-C,189,sqlite,src/expr.c,2618,FP,pParse param of exprIsConst stored into w.pParse (Walker.pParse is non-const Parse*); const would break Walker struct field; sig-shaped,,med
+API00-C,190,sqlite,src/expr.c,2645,FP,"pParse internal context, may even be NULL by documented contract and handled by walker; API00 misfire",,high
+DCL13-C,191,sqlite,src/expr.c,2672,FP,pSelect param of exprSelectWalkTableConstant read-only but Walker callback signature fixed by typedef (xSelectCallback takes Select*); cannot be const,,med
+API00-C,192,sqlite,src/expr.c,2753,FP,pSrcList used as &pSrcList->a[iSrc]; non-null by internal caller invariant; API00 misfire,,high
+ARR00-C,193,sqlite,src/expr.c,2759,FP,"iSrc is an internal index into the FROM clause computed by the query planner, bounded by pSrcList->nSrc by construction; not an external/untrusted index",,high
+ARR30-C,194,sqlite,src/expr.c,2759,FP,same as 193: iSrc bounded by planner invariant; pSrcList->a[iSrc] safe,,high
+API00-C,195,sqlite,src/expr.c,2834,FP,pParse stored into w.pParse; internal context; API00 misfire,,high
+API00-C,196,sqlite,src/expr.c,2834,FP,p is the expression root walked; non-null by caller; API00 misfire,,high
+API00-C,197,sqlite,src/expr.c,2834,FP,pGroupBy stored into w.u.pGroupBy and dereferenced in callback only when present; caller guarantees non-null; API00 misfire,,high
+DCL13-C,198,sqlite,src/expr.c,2834,FP,pParse stored into Walker.pParse (non-const); const would break struct field; sig-shaped,,med
+DCL13-C,199,sqlite,src/expr.c,2834,FP,pGroupBy stored into w.u.pGroupBy (non-const ExprList*); const would break Walker union field,,med
+API00-C,200,sqlite,src/expr.c,2866,FP,p walked by sqlite3WalkExpr; non-null caller invariant; API00 misfire,,high
+API00-C,201,sqlite,src/expr.c,2876,FP,p walked; non-null caller invariant; SQLITE_ENABLE_CURSOR_HINTS-gated; API00 misfire,,high
+API00-C,202,sqlite,src/expr.c,2899,FP,pValue is OUT param written only when integer found; guarded by NEVER(p==0) return at 2901; not unvalidated misuse,,high
+API00-C,203,sqlite,src/expr.c,2899,FP,pParse may be NULL by documented contract and is checked (if pParse==0 break) at 2928; API00 misfire,,high
+DCL13-C,204,sqlite,src/expr.c,2899,FP,pParse read-only but passed recursively and to Vdbe APIs taking non-const Parse*; const would cascade-break; sig-shaped,,med
+MEM05-C,205,sqlite,src/expr.c,2899,FP,sqlite3ExprIsInteger recursion (TK_UPLUS/TK_UMINUS) is depth-bounded by parser expr-depth limit; MEM05 stack-exhaustion not reachable on bounded trees,,high
+INT32-C,206,sqlite,src/expr.c,2921,FP,-v guarded by assert(((unsigned)v)!=0x80000000) at 2920; -INT_MIN explicitly precluded by the assert/invariant,,high
+API00-C,207,sqlite,src/expr.c,2965,FP,p asserted non-null (assert p!=0 at 2967); API00 misfire,,high
+API00-C,208,sqlite,src/expr.c,3006,FP,p dereferenced after caller guarantees non-null; while loop reads p->op safely; API00 misfire,,high
+API00-C,209,sqlite,src/expr.c,3054,FP,pTab asserted via VisibleRowid(pTab) at 3057; internal contract non-null; API00 misfire,,high
+ARR02-C,210,sqlite,src/expr.c,3055,FP,"azOpt[] = {""_ROWID_"",""ROWID"",""OID""} has compiler-deduced size 3; iterated via ArraySize(azOpt); implicit bound is correct and known at compile time",,high
+ARR00-C,211,sqlite,src/expr.c,3058,FP,ii initialized at for(ii=0;...) at 3058; not uninitialized; ArraySize bound is correct; sqc misread the for-init,,high
+DCL30-C,212,sqlite,src/expr.c,3106,FP,"p returned at 3106 is pX->x.pSelect (heap Select from the parse tree), assigned at 3080; not a local-address return",,high
+API00-C,213,sqlite,src/expr.c,3230,FP,pParse internal parser context non-null; API00 misfire,,high
+API00-C,214,sqlite,src/expr.c,3230,FP,"prRhsHasNull is OUT pointer, may be NULL by contract and checked (if prRhsHasNull && ...) at 3253; not unvalidated",,high
+API00-C,215,sqlite,src/expr.c,3230,FP,"aiMap is optional OUT, used only under if(aiMap) at 3366/3444; not unvalidated",,high
+API00-C,216,sqlite,src/expr.c,3230,FP,piTab is OUT param written once at 3449; internal contract non-null; API00 misfire,,high
+MSC04-C,217,sqlite,src/expr.c,3230,TP,sqlite3FindInIndex genuinely participates in the codegen indirect-recursion cycle through CodeRhsOfIN/Select; bounded by expr/query depth,,high
+INT32-C,218,sqlite,src/expr.c,3246,FP,"pParse->nTab++ is a cursor counter bounded by query complexity (SQLITE_LIMIT), cannot approach INT_MAX",,high
+EXP34-C,219,sqlite,src/expr.c,3271,FP,p (=isCandidateForInOpt result) is non-null inside the if(...(p=...)!=0) guard at 3267; not a null deref,,high
+EXP34-C,220,sqlite,src/expr.c,3272,FP,pEList=p->pEList non-null by isCandidateForInOpt invariant (assert p->pEList!=0 at 3274); not a null deref,,high
+ARR00-C,221,sqlite,src/expr.c,3329,FP,pIdx initialized in for(pIdx=pTab->pIndex;...) at 3329; not uninitialized; sqc misread loop-init,,high
+INT14-C,222,sqlite,src/expr.c,3370,FP,"nExpr used in MASKBIT/bit-shift and arithmetic but readability-only INT14 advisory; nExpr asserted <BMS at 3369; intentional bitmask idiom, not a defect",,high
+DCL03-C,223,sqlite,src/expr.c,3379,FP,"assert(IN_INDEX_INDEX_DESC==IN_INDEX_INDEX_ASC+1) at 3379 is a compile-time constant predicate; project-idiomatic runtime assert, not a defect per core profile",,high
+INT13-C,224,sqlite,src/expr.c,3384,FP,1<<nExpr: nExpr asserted 0<nExpr<BMS at 3369 so shift amount is in-range; SQLITE_ENABLE_COLUMN_USED_MASK-gated; INT13 readability advisory,,high
+INT32-C,225,sqlite,src/expr.c,3384,FP,(1<<nExpr)-1: nExpr<BMS (=sizeof(Bitmask)*8) bounded by assert; mask computation cannot overflow per the BMS-2 comment at 3334,,high
+INT32-C,226,sqlite,src/expr.c,3384,FP,"1<<nExpr bounded by assert(nExpr<BMS) at 3369; shift in-range, well-defined",,high
+INT34-C,227,sqlite,src/expr.c,3384,FP,shift amount nExpr asserted 0<nExpr<BMS at 3369; non-negative and within width by invariant,,high
+INT32-C,228,sqlite,src/expr.c,3412,FP,"pParse->nTab-- backs out an allocation just made at 3246 (nTab++); bounded counter, no underflow",,high
+INT32-C,229,sqlite,src/expr.c,3428,FP,++pParse->nMem is a register counter bounded by query size limits; cannot reach INT_MAX,,high
+DCL13-C,230,sqlite,src/expr.c,3463,FP,pParse read for pParse->db; passed to non-const APIs; const sig would break; sig-shaped,,med
+INT32-C,231,sqlite,src/expr.c,3470,FP,1+(i64)nVal explicitly widens to i64 before the add; nVal is a small vector size bounded by column limits; no overflow,,high
+ARR00-C,232,sqlite,src/expr.c,3484,FP,"zRet is heap from sqlite3DbMallocRaw(pParse->db,...) at 3470, not a local array; returning it transfers ownership (documented caller-frees)",,high
+DCL30-C,233,sqlite,src/expr.c,3484,FP,"zRet is heap allocation, not automatic storage; correct ownership-transfer return",,high
+API00-C,234,sqlite,src/expr.c,3495,FP,pParse internal context non-null; API00 misfire,,high
+API00-C,235,sqlite,src/expr.c,3514,FP,pParse internal context non-null; API00 misfire,,high
+API00-C,236,sqlite,src/expr.c,3514,FP,pExpr non-null by caller invariant (vector error path); ExprUseXSelect macro reads it safely; API00 misfire,,high
+DCL13-C,237,sqlite,src/expr.c,3532,FP,pParse read-only in this function body but passed to sqlite3SubselectError/sqlite3ErrorMsg taking non-const Parse*; const would cascade; sig-shaped,,med
+DCL13-C,238,sqlite,src/expr.c,3534,TP,findCompatibleInRhsSubrtn only reads pNewSig->selId/zAff never writes and signature is a plain static helper not a typedef-fixed callback so const would compile,,low
+EXP34-C,239,sqlite,src/expr.c,3552,FP,pOp from sqlite3VdbeGetOp iterated with pOp<pEnd bound and asserted opcode so never null,,high
+API00-C,240,sqlite,src/expr.c,3592,FP,pParse is internal central context guaranteed non-null by caller invariant not a trust boundary,,high
+MSC04-C,241,sqlite,src/expr.c,3592,TP,sqlite3CodeRhsOfIN genuinely participates in indirect codegen recursion via sqlite3Select,,high
+INT14-C,242,sqlite,src/expr.c,3626,FP,INT14 misfire pExpr only appears in ExprHasProperty macro and member access not mixed bitwise/arithmetic,,high
+MEM30-C,243,sqlite,src/expr.c,3654,FP,"sqlite3DbFree(db,x) frees pSig->zAff and pSig the db handle is the context arg not freed",,high
+INT32-C,244,sqlite,src/expr.c,3663,FP,++pParse->nMem is a bounded VDBE register counter not attacker-driven,,high
+INT32-C,245,sqlite,src/expr.c,3722,FP,++pParse->nMem bounded register counter,,high
+MEM30-C,246,sqlite,src/expr.c,3736,FP,dest.iSDParm2 is an int register number not a freed pointer,,high
+MEM30-C,247,sqlite,src/expr.c,3737,FP,dest.iSDParm2 is an int register number not a freed pointer,,high
+INT32-C,248,sqlite,src/expr.c,3793,FP,addrOnce-1 is bytecode address arithmetic on a small bounded counter,,high
+MEM30-C,249,sqlite,src/expr.c,3817,FP,pParse->nErr is an int error counter not a freed pointer,,high
+MSC04-C,250,sqlite,src/expr.c,3841,TP,sqlite3CodeSubselect genuinely participates in indirect codegen recursion,,high
+EXP34-C,251,sqlite,src/expr.c,3855,FP,pExpr asserted op==TK_EXISTS/TK_SELECT and caller-guaranteed non-null,,high
+INT32-C,252,sqlite,src/expr.c,3875,FP,++pParse->nMem bounded register counter,,high
+INT32-C,253,sqlite,src/expr.c,3907,FP,pParse->nMem+1 bounded register counter,,high
+INT32-C,254,sqlite,src/expr.c,3908,FP,pParse->nMem += nReg bounded register counter,,high
+INT32-C,255,sqlite,src/expr.c,3920,FP,pParse->nMem+1 bounded register counter,,high
+INT32-C,256,sqlite,src/expr.c,3921,FP,pParse->nMem += nReg bounded register counter,,high
+MSC04-C,257,sqlite,src/expr.c,4029,TP,sqlite3ExprCodeIN genuinely participates in indirect codegen recursion,,high
+INT30-C,258,sqlite,src/expr.c,4058,FP,nVector is column count bounded by SQLITE_LIMIT and DbMallocZero takes u64 no wrap,,high
+INT32-C,259,sqlite,src/expr.c,4058,FP,nVector bounded column count product fits in size_t arg to allocator,,high
+EXP33-C,260,sqlite,src/expr.c,4079,FP,i is initialized by the for(i=0;...) header in the SQLITE_DEBUG verification loop,,high
+ARR00-C,261,sqlite,src/expr.c,4124,FP,ii is initialized by for(ii=0; ii<pList->nExpr; ii++) loop header,,high
+EXP33-C,262,sqlite,src/expr.c,4129,FP,regToFree written by sqlite3ExprCodeTemp(&regToFree) at 4125 before release at 4129,,high
+EXP34-C,263,sqlite,src/expr.c,4138,FP,zAff from exprINAffinity guarded by parser invariants and OOM goes to oom_error path,,high
+INT32-C,264,sqlite,src/expr.c,4171,FP,rLhsOrig+i is bounded register-number arithmetic,,high
+INT32-C,265,sqlite,src/expr.c,4171,FP,rLhs+aiMap[i] bounded register arithmetic aiMap entries in 0..nVector-1,,high
+INT32-C,266,sqlite,src/expr.c,4191,FP,rLhs+i bounded register arithmetic,,high
+EXP34-C,267,sqlite,src/expr.c,4213,FP,pOp from sqlite3VdbeGetOp asserted opcode==OP_Once never null,,high
+INT32-C,268,sqlite,src/expr.c,4267,FP,rLhs+i bounded register arithmetic,,high
+MEM30-C,269,sqlite,src/expr.c,4290,FP,sqlite3DbFree frees aiMap and zAff db handle is context arg not freed,,high
+INT32-C,270,sqlite,src/expr.c,4326,FP,i=pExpr->u.iValue asserted i>=0 so -i cannot reach -INT_MIN overflow,,high
+API00-C,271,sqlite,src/expr.c,4359,FP,pParse internal central context not a trust boundary,,high
+API00-C,272,sqlite,src/expr.c,4359,FP,pIdx caller-guaranteed non-null internal contract,,high
+API00-C,273,sqlite,src/expr.c,4359,FP,iTabCur is a bounded cursor number not attacker arithmetic,,high
+MSC04-C,274,sqlite,src/expr.c,4359,TP,sqlite3ExprCodeLoadIndexColumn genuinely participates in indirect codegen recursion,,high
+DCL13-C,275,sqlite,src/expr.c,4361,TP,pIdx only read (aiColumn/aColExpr/pTable) never written and pTable passed by value so const could compile,,low
+ARR00-C,276,sqlite,src/expr.c,4366,FP,pIdx->aiColumn[iIdxCol] iIdxCol bounded by index column count asserted by callers,,high
+EXP34-C,277,sqlite,src/expr.c,4366,FP,pIdx caller-guaranteed non-null,,high
+INT32-C,278,sqlite,src/expr.c,4370,FP,iTabCur+1 bounded cursor number,,high
+ARR00-C,279,sqlite,src/expr.c,4371,FP,aColExpr->a[iIdxCol] guarded by assert nExpr>iIdxCol at 4369,,high
+API00-C,280,sqlite,src/expr.c,4384,FP,pParse internal context not a trust boundary,,high
+API00-C,281,sqlite,src/expr.c,4384,FP,pCol caller-guaranteed non-null,,high
+MSC04-C,282,sqlite,src/expr.c,4384,TP,sqlite3ExprCodeGeneratedColumn genuinely participates in indirect codegen recursion,,high
+INT32-C,283,sqlite,src/expr.c,4396,FP,pParse->iSelfTab-1 bounded cursor/register index,,high
+INT14-C,284,sqlite,src/expr.c,4401,FP,INT14 misfire pCol only in colFlags mask test and pointer subtraction,,high
+INT14-C,285,sqlite,src/expr.c,4402,FP,INT14 misfire pTab only in tabFlags mask test and member access,,high
+INT32-C,286,sqlite,src/expr.c,4404,FP,2+(int)(pCol-pTab->aCol) pointer diff bounded by nCol column count,,high
+API00-C,287,sqlite,src/expr.c,4417,FP,iTabCur bounded cursor number not attacker arithmetic,,high
+MSC04-C,288,sqlite,src/expr.c,4417,TP,sqlite3ExprCodeGetColumnOfTable genuinely participates in indirect codegen recursion,,high
+ARR00-C,289,sqlite,src/expr.c,4438,FP,&pTab->aCol[iCol] iCol bounded by assert iCol<pTab->nCol in callers,,high
+EXP45-C,290,sqlite,src/expr.c,4438,FP,the parenthesized assignment result is dereferenced via ->colFlags not used as a bare truth value so not the EXP45 pattern,,high
+EXP34-C,291,sqlite,src/expr.c,4440,FP,pCol is address of array element &pTab->aCol[iCol] never null,,high
+EXP34-C,292,sqlite,src/expr.c,4444,FP,pParse from sqlite3VdbeParser(v) with v asserted non-null,,high
+INT32-C,293,sqlite,src/expr.c,4446,FP,iTabCur+1 bounded cursor number,,high
+API00-C,294,sqlite,src/expr.c,4474,FP,pParse internal context not a trust boundary,,high
+API00-C,295,sqlite,src/expr.c,4474,FP,pTab caller-guaranteed non-null,,high
+MSC04-C,296,sqlite,src/expr.c,4474,TP,sqlite3ExprCodeGetColumn genuinely participates in indirect codegen recursion,,high
+DCL13-C,297,sqlite,src/expr.c,4475,FP,pParse is the central mutable Parse context propagated to mutating callees const would be semantically wrong,,high
+INT13-C,298,sqlite,src/expr.c,4483,FP,p5 is declared u8 (unsigned) not int sqc misread the type,,high
+INT13-C,299,sqlite,src/expr.c,4484,FP,p5 is declared u8 not int,,high
+EXP34-C,300,sqlite,src/expr.c,4488,FP,pOp from sqlite3VdbeGetLastOp always valid,,high
+INT13-C,301,sqlite,src/expr.c,4489,FP,p5 is declared u8 not int,,high
+API00-C,302,sqlite,src/expr.c,4498,FP,pParse internal context not a trust boundary,,high
+DCL13-C,303,sqlite,src/expr.c,4498,FP,pParse central context mutated through pVdbe const would break propagation,,high
+API00-C,304,sqlite,src/expr.c,4507,FP,pExpr caller-guaranteed non-null and NEVER(p==0) guard follows,,high
+EXP34-C,305,sqlite,src/expr.c,4510,FP,p guarded by NEVER(p==0) return before deref,,high
+MSC04-C,306,sqlite,src/expr.c,4530,TP,exprCodeVector genuinely participates in indirect codegen recursion,,high
+EXP34-C,307,sqlite,src/expr.c,4537,FP,p is the function parameter caller-guaranteed non-null,,high
+INT32-C,308,sqlite,src/expr.c,4545,FP,pParse->nMem+1 bounded register counter,,high
+INT32-C,309,sqlite,src/expr.c,4546,FP,pParse->nMem += nResult bounded register counter,,high
+INT32-C,310,sqlite,src/expr.c,4549,FP,i+iResult bounded register arithmetic,,high
+MSC04-C,311,sqlite,src/expr.c,4570,TP,exprCodeInlineFunction genuinely participates in indirect codegen recursion,,high
+DCL13-C,312,sqlite,src/expr.c,4572,FP,pFarg stored into non-const caseExpr.x.pList for INLINEFUNC_iif so const would not compile,,high
+ARR02-C,313,sqlite,src/expr.c,4671,FP,azAff[] size is fully determined by its brace initializer no missing bound defect,,med
+INT07-C,314,sqlite,src/expr.c,4679,FP,index aff bounded by asserts at 4676-4677 plain-char arithmetic is range-safe,,high
+EXP34-C,315,sqlite,src/expr.c,4715,FP,pDef guarded by NEVER(pDef==0) before use,,high
+DCL13-C,316,sqlite,src/expr.c,4730,FP,sqlite3IndexedExprLookup writes pParse->pIdxEpr=0 at 4796 so pParse is modified,,high
+MSC04-C,317,sqlite,src/expr.c,4746,TP,sqlite3IndexedExprLookup genuinely participates in indirect codegen recursion,,high
+DCL13-C,318,sqlite,src/expr.c,4820,TP,exprPartidxExprLookup only reads pExpr->iColumn/iTable never writes and does not propagate pExpr non-const so const could compile,,low
+MSC04-C,319,sqlite,src/expr.c,4820,TP,exprPartidxExprLookup genuinely participates in indirect codegen recursion,,high
+MSC04-C,320,sqlite,src/expr.c,4854,TP,exprCodeTargetAndOr genuinely participates in indirect codegen recursion,,high
+API00-C,321,sqlite,src/expr.c,4930,FP,pParse internal context not a trust boundary,,high
+API00-C,322,sqlite,src/expr.c,4930,FP,target asserted target>0 && target<=pParse->nMem bounded register,,high
+MEM05-C,323,sqlite,src/expr.c,4930,TP,sqlite3ExprCodeTarget is genuinely recursive over the expression tree (stack bounded by tree depth),,high
+EXP34-C,324,sqlite,src/expr.c,4962,FP,pAggInfo guarded by assert(pAggInfo!=0) at 4960,,high
+DCL03-C,325,sqlite,src/expr.c,5019,TP,assert(SQLITE_AFF_BLOB=='A') is a pure compile-time constant expression,,high
+DCL03-C,326,sqlite,src/expr.c,5020,TP,assert(SQLITE_AFF_TEXT=='B') is a pure compile-time constant expression,,high
+INT07-C,327,sqlite,src/expr.c,5022,FP,aff is declared int at 5012 not char sqc misread the type,,high
+INT32-C,328,sqlite,src/expr.c,5022,FP,(aff-'B')*2 aff bounded by aff>SQLITE_AFF_BLOB check small values no overflow,,high
+INT32-C,329,sqlite,src/expr.c,5022,FP,aff-'B' bounded small affinity value,,high
+INT32-C,330,sqlite,src/expr.c,5044,FP,-1-pParse->iSelfTab bounded cursor index arithmetic,,high
+INT32-C,331,sqlite,src/expr.c,5048,FP,storage-index minus iSelfTab bounded by column/cursor counts,,high
+INT32-C,332,sqlite,src/expr.c,5074,FP,pParse->iSelfTab-1 bounded cursor index,,high
+EXP33-C,333,sqlite,src/expr.c,5080,FP,r1 assigned in the 0!=(r1=exprPartidxExprLookup(...)) condition before return r1,,high
+EXP33-C,334,sqlite,src/expr.c,5185,FP,r2 assigned at 5182 before use at 5185,,high
+EXP33-C,335,sqlite,src/expr.c,5268,FP,tempX fields fully set at 5266-5269 before use at 5270,,high
+INT13-C,336,sqlite,src/expr.c,5295,FP,isTrue and bNormal are 0/1 int flags xor is value-safe,,high
+EXP34-C,337,sqlite,src/expr.c,5317,FP,pInfo guarded by if(pInfo==0 || ...) before else-branch use,,high
+INT32-C,338,sqlite,src/expr.c,5386,FP,pParse->nMem+1 bounded register counter,,high
+INT32-C,339,sqlite,src/expr.c,5387,FP,pParse->nMem += nFarg bounded register counter,,high
+DCL03-C,340,sqlite,src/expr.c,5403,TP,assert(SQLITE_FUNC_LENGTH==OPFLAG_LENGTHARG) is a compile-time constant expression,,high
+DCL03-C,341,sqlite,src/expr.c,5404,TP,assert(SQLITE_FUNC_TYPEOF==OPFLAG_TYPEOFARG) is a compile-time constant expression,,high
+DCL03-C,342,sqlite,src/expr.c,5405,TP,assert(SQLITE_FUNC_BYTELEN==OPFLAG_BYTELENARG) is a compile-time constant expression,,high
+DCL03-C,343,sqlite,src/expr.c,5406,TP,assert((OPFLAG_LENGTHARG|OPFLAG_TYPEOFARG)==OPFLAG_BYTELENARG) is a compile-time constant expression,,high
+INT32-C,344,sqlite,src/expr.c,5570,FP,p1 trigger-param math asserted p1>=0 && p1<nCol*2+2 iTable 0/1 nCol bounded i16,,high
+INT32-C,345,sqlite,src/expr.c,5570,FP,same p1 expression bounded by the assert at 5576,,high
+INT32-C,346,sqlite,src/expr.c,5570,FP,iTable*(nCol+1) iTable asserted 0 or 1 nCol bounded i16 no overflow,,high
+EXP34-C,347,sqlite,src/expr.c,5685,FP,sqlite3ExprDelete is documented/implemented to accept and ignore NULL,,high
+EXP34-C,348,sqlite,src/expr.c,5688,FP,pX guarded by (pX=pExpr->pLeft)!=0 condition entering the block,,high
+EXP34-C,349,sqlite,src/expr.c,5689,FP,pDel non-null after the mallocFailed break check at 5684,,high
+EXP34-C,350,sqlite,src/expr.c,5689,FP,pDel non-null after the mallocFailed break check,,high
+INT14-C,351,sqlite,src/expr.c,5701,FP,INT14 misfire nExpr in nExpr&1 and nExpr-1 small bounded list length,,high
+INT32-C,352,sqlite,src/expr.c,5701,FP,i+2 loop induction bounded by nExpr,,high
+EXP34-C,353,sqlite,src/expr.c,5709,FP,pTest set to opCompare or aListelem[i].pExpr in loop before use at 5709,,high
+INT32-C,354,sqlite,src/expr.c,5712,FP,i+1 bounded loop arithmetic,,high
+INT13-C,355,sqlite,src/expr.c,5716,FP,nExpr&1 nExpr small positive list length,,high
+INT32-C,356,sqlite,src/expr.c,5717,FP,nExpr-1 bounded list length,,high
+EXP34-C,357,sqlite,src/expr.c,5721,FP,"sqlite3ExprDelete is null-tolerant (checks p!=0); passing pDel which may be 0 is the documented contract, not a defect",,high
+API00-C,358,sqlite,src/expr.c,5777,FP,API00 misfire pParse is internal-contract non-null (caller holds Parse); not a trust boundary in codegen,,high
+MSC04-C,359,sqlite,src/expr.c,5777,TP,sqlite3ExprCodeRunJustOnce genuinely participates in expr-tree mutual recursion (depth bounded by SQLITE_LIMIT_EXPR_DEPTH),,med
+INT32-C,360,sqlite,src/expr.c,5805,FP,pParse->nMem is a register counter bounded by SQLITE_MAX_COLUMN/expr depth far below INT_MAX intended counter,,high
+EXP34-C,361,sqlite,src/expr.c,5812,FP,"sqlite3ExprListAppend tolerates null pExpr and null list (allocates); contract documented, no defect",,high
+INT32-C,362,sqlite,src/expr.c,5814,FP,p->nExpr-1 indexes the just-appended element; p!=0 guard at 5813 ensures nExpr>=1 so no underflow,,high
+INT32-C,363,sqlite,src/expr.c,5816,FP,++pParse->nMem bounded register counter cannot realistically reach INT_MAX,,high
+API00-C,364,sqlite,src/expr.c,5828,FP,API00 misfire pParse internal-contract non-null,,high
+MSC04-C,365,sqlite,src/expr.c,5828,TP,sqlite3ExprNullRegisterRange genuinely participates in indirect recursion via codegen tree walk (depth-bounded),,med
+EXP05-C,366,sqlite,src/expr.c,5835,FP,&t takes address of non-const local Expr t at line 5834; no const qualifier is being cast away,,high
+API00-C,367,sqlite,src/expr.c,5856,FP,API00 misfire pReg out-param dereferenced only in branches; caller always supplies valid &local,,high
+MSC04-C,368,sqlite,src/expr.c,5856,TP,sqlite3ExprCodeTemp genuinely participates in indirect codegen recursion (depth-bounded),,med
+EXP34-C,369,sqlite,src/expr.c,5861,FP,pExpr deref guarded by ALWAYS(pExpr!=0) at 5860 before any member access,,high
+API00-C,370,sqlite,src/expr.c,5884,FP,API00 misfire pExpr handled (assert pExpr==0|| at 5887 and null-safe path); pParse internal non-null,,high
+MSC04-C,371,sqlite,src/expr.c,5884,TP,sqlite3ExprCode genuinely participates in indirect codegen recursion (depth-bounded),,med
+EXP34-C,372,sqlite,src/expr.c,5897,FP,pX member access at 5897 guarded by ALWAYS(pX) in the same condition,,high
+API00-C,373,sqlite,src/expr.c,5912,FP,API00 misfire pParse internal-contract non-null,,high
+API00-C,374,sqlite,src/expr.c,5912,FP,API00 misfire pExpr passed to null-tolerant sqlite3ExprDup; not validated because not required,,high
+MSC04-C,375,sqlite,src/expr.c,5912,TP,sqlite3ExprCodeCopy genuinely participates in indirect codegen recursion (depth-bounded),,med
+API00-C,376,sqlite,src/expr.c,5925,FP,API00 misfire pParse internal-contract non-null,,high
+MSC04-C,377,sqlite,src/expr.c,5925,TP,sqlite3ExprCodeFactorable genuinely participates in indirect codegen recursion (depth-bounded),,med
+API00-C,378,sqlite,src/expr.c,5953,FP,API00 misfire pParse internal-contract non-null,,high
+API00-C,379,sqlite,src/expr.c,5953,FP,API00 misfire pList non-null guaranteed by assert(pList!=0) at 5964 caller contract,,high
+API00-C,380,sqlite,src/expr.c,5953,FP,API00 misfire target is a register index bounded by codegen invariants not a trust input,,high
+API00-C,381,sqlite,src/expr.c,5953,FP,API00 misfire srcReg is a register index bounded by codegen invariants,,high
+MSC04-C,382,sqlite,src/expr.c,5953,TP,sqlite3ExprCodeExprList genuinely participates in indirect codegen recursion (depth-bounded),,med
+DCL13-C,383,sqlite,src/expr.c,5955,FP,DCL13 misfire pList->a[].pExpr nodes are mutated via sqlite3ExprCodeTarget so const would not compile,,high
+INT32-C,384,sqlite,src/expr.c,5982,FP,j+srcReg-1 are bounded register/column indices guarded by REF flag and iOrderByCol>0; no realistic overflow,,high
+INT32-C,385,sqlite,src/expr.c,5982,FP,target+i bounded register indices within codegen invariants,,high
+INT32-C,386,sqlite,src/expr.c,5987,FP,target+i bounded register indices within codegen invariants,,high
+INT32-C,387,sqlite,src/expr.c,5989,FP,target+i bounded register indices within codegen invariants,,high
+EXP30-C,388,sqlite,src/expr.c,5992,FP,pOp assigned via (pOp=sqlite3VdbeGetLastOp(v)) at 5993 before any access at 5994; sequenced by short-circuit &&,,high
+EXP30-C,389,sqlite,src/expr.c,5992,FP,same assigned-before-use pattern; sequence points provided by logical-AND operators,,high
+EXP30-C,390,sqlite,src/expr.c,5992,FP,same assigned-before-use pattern; no unsequenced modify/access,,high
+EXP45-C,391,sqlite,src/expr.c,5993,FP,EXP45 misfire intentional assignment in if at 5993 guarded by copyOp==OP_Copy short-circuit; idiomatic and correct,,high
+EXP33-C,392,sqlite,src/expr.c,5994,FP,pOp assigned in if-condition at 5993 (left of && short-circuit) before its use at 5994; not uninitialized,,high
+EXP34-C,393,sqlite,src/expr.c,5994,FP,pOp deref at 5994 reached only after pOp=sqlite3VdbeGetLastOp(v) returns valid op (VDBE has ops here),,high
+INT32-C,394,sqlite,src/expr.c,6000,FP,target+i bounded register indices within codegen invariants,,high
+MSC04-C,395,sqlite,src/expr.c,6028,TP,exprCodeBetween genuinely participates in indirect codegen recursion (depth-bounded),,med
+DCL31-C,396,sqlite,src/expr.c,6060,FP,xJump is a function-pointer parameter of exprCodeBetween declared at 6032; called via pointer not undeclared function,,high
+EXP34-C,397,sqlite,src/expr.c,6067,FP,pDel deref at 6067 inside if(db->mallocFailed==0) block where sqlite3ExprDup succeeded; non-null on that path,,high
+API00-C,398,sqlite,src/expr.c,6100,FP,API00 misfire pParse internal-contract non-null,,high
+MEM05-C,399,sqlite,src/expr.c,6100,FP,MEM05 recursion depth bounded by SQLITE_LIMIT_EXPR_DEPTH parser limit; not unbounded stack growth,,high
+INT13-C,400,sqlite,src/expr.c,6155,FP,"INT13 isTrue/isNot are 0/1 booleans; ^ is intentional logical-xor idiom on bounded values, no defect",,high
+EXP33-C,401,sqlite,src/expr.c,6188,FP,r1/r2 assigned in both branches (6183-6185 or 6180) before use at 6187; not uninitialized,,high
+EXP33-C,402,sqlite,src/expr.c,6188,FP,r2 likewise assigned in both arms before codeCompare use,,high
+API00-C,403,sqlite,src/expr.c,6266,FP,API00 misfire pParse internal-contract non-null,,high
+MEM05-C,404,sqlite,src/expr.c,6266,FP,MEM05 recursion depth bounded by SQLITE_LIMIT_EXPR_DEPTH,,high
+INT14-C,405,sqlite,src/expr.c,6296,FP,INT14 misfire TK_ISNULL&1 is a compile-time constant token-alignment trick; intentional bit/arith mix,,high
+INT14-C,406,sqlite,src/expr.c,6296,FP,INT14 misfire pExpr->op arithmetic in token-mapping expression at 6296 is intentional aligned-constant math,,high
+INT13-C,407,sqlite,src/expr.c,6352,FP,INT13 isTrue^isNot on 0/1 booleans intentional logical-xor; no defect,,high
+EXP33-C,408,sqlite,src/expr.c,6388,FP,r1 assigned in both branches before use at 6387; not uninitialized,,high
+EXP33-C,409,sqlite,src/expr.c,6388,FP,r2 assigned in both branches before use at 6387; not uninitialized,,high
+API00-C,410,sqlite,src/expr.c,6462,FP,API00 misfire pParse internal-contract non-null,,high
+API00-C,411,sqlite,src/expr.c,6462,FP,API00 misfire pExpr passed to null-tolerant sqlite3ExprDup; not required to validate,,high
+MSC04-C,412,sqlite,src/expr.c,6462,TP,sqlite3ExprIfFalseDup genuinely participates in indirect codegen recursion (depth-bounded),,med
+EXP34-C,413,sqlite,src/expr.c,6499,FP,exprCompareVariable pParse deref at 6499 guarded; caller sqlite3ExprCompare checks if(pParse&&...) at 6554 before calling,,high
+MEM05-C,414,sqlite,src/expr.c,6544,FP,MEM05 recursion depth bounded by SQLITE_LIMIT_EXPR_DEPTH,,high
+EXP34-C,415,sqlite,src/expr.c,6565,FP,sqlite3ExprCompare explicitly handles pParse==0 (the if(pParse&&...) guard); passing 0 is the documented contract,,high
+EXP34-C,416,sqlite,src/expr.c,6568,FP,same sqlite3ExprCompare null-pParse contract; 0 is legal argument,,high
+EXP34-C,417,sqlite,src/expr.c,6590,FP,sqlite3WindowCompare accepts null pParse; passing 0 here is the documented contract,,high
+EXP34-C,418,sqlite,src/expr.c,6613,FP,sqlite3ExprCompare null-pParse contract; 0 legal,,high
+EXP34-C,419,sqlite,src/expr.c,6614,FP,sqlite3ExprCompare null-pParse contract; 0 legal,,high
+MSC04-C,420,sqlite,src/expr.c,6646,TP,sqlite3ExprListCompare genuinely participates in indirect recursion via sqlite3ExprCompare (depth-bounded),,med
+EXP45-C,421,sqlite,src/expr.c,6656,FP,EXP45 misfire intentional assignment res=sqlite3ExprCompare(...) in if at 6656; idiomatic and correct,,high
+API00-C,422,sqlite,src/expr.c,6665,FP,API00 misfire pA passed to null-tolerant sqlite3ExprSkipCollate/sqlite3ExprCompare which handle null,,high
+API00-C,423,sqlite,src/expr.c,6665,FP,API00 misfire pB likewise null-tolerant downstream,,high
+EXP30-C,424,sqlite,src/expr.c,6666,FP,EXP30 misfire sqlite3ExprSkipCollate(pA) and (pB) are distinct argument expressions with no shared side-effect on same object,,high
+MEM05-C,425,sqlite,src/expr.c,6678,FP,MEM05 exprImpliesNotNull recursion bounded by expr-tree depth (SQLITE_LIMIT_EXPR_DEPTH),,high
+MEM05-C,426,sqlite,src/expr.c,6827,FP,MEM05 sqlite3ExprImpliesExpr recursion bounded by expr-tree depth,,high
+MEM05-C,427,sqlite,src/expr.c,7011,FP,MEM05 recursion bounded by expr-tree depth,,high
+DCL13-C,428,sqlite,src/expr.c,7050,FP,DCL13 misfire exprIdxCover signature fixed by Walker.xExprCallback function-pointer typedef; const breaks the typedef,,high
+API00-C,429,sqlite,src/expr.c,7071,FP,API00 misfire pExpr internal-contract non-null; walker handles structure,,high
+API00-C,430,sqlite,src/expr.c,7071,FP,API00 misfire pIdx stored into xcov.pIdx then walked; internal contract,,high
+DCL13-C,431,sqlite,src/expr.c,7074,FP,DCL13 misfire pIdx stored into struct IdxCover.pIdx (non-const Index*); const would not compile,,high
+DCL13-C,432,sqlite,src/expr.c,7106,FP,DCL13 misfire selectRefEnter signature fixed by Walker.xSelectCallback function-pointer typedef,,high
+DCL13-C,433,sqlite,src/expr.c,7106,FP,DCL13 misfire pSelect param fixed by Walker xSelectCallback typedef; also pSelect->pSrc traversed,,high
+INT30-C,434,sqlite,src/expr.c,7114,FP,INT30 misfire p->nExclude is i64 accumulator bounded by query FROM-clause count; nExclude*sizeof(int) cannot wrap realistically,,high
+DCL13-C,435,sqlite,src/expr.c,7126,FP,DCL13 misfire selectRefLeave fixed by Walker xSelectCallback2 function-pointer typedef,,high
+DCL13-C,436,sqlite,src/expr.c,7126,FP,DCL13 misfire pSelect param fixed by Walker typedef,,high
+DCL13-C,437,sqlite,src/expr.c,7143,FP,DCL13 misfire exprRefToSrcList pExpr param fixed by Walker.xExprCallback typedef,,high
+API00-C,438,sqlite,src/expr.c,7180,FP,API00 misfire pParse internal-contract non-null (assert pParse->db!=0 at 7183),,high
+API00-C,439,sqlite,src/expr.c,7180,FP,API00 misfire pExpr internal non-null (assert pExpr->op==TK_AGG_FUNCTION at 7192),,high
+API00-C,440,sqlite,src/expr.c,7180,FP,API00 misfire pSrcList stored into x.pRef; internal contract,,high
+DCL13-C,441,sqlite,src/expr.c,7180,FP,DCL13 misfire pParse->db read and mutated downstream (DbNNFree); const breaks,,high
+DCL13-C,442,sqlite,src/expr.c,7180,FP,DCL13 misfire pSrcList stored into non-const RefSrcList.pRef and traversed; const would not compile,,high
+DCL13-C,443,sqlite,src/expr.c,7227,FP,DCL13 misfire agginfoPersistExprCb fixed by Walker.xExprCallback function-pointer typedef,,high
+API00-C,444,sqlite,src/expr.c,7264,FP,API00 misfire pWalker is out-param memset by the function; internal init contract,,high
+API00-C,445,sqlite,src/expr.c,7264,FP,API00 misfire pParse internal-contract non-null,,high
+DCL13-C,446,sqlite,src/expr.c,7264,FP,DCL13 misfire pParse stored into pWalker->pParse (non-const) at 7266; const would not compile,,high
+ARR01-C,447,sqlite,src/expr.c,7265,FP,ARR01 misfire sizeof(*pWalker) dereferences the pointer to get struct size; intentional and correct,,high
+ARR01-C,448,sqlite,src/expr.c,7280,FP,ARR01 misfire sizeof(pInfo->aCol[0]) is element-size not pointer-size; correct sqlite3ArrayAllocate idiom,,high
+ARR01-C,449,sqlite,src/expr.c,7296,FP,ARR01 misfire sizeof(pInfo->aFunc[0]) element-size; correct,,high
+ARR37-C,450,sqlite,src/expr.c,7322,FP,ARR37 misfire pCol++ walks pAggInfo->aCol[] array allocated by sqlite3ArrayAllocate; valid array iteration bounded by nColumn,,high
+DCL13-C,451,sqlite,src/expr.c,7383,FP,DCL13 misfire analyzeAggregate fixed by Walker.xExprCallback function-pointer typedef,,high
+EXP34-C,452,sqlite,src/expr.c,7399,FP,pIEpr deref at 7399 is the for-loop init/condition; loop exits cleanly and pIEpr==0 checked at 7404 before later deref,,high
+EXP33-C,453,sqlite,src/expr.c,7406,FP,i is the analyzeAggregate function-scope index initialized by each for-loop before use; not uninitialized at 7406,,high
+INT32-C,454,sqlite,src/expr.c,7498,FP,pParse->nTab++ table-cursor counter bounded by query complexity far below INT_MAX,,high
+INT32-C,455,sqlite,src/expr.c,7518,FP,pParse->nTab++ bounded cursor counter,,high
+API00-C,456,sqlite,src/expr.c,7549,FP,API00 misfire pNC internal-contract non-null (assert pNC->ncFlags... at 7390 via callback),,high
+API00-C,457,sqlite,src/expr.c,7549,FP,API00 misfire pExpr internal-contract non-null in walker,,high
+DCL13-C,458,sqlite,src/expr.c,7549,FP,DCL13 misfire pNC->uNC.pAggInfo and pParse mutated via findOrCreateAggInfoColumn; const breaks,,high
+API00-C,459,sqlite,src/expr.c,7567,FP,API00 misfire pList null-checked by if(pList) at 7570; validated,,high
+DCL13-C,460,sqlite,src/expr.c,7567,FP,DCL13 misfire pList->a[].pExpr passed to mutating sqlite3ExprAnalyzeAggregates; const would not compile,,high
+INT32-C,461,sqlite,src/expr.c,7582,FP,++pParse->nMem bounded register counter,,high
+API00-C,462,sqlite,src/expr.c,7591,FP,API00 misfire pParse internal-contract non-null,,high
+API00-C,463,sqlite,src/expr.c,7603,FP,API00 misfire pParse internal-contract non-null,,high
+INT32-C,464,sqlite,src/expr.c,7609,FP,pParse->iRangeReg += nReg bounded register-range bookkeeping; values stay within nMem range,,high
+INT32-C,465,sqlite,src/expr.c,7610,FP,pParse->nRangeReg -= nReg guarded by if(nReg<=n) at 7608 so result stays non-negative,,high
+INT32-C,466,sqlite,src/expr.c,7612,FP,pParse->nMem+1 bounded register counter,,high
+INT32-C,467,sqlite,src/expr.c,7613,FP,pParse->nMem += nReg bounded register counter,,high
+API00-C,468,sqlite,src/expr.c,7617,FP,API00 misfire pParse internal-contract non-null,,high
+API00-C,469,sqlite,src/expr.c,7637,FP,API00 misfire pParse internal-contract non-null,,high
+API00-C,470,sqlite,src/expr.c,7646,FP,API00 misfire pParse internal-contract non-null,,high
+API00-C,471,sqlite,src/expr.c,7657,FP,API00 misfire pParse internal-contract non-null,,high
+DCL13-C,472,sqlite,src/expr.c,7679,FP,DCL13 misfire sqlite3FirstAvailableRegister mutates pParse->nTempReg/nRangeReg at 7667-7668; const would not compile,,high

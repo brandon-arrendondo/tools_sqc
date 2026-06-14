@@ -1,0 +1,184 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API00-C,0,sqlite,src/insert.c,26,FP,sqlite3OpenTable asserts pParse->pVdbe!=0 and pParse non-null is an internal codegen contract; not a trust boundary,,high
+EXP34-C,1,sqlite,src/insert.c,85,FP,pIdx is dereferenced by caller-guaranteed non-null Index; computeIndexAffStr only called from sqlite3IndexAffinityStr which already deref'd pIdx,,high
+ARR00-C,2,sqlite,src/insert.c,91,FP,n is the for-loop counter initialized to 0 at line 91 (for(n=0;...)); not uninitialized,,high
+EXP34-C,3,sqlite,src/insert.c,95,FP,pTab=pIdx->pTable; index always has a backing table by schema invariant; x>=0 path bounded by aiColumn,,high
+EXP34-C,4,sqlite,src/insert.c,112,FP,pIdx non-null by caller contract (deref'd in sqlite3IndexAffinityStr before call),,high
+API00-C,5,sqlite,src/insert.c,122,FP,db is internal connection handle passed to sqlite3DbMallocRaw which tolerates context; not a trust boundary,,high
+INT14-C,6,sqlite,src/insert.c,124,FP,pTab used in pointer arithmetic/member access not signed bitwise misuse; INT14 misfire on pointer member flag test,,high
+ARR00-C,7,sqlite,src/insert.c,136,FP,zColAff is heap memory from sqlite3DbMallocRaw not a local array; ownership transferred to caller per docs,,high
+DCL30-C,8,sqlite,src/insert.c,136,FP,"zColAff is heap-allocated (sqlite3DbMallocRaw), returned intentionally; not automatic storage",,high
+DCL13-C,9,sqlite,src/insert.c,269,FP,exprColumnFlagUnion signature fixed by Walker xExprCallback function-pointer typedef; cannot add const,,high
+API00-C,10,sqlite,src/insert.c,285,FP,"pParse mutated (iSelfTab set, error msgs, VDBE codegen); internal contract guarantees non-null",,high
+API00-C,11,sqlite,src/insert.c,285,FP,iRegStore is a register index from controlled allocator; arithmetic bounded by nMem counter not attacker-controlled,,high
+INT14-C,12,sqlite,src/insert.c,296,FP,pTab used in member/flag access not signed-int bitwise misuse; INT14 misfire on struct flag tests,,high
+EXP34-C,13,sqlite,src/insert.c,306,FP,pOp=sqlite3VdbeGetLastOp guaranteed non-null when last op exists; guarded by TF_HasStored codepath with assert(zP4!=0),,high
+INT14-C,14,sqlite,src/insert.c,336,FP,i is loop counter; '&' is colFlags bit-test on struct member not signed-int arithmetic misuse,,high
+EXP33-C,15,sqlite,src/insert.c,343,FP,"w is a Walker struct fully initialized (u.pTab, callbacks, eCode) before sqlite3WalkExpr use; not uninitialized",,high
+INT32-C,16,sqlite,src/insert.c,353,FP,"iRegStore is a bounded VDBE register number; negation -iRegStore stores iSelfTab marker, no INT_MIN reachable",,high
+INT32-C,17,sqlite,src/insert.c,371,FP,"sqlite3TableColumnToStorage returns bounded column index, iRegStore bounded register; sum within int range",,high
+DCL13-C,18,sqlite,src/insert.c,412,FP,pTab stored into non-const field pInfo->pTab; const would not compile,,high
+ARR00-C,19,sqlite,src/insert.c,415,FP,iDb validated by caller; aDb[iDb] guarded by assert(pParse->db->aDb[iDb].pSchema!=0) and schema invariant iDb<nDb,,high
+ARR30-C,20,sqlite,src/insert.c,415,FP,"same as idx19; iDb is internal database index bounded by nDb invariant, not external input",,high
+ARR00-C,21,sqlite,src/insert.c,421,FP,pSchema->pSeqTab access on aDb[iDb] already asserted valid at line 415,,high
+ARR30-C,22,sqlite,src/insert.c,421,FP,same as idx21; iDb bounded by schema invariant,,high
+INT32-C,23,sqlite,src/insert.c,431,FP,"pParse->nErr is an error counter bounded by parse-time error count, cannot reach INT_MAX in practice",,high
+INT32-C,24,sqlite,src/insert.c,447,FP,nMem is VDBE register counter incremented per register allocation; bounded by statement size,,high
+INT32-C,25,sqlite,src/insert.c,448,FP,nMem pre-increment register allocation; bounded counter not attacker overflow,,high
+INT32-C,26,sqlite,src/insert.c,449,FP,nMem += 2 register allocation; bounded by SQL statement complexity,,high
+API00-C,27,sqlite,src/insert.c,460,FP,sqlite3AutoincrementBegin asserts toplevel and pVdbe; internal contract non-null pParse,,high
+ARR02-C,28,sqlite,src/insert.c,475,FP,autoInc[] is a static const VdbeOpList with brace-enclosed initializer; size implicit by initializer is valid C and intentional,,high
+INT32-C,29,sqlite,src/insert.c,494,FP,"memId is a register number >0 (from regCtr allocation); memId-1 bounded, no overflow",,high
+INT32-C,30,sqlite,src/insert.c,498,FP,memId+2 register offset within allocated 4-register block; bounded,,high
+INT32-C,31,sqlite,src/insert.c,500,FP,memId-1 bounded register arithmetic,,high
+INT32-C,32,sqlite,src/insert.c,503,FP,memId+1 bounded register arithmetic,,high
+INT32-C,33,sqlite,src/insert.c,506,FP,memId+2 bounded register arithmetic,,high
+DCL13-C,34,sqlite,src/insert.c,521,FP,pParse used to emit VDBE ops (mutates VDBE via pParse->pVdbe); not const-eligible semantically,,high
+ARR02-C,35,sqlite,src/insert.c,542,FP,autoIncEnd[] static const VdbeOpList brace-initialized; implicit size intentional and valid,,high
+EXP43-C,36,sqlite,src/insert.c,556,FP,sqlite3VdbeAddOp3 args memId+2 and memId are distinct register numbers; not overlapping restrict regions,,high
+INT32-C,37,sqlite,src/insert.c,556,FP,memId+2 bounded register arithmetic,,high
+INT32-C,38,sqlite,src/insert.c,561,FP,memId+1 bounded register arithmetic,,high
+INT32-C,39,sqlite,src/insert.c,562,FP,memId+1 bounded register arithmetic,,high
+INT32-C,40,sqlite,src/insert.c,563,FP,memId-1 bounded register arithmetic,,high
+INT32-C,41,sqlite,src/insert.c,566,FP,memId+1 bounded register arithmetic,,high
+API00-C,42,sqlite,src/insert.c,571,FP,sqlite3AutoincrementEnd guards pParse->pAinc; pParse internal contract non-null,,high
+API00-C,43,sqlite,src/insert.c,588,FP,"sqlite3MultiValuesEnd ALWAYS(pVal) guard; pParse mutates VDBE, internal non-null contract",,high
+DCL13-C,44,sqlite,src/insert.c,588,FP,pParse used to emit VDBE EndCoroutine/JumpHere ops (mutation); not const-eligible,,high
+DCL13-C,45,sqlite,src/insert.c,603,FP,pRow read-only here but flows from callers (sqlite3MultiValues) into non-const sqlite3SelectNew; ExprList* not const-threaded in codebase,,low
+ARR00-C,46,sqlite,src/insert.c,605,FP,"ii is for-loop counter for(ii=0;ii<pRow->nExpr;ii++); initialized, not uninitialized",,high
+ARR00-C,47,sqlite,src/insert.c,618,FP,ii is for-loop counter initialized at line 618; bounded by pRow->nExpr,,high
+API00-C,48,sqlite,src/insert.c,679,FP,"sqlite3Insert is top-level codegen entry; pParse non-null by parser contract, asserts db->pParse==pParse",,high
+API00-C,49,sqlite,src/insert.c,679,FP,"pLeft is parser-supplied Select, internal contract; pLeft deref guarded by parse flow",,high
+API00-C,50,sqlite,src/insert.c,679,FP,pRow parser-supplied ExprList; internal contract non-null,,high
+INT13-C,51,sqlite,src/insert.c,696,FP,f is local int = SF_Values|SF_MultiValue flag bitmask; bitwise on flag bits is intended idiom not signed misuse,,high
+INT14-C,52,sqlite,src/insert.c,717,FP,pParse used in member access/flag tests not signed bitwise-arith misuse; INT14 misfire,,high
+INT32-C,53,sqlite,src/insert.c,740,FP,++pParse->nMem register allocation; bounded counter,,high
+INT32-C,54,sqlite,src/insert.c,750,FP,pParse->nMem+3 register offset; bounded by statement size,,high
+INT32-C,55,sqlite,src/insert.c,752,FP,"nMem += 2+dest.nSdst register block allocation; bounded by column count (i16, <=32767)",,high
+INT32-C,56,sqlite,src/insert.c,752,FP,2+dest.nSdst where nSdst is expr-list count bounded by column limit; no overflow,,high
+EXP33-C,57,sqlite,src/insert.c,768,FP,pSubq assigned p->u4.pSubq at line 771 before any use (asserts then deref); assigned-before-use,,high
+API00-C,58,sqlite,src/insert.c,894,FP,"sqlite3Insert top-level entry, pParse non-null parser contract with assert(db->pParse==pParse)",,high
+API00-C,59,sqlite,src/insert.c,894,FP,pTabList asserted pTabList->nSrc==1; parser-supplied non-null,,high
+API00-C,60,sqlite,src/insert.c,894,FP,pColumn explicitly NULL-checked (if(pColumn)) before any deref at line 1077,,high
+API00-C,61,sqlite,src/insert.c,894,FP,pUpsert explicitly NULL-checked (if(pUpsert)) before deref at line 1289,,high
+MSC04-C,62,sqlite,src/insert.c,894,TP,genuine indirect recursion sqlite3Insert -> ...trigger codegen... -> codeTriggerProgram -> sqlite3Insert exists; bounded by trigger nesting depth (SQLITE_MAX_TRIGGER_DEPTH),,high
+EXP34-C,63,sqlite,src/insert.c,995,FP,line 995 is inside TREETRACE_ENABLED debug-only block; sqlite3TreeViewInsert handles NULL pSelect for diagnostic tree printing,,high
+INT32-C,64,sqlite,src/insert.c,1049,FP,pParse->nMem+1 register allocation; bounded counter,,high
+INT14-C,65,sqlite,src/insert.c,1050,FP,pTab used in member/flag access; INT14 misfire on struct flag bit-test,,high
+INT32-C,66,sqlite,src/insert.c,1050,FP,nMem += pTab->nCol+1; nCol is i16 column count asserted <=32767; bounded,,high
+INT32-C,67,sqlite,src/insert.c,1052,FP,regRowid++ register number increment for virtual table; bounded register,,high
+INT32-C,68,sqlite,src/insert.c,1053,FP,pParse->nMem++ register allocation; bounded,,high
+INT32-C,69,sqlite,src/insert.c,1055,FP,regRowid+1 register offset; bounded,,high
+INT30-C,70,sqlite,src/insert.c,1078,FP,"pTab->nCol*sizeof(int): nCol is i16 (<=32767), product fits size_t; intended allocation size",,high
+INT14-C,71,sqlite,src/insert.c,1083,FP,i is loop counter; '&' is colFlags bit-test on aCol[j].colFlags not signed arithmetic misuse,,high
+INT32-C,72,sqlite,src/insert.c,1083,FP,i+1 stored as 1-based column map index; i bounded by pColumn->nId; no overflow,,high
+INT14-C,73,sqlite,src/insert.c,1089,FP,j is column index from sqlite3ColumnIndex; '&' bit-test on colFlags; INT14 misfire,,high
+INT32-C,74,sqlite,src/insert.c,1136,FP,regData-1 register offset for rowid; bounded register arithmetic,,high
+INT32-C,75,sqlite,src/insert.c,1137,FP,regRowid-(0 or 1) register offset; bounded,,high
+INT32-C,76,sqlite,src/insert.c,1141,FP,++pParse->nMem register allocation; bounded,,high
+INT32-C,77,sqlite,src/insert.c,1153,FP,"addrTop-1 VDBE address offset; addrTop=CurrentAddr+1 so addrTop>=1, no underflow",,high
+INT32-C,78,sqlite,src/insert.c,1186,FP,pParse->nTab++ cursor counter allocation; bounded by statement complexity,,high
+EXP33-C,79,sqlite,src/insert.c,1228,FP,"i is for-loop counter for(i=ipkColumn-1;i>=0;i--); initialized, not uninitialized",,high
+INT32-C,80,sqlite,src/insert.c,1228,FP,ipkColumn-1: ipkColumn>=0 guarded (if(ipkColumn>=0)); bounded loop init,,high
+DCL03-C,81,sqlite,src/insert.c,1243,FP,"asserts at 1241-1243 compare TF_*/COLFLAG_* enum constants; pure compile-time constants so static_assert applicable, but these are configuration sanity asserts kept runtime by convention",,med
+INT32-C,82,sqlite,src/insert.c,1268,FP,++pParse->nMem register allocation; bounded,,high
+INT30-C,83,sqlite,src/insert.c,1277,FP,sizeof(int)*(nIdx+2): nIdx is index count bounded by schema; product fits size_t allocation,,high
+INT32-C,84,sqlite,src/insert.c,1277,FP,same expr; nIdx bounded by table index count; no signed overflow,,high
+INT32-C,85,sqlite,src/insert.c,1284,FP,nMem += pIdx->nColumn; nColumn bounded by index column limit (i16); no overflow,,high
+INT32-C,86,sqlite,src/insert.c,1286,FP,++pParse->nMem register allocation; bounded,,high
+INT32-C,87,sqlite,src/insert.c,1350,FP,regFromSelect+ipkColumn register offset; both bounded register/column indices,,high
+EXP45-C,88,sqlite,src/insert.c,1375,FP,assignment-in-if (colFlags=pTab->aCol[i].colFlags)&COLFLAG_NOINSERT is deliberate SQLite idiom; EXP45 technically applies but no defect,,med
+INT13-C,89,sqlite,src/insert.c,1388,FP,tmask is trigger-time mask; '&' TRIGGER_BEFORE bit-test is intended flag idiom not signed misuse,,high
+INT32-C,90,sqlite,src/insert.c,1412,FP,j-1 where j=aTabColMap[i] asserted j>=0 and j!=0 in this branch; j-1>=0 bounded,,high
+INT32-C,91,sqlite,src/insert.c,1420,FP,i-nHidden: nHidden incremented only for columns at indices <=i; i-nHidden>=0 by loop invariant (assert i>=nHidden line 1366),,high
+INT32-C,92,sqlite,src/insert.c,1427,FP,"regFromSelect+k are VDBE register numbers bounded by pParse->nMem (int, far below INT_MAX); SCopy operand arithmetic on register indices cannot overflow in practice",,high
+EXP34-C,93,sqlite,src/insert.c,1430,FP,pList branch is only reached when !useTempTable && !pSelect; in that path nColumn>0 implies pList!=0 (set when IDList/VALUES present); k bounded by loop over nColumn entries,,high
+INT13-C,94,sqlite,src/insert.c,1443,FP,tmask is a TRIGGER_BEFORE/AFTER bitmask of small enum bits; '&' on int bitmask is idiomatic and well-defined for these non-negative flag values,,high
+INT32-C,95,sqlite,src/insert.c,1471,FP,regRowid+1 is a VDBE register index; register counts are bounded by pParse->nMem far below INT_MAX,,high
+INT32-C,96,sqlite,src/insert.c,1550,FP,regRowid+1 register arithmetic for generated-column computation; bounded register counter cannot overflow,,high
+INT32-C,97,sqlite,src/insert.c,1607,FP,regData-2-pTab->nCol is register arithmetic; regData was allocated as a contiguous range with regData large enough that subtraction stays positive by construction,,high
+STR30-C,98,sqlite,src/insert.c,1649,FP,sqlite3CodeChangeCount takes const char* zName per its prototype the literal is not modified; sqc string-literal-mutation misfire,,high
+MEM30-C,99,sqlite,src/insert.c,1661,FP,"insert_cleanup frees distinct objects via db handle (sqlite3SrcListDelete/ExprListDelete/etc); db is the context arg never freed, sqc misreads handle arg as freed object",,high
+DCL13-C,100,sqlite,src/insert.c,1689,TP,"checkConstraintExprNode reads pExpr->op/iColumn only never writes through pExpr; Walker xExprCallback typedef is int(*)(Walker*,Expr*) (non-const) so const would not match the slot, making this a borderline-but-typedef-constrained const candidate",,med
+API00-C,101,sqlite,src/insert.c,1718,FP,sqlite3ExprReferencesUpdatedColumn is an internal codegen helper; pExpr guaranteed non-null by callers (pCheck->a[i].pExpr / index expr); internal contract not a trust boundary,,high
+DCL13-C,102,sqlite,src/insert.c,1720,TP,"aiChng is only read (stored into w.u.aiCol and walked read-only); const int* would compile but Walker.u.aiCol field is int* so propagation forces non-const, weakening this to borderline",,med
+INT12-C,103,sqlite,src/insert.c,1756,FP,line 1756 is inside IndexIterator struct 'int i' is a plain struct member field index not a bit-field; sqc INT12 misfire on a normal int declaration,,high
+DCL13-C,104,sqlite,src/insert.c,1776,TP,indexIteratorFirst reads pIter->i/eType/u only never writes; const IndexIterator* would compile here making this a legitimate const-candidate,,med
+INT32-C,105,sqlite,src/insert.c,1790,FP,"++pIter->i increments the index iterator position bounded by nIdx (number of table indexes, tiny); cannot reach INT_MAX",,high
+API00-C,106,sqlite,src/insert.c,1895,FP,sqlite3GenerateConstraintChecks internal codegen entry; pParse guaranteed non-null by all callers (sqlite3Insert/Update); internal contract,,high
+API00-C,107,sqlite,src/insert.c,1895,FP,aRegIdx validated by asserts (assert aRegIdx[nIdx]>0) and caller allocates it; internal contract not a trust boundary,,high
+API00-C,108,sqlite,src/insert.c,1895,FP,pbMayReplace is an OUT param always supplied non-null by callers (&isReplace); written at line 2721 internal contract,,high
+API00-C,109,sqlite,src/insert.c,1895,FP,aiChng may legitimately be NULL (INSERT case) and code guards every use with 'if(aiChng ...)'; sqc API00 misfire on intentionally-nullable param,,high
+API00-C,110,sqlite,src/insert.c,1895,FP,pUpsert may be NULL and is guarded (if(pUpsert)); intentionally-nullable internal param,,high
+API00-C,111,sqlite,src/insert.c,1895,FP,iIdxCur is a cursor base index bounded by pParse->nTab; used only as additive base for cursor numbers no overflow,,high
+API00-C,112,sqlite,src/insert.c,1895,FP,regNewData is a VDBE register base bounded by pParse->nMem; additive register math cannot overflow,,high
+API00-C,113,sqlite,src/insert.c,1895,FP,regOldData is a register base (0 for INSERT) bounded by nMem; no overflow,,high
+MSC04-C,114,sqlite,src/insert.c,1895,TP,sqlite3GenerateConstraintChecks genuinely participates in indirect recursion through the trigger/upsert codegen cycle (Insert->GenCnstChks->UpsertDoUpdate->Update->CodeRowTrigger->...->Insert); depth bounded by SQLITE_MAX_TRIGGER_DEPTH but the cycle is real,,high
+DCL13-C,115,sqlite,src/insert.c,1898,FP,"aRegIdx is indexed read aRegIdx[ix] AND written nowhere here BUT it is passed unchanged to other helpers; however code reads aRegIdx[nIdx] and aRegIdx[ix] only-read so const-candidate, yet the same array is mutated by callers sharing the pointer making const propagation infeasible",,high
+EXP34-C,116,sqlite,src/insert.c,1952,FP,pPk dereferenced only inside HasRowid(pTab)==false branch where pPk=sqlite3PrimaryKeyIndex(pTab) is guaranteed non-null for WITHOUT ROWID tables; line 1952 is exactly that assignment context,,high
+INT14-C,117,sqlite,src/insert.c,1961,FP,pTab used in '&' (tabFlags bitmask test) and pointer arithmetic elsewhere; INT14 readability heuristic misfire on a struct pointer with flag-field access,,high
+INT32-C,118,sqlite,src/insert.c,2006,FP,sqlite3TableColumnToStorage returns a storage column index < nCol(<=32767) added to regNewData register base; bounded register/column arithmetic no overflow,,high
+INT32-C,119,sqlite,src/insert.c,2006,FP,same bounded storage-index + register-base arithmetic as idx 118 no overflow,,high
+INT32-C,120,sqlite,src/insert.c,2055,FP,regNewData+1 register-base arithmetic bounded by nMem,,high
+INT32-C,121,sqlite,src/insert.c,2066,FP,regNewData+1 register-base arithmetic bounded by nMem,,high
+EXP33-C,122,sqlite,src/insert.c,2068,FP,'i' is the for-loop counter at line 2068 (for(i=0;i<pCheck->nExpr;i++)) always assigned before use; sqc uninit misfire,,high
+INT32-C,123,sqlite,src/insert.c,2080,FP,regNewData+1 register-base arithmetic bounded by nMem,,high
+EXP33-C,124,sqlite,src/insert.c,2084,FP,onError assigned at line 2067 (overrideError!=OE_Default?...:OE_Abort) before any use in the loop; not uninitialized,,high
+EXP34-C,125,sqlite,src/insert.c,2160,FP,aRegIdx[nIdx] accessed only after the if(pTab->pIndex!=0) guard where aRegIdx is the caller-supplied non-null index register array; asserted aRegIdx[nIdx]>0,,high
+INT30-C,126,sqlite,src/insert.c,2164,FP,sizeof(IndexListTerm)+1 is sizeof+const evaluated as u64 nByte; product with nIdx (small index count) fits u64 easily and is passed to sqlite3DbMallocZero which checks OOM,,high
+ARR37-C,127,sqlite,src/insert.c,2178,FP,"bUsed is u8* pointing into the just-allocated aIdx tail region (line 2167); subscript bUsed[jj] with jj<nIdx is valid array access into the zeroed allocation, sqc ARR37 misfire on pointer-into-buffer",,high
+ARR37-C,128,sqlite,src/insert.c,2179,FP,same bUsed[jj] valid indexing into the allocated u8 region sized nIdx,,high
+ARR37-C,129,sqlite,src/insert.c,2185,FP,same bUsed[jj] valid indexing into the allocated u8 region sized nIdx,,high
+INT32-C,130,sqlite,src/insert.c,2230,FP,++pParse->nMem allocates a VDBE register; nMem bounded by statement complexity far below INT_MAX,,high
+INT32-C,131,sqlite,src/insert.c,2378,FP,ipkTop-1 is a VDBE address (sqlite3VdbeAddOp0 return +1); addresses bounded by program size no overflow,,high
+INT32-C,132,sqlite,src/insert.c,2408,FP,regNewData+1 register-base arithmetic bounded by nMem,,high
+EXP33-C,133,sqlite,src/insert.c,2412,FP,"'ix' is initialized by indexIteratorFirst(&sIdxIter,&ix) at line 2389 which writes *pIx before the loop body at 2412; not uninitialized",,high
+INT32-C,134,sqlite,src/insert.c,2412,FP,iIdxCur+ix cursor-number arithmetic; both bounded by pParse->nTab no overflow,,high
+INT32-C,135,sqlite,src/insert.c,2418,FP,regNewData+1 register-base arithmetic bounded by nMem,,high
+INT32-C,136,sqlite,src/insert.c,2427,FP,aRegIdx[ix]+1 register-value arithmetic; register numbers bounded by nMem,,high
+INT32-C,137,sqlite,src/insert.c,2432,FP,regNewData+1 register-base arithmetic bounded by nMem,,high
+INT32-C,138,sqlite,src/insert.c,2433,FP,regIdx+i where regIdx is a register base and i<pIdx->nColumn(<=column count); bounded register arithmetic,,high
+INT32-C,139,sqlite,src/insert.c,2438,FP,regIdx+i bounded register arithmetic as idx 138,,high
+INT32-C,140,sqlite,src/insert.c,2442,FP,storage-index(<nCol) + regNewData register-base + 1; bounded arithmetic no overflow,,high
+INT32-C,141,sqlite,src/insert.c,2442,FP,same bounded storage-index + register-base arithmetic,,high
+INT32-C,142,sqlite,src/insert.c,2443,FP,regIdx+i bounded register arithmetic,,high
+INT32-C,143,sqlite,src/insert.c,2537,FP,regR+i where regR is a temp-register base and i<pPk->nKeyCol(tiny); bounded register arithmetic,,high
+INT14-C,144,sqlite,src/insert.c,2564,FP,"'x' is an int used for column/storage index arithmetic and compared; INT14 readability heuristic misfire (x holds aiColumn results, no real bitwise misuse)",,high
+INT32-C,145,sqlite,src/insert.c,2564,FP,regOldData+1+x register arithmetic bounded by nMem,,high
+INT32-C,146,sqlite,src/insert.c,2564,FP,regCmp+i bounded register arithmetic (i<nKeyCol),,high
+INT32-C,147,sqlite,src/insert.c,2589,FP,iIdxCur+ix cursor-number arithmetic bounded by pParse->nTab,,high
+INT32-C,148,sqlite,src/insert.c,2602,FP,sqlite3VdbeCurrentAddr(v)-addrConflictCk computes opcode count; both are non-negative program addresses with current>=addrConflictCk by construction (asserted nConflictCk>0),,high
+INT32-C,149,sqlite,src/insert.c,2634,FP,"regIdx-1 register arithmetic; regIdx=aRegIdx[ix]+1 so regIdx-1>=aRegIdx[ix]>0, stays positive",,high
+EXP33-C,150,sqlite,src/insert.c,2646,FP,"'x' assigned in every branch that uses it (XN_ROWID branch sets x=regNewData, else branch sets x=...); the XN_EXPR branch does not read x; not uninitialized on any used path",,high
+INT32-C,151,sqlite,src/insert.c,2714,FP,regNewData+1 register-base arithmetic bounded by nMem,,high
+API00-C,152,sqlite,src/insert.c,2732,FP,sqlite3SetMakeRecordP5 internal helper; v(Vdbe*) guaranteed non-null by caller (pParse->pVdbe asserted v!=0 upstream); internal contract,,high
+DCL13-C,153,sqlite,src/insert.c,2732,TP,sqlite3SetMakeRecordP5 reads pTab->pSchema/nCol/aCol only never writes through pTab; const Table* would compile here making this a legitimate const-candidate,,med
+INT14-C,154,sqlite,src/insert.c,2739,FP,pTab used for tabFlags '&' and pointer member access; INT14 readability heuristic misfire,,high
+INT14-C,155,sqlite,src/insert.c,2741,FP,'i' is a u16 loop counter used as index and decremented; INT14 readability misfire no real defect,,high
+DCL00-C,156,sqlite,src/insert.c,2761,FP,"'r' is sqlite3GetTempReg result assigned once and passed by value to VdbeAddOp/ReleaseTempReg; const would compile but is a stylistic DCL00 suggestion not a defect, treating as FP per audit policy",,low
+API00-C,157,sqlite,src/insert.c,2782,FP,sqlite3CompleteInsertion internal codegen; pParse non-null by callers internal contract,,high
+API00-C,158,sqlite,src/insert.c,2782,FP,aRegIdx caller-supplied non-null index register array; loop guards aRegIdx[i]==0 internal contract,,high
+API00-C,159,sqlite,src/insert.c,2782,FP,iIdxCur cursor base bounded by pParse->nTab additive use only no overflow,,high
+DCL13-C,160,sqlite,src/insert.c,2788,FP,"aRegIdx is read (aRegIdx[i], aRegIdx[i]+1) never written here BUT the same array is mutated through other code paths sharing the pointer; const propagation infeasible across the codegen API family, treat as FP",,high
+EXP34-C,161,sqlite,src/insert.c,2811,FP,"aRegIdx[i] accessed in loop after caller passes non-null array (sqlite3Insert allocates aRegIdx); internal contract, guarded by aRegIdx[i]==0 skip",,high
+INT32-C,162,sqlite,src/insert.c,2821,FP,iIdxCur+i cursor-number arithmetic bounded by pParse->nTab,,high
+EXP43-C,163,sqlite,src/insert.c,2824,FP,"sqlite3VdbeAddOp4Int args iIdxCur+i, aRegIdx[i], aRegIdx[i]+1 are distinct int register/cursor values passed by value not overlapping memory regions; EXP43 restrict misfire on scalar int args",,high
+INT32-C,164,sqlite,src/insert.c,2824,FP,iIdxCur+i cursor-number arithmetic bounded by pParse->nTab,,high
+INT32-C,165,sqlite,src/insert.c,2825,FP,aRegIdx[i]+1 register-value arithmetic bounded by nMem,,high
+API00-C,166,sqlite,src/insert.c,2870,FP,sqlite3OpenTableAndIndices internal; pParse non-null by callers asserted v!=0 internal contract,,high
+API00-C,167,sqlite,src/insert.c,2870,FP,aToOpen may legitimately be NULL and every use is guarded (aToOpen==0 || aToOpen[i]); intentionally-nullable param sqc API00 misfire,,high
+API00-C,168,sqlite,src/insert.c,2870,FP,piDataCur asserted non-null (assert piDataCur!=0 line 2888); internal contract,,high
+API00-C,169,sqlite,src/insert.c,2870,FP,piIdxCur asserted non-null (assert piIdxCur!=0 line 2889); internal contract,,high
+API00-C,170,sqlite,src/insert.c,2870,FP,iBase is a cursor base; if<0 it is reset to pParse->nTab then incremented; bounded by nTab no overflow,,high
+DCL13-C,171,sqlite,src/insert.c,2876,TP,"aToOpen is only read (aToOpen==0, aToOpen[0], aToOpen[i+1]) never written through; const u8* would compile making this a legitimate const-candidate (though it is intentionally nullable, const-ness is independent)",,med
+INT32-C,172,sqlite,src/insert.c,2901,FP,iBase++ increments a cursor number bounded by pParse->nTab (cursor count for one statement) far below INT_MAX,,high
+INT32-C,173,sqlite,src/insert.c,2916,FP,"i+1 returned as index count; i bounded by number of indexes on the table, tiny no overflow",,high
+DCL13-C,174,sqlite,src/insert.c,2951,TP,xferCompatibleIndex reads pDest fields only (nKeyCol/nColumn/onError/aiColumn/aSortOrder/azColl/pPartIdxWhere) never writes through pDest; const Index* would compile,,med
+DCL13-C,175,sqlite,src/insert.c,2951,TP,xferCompatibleIndex reads pSrc fields only never writes through pSrc; const Index* would compile (sqlite3ExprCompare/stricmp take const) legitimate const-candidate,,med
+DCL13-C,176,sqlite,src/insert.c,3015,FP,"pSelect is passed to xferOptimization and read; but it is also passed to sqlite3LocateTableItem/other helpers and pSelect->pSrc members are processed; pSelect fields read but the Select object graph is consumed by non-const APIs making const propagation infeasible, treat as FP",,high
+EXP30-C,177,sqlite,src/insert.c,3152,FP,"line 3152 sqlite3ExprCompare(0, sqlite3ColumnExpr(pSrc,..), sqlite3ColumnExpr(pDest,..), -1) the two ColumnExpr calls operate on disjoint pSrc/pDest objects no shared mutable state; EXP30 unsequenced-side-effect misfire",,high
+EXP30-C,178,sqlite,src/insert.c,3164,FP,"line 3164 sqlite3_stricmp(sqlite3ColumnColl(pDestCol), sqlite3ColumnColl(pSrcCol)) operate on disjoint columns; stricmp args evaluated in either order are pure lookups no side effects, EXP30 misfire",,high
+EXP34-C,179,sqlite,src/insert.c,3181,FP,pSrcExpr dereferenced (pSrcExpr->u.zToken) only inside guard (pDestExpr!=0 && ...) combined with the (pDestExpr==0)!=(pSrcExpr==0) test guaranteeing pSrcExpr!=0 when zToken is read; null-guarded,,high
+INT32-C,180,sqlite,src/insert.c,3235,FP,sqlite3_xferopt_count++ is a SQLITE_TEST-only global test counter; overflow at INT_MAX is irrelevant to a test instrumentation counter,,high
+INT32-C,181,sqlite,src/insert.c,3240,FP,pParse->nTab++ allocates a cursor number bounded by statement cursor count far below INT_MAX,,high
+INT32-C,182,sqlite,src/insert.c,3241,FP,pParse->nTab++ same bounded cursor allocation no overflow,,high

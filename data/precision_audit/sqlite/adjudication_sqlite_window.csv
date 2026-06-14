@@ -1,0 +1,218 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+EXP33-C,0,sqlite,src/window.c,184,FP,p assigned from sqlite3_aggregate_context at line 184 before deref at 185 then guarded by if(p) not uninitialized,,high
+EXP33-C,1,sqlite,src/window.c,191,FP,p assigned at 191 from aggregate_context before deref guarded by if(p) at 192,,high
+EXP33-C,2,sqlite,src/window.c,216,FP,p assigned at 216 from aggregate_context before use guarded by if(p) at 217,,high
+FLP02-C,3,sqlite,src/window.c,225,FP,((i64)fVal)!=fVal is the deliberate idiom to detect non-integral float not a representation-error mistake,,high
+MEM31-C,4,sqlite,src/window.c,236,FP,p->pValue is freed in nth_valueFinalizeFunc via sqlite3_value_free not a leak ownership held in aggregate context,,high
+MSC07-C,5,sqlite,src/window.c,246,FP,return at 244 is conditional path end error_out label code at 246 is reachable via goto not dead code,,high
+EXP33-C,6,sqlite,src/window.c,269,FP,p assigned at 269 from aggregate_context before use guarded by if(p && p->pValue==0) at 270,,high
+MEM31-C,7,sqlite,src/window.c,271,FP,p->pValue freed in first_valueFinalizeFunc not a leak,,high
+EXP33-C,8,sqlite,src/window.c,281,FP,p assigned at 281 from aggregate_context before deref guarded by if(p) at 282,,high
+EXP33-C,9,sqlite,src/window.c,303,FP,p assigned at 303 before deref guarded by if(p) at 304 not uninitialized,,high
+EXP33-C,10,sqlite,src/window.c,315,FP,p assigned at 315 before deref guarded by if(p) at 316,,high
+EXP33-C,11,sqlite,src/window.c,336,FP,p assigned at 336 before use guarded by if(p) at 337,,high
+EXP33-C,12,sqlite,src/window.c,349,FP,p assigned at 349 from aggregate_context before deref at 350 not uninitialized,,high
+EXP33-C,13,sqlite,src/window.c,354,FP,p assigned at 354 before use guarded by if(p) at 355,,high
+DCL00-C,14,sqlite,src/window.c,358,FP,r is a local double computed once and consumed by sqlite3_result_double const-qualifying is cosmetic not a defect,,med
+FLP03-C,15,sqlite,src/window.c,358,FP,FLP03 fenv checking not applicable nTotal>1 guard prevents div-by-zero integer-to-double division is exact-enough for the API,,high
+FLP34-C,16,sqlite,src/window.c,358,FP,(double)p->nValue is a deliberate i64-to-double cast for ratio no range check needed CERT does not require it here,,high
+FLP34-C,17,sqlite,src/window.c,358,FP,(double)(p->nTotal-1) deliberate i64-to-double cast for percent_rank ratio,,high
+EXP33-C,18,sqlite,src/window.c,381,FP,p assigned at 381 before use guarded by if(p) at 382,,high
+EXP33-C,19,sqlite,src/window.c,394,FP,p assigned at 394 from aggregate_context before deref at 395 not uninitialized,,high
+DCL00-C,20,sqlite,src/window.c,401,FP,r is a local double computed once cosmetic const suggestion not a defect,,med
+FLP03-C,21,sqlite,src/window.c,401,FP,cume_dist ratio division fenv checking not applicable to SQLite codegen,,high
+FLP34-C,22,sqlite,src/window.c,401,FP,(double)(p->nStep) deliberate cast for ratio,,high
+FLP34-C,23,sqlite,src/window.c,401,FP,(double)(p->nTotal) deliberate cast for ratio (note potential div-by-zero is real see FN but not this rule),,high
+DCL13-C,24,sqlite,src/window.c,425,FP,apArg signature fixed by xStep UDF callback typedef cannot add const sqlite3_value** unchanged,,high
+EXP33-C,25,sqlite,src/window.c,429,FP,p assigned at 429 from aggregate_context before use guarded by if(p) at 430,,high
+EXP33-C,26,sqlite,src/window.c,450,FP,p assigned at 450 from aggregate_context before deref at 451 not uninitialized,,high
+EXP33-C,27,sqlite,src/window.c,455,FP,p assigned at 455 before use guarded by if(p && p->nParam>0) at 456,,high
+INT33-C,28,sqlite,src/window.c,457,FP,division by p->nParam at 457 guarded by if(p && p->nParam>0) at 456 nParam cannot be zero,,high
+INT32-C,29,sqlite,src/window.c,462,FP,nSize+1 where nSize=nTotal/nParam bounded by partition row count i64 no realistic overflow,,high
+FLP02-C,30,sqlite,src/window.c,465,FP,iVal==p->nStep style not here line 465 is an assert equality on i64 integer arithmetic not float compare,,high
+INT32-C,31,sqlite,src/window.c,468,FP,nSize+1 i64 bounded by partition size no overflow,,high
+INT33-C,32,sqlite,src/window.c,468,FP,division by (nSize+1) cannot be zero since nSize>=0 so nSize+1>=1,,high
+DCL13-C,33,sqlite,src/window.c,491,FP,apArg signature fixed by xStep UDF callback typedef cannot const-qualify,,high
+EXP33-C,34,sqlite,src/window.c,495,FP,p assigned at 495 from aggregate_context before use guarded by if(p) at 496,,high
+MEM31-C,35,sqlite,src/window.c,498,FP,p->pVal freed in last_valueFinalizeFunc and previous value freed at 497 before reassign not a leak,,high
+MEM30-C,36,sqlite,src/window.c,499,FP,line 499 reads p->pVal==0 after assigning it at 498 not a use-after-free old value was freed at 497 before realloc,,high
+INT32-C,37,sqlite,src/window.c,502,FP,p->nVal++ is partition-row counter i64 bounded no INT_MAX overflow and nVal is int incremented per step bounded by rows,,high
+MEM30-C,38,sqlite,src/window.c,502,FP,p->nVal is an int field not a freed pointer sqc misread the field as the freed object no UAF,,high
+EXP33-C,39,sqlite,src/window.c,514,FP,p assigned at 514 from aggregate_context guarded by ALWAYS(p) at 515,,high
+INT32-C,40,sqlite,src/window.c,516,FP,p->nVal-- decrement balanced against ++ in step never below zero in practice no INT_MIN underflow,,high
+EXP33-C,41,sqlite,src/window.c,532,FP,p assigned at 532 before use guarded by if(p) at 533,,high
+DCL03-C,42,sqlite,src/window.c,577,FP,assert(0) at 577 is a deliberate unreachable-marker not a constant-expression candidate for static_assert,,high
+PRE00-C,43,sqlite,src/window.c,583,TP,WINDOWFUNCALL expands name via ## token paste into multiple StepFunc/ValueFunc identifiers macro multi-uses name (init-list macro acceptable but technically multi-eval),,high
+PRE01-C,44,sqlite,src/window.c,583,FP,nArg is used as a value in a struct initializer not in an expression needing parentheses no precedence hazard,,high
+PRE05-C,45,sqlite,src/window.c,583,TP,WINDOWFUNCALL uses ## token concatenation on name which does prevent argument prescan expansion factual macro property,,high
+PRE12-C,46,sqlite,src/window.c,583,TP,name parameter is concatenated multiple times (name##StepFunc name##FinalizeFunc etc) genuine multi-use of macro param,,high
+PRE01-C,47,sqlite,src/window.c,591,FP,nArg used as struct-initializer value not in precedence-sensitive expression,,high
+PRE05-C,48,sqlite,src/window.c,591,TP,WINDOWFUNCNOOP uses ## on name genuine token-paste property,,high
+PRE00-C,49,sqlite,src/window.c,600,TP,WINDOWFUNCX is a function-like macro that uses name multiple times via ## concatenation,,high
+PRE01-C,50,sqlite,src/window.c,600,FP,nArg used as initializer value no precedence hazard,,high
+PRE05-C,51,sqlite,src/window.c,600,TP,WINDOWFUNCX uses ## token concatenation on name factual,,high
+PRE12-C,52,sqlite,src/window.c,600,TP,WINDOWFUNCX concatenates name multiple times genuine multi-use of param,,high
+ARR02-C,53,sqlite,src/window.c,611,FP,aWindowFuncs[] static array initialized with brace-enclosed list so size is implicit-by-design ArraySize used correctly idiomatic C,,high
+CON03-C,54,sqlite,src/window.c,611,FP,aWindowFuncs is function-local static initialized once read-only after sqlite3InsertBuiltinFuncs no cross-thread mutation concern,,high
+DCL13-C,55,sqlite,src/window.c,631,FP,pList is iterated and its node returned and zName compared cannot be const since returned Window* is mutable to caller,,high
+DCL30-C,56,sqlite,src/window.c,639,FP,p is the loop variable holding a heap Window* from pList not a pointer to local automatic storage returning it is correct,,high
+API00-C,57,sqlite,src/window.c,659,FP,pParse internal SQLite contract always non-null caller invariant not a trust boundary,,high
+API00-C,58,sqlite,src/window.c,659,FP,pFunc internal contract non-null and is read at line 687 caller guarantees,,high
+DCL13-C,59,sqlite,src/window.c,663,FP,pFunc->funcFlags read only but signature shared with sqlite3WindowUpdate API and pFunc->zName compared const would be benign yet pFunc fields not written const not required and risks call-site churn,,high
+EXP34-C,60,sqlite,src/window.c,687,FP,pFunc dereferenced at 687 only inside else-if after pWin checks pFunc guaranteed non-null by caller resolve.c contract,,high
+ARR02-C,61,sqlite,src/window.c,699,FP,aUp[] local array initialized with brace list implicit size is idiomatic ArraySize used,,high
+DCL13-C,62,sqlite,src/window.c,748,FP,pWalker signature fixed by Walker xExprCallback typedef cannot add const,,high
+INT32-C,63,sqlite,src/window.c,816,FP,p->pSub->nExpr-1 only reached when iCol<0 meaning append succeeded nExpr>=1 subtraction safe no overflow,,high
+DCL13-C,64,sqlite,src/window.c,859,FP,pParse passed to sqlite3WalkExprList and sqlite3ExprDup which take non-const cannot const-qualify,,high
+DCL13-C,65,sqlite,src/window.c,860,FP,pWin stored as sRewrite.pWin and walked cannot be const member assignment requires non-const,,high
+DCL13-C,66,sqlite,src/window.c,861,FP,pSrc stored into sRewrite.pSrc passed onward cannot const-qualify,,high
+DCL13-C,67,sqlite,src/window.c,863,FP,pTab stored into sRewrite.pTab passed to callbacks cannot const-qualify,,high
+DCL13-C,68,sqlite,src/window.c,895,FP,pAppend->a[i].pExpr passed to sqlite3ExprDup non-const and fields read does not require const but propagation to non-const callee blocks it,,high
+EXP34-C,69,sqlite,src/window.c,913,FP,pSub from sqlite3ExprSkipCollateAndLikely(pDup) where pDup checked via mallocFailed break at 904 and ExprIsInteger handles null sub guarded,,high
+INT32-C,70,sqlite,src/window.c,919,FP,nInit+i where nInit and i bounded by pAppend->nExpr ExprList counts bounded by parser no realistic int overflow,,high
+DCL13-C,71,sqlite,src/window.c,933,FP,pWalker signature fixed by Walker typedef cannot const,,high
+DCL13-C,72,sqlite,src/window.c,942,FP,pWalker signature fixed by Walker callback typedef cannot const,,high
+API00-C,73,sqlite,src/window.c,958,FP,pParse internal contract non-null and used for codegen not a trust boundary,,high
+INT32-C,74,sqlite,src/window.c,1019,FP,pParse->nTab++ register/cursor counter bounded by query complexity SQLITE_LIMIT no realistic INT_MAX overflow,,high
+INT32-C,75,sqlite,src/window.c,1020,FP,pParse->nTab += 3 bounded counter no realistic overflow,,high
+PRE32-C,76,sqlite,src/window.c,1071,FP,TREETRACE arguments span lines 1071-1073 a multi-line expression continuation not a real preprocessor directive sqc PRE32 misfire,,high
+PRE32-C,77,sqlite,src/window.c,1072,FP,the flagged content is a printf-style format string and args continuation no # directive token present PRE32 misfire,,high
+EXP34-C,78,sqlite,src/window.c,1084,FP,pSub here refers to subquery the member access at 1084 is on p->pSrc guarded by p->pSrc==0 check at 1078 not a null deref,,high
+EXP43-C,79,sqlite,src/window.c,1093,FP,"memcpy(pTab,pTab2,..) at 1093 pTab is freshly DbMallocZero local table and pTab2 is sqlite3ResultSetOfSelect result distinct objects not overlapping",,high
+EXP05-C,80,sqlite,src/window.c,1097,FP,&w is address of local Walker passed to sqlite3WalkSelect which takes Walker* not const no const cast-away,,high
+API00-C,81,sqlite,src/window.c,1120,FP,p (Window*) internal contract caller passes valid pointer guarded by if(p->ppThis) not a trust boundary,,high
+API00-C,82,sqlite,src/window.c,1131,FP,sqlite3WindowDelete guards with if(p) at 1132 null-safe internal API,,high
+MSC04-C,83,sqlite,src/window.c,1131,TP,genuine indirect recursion sqlite3WindowDelete->sqlite3ExprDelete->...->sqlite3WindowDelete via filter/expr trees depth bounded by expression tree depth,,high
+MEM30-C,84,sqlite,src/window.c,1140,FP,"sqlite3DbFree(db,p->zName) at 1139 frees zName not db db is the allocator-context arg read first not freed sqc misread context arg",,high
+MEM30-C,85,sqlite,src/window.c,1141,FP,"sqlite3DbFree(db,p->zBase) at 1140 frees zBase db is context arg not double-freed",,high
+API00-C,86,sqlite,src/window.c,1148,FP,db is allocator context arg passed to sqlite3WindowDelete not a trust boundary internal API,,high
+API00-C,87,sqlite,src/window.c,1148,FP,p iterated and freed via sqlite3WindowDelete which null-guards internal API contract,,high
+MSC04-C,88,sqlite,src/window.c,1148,TP,genuine indirect recursion sqlite3WindowListDelete->sqlite3WindowDelete->...->clearSelect->sqlite3WindowListDelete bounded by nesting depth,,high
+API00-C,89,sqlite,src/window.c,1175,FP,pParse internal codegen contract non-null not a trust boundary,,high
+API00-C,90,sqlite,src/window.c,1175,FP,pStart owned-expr passed to sqlite3WindowOffsetExpr and sqlite3ExprDelete on error internal contract,,high
+API00-C,91,sqlite,src/window.c,1175,FP,pEnd owned-expr internal contract handled on error path,,high
+MSC07-C,92,sqlite,src/window.c,1236,FP,return pWin at 1234 ends success path windowAllocErr label at 1236 reached via goto reachable not dead code,,high
+API00-C,93,sqlite,src/window.c,1247,FP,pParse internal contract non-null,,high
+API00-C,94,sqlite,src/window.c,1247,FP,pBase optional Token* checked via if(pBase) at 1257 pWin checked at 1254 not unvalidated misfire,,high
+DCL13-C,95,sqlite,src/window.c,1248,FP,"pParse used as sqlite3DbStrNDup(pParse->db,..) arg and passed onward cannot const",,high
+DCL13-C,96,sqlite,src/window.c,1252,FP,pBase members assigned into pWin->pPartition etc pWin mutated returned non-const cannot const-qualify pBase note pWin is the one mutated,,high
+API00-C,97,sqlite,src/window.c,1274,FP,pParse internal codegen contract non-null,,high
+API00-C,98,sqlite,src/window.c,1274,FP,pWin mutated (pWin->pPartition assigned) not a trust boundary,,high
+API00-C,99,sqlite,src/window.c,1308,FP,pParse internal contract non-null,,high
+API00-C,100,sqlite,src/window.c,1308,FP,pWin mutated (p->y.pWin=pWin pWin->pOwner=p) internal API,,high
+API00-C,101,sqlite,src/window.c,1332,FP,pSel checked via if(pSel) at 1333 not unvalidated,,high
+MSC04-C,102,sqlite,src/window.c,1354,TP,genuine indirect recursion sqlite3WindowCompare->sqlite3ExprCompare->sqlite3WindowCompare bounded by expr tree depth,,high
+EXP45-C,103,sqlite,src/window.c,1368,FP,res = sqlite3ExprListCompare(...) assignment-in-condition is deliberate idiom value reused in return res not an accidental == typo,,high
+EXP45-C,104,sqlite,src/window.c,1371,FP,res assignment-in-if deliberate idiom value returned,,high
+EXP45-C,105,sqlite,src/window.c,1375,FP,res assignment-in-if deliberate idiom,,high
+API00-C,106,sqlite,src/window.c,1388,FP,pParse internal codegen contract non-null,,high
+DCL13-C,107,sqlite,src/window.c,1388,FP,pSelect dereferenced as pSelect->pSrc->a[0] and pSelect->pWin read-only but passed to functions taking non-const Select* propagation blocks const,,high
+EXP43-C,108,sqlite,src/window.c,1400,FP,"sqlite3VdbeAddOp2(v,..) v is Vdbe* not restrict-qualified scalar args no overlapping-memory hazard sqc EXP43 misfire on a vararg-style API",,high
+INT32-C,109,sqlite,src/window.c,1400,FP,"pMWin->iEphCsr is a cursor index allocated from pParse->nTab (small bounded counter), iEphCsr+1 cannot approach INT_MAX",,high
+EXP43-C,110,sqlite,src/window.c,1401,FP,"sqlite3VdbeAddOp2 takes int register/operand args by value not overlapping pointers, EXP43 restrict misfire",,high
+INT32-C,111,sqlite,src/window.c,1401,FP,"cursor-index +2 on bounded pParse->nTab counter, no realistic overflow",,high
+EXP43-C,112,sqlite,src/window.c,1402,FP,"VdbeAddOp2 int-by-value args, no restrict pointer overlap",,high
+INT32-C,113,sqlite,src/window.c,1402,FP,"cursor-index +3 on bounded nTab counter, safe",,high
+INT32-C,114,sqlite,src/window.c,1408,FP,"pParse->nMem is a bounded VDBE register counter, +1 cannot overflow in practice",,high
+INT32-C,115,sqlite,src/window.c,1409,FP,"nMem += nExpr where nExpr is parser-bounded ExprList count, register allocation arithmetic is bounded",,high
+INT32-C,116,sqlite,src/window.c,1410,FP,"regPart+nExpr-1 register arithmetic on bounded counters, safe",,high
+INT32-C,117,sqlite,src/window.c,1410,FP,regPart+nExpr bounded register math,,high
+INT32-C,118,sqlite,src/window.c,1413,FP,"++nMem bounded register counter increment, never near INT_MAX",,high
+INT32-C,119,sqlite,src/window.c,1417,FP,++nMem bounded register counter,,high
+INT32-C,120,sqlite,src/window.c,1418,FP,++nMem bounded register counter,,high
+INT32-C,121,sqlite,src/window.c,1419,FP,nTab++ bounded cursor counter,,high
+INT32-C,122,sqlite,src/window.c,1442,FP,nMem+1 bounded register counter,,high
+INT32-C,123,sqlite,src/window.c,1443,FP,nMem += 3 bounded register counter,,high
+INT32-C,124,sqlite,src/window.c,1450,FP,pWin->regApp+1 register offset on bounded counter,,high
+INT32-C,125,sqlite,src/window.c,1455,FP,nMem+1 bounded register counter,,high
+INT32-C,126,sqlite,src/window.c,1457,FP,nMem += 2 bounded register counter,,high
+ARR02-C,127,sqlite,src/window.c,1481,FP,"azErr[] is a const char* table with full brace-enclosed initializer giving explicit size, ARR02 misfire on legal C",,high
+ARR02-C,128,sqlite,src/window.c,1488,FP,"aOp[] static int initialized from braced list with explicit element count, size is fixed by initializer",,high
+CON03-C,129,sqlite,src/window.c,1488,FP,"aOp is a file-static const lookup table read at codegen time single-threaded Parse context, not shared mutable state",,high
+ARR00-C,130,sqlite,src/window.c,1510,FP,eCond guarded by assert(eCond>=0 && eCond<ArraySize(azErr)) at line 1491 before any aOp[eCond]/azErr[eCond] index,,high
+DCL13-C,131,sqlite,src/window.c,1527,TP,"windowArgCount only reads pWin->pOwner and never writes pWin, const Window* would compile, genuine read-only leaf helper",,low
+DCL13-C,132,sqlite,src/window.c,1620,FP,"windowReadPeerValues uses p->pParse for mutating codegen and is a codegen-context arg, DCL13 not applicable to WindowCodeArg context",,med
+INT32-C,133,sqlite,src/window.c,1629,FP,"nBufferCol+nExpr column counts bounded by schema/parser limits, no overflow",,high
+INT32-C,134,sqlite,src/window.c,1632,FP,"iColOff+i loop index over bounded ORDER BY exprs, safe",,high
+INT32-C,135,sqlite,src/window.c,1632,FP,reg+i bounded register offset in small loop,,high
+MSC04-C,136,sqlite,src/window.c,1656,TP,windowAggStep genuinely participates in indirect mutual recursion through the expr/select codegen chain back to itself,,high
+DCL13-C,137,sqlite,src/window.c,1657,FP,"windowAggStep p is codegen-context arg used to drive mutating VDBE emission, DCL13 context misfire",,med
+INT32-C,138,sqlite,src/window.c,1681,FP,pWin->iArgCol+i bounded column index arithmetic,,high
+INT32-C,139,sqlite,src/window.c,1681,FP,reg+i bounded register offset,,high
+INT32-C,140,sqlite,src/window.c,1683,FP,iArgCol+i bounded column index,,high
+INT32-C,141,sqlite,src/window.c,1683,FP,reg+i bounded register offset,,high
+INT32-C,142,sqlite,src/window.c,1694,FP,iArgCol+nArg bounded column/arg counts,,high
+INT32-C,143,sqlite,src/window.c,1707,FP,regApp+1 bounded register offset,,high
+EXP43-C,144,sqlite,src/window.c,1709,FP,"VdbeAddOp3 int-by-value operands, no restrict pointer overlap",,high
+INT32-C,145,sqlite,src/window.c,1709,FP,regApp+2 bounded register offset,,high
+EXP43-C,146,sqlite,src/window.c,1710,FP,VdbeAddOp2 int-by-value operands,,high
+INT32-C,147,sqlite,src/window.c,1710,FP,regApp+2 bounded register offset,,high
+INT32-C,148,sqlite,src/window.c,1715,FP,"sqlite3VdbeCurrentAddr-2 program-address arithmetic, addr always >=2 here after emitted ops, bounded",,high
+INT32-C,149,sqlite,src/window.c,1724,FP,"regApp+1-bInverse with bInverse in {0,1} (asserted line 1723), bounded register math",,high
+INT32-C,150,sqlite,src/window.c,1724,FP,regApp+1 bounded register offset,,high
+EXP34-C,151,sqlite,src/window.c,1737,FP,"pOp from sqlite3VdbeGetOp(v,iOp) with iOp in [iOp,iEnd=currentAddr); always returns a valid op, never NULL",,high
+DCL13-C,152,sqlite,src/window.c,1775,FP,"windowAggFinal p is codegen-context arg driving mutating VDBE emission, DCL13 misfire",,med
+INT32-C,153,sqlite,src/window.c,1790,FP,VdbeCurrentAddr-2 program address arithmetic bounded by emitted ops,,high
+MSC04-C,154,sqlite,src/window.c,1814,TP,windowFullScan genuinely participates in indirect recursion via windowAggStep -> expr/select chain back to windowFullScan,,high
+INT32-C,155,sqlite,src/window.c,1894,FP,"addrNext-1 program address arithmetic, addrNext set from CurrentAddr after prior emits, bounded",,high
+MSC04-C,156,sqlite,src/window.c,1920,TP,windowReturnOneRow genuinely participates in indirect recursion through windowFullScan and the codegen chain,,high
+INT32-C,157,sqlite,src/window.c,1942,FP,iArgCol+1 bounded column index,,high
+INT32-C,158,sqlite,src/window.c,1948,FP,regApp+1 bounded register offset,,high
+EXP43-C,159,sqlite,src/window.c,1966,FP,VdbeAddOp3 int-by-value operands no restrict overlap,,high
+INT32-C,160,sqlite,src/window.c,1966,FP,iArgCol+2 bounded column index,,high
+INT32-C,161,sqlite,src/window.c,1975,FP,iArgCol+1 bounded column index,,high
+DCL13-C,162,sqlite,src/window.c,1997,TP,"windowInitAccum only reads pMWin list and never writes it, const Window* would compile, read-only leaf",,low
+INT32-C,163,sqlite,src/window.c,2010,FP,regApp+1 bounded register offset,,high
+INT32-C,164,sqlite,src/window.c,2016,FP,regApp+1 bounded register offset,,high
+INT32-C,165,sqlite,src/window.c,2020,FP,nMem+1 bounded register counter,,high
+INT32-C,166,sqlite,src/window.c,2021,FP,nMem += nArg bounded register counter,,high
+DCL13-C,167,sqlite,src/window.c,2029,TP,"windowCacheFrame only reads pMWin->regStartRowid and pWFunc->zName, never writes, const Window* compiles, genuine read-only helper",,med
+INT32-C,168,sqlite,src/window.c,2072,FP,"nVal-1 where nVal=pOrderBy->nExpr>=1 (pOrderBy non-null in this branch), bounded ExprList count",,high
+INT32-C,169,sqlite,src/window.c,2114,FP,++nMem bounded register counter,,high
+MSC04-C,170,sqlite,src/window.c,2233,TP,windowCodeOp genuinely participates in indirect recursion through the expr/select codegen chain,,high
+INT32-C,171,sqlite,src/window.c,2354,FP,"VdbeCurrentAddr+1+bPeer with bPeer in {0,1}, program-address arithmetic bounded",,high
+API00-C,172,sqlite,src/window.c,2382,FP,"sqlite3WindowDup guards p with ALWAYS(p) at line 2384 before deref, API00 trust-boundary misfire on internal contract",,high
+DCL13-C,173,sqlite,src/window.c,2382,FP,"pOwner is stored into pNew->pOwner field (line 2404) and is the owning Expr, semantically a non-const association not a read-only param",,high
+MSC04-C,174,sqlite,src/window.c,2382,TP,sqlite3WindowDup genuinely participates in indirect recursion via ExprDup/SelectDup/WindowListDup back to itself,,high
+API00-C,175,sqlite,src/window.c,2415,FP,"db is internal sqlite3 handle, callers hold valid db invariant, API00 internal-contract misfire",,high
+API00-C,176,sqlite,src/window.c,2415,FP,"p may legitimately be NULL and loop simply produces empty list, no unchecked deref, API00 misfire",,high
+DCL13-C,177,sqlite,src/window.c,2415,FP,"sqlite3WindowListDup passes p elements to sqlite3WindowDup(db,0,pWin) and traverses pNextWin, const-correctness arguable but p is the dup source traversed read-only -- propagated to non-const Dup API so FP",,med
+MSC04-C,178,sqlite,src/window.c,2415,TP,sqlite3WindowListDup genuinely participates in indirect recursion via sqlite3WindowDup -> ExprDup chain back to WindowListDup,,high
+EXP40-C,179,sqlite,src/window.c,2418,FP,"pp = &pRet builds a linked list via pp = &((*pp)->pNextWin), standard tail-append idiom, no const circumvention",,high
+DCL30-C,180,sqlite,src/window.c,2426,FP,"returns pRet which is a Window* pointer to heap allocated via sqlite3DbMallocZero, not address of a local automatic object",,high
+DCL13-C,181,sqlite,src/window.c,2437,FP,"windowExprGtZero passes pParse->db to sqlite3ValueFromExpr and sets db->mallocFailed on OOM, pParse used to reach mutable db, DCL13 misfire",,med
+EXP34-C,182,sqlite,src/window.c,2442,FP,"sqlite3_value_int(pVal) is guarded by if(pVal && ...) short-circuit at line 2442, no null deref",,high
+API00-C,183,sqlite,src/window.c,2784,FP,"pParse is internal Parse context guaranteed valid by caller select.c codegen invariant, API00 misfire",,high
+API00-C,184,sqlite,src/window.c,2784,FP,"pWInfo is internal WhereInfo guaranteed valid by sqlite3WhereBegin contract, API00 misfire",,high
+MSC04-C,185,sqlite,src/window.c,2784,TP,sqlite3WindowCodeStep genuinely participates in indirect recursion through windowCodeOp and the codegen chain,,high
+DCL13-C,186,sqlite,src/window.c,2786,FP,"sqlite3WindowCodeStep p is the rewritten Select traversed and used to drive mutating codegen, DCL13 context misfire",,med
+EXP05-C,187,sqlite,src/window.c,2826,FP,"&s yields WindowCodeArg* passed to memset, s is non-const local, no const qualifier is being cast away",,high
+INT32-C,188,sqlite,src/window.c,2833,FP,"s.current.csr+1 cursor-index arithmetic on bounded iEphCsr, safe",,high
+INT32-C,189,sqlite,src/window.c,2834,FP,s.current.csr+2 bounded cursor index,,high
+INT32-C,190,sqlite,src/window.c,2835,FP,s.current.csr+3 bounded cursor index,,high
+INT32-C,191,sqlite,src/window.c,2872,FP,nMem+1 bounded register counter,,high
+INT32-C,192,sqlite,src/window.c,2873,FP,"nMem += nInput where nInput=pSTab->nCol bounded by SQLITE_MAX_COLUMN, register math bounded",,high
+INT32-C,193,sqlite,src/window.c,2874,FP,++nMem bounded register counter,,high
+INT32-C,194,sqlite,src/window.c,2875,FP,++nMem bounded register counter,,high
+INT32-C,195,sqlite,src/window.c,2881,FP,++nMem bounded register counter,,high
+INT32-C,196,sqlite,src/window.c,2884,FP,++nMem bounded register counter,,high
+INT32-C,197,sqlite,src/window.c,2892,FP,regNew+nBufferCol bounded register/column arithmetic,,high
+INT32-C,198,sqlite,src/window.c,2893,FP,regNewPeer += nExpr bounded by parser ExprList count,,high
+INT32-C,199,sqlite,src/window.c,2894,FP,nMem+1 bounded register counter,,high
+INT32-C,200,sqlite,src/window.c,2894,FP,nMem += nPeer bounded ExprList count,,high
+INT32-C,201,sqlite,src/window.c,2895,FP,nMem+1 bounded register counter,,high
+INT32-C,202,sqlite,src/window.c,2895,FP,nMem += nPeer bounded count,,high
+INT32-C,203,sqlite,src/window.c,2896,FP,nMem+1 bounded register counter,,high
+INT32-C,204,sqlite,src/window.c,2896,FP,nMem += nPeer bounded count,,high
+INT32-C,205,sqlite,src/window.c,2897,FP,nMem+1 bounded register counter,,high
+INT32-C,206,sqlite,src/window.c,2897,FP,nMem += nPeer bounded count,,high
+INT32-C,207,sqlite,src/window.c,2904,FP,regNew+iInput loop offset bounded by nInput column count,,high
+INT32-C,208,sqlite,src/window.c,2917,FP,regNew+nBufferCol bounded register/column arithmetic,,high
+INT32-C,209,sqlite,src/window.c,2920,FP,++nMem bounded register counter,,high
+INT32-C,210,sqlite,src/window.c,2927,FP,"nPart-1 where nPart=pPart->nExpr>=1 (pPartition non-null branch), bounded ExprList count",,high
+INT32-C,211,sqlite,src/window.c,2941,FP,"0 + constant ternary (0 or 3), trivially bounded constant expression",,high
+INT32-C,212,sqlite,src/window.c,2945,FP,"1 + constant ternary (0 or 3), trivially bounded constant",,high
+INT32-C,213,sqlite,src/window.c,2971,FP,"pOrderBy->nExpr-1 guarded by if(regPeer && pOrderBy) at 2970, nExpr>=1 bounded count",,high
+INT32-C,214,sqlite,src/window.c,2972,FP,pOrderBy->nExpr-1 bounded ExprList count under pOrderBy non-null guard,,high
+INT32-C,215,sqlite,src/window.c,2973,FP,pOrderBy->nExpr-1 bounded ExprList count,,high
+INT32-C,216,sqlite,src/window.c,2974,FP,pOrderBy->nExpr-1 bounded ExprList count,,high

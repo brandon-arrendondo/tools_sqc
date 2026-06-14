@@ -1514,3 +1514,45 @@ across **9 large hardened/core files** including the five genuine-untrusted-inpu
 TP** among the core's combined finding volume. Remaining ~108 in-scope files are pure core/glue
 (expr.c, wherecode.c, window.c, analyze.c, vdbemem.c, insert.c, alter.c, pragma.c, …) — medium-effort filler
 the bifurcation predicts will keep yielding only declaration/macro/const TPs.
+
+## File-at-a-time — Batch 10 (2026-06-14, run #40, MEDIUM-effort core/glue filler): expr.c, wherecode.c, window.c, analyze.c, vdbemem.c, insert.c
+
+Resuming medium-effort filler after the batch-9 high-effort untrusted-input set. Six hardened-core codegen /
+value-management files via the shared hardened-core framework (`/tmp/core_framework.md`), 14 line-range
+reviewers, source-verification integrity gate kept non-negotiable. **1513 findings -> 120 TP / 1393 FP, 0
+semantic TP, 0 recorded FN.**
+
+| File | findings | TP | FP |
+|------|---------:|---:|---:|
+| src/expr.c (expression-tree codegen) | 473 | 50 | 423 |
+| src/wherecode.c (WHERE-loop codegen) | 231 | 28 | 203 |
+| src/window.c (window-function codegen) | 217 | 20 | 197 |
+| src/analyze.c (ANALYZE / sqlite_stat + stat-blob decode) | 211 | 3 | 208 |
+| src/vdbemem.c (Mem value management) | 198 | 10 | 188 |
+| src/insert.c (INSERT codegen) | 183 | 9 | 174 |
+
+All 120 TP are the established declaration/macro/recursion class — dominated by **MSC04** (expr.c alone is a
+recursion thicket: ExprDelete/ExprDup/SelectDup/SrcListDup, the whole ExprCode* codegen cycle, CodeRhsOfIN,
+window WindowDup/WindowCodeStep, GenerateConstraintChecks↔trigger codegen), plus **DCL13** read-only helpers,
+**DCL03** static_assert on `SQLITE_AFF_*`/`TK_*`/`SQLITE_FUNC_*==OPFLAG_*` compile-time equalities, and **PRE**
+macro hygiene (`WINDOWFUNCALL`/`WINDOWFUNCX` `##`-paste + multi-eval, `ISPOWEROF2` multi-eval). **Semantic-TP
+count: zero**, holding the bifurcation across these six core files. The recurring misfires were exactly the
+catalogued classes: the **MEM30 `db`/context-arg swarm** (`sqlite3DbFree(db,x)` / `sqlite3ExprDelete(db,x)` /
+`sqlite3VdbeMemGrow` realloc read as freeing the live handle), bounded VDBE register/cursor/`nMem`/`nTab`
+counters read as INT32 overflow, `for(ii=…)` induction vars read as uninitialized (EXP33/ARR00), heap
+`sqlite3DbMallocRaw` results read as dangling-local returns (DCL30), and DCL13 on params fixed by Walker /
+UDF-callback function-pointer typedefs.
+
+**FN-hunt: one benign item noted, not recorded** — `window.c:401` `cume_distValueFunc` computes
+`(double)p->nStep/(double)p->nTotal` without the `nTotal>1` guard its sibling `percent_rankValueFunc` has. Not
+recorded: it is IEEE float division (defined inf/nan behavior, not C UB), not a memory-safety/CERT-class defect,
+and the window machinery guarantees a prior step so `nTotal>=1` at runtime — same disposition as the batch-8
+util.c:1328 value quirk. The analyze.c stat-blob decoders (`decodeIntArray`, `analysisLoader`, `loadStatTbl`)
+that were flagged as a genuine-TP risk proved bounded (`i<nOut`, i64 size math on small column counts,
+divide-by-zero guarded by the `aiRowEst[iCol+1]==0` test, the deliberate 8-byte corrupt-record overread pad).
+
+sqlite coverage **112 -> 118/220 (53.6%)** — over half done; **14 FNs** (0 new); confirmed real bugs still
+**13**. The bifurcation now holds across **15 large hardened/core files** with zero production semantic TP.
+Remaining ~102 in-scope files are pure core/glue (trigger.c, alter.c, sqliteInt.h, pragma.c, prepare.c,
+whereexpr.c, os_kv.c, fkey.c, vtab.c, update.c, …) — medium-effort filler the thesis predicts will keep
+yielding only declaration/macro/const TPs.

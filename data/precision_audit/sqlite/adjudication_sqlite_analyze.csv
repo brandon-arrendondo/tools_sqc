@@ -1,0 +1,212 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+ARR02-C,0,sqlite,src/analyze.c,176,FP,aTable[] is a static const sized initializer with ArraySize() used everywhere; explicit bound unneeded and idiom is safe,,high
+MEM05-C,1,sqlite,src/analyze.c,189,FP,"aRoot[ArraySize(aTable)] is a fixed compile-time-sized array (ArraySize macro), not a runtime VLA",,high
+MEM05-C,2,sqlite,src/analyze.c,190,FP,"aCreateTbl[ArraySize(aTable)] is fixed compile-time-sized array, not a runtime VLA",,high
+ARR00-C,3,sqlite,src/analyze.c,200,FP,iDb is a schema index produced internally by SQLite (sqlite3SchemaToIndex/PRAGMA path) and asserted valid; db->aDb[iDb] is an internal invariant not a trust boundary,,high
+ARR30-C,4,sqlite,src/analyze.c,200,FP,"same as idx3: iDb bounded by internal schema-index contract, db->aDb[] indexing is safe by invariant",,high
+EXP34-C,5,sqlite,src/analyze.c,226,FP,pStat is the result of an assignment-in-condition where the else branch is only entered when pStat!=0; no null deref,,high
+INT32-C,6,sqlite,src/analyze.c,247,FP,iStatCur+i with i<nToOpen<=2 are small bounded VDBE cursor numbers; no realistic overflow,,high
+MEM30-C,7,sqlite,src/analyze.c,310,FP,"sqlite3DbFree(db,p->u.aRowid) frees aRowid; sqc misreads p->u as the freed object — the live struct field, not a freed pointer, is dereferenced",,high
+MEM30-C,8,sqlite,src/analyze.c,321,FP,line321 frees p->u.aRowid only if p->nRowid; sqc reads p->u context member as UAF but it is the arg being read before free,,high
+MEM30-C,9,sqlite,src/analyze.c,322,FP,line322 reassigns p->u.aRowid with fresh malloc after the free at 321; not a use-after-free,,high
+MEM30-C,10,sqlite,src/analyze.c,322,FP,"db passed to sqlite3DbMallocRawNN is the live connection handle, never freed; sqc misreads free context arg",,high
+MEM30-C,11,sqlite,src/analyze.c,323,FP,"p->u.aRowid at 323 is the just-allocated buffer (sqlite3DbMallocRawNN), not freed memory",,high
+MEM30-C,12,sqlite,src/analyze.c,323,FP,p->u at 323 is the freshly allocated union member; no UAF,,high
+EXP05-C,13,sqlite,src/analyze.c,325,FP,"memcpy dest is non-const u8*; n is int copy size, no const qualifier is being cast away — sqc misfire on size arg",,high
+INT31-C,14,sqlite,src/analyze.c,325,FP,"n passed to memcpy comes from sampleSetRowid n arg derived from sqlite3_value_bytes (>=0); value fits size_t, bounded copy",,high
+MEM30-C,15,sqlite,src/analyze.c,325,FP,p->u.aRowid at 325 is the just-malloc'd buffer guarded by if(p->u.aRowid); not freed,,high
+MEM30-C,16,sqlite,src/analyze.c,325,FP,"same: p->u member at 325 is freshly allocated, not a freed pointer",,high
+MEM30-C,17,sqlite,src/analyze.c,337,FP,sampleSetRowidInt64 frees p->u.aRowid (the arg read before free); sqc misreads p->u context as freed object,,high
+MEM30-C,18,sqlite,src/analyze.c,339,FP,p->u.iRowid write at 339 is to the union after free; legitimate reinitialization not a UAF,,high
+DCL13-C,19,sqlite,src/analyze.c,348,FP,sampleCopy p is StatAccum* used to read p->db and p->nCol; const-qualifying possible but pointee semantics — p->db passed to mutating sampleSetRowid; FP,,high
+DCL13-C,20,sqlite,src/analyze.c,348,FP,"pFrom fields are read but pFrom->u.aRowid passed to sampleSetRowid which the API treats as source; signature symmetric with pTo; const not propagated cleanly — declaration-style misfire, FP",,high
+ARR38-C,21,sqlite,src/analyze.c,352,FP,"memcpy size sizeof(tRowcnt)*p->nCol; nCol bounded by index column count (<=SQLITE_MAX_COLUMN), no invalid size",,high
+INT30-C,22,sqlite,src/analyze.c,352,FP,sizeof(tRowcnt)*p->nCol: nCol is small bounded column count; product cannot wrap size_t,,high
+INT32-C,23,sqlite,src/analyze.c,352,FP,same bounded nCol; no overflow in memcpy size,,high
+ARR38-C,24,sqlite,src/analyze.c,353,FP,"bounded nCol multiplication, safe",,high
+INT30-C,25,sqlite,src/analyze.c,353,FP,"bounded nCol multiplication, safe",,high
+INT32-C,26,sqlite,src/analyze.c,353,FP,"bounded nCol multiplication, safe",,high
+ARR38-C,27,sqlite,src/analyze.c,354,FP,"bounded nCol multiplication, safe",,high
+INT30-C,28,sqlite,src/analyze.c,354,FP,"bounded nCol multiplication, safe",,high
+INT32-C,29,sqlite,src/analyze.c,354,FP,"bounded nCol multiplication, safe",,high
+DCL13-C,30,sqlite,src/analyze.c,404,FP,statInit signature fixed by FuncDef.xSFunc callback typedef; argv cannot be const,,high
+INT13-C,31,sqlite,src/analyze.c,421,FP,nColUp=(nCol+1)&~1 is alignment rounding; nCol asserted>0 and bounded; intended bitwise idiom not a defect,,high
+INT14-C,32,sqlite,src/analyze.c,421,FP,nCol mixed bitwise/arith is the standard align-up idiom; readability heuristic misfire,,high
+EXP33-C,33,sqlite,src/analyze.c,427,FP,p is assigned by sqlite3DbMallocZero at 437 before any deref; null checked at 438; not uninitialized,,high
+EXP34-C,34,sqlite,src/analyze.c,427,FP,p null-checked immediately after malloc (line438 returns on p==0); no null deref,,high
+INT30-C,35,sqlite,src/analyze.c,427,FP,n is i64 size accumulation; nColUp bounded by index columns; addition cannot wrap,,high
+INT30-C,36,sqlite,src/analyze.c,428,FP,bounded nColUp; multiplication safe in i64 accumulation,,high
+INT30-C,37,sqlite,src/analyze.c,430,FP,bounded nColUp; multiplication safe,,high
+ARR39-C,38,sqlite,src/analyze.c,432,FP,"pointer-scaled arithmetic is i64 byte-size computation for one malloc; nCol/mxSample bounded; no double scaling, sqc misreads the size expression",,high
+ARR39-C,39,sqlite,src/analyze.c,432,FP,"same size expression; bounded operands, single allocation byte count",,high
+INT30-C,40,sqlite,src/analyze.c,432,FP,bounded nColUp multiplication in i64 accumulation,,high
+INT30-C,41,sqlite,src/analyze.c,433,FP,"nCol+mxSample bounded (nCol<=cols, mxSample=24); product safe",,high
+INT32-C,42,sqlite,src/analyze.c,433,FP,nCol+mxSample both small bounded ints; addition cannot overflow,,high
+INT30-C,43,sqlite,src/analyze.c,434,FP,sizeof(tRowcnt)*3 constant; bounded; safe,,high
+INT32-C,44,sqlite,src/analyze.c,434,FP,"nCol+mxSample bounded addition, safe",,high
+ARR37-C,45,sqlite,src/analyze.c,450,FP,p[1] where p is StatAccum* points into the over-allocated trailing region (&p[1] is the anDLt area by design); valid pointer arithmetic,,high
+INT32-C,46,sqlite,src/analyze.c,460,FP,mxSample/3+1: mxSample is SQLITE_STAT4_SAMPLES(24); constant +1 cannot overflow,,high
+INT33-C,47,sqlite,src/analyze.c,460,FP,(mxSample/3+1) is always >=1 (the +1 guarantees nonzero); division by zero impossible,,high
+INT13-C,48,sqlite,src/analyze.c,462,FP,0x689e962d*(u32)nCol ^ ... is intended hash mixing on unsigned; XOR on int operand is benign idiom,,high
+INT14-C,49,sqlite,src/analyze.c,462,FP,sqlite3_value_int treated as variable name by heuristic; bitwise/arith readability misfire on hash expression,,high
+INT14-C,50,sqlite,src/analyze.c,462,FP,argv readability misfire; argv[2] indexing in hash expr is not a bitwise/arith mix defect,,high
+INT32-C,51,sqlite,src/analyze.c,462,FP,"0xd0944565*(u32)sqlite3_value_int(...) is explicit u32 hash multiply, intended wraparound",,high
+INT32-C,52,sqlite,src/analyze.c,467,FP,mxSample+nCol bounded small ints; no overflow,,high
+INT30-C,53,sqlite,src/analyze.c,469,FP,sizeof(tRowcnt)*nColUp bounded; safe pointer-space carve,,high
+INT30-C,54,sqlite,src/analyze.c,470,FP,"bounded nColUp multiplication, safe",,high
+INT30-C,55,sqlite,src/analyze.c,471,FP,"bounded nColUp multiplication, safe",,high
+DCL13-C,56,sqlite,src/analyze.c,512,FP,"sampleIsBetterPost pAccum read for nCol; could be const but is part of symmetric stat helper family; pAccum unused-mutation declaration misfire, FP",,high
+DCL13-C,57,sqlite,src/analyze.c,513,FP,pNew read-only here but passed through sample comparison family with non-const peers; declaration misfire FP,,high
+DCL13-C,58,sqlite,src/analyze.c,514,FP,pOld read-only here but signature symmetric with mutating callers; declaration misfire FP,,high
+ARR01-C,59,sqlite,src/analyze.c,605,FP,sizeof(p->a[0]) is sizeof of a struct element type not a decayed parameter; valid sizeof,,high
+ARR37-C,60,sqlite,src/analyze.c,605,FP,"pMin[1] indexes within the p->a[] sample array (pMin=&p->a[iMin], iMin<nSample); valid array element",,high
+ARR38-C,61,sqlite,src/analyze.c,605,FP,memmove size sizeof(p->a[0])*(nSample-iMin-1); counts bounded by mxSample; valid shift,,high
+INT30-C,62,sqlite,src/analyze.c,605,FP,nSample-iMin-1 is bounded non-negative (iMin<nSample); multiplication by struct size cannot wrap,,high
+INT32-C,63,sqlite,src/analyze.c,605,FP,bounded sample-count arithmetic; memmove size safe,,high
+ARR38-C,64,sqlite,src/analyze.c,626,FP,memset size sizeof(tRowcnt)*nEqZero; nEqZero<=nCol bounded; safe,,high
+INT30-C,65,sqlite,src/analyze.c,626,FP,nEqZero bounded by nCol; multiplication safe,,high
+INT32-C,66,sqlite,src/analyze.c,626,FP,bounded nEqZero; memset size safe,,high
+DCL13-C,67,sqlite,src/analyze.c,705,FP,statPush signature fixed by FuncDef.xSFunc callback typedef; argv cannot be const,,high
+EXP34-C,68,sqlite,src/analyze.c,715,FP,p=sqlite3_value_blob(argv[0]); doc guarantees stat_push always receives a valid StatAccum pointer (manually built bytecode); p->nCol asserted; not a trust boundary,,high
+EXP33-C,69,sqlite,src/analyze.c,721,FP,i is loop counter assigned in for(i=0;...) before use; not used uninitialized,,high
+EXP30-C,70,sqlite,src/analyze.c,752,FP,sampleSetRowid args sqlite3_value_bytes(argv[2]) and sqlite3_value_blob(argv[2]) order is unspecified but both are pure accessors with no side effects on each other; benign,,med
+INT33-C,71,sqlite,src/analyze.c,759,FP,p->nPSample = nEst/(mxSample/3+1)+1 is always >=1 by construction; cannot be zero,,high
+INT33-C,72,sqlite,src/analyze.c,759,FP,same nPSample always >=1; no division by zero,,high
+INT32-C,73,sqlite,src/analyze.c,782,FP,2+IsStat4 is a compile-time FuncDef.nArg constant (2 or 3); no runtime overflow,,high
+DCL13-C,74,sqlite,src/analyze.c,821,FP,statGet signature fixed by FuncDef.xSFunc callback typedef; argv cannot be const,,high
+EXP34-C,75,sqlite,src/analyze.c,832,FP,p from sqlite3_value_blob(argv[0]) guaranteed non-null by stat_get contract (doc says never NULL); asserts follow,,high
+INT32-C,76,sqlite,src/analyze.c,867,FP,(p->nKeyCol+1)*100 initial StrAccum size; nKeyCol bounded by index key columns; no overflow,,high
+INT32-C,77,sqlite,src/analyze.c,871,FP,"anDLt[i]+1 is u64 nDistinct computation; anDLt is a row counter, +1 cannot overflow u64 in practice",,high
+INT33-C,78,sqlite,src/analyze.c,872,FP,nDistinct = anDLt[i]+1 is always >=1; division safe,,high
+INT32-C,79,sqlite,src/analyze.c,924,FP,1+IsStat4 compile-time constant; no overflow,,high
+INT32-C,80,sqlite,src/analyze.c,937,FP,regStat+1 is a small bounded VDBE register number; no overflow,,high
+INT32-C,81,sqlite,src/analyze.c,944,FP,1+IsStat4 compile-time constant; no overflow,,high
+DCL13-C,82,sqlite,src/analyze.c,953,FP,analyzeVdbeCommentIndexWithColumnName v is used only for VdbeComment (debug); but it is the Vdbe under construction passed to macros that mutate it; FP,,high
+DCL13-C,83,sqlite,src/analyze.c,954,FP,"pIdx fields read (aiColumn,nColumn,zName); but pIdx->pTable->aCol mutated context and used in mutating macros; declaration misfire FP",,high
+ARR00-C,84,sqlite,src/analyze.c,959,FP,k asserted 0<=k<pIdx->nColumn at line958 immediately before aiColumn[k]; bounds-checked,,high
+DCL13-C,85,sqlite,src/analyze.c,980,FP,"pOnlyIdx compared by pointer identity only here, but analyzeOneTable passes pIdx pointers into mutating VDBE codegen; FP",,high
+DCL00-C,86,sqlite,src/analyze.c,991,FP,jZeroRows is reassigned later in analyzeOneTable (set to a jump address before patching); not effectively const over full function,,med
+INT32-C,87,sqlite,src/analyze.c,994,FP,iMem++ register allocation; iMem bounded by parser register budget (asserted via sqlite3TouchRegister); no INT_MAX overflow,,high
+INT32-C,88,sqlite,src/analyze.c,995,FP,iMem++ bounded register counter; safe,,high
+INT32-C,89,sqlite,src/analyze.c,996,FP,iMem++ bounded register counter; safe,,high
+INT32-C,90,sqlite,src/analyze.c,997,FP,iMem++ bounded register counter; safe,,high
+INT32-C,91,sqlite,src/analyze.c,998,FP,iMem++ bounded register counter; safe,,high
+INT32-C,92,sqlite,src/analyze.c,999,FP,iMem++ bounded register counter; safe,,high
+INT32-C,93,sqlite,src/analyze.c,1000,FP,iMem++ bounded register counter; safe,,high
+INT32-C,94,sqlite,src/analyze.c,1001,FP,iMem++ bounded register counter; safe,,high
+INT32-C,95,sqlite,src/analyze.c,1002,FP,iMem++ bounded register counter; safe,,high
+INT30-C,96,sqlite,src/analyze.c,1038,FP,sizeof(Table)+13 is a compile-time constant allocation size; no wrap,,high
+ARR38-C,97,sqlite,src/analyze.c,1041,FP,"memcpy(pStat1->zName,""sqlite_stat1"",13) copies into a buffer allocated as sizeof(Table)+13; ""sqlite_stat1\0"" is exactly 13 bytes; in-bounds",,high
+INT32-C,98,sqlite,src/analyze.c,1053,FP,iTab++ bounded VDBE cursor counter; no INT_MAX overflow,,high
+INT32-C,99,sqlite,src/analyze.c,1054,FP,iTab++ bounded cursor counter; safe,,high
+EXP33-C,100,sqlite,src/analyze.c,1063,FP,zIdxName assigned on both branches of the if/else at 1068-1076; not used uninitialized,,high
+INT32-C,101,sqlite,src/analyze.c,1071,FP,nCol-1 where nCol=pIdx->nKeyCol>=1 (or nColumn); subtraction cannot underflow meaningfully,,high
+INT32-C,102,sqlite,src/analyze.c,1075,FP,nCol-1 with nCol from pIdx->nColumn>=1; no overflow,,high
+INT32-C,103,sqlite,src/analyze.c,1123,FP,regPrev+nColTest are bounded register/column counts; no overflow,,high
+INT32-C,104,sqlite,src/analyze.c,1151,FP,regStat+1 small bounded register number; no overflow,,high
+EXP43-C,105,sqlite,src/analyze.c,1156,FP,"sqlite3VdbeAddFunctionCall args regStat+1 and regStat are distinct VDBE register indices, not overlapping memory; restrict misfire on internal codegen",,med
+INT32-C,106,sqlite,src/analyze.c,1156,FP,"regStat is a small VDBE register index allocated by parser (nMem-based, SQLITE_LIMIT bounded); regStat+1 cannot overflow int",,high
+INT30-C,107,sqlite,src/analyze.c,1167,FP,"sizeof(int)*nColTest size_t mult; nColTest is index column count bounded by schema/SQLITE_LIMIT_COLUMN, no wrap",,high
+INT32-C,108,sqlite,src/analyze.c,1167,FP,"same DbMallocRawNN size arg; nColTest tiny column count, no signed overflow",,high
+INT32-C,109,sqlite,src/analyze.c,1195,FP,regPrev+i VDBE register + loop index bounded by nColTest column count; no overflow,,high
+INT32-C,110,sqlite,src/analyze.c,1210,FP,"addrNextRow-1 is a VDBE program-counter address; small positive, JumpHere target, no underflow in practice",,high
+INT32-C,111,sqlite,src/analyze.c,1213,FP,regPrev+i same bounded register/column arithmetic,,high
+MEM30-C,112,sqlite,src/analyze.c,1228,FP,"sqlite3DbFree(db,aGotoChng) frees aGotoChng not db; db is the live context handle read first not freed",,high
+MEM30-C,113,sqlite,src/analyze.c,1235,FP,"pParse is the live parse context passed to AddOp; never freed here, no UAF",,high
+INT32-C,114,sqlite,src/analyze.c,1239,FP,"regKey+j temp-range register + PK column loop index; bounded, no overflow",,high
+MEM30-C,115,sqlite,src/analyze.c,1243,FP,pParse passed to ReleaseTempRange is live context; not freed,,high
+INT32-C,116,sqlite,src/analyze.c,1249,FP,"2+IsStat4 is 2 or 3 (arg count to function call); constant tiny, no overflow",,high
+MEM30-C,117,sqlite,src/analyze.c,1249,FP,pParse live context to AddFunctionCall; not freed,,high
+MEM30-C,118,sqlite,src/analyze.c,1251,FP,db->nAnalysisLimit reads a member of live db handle; db never freed,,high
+MEM30-C,119,sqlite,src/analyze.c,1273,FP,pParse live context to callStatGet/AddOp; not freed,,high
+MEM30-C,120,sqlite,src/analyze.c,1285,FP,"sqlite3VdbeChangeP4 takes pStat1 cast not db as freed; db live context, no UAF",,high
+MEM30-C,121,sqlite,src/analyze.c,1285,FP,"reading db member for STAT4 ifdef branch; db is live, never freed",,high
+INT32-C,122,sqlite,src/analyze.c,1287,FP,regStat1+1 small VDBE register offset; no overflow,,high
+INT32-C,123,sqlite,src/analyze.c,1288,FP,regStat1+2 small register offset; no overflow,,high
+INT32-C,124,sqlite,src/analyze.c,1289,FP,regStat1+3 small register offset; no overflow,,high
+INT32-C,125,sqlite,src/analyze.c,1290,FP,regStat1+4 small register offset; no overflow,,high
+INT32-C,126,sqlite,src/analyze.c,1291,FP,"regCol+nCol register base + index column count; bounded by schema/TouchRegister, no overflow",,high
+INT32-C,127,sqlite,src/analyze.c,1319,FP,"regCol+mxCol mxCol is max index column count across table; bounded, no overflow",,high
+MEM30-C,128,sqlite,src/analyze.c,1319,FP,pParse live context to TouchRegister; not freed,,high
+INT32-C,129,sqlite,src/analyze.c,1326,FP,regCol+mxCol bounded column count arithmetic,,high
+MEM30-C,130,sqlite,src/analyze.c,1326,FP,pParse live context; not freed,,high
+MEM30-C,131,sqlite,src/analyze.c,1328,FP,pParse live context to ClearTempRegCache; not freed,,high
+INT32-C,132,sqlite,src/analyze.c,1329,FP,regCol+mxCol bounded; no overflow,,high
+MEM30-C,133,sqlite,src/analyze.c,1329,FP,pParse live context to NoTempsInRange assert; not freed,,high
+INT32-C,134,sqlite,src/analyze.c,1331,FP,regCol+nCol bounded column count arithmetic,,high
+MEM30-C,135,sqlite,src/analyze.c,1331,FP,pParse live context; not freed,,high
+MEM30-C,136,sqlite,src/analyze.c,1334,FP,pParse live context to callStatGet; not freed,,high
+MEM30-C,137,sqlite,src/analyze.c,1337,FP,pParse live context to callStatGet; not freed,,high
+MEM30-C,138,sqlite,src/analyze.c,1338,FP,pParse live context to callStatGet; not freed,,high
+MEM30-C,139,sqlite,src/analyze.c,1339,FP,pParse live context to callStatGet; not freed,,high
+EXP33-C,140,sqlite,src/analyze.c,1342,FP,i is for-loop counter assigned in for(i=0;...) at 1342 before any use; not uninitialized,,high
+INT32-C,141,sqlite,src/analyze.c,1343,FP,regCol+i register base + bounded loop index over nCol; no overflow,,high
+MEM30-C,142,sqlite,src/analyze.c,1343,FP,pParse live context to ExprCodeLoadIndexColumn; not freed,,high
+INT32-C,143,sqlite,src/analyze.c,1347,FP,iStatCur+1 cursor number small int from nTab; no overflow,,high
+INT32-C,144,sqlite,src/analyze.c,1348,FP,iStatCur+1 cursor number small; no overflow,,high
+ARR00-C,145,sqlite,src/analyze.c,1396,FP,iDb indexes db->aDb[]; caller (sqlite3Analyze) constrains 0<=i<db->nDb; internal contract not trust boundary,,high
+ARR30-C,146,sqlite,src/analyze.c,1396,FP,same iDb internal-contract bounded; analyzeDatabase callers validate iDb,,high
+INT32-C,147,sqlite,src/analyze.c,1404,FP,pParse->nTab is register/cursor counter bounded by SQLITE_LIMIT; +=3 no realistic overflow,,high
+INT32-C,148,sqlite,src/analyze.c,1406,FP,pParse->nMem+1 register counter bounded by SQLITE_LIMIT_COLUMN math; no overflow,,high
+INT32-C,149,sqlite,src/analyze.c,1435,FP,pParse->nTab+=3 bounded counter; no overflow,,high
+EXP43-C,150,sqlite,src/analyze.c,1441,FP,analyzeOneTable args are distinct objects/scalars not aliased restrict pointers; sqc EXP43 misfire,,high
+INT32-C,151,sqlite,src/analyze.c,1441,FP,pParse->nMem+1 bounded register counter; no overflow,,high
+EXP34-C,152,sqlite,src/analyze.c,1492,FP,pIdx assigned from sqlite3FindIndex and member access at 1492 is inside if((pIdx=...)!=0) guard; not null,,high
+MEM30-C,153,sqlite,src/analyze.c,1500,FP,db->nSqlExec reads member of live db handle; db never freed,,high
+MEM30-C,154,sqlite,src/analyze.c,1500,FP,pParse live context to GetVdbe; not freed,,high
+EXP30-C,155,sqlite,src/analyze.c,1539,FP,"c=z[0] then compared in while; assigned before use within sequence, sqc EXP30 misfire on read-modify in loop",,high
+DCL13-C,156,sqlite,src/analyze.c,1593,TP,pData (analysisLoader sig) used read-only but signature is fixed by sqlite3_exec callback typedef; const would break callback type so FP-by-contract — flag low value,,med
+DCL13-C,157,sqlite,src/analyze.c,1593,TP,argv similarly read-only but bound by sqlite3_callback typedef (char**); const-qualifying breaks the callback contract,,med
+INT30-C,158,sqlite,src/analyze.c,1626,FP,sizeof(tRowcnt)*nCol with nCol=nKeyCol+1 small column count; size_t mult no wrap,,high
+EXP05-C,159,sqlite,src/analyze.c,1632,FP,"(char*)z cast where z is const char* from argv[2]; decodeIntArray takes char* and only reads/advances, established-safe API glue cast",,high
+EXP05-C,160,sqlite,src/analyze.c,1644,FP,(char*)z same const-cast into read-only decodeIntArray; no actual write through,,high
+API00-C,161,sqlite,src/analyze.c,1656,FP,"sqlite3DeleteIndexSamples asserts db!=0 at 1657; internal contract, not trust boundary",,high
+API00-C,162,sqlite,src/analyze.c,1656,FP,asserts pIdx!=0 at 1658; internal contract,,high
+MEM30-C,163,sqlite,src/analyze.c,1666,FP,"sqlite3DbFree(db,...) frees p/aSample not db; db is context handle, no double-free",,high
+MEM30-C,164,sqlite,src/analyze.c,1668,FP,db->pnBytesFreed reads live db member; db not freed,,high
+MEM30-C,165,sqlite,src/analyze.c,1673,FP,"sqlite3DbFree(db,pIdx->aSample) frees aSample; db live context",,high
+INT32-C,166,sqlite,src/analyze.c,1712,FP,"iCol+1 indexes aiRowEst with iCol<nKeyCol; bounded loop, no overflow",,high
+INT33-C,167,sqlite,src/analyze.c,1712,FP,aiRowEst[iCol+1] divisor in else-branch only reached when ==0 check at 1706 was false; guaranteed nonzero,,high
+INT33-C,168,sqlite,src/analyze.c,1730,FP,(nDist100-nSum100) divisor guarded by if(nDist100>nSum100) at 1729; always positive nonzero,,high
+DCL30-C,169,sqlite,src/analyze.c,1752,FP,findIndexOrPrimaryKey returns pIdx which points to schema-owned Index not a local; sqc DCL30 misfire on local var name,,high
+EXP34-C,170,sqlite,src/analyze.c,1788,FP,"pStmt passed to sqlite3_step inside while; pStmt set by sqlite3_prepare and rc checked (if(rc)return) before loop, non-null",,high
+EXP33-C,171,sqlite,src/analyze.c,1792,FP,pIdx assigned from findIndexOrPrimaryKey at 1802 before use; if(pIdx==0)continue guards; not uninit,,high
+EXP33-C,172,sqlite,src/analyze.c,1796,FP,"pSpace assigned at 1828 before any use; declaration-only flag, not uninitialized at use",,high
+EXP33-C,173,sqlite,src/analyze.c,1797,FP,pPtr assigned at 1826 before use; not uninitialized,,high
+MEM30-C,174,sqlite,src/analyze.c,1802,FP,"sqlite3DbFree(db,zSql) frees zSql; db live context handle",,high
+INT30-C,175,sqlite,src/analyze.c,1817,FP,"sizeof(IndexSample)*nSample inside ROUND8, nByte is i64; nSample bounded by stat4 row count, i64 math no wrap",,high
+INT30-C,176,sqlite,src/analyze.c,1818,FP,"sizeof(tRowcnt)*nIdxCol i64 accumulation; nIdxCol small column count, no wrap",,high
+INT30-C,177,sqlite,src/analyze.c,1819,FP,"nIdxCol*sizeof(tRowcnt) i64 aAvgEq space; small, no wrap",,high
+MEM30-C,178,sqlite,src/analyze.c,1821,FP,sqlite3_finalize/DbFree path frees pStmt/zSql; db live,,high
+ARR39-C,179,sqlite,src/analyze.c,1827,FP,"pPtr+=ROUND8(nSample*sizeof(aSample[0])) is byte advance on u8* (pPtr is u8*); no double scaling, deliberate byte arithmetic",,high
+INT30-C,180,sqlite,src/analyze.c,1827,FP,"nSample*sizeof(aSample[0]) inside ROUND8 feeding u8* byte offset; bounded nSample, no wrap",,high
+MEM30-C,181,sqlite,src/analyze.c,1842,FP,"sqlite3DbFree(db,zSql) frees zSql; db live",,high
+MEM30-C,182,sqlite,src/analyze.c,1846,FP,db live context to prepare/DbFree; not freed,,high
+MEM30-C,183,sqlite,src/analyze.c,1846,FP,"sqlite3DbFree(db,zSql) frees zSql then reassigned; no UAF of zSql, it is the freed arg legitimately",,high
+MEM30-C,184,sqlite,src/analyze.c,1847,FP,"db is context not freed; sqlite3DbFree frees zSql only, no double-free of db",,high
+MEM30-C,185,sqlite,src/analyze.c,1847,FP,zSql freed by DbFree then immediately reassigned by MPrintf before next free; not a double-free,,high
+EXP34-C,186,sqlite,src/analyze.c,1850,FP,pStmt set by sqlite3_prepare with rc checked before while-loop step; non-null,,high
+MEM30-C,187,sqlite,src/analyze.c,1857,FP,db live context to DbFree(zSql); not freed,,high
+INT32-C,188,sqlite,src/analyze.c,1884,FP,"pSample->n+8 where n=sqlite3_column_bytes (>=0, bounded by SQLITE max blob ~1GB); +8 no int overflow, deliberate corrupt-record pad",,high
+MEM30-C,189,sqlite,src/analyze.c,1884,FP,db live context to MallocZero; not freed,,high
+EXP30-C,190,sqlite,src/analyze.c,1908,FP,"pStat4 assigned in && chain then used; short-circuit sequence point, sqc EXP30 misfire",,high
+EXP33-C,191,sqlite,src/analyze.c,1910,FP,pStat4 assigned and used within same && short-circuit expression; defined before use,,high
+API00-C,192,sqlite,src/analyze.c,1942,FP,sqlite3AnalysisLoad db validated by asserts (SchemaMutexHeld) and internal-only callers; not trust boundary,,high
+MSC04-C,193,sqlite,src/analyze.c,1942,TP,sqlite3AnalysisLoad indirectly recurses via sqlite3_exec->...->sqlite3InitOne->sqlite3AnalysisLoad; recursion genuinely exists (depth-bounded by schema-init reentrancy),,high
+ARR00-C,194,sqlite,src/analyze.c,1947,FP,iDb indexes db->aDb[]; asserted 0<=iDb<db->nDb at 1950; internal contract,,high
+ARR00-C,195,sqlite,src/analyze.c,1951,FP,iDb same asserted bound at 1950; internal contract,,high
+ARR00-C,196,sqlite,src/analyze.c,1970,FP,iDb same asserted bound; internal contract,,high
+EXP30-C,197,sqlite,src/analyze.c,1971,FP,"pStat1 assigned in if condition then used in && IsOrdinaryTable; short-circuit sequence point, EXP30 misfire",,high
+EXP45-C,198,sqlite,src/analyze.c,1971,FP,assignment-in-if is idiomatic SQLite (pStat1=FindTable())!=0 pattern intentional; EXP45 style not defect here,,high
+EXP33-C,199,sqlite,src/analyze.c,1972,FP,pStat1 assigned in the if-condition before its use in the same condition chain; defined before use,,high
+MEM30-C,200,sqlite,src/analyze.c,1985,FP,db live context to MPrintf/DbFree; not freed,,high
+MEM30-C,201,sqlite,src/analyze.c,1986,FP,"pSchema points to db->aDb[iDb].pSchema schema-owned, never freed in this loop; iteration over hash",,high
+MEM30-C,202,sqlite,src/analyze.c,1986,FP,pSchema dereferenced via sqliteHashFirst is live schema; not freed,,high
+MEM30-C,203,sqlite,src/analyze.c,1986,FP,pSchema member access on live schema object; not freed,,high
+MEM30-C,204,sqlite,src/analyze.c,1995,FP,db live context to loadStat4/DbFree; not freed,,high
+MEM30-C,205,sqlite,src/analyze.c,1995,FP,"sInfo is a stack-local analysisInfo struct passed by value-of-member; never freed, not a heap pointer",,high
+MEM30-C,206,sqlite,src/analyze.c,1995,FP,sInfo.zDatabase member of stack local; not freed,,high
+MEM30-C,207,sqlite,src/analyze.c,1998,FP,pSchema live schema object iterated; not freed,,high
+MEM30-C,208,sqlite,src/analyze.c,1998,FP,pSchema dereference on live schema; not freed,,high
+MEM30-C,209,sqlite,src/analyze.c,1998,FP,pSchema member access (idxHash) on live schema; not freed,,high
+MEM30-C,210,sqlite,src/analyze.c,2006,FP,db live context handle to OomFault; not freed,,high
