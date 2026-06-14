@@ -1,0 +1,99 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+EXP30-C,0,sqlite,src/treeview.c,30,FP,line 30 p assigned via *pp=p=malloc then null-checked next line then memset; assignment-before-use across sequence point not a real EXP30 defect,,high
+EXP34-C,1,sqlite,src/treeview.c,30,FP,line 30 result of sqlite3_malloc64 checked for 0 on line 31 before any deref so no null deref,,high
+INT32-C,2,sqlite,src/treeview.c,34,FP,p->iLevel bounded by tree-recursion depth (a few dozen); never approaches INT_MAX,,high
+INT32-C,3,sqlite,src/treeview.c,46,FP,iLevel-- only reached when iLevel>=0 after a matching Push; bounded counter cannot underflow INT_MIN,,high
+API00-C,4,sqlite,src/treeview.c,57,FP,sqlite3TreeViewLine explicitly guards body with if(p) on line 63 and tolerates p==0,,high
+DCL13-C,5,sqlite,src/treeview.c,57,FP,sqlite3TreeViewLine signature is part of the printf-style public debug API and p is used read-only but const would not change ABI and is stylistic only; pointer is passed by value not mutated yet flagged as defect incorrectly,,high
+ARR01-C,6,sqlite,src/treeview.c,64,FP,p->bLine is a real fixed array member of struct TreeView not a decayed parameter so sizeof is correct,,high
+FIO47-C,7,sqlite,src/treeview.c,77,FP,zBuf is char zBuf[1000] decaying to char* which matches %s; analyzer misread array as integer,,high
+ERR33-C,8,sqlite,src/treeview.c,78,FP,fflush(stdout) in a debug-only pretty-printer; ignoring return is benign for diagnostic output but technically ERR33; debug code so FP in practice,,low
+API00-C,9,sqlite,src/treeview.c,92,FP,"pView tolerates null throughout (Push mallocs, Line guards if(p)); no unchecked deref",,high
+API00-C,10,sqlite,src/treeview.c,92,FP,aCol indexed 0..nCol-1 by caller contract from a valid Table; loop bounded by nCol; not a trust boundary,,high
+API00-C,11,sqlite,src/treeview.c,92,FP,nCol is i16 column count schema-bounded (<=32767); loop arithmetic cannot overflow,,high
+DCL11-C,12,sqlite,src/treeview.c,128,FP,flg is u16 promoted to int then unsigned for %x varargs; standard promotion fully safe,,high
+ERR33-C,13,sqlite,src/treeview.c,130,FP,debug-only fflush return ignored; benign,,low
+API00-C,14,sqlite,src/treeview.c,139,FP,pWith==0 returns early line 141; pView tolerated null by callees; no unchecked deref,,high
+MSC04-C,15,sqlite,src/treeview.c,139,TP,genuine mutual recursion sqlite3TreeViewWith->Select->With confirmed in source,,high
+API00-C,16,sqlite,src/treeview.c,185,FP,pSrc==0 returns early line 187; pView null tolerated by callees,,high
+MSC04-C,17,sqlite,src/treeview.c,185,TP,genuine indirect recursion SrcList->Expr->Select->SrcList confirmed,,high
+ARR02-C,18,sqlite,src/treeview.c,218,FP,aMat[] has brace initializer with 3 strings giving explicit size; valid intentional C,,high
+API00-C,19,sqlite,src/treeview.c,268,FP,p==0 handled line 271 prints nil-SELECT; pView null-tolerated,,high
+MSC04-C,20,sqlite,src/treeview.c,268,TP,genuine indirect recursion Select->Window->ExprList->BareExprList->Expr->Select confirmed,,high
+INT32-C,21,sqlite,src/treeview.c,293,FP,cnt counts SELECT-compound depth (small); cannot reach INT_MAX,,high
+API00-C,22,sqlite,src/treeview.c,384,FP,pExpr nullness handled by callee TreeViewExpr (line 506); pView null-tolerated,,high
+MSC04-C,23,sqlite,src/treeview.c,384,TP,genuine indirect recursion Bound->Expr->Select->Window->Bound confirmed,,high
+API00-C,24,sqlite,src/treeview.c,421,FP,pWin==0 returns early line 423; pView null-tolerated,,high
+MSC04-C,25,sqlite,src/treeview.c,421,TP,genuine indirect recursion Window->Expr->Select->Window confirmed,,high
+EXP33-C,26,sqlite,src/treeview.c,456,FP,zBuf is char[30] written by sqlite3_snprintf on line 456 before any read on line 458,,high
+API00-C,27,sqlite,src/treeview.c,488,FP,pWin==0 returns early line 489; pView null-tolerated,,high
+MSC04-C,28,sqlite,src/treeview.c,488,TP,genuine indirect recursion WinFunc->Window->ExprList->...->WinFunc confirmed,,high
+API00-C,29,sqlite,src/treeview.c,501,FP,pExpr==0 handled line 506 prints nil; pView null-tolerated,,high
+MEM05-C,30,sqlite,src/treeview.c,501,TP,sqlite3TreeViewExpr is the central node of the mutually-recursive treeview walker; recursive stack growth is real (bounded by expr depth but exists),,high
+INT14-C,31,sqlite,src/treeview.c,564,FP,pExpr->flags & EP_IntValue is pure bitwise flag test; no genuine arithmetic mixing; readability false alarm,,high
+ARR02-C,32,sqlite,src/treeview.c,655,FP,azOp[] has brace initializer with 4 strings giving explicit size; intentional valid C,,high
+INT32-C,33,sqlite,src/treeview.c,662,FP,expression yields 0..3 (bool*2 + truthvalue) used as azOp index; no overflow possible,,high
+INT32-C,34,sqlite,src/treeview.c,662,FP,(op2==TK_ISNOT)*2 is 0 or 2; trivially cannot overflow,,high
+ARR00-C,35,sqlite,src/treeview.c,714,FP,zOp2 is const char* and zBuf is char[8]; this is pointer assignment not array assignment; analyzer misread,,high
+MEM30-C,36,sqlite,src/treeview.c,846,FP,z from sqlite3_mprintf is only read by BareExprList then freed once; no use-after-free,,high
+MEM30-C,37,sqlite,src/treeview.c,847,FP,z freed exactly once on line 847; the prior line 846 is a read not a free; no double-free,,high
+INT32-C,38,sqlite,src/treeview.c,852,FP,iTable-1 on a SELECT-COLUMN count (small positive); formatting only; no overflow,,high
+API00-C,39,sqlite,src/treeview.c,900,FP,pList==0 handled line 906 prints empty; pView null-tolerated; caller contract,,high
+API00-C,40,sqlite,src/treeview.c,900,FP,pList null handled line 906,,high
+API00-C,41,sqlite,src/treeview.c,900,FP,zLabel null/empty handled line 905 defaulting to LIST,,high
+MSC04-C,42,sqlite,src/treeview.c,900,TP,genuine indirect recursion BareExprList->Expr->ExprList->BareExprList confirmed,,high
+ERR33-C,43,sqlite,src/treeview.c,945,FP,debug-only fflush return ignored; benign,,low
+API00-C,44,sqlite,src/treeview.c,954,FP,delegates to BareExprList which handles null pList/zLabel; pView null-tolerated,,high
+MSC04-C,45,sqlite,src/treeview.c,954,TP,genuine indirect recursion ExprList->BareExprList->Expr->ExprList confirmed,,high
+API00-C,46,sqlite,src/treeview.c,968,FP,pList==0 handled line 974; pView null-tolerated,,high
+API00-C,47,sqlite,src/treeview.c,968,FP,pList null handled line 974,,high
+API00-C,48,sqlite,src/treeview.c,968,FP,zLabel null/empty handled line 973,,high
+API00-C,49,sqlite,src/treeview.c,990,FP,delegates to BareIdList which handles null; pView null-tolerated,,high
+API00-C,50,sqlite,src/treeview.c,1004,FP,pUpsert==0 returns early line 1009; pView null-tolerated,,high
+INT32-C,51,sqlite,src/treeview.c,1017,FP,n is (set!=0)+(where!=0) yielding 0..2; n-- formatting counter cannot underflow INT_MIN,,high
+INT32-C,52,sqlite,src/treeview.c,1018,FP,same small element counter; cannot underflow,,high
+INT32-C,53,sqlite,src/treeview.c,1020,FP,same small element counter; cannot underflow,,high
+EXP34-C,54,sqlite,src/treeview.c,1046,FP,"pView starts 0 but TreeViewPush(&pView,0) on line 1045 mallocs it; even if null TreeViewLine guards if(p)",,high
+EXP34-C,55,sqlite,src/treeview.c,1055,FP,TreeViewWith guarded; pView either allocated or null-tolerated,,high
+EXP34-C,56,sqlite,src/treeview.c,1060,FP,TreeViewLine guards if(p) on line 63,,high
+EXP34-C,57,sqlite,src/treeview.c,1061,FP,TreeViewSrcList guards pSrc null and tolerates null pView,,high
+EXP34-C,58,sqlite,src/treeview.c,1066,FP,TreeViewLine null-tolerant,,high
+EXP34-C,59,sqlite,src/treeview.c,1067,FP,TreeViewExpr null-tolerant (line 506) and pView null-tolerant,,high
+EXP34-C,60,sqlite,src/treeview.c,1071,FP,TreeViewExprList delegates to null-tolerant BareExprList,,high
+EXP34-C,61,sqlite,src/treeview.c,1075,FP,TreeViewLine null-tolerant,,high
+EXP34-C,62,sqlite,src/treeview.c,1076,FP,TreeViewExpr null-tolerant,,high
+EXP34-C,63,sqlite,src/treeview.c,1080,FP,TreeViewTrigger guards pTrigger==0 and tolerates null pView,,high
+EXP34-C,64,sqlite,src/treeview.c,1112,FP,"TreeViewLine null-tolerant (INSERT path, pView mallocd by Push line 1111)",,high
+EXP34-C,65,sqlite,src/treeview.c,1122,FP,TreeViewWith null-tolerant,,high
+EXP34-C,66,sqlite,src/treeview.c,1127,FP,TreeViewLine null-tolerant,,high
+EXP34-C,67,sqlite,src/treeview.c,1128,FP,TreeViewSrcList null-tolerant,,high
+EXP34-C,68,sqlite,src/treeview.c,1132,FP,TreeViewIdList null-tolerant,,high
+EXP34-C,69,sqlite,src/treeview.c,1136,FP,TreeViewLine null-tolerant,,high
+EXP34-C,70,sqlite,src/treeview.c,1137,FP,TreeViewSelect handles null p and tolerates null pView,,high
+EXP34-C,71,sqlite,src/treeview.c,1141,FP,TreeViewExprList null-tolerant,,high
+EXP34-C,72,sqlite,src/treeview.c,1145,FP,TreeViewLine null-tolerant,,high
+EXP34-C,73,sqlite,src/treeview.c,1146,FP,TreeViewUpsert guards pUpsert==0 and tolerates null pView,,high
+EXP34-C,74,sqlite,src/treeview.c,1150,FP,TreeViewTrigger null-tolerant,,high
+EXP34-C,75,sqlite,src/treeview.c,1183,FP,"TreeViewLine null-tolerant (UPDATE path, pView mallocd by Push line 1182)",,high
+EXP34-C,76,sqlite,src/treeview.c,1194,FP,TreeViewWith null-tolerant,,high
+EXP34-C,77,sqlite,src/treeview.c,1199,FP,TreeViewLine null-tolerant,,high
+EXP34-C,78,sqlite,src/treeview.c,1200,FP,TreeViewSrcList null-tolerant,,high
+EXP34-C,79,sqlite,src/treeview.c,1204,FP,TreeViewExprList null-tolerant,,high
+EXP34-C,80,sqlite,src/treeview.c,1208,FP,TreeViewLine null-tolerant,,high
+EXP34-C,81,sqlite,src/treeview.c,1209,FP,TreeViewExpr null-tolerant,,high
+EXP34-C,82,sqlite,src/treeview.c,1213,FP,TreeViewExprList null-tolerant,,high
+EXP34-C,83,sqlite,src/treeview.c,1217,FP,TreeViewLine null-tolerant,,high
+EXP34-C,84,sqlite,src/treeview.c,1218,FP,TreeViewExpr null-tolerant,,high
+EXP34-C,85,sqlite,src/treeview.c,1223,FP,TreeViewLine null-tolerant,,high
+EXP34-C,86,sqlite,src/treeview.c,1224,FP,TreeViewUpsert null-tolerant,,high
+EXP34-C,87,sqlite,src/treeview.c,1228,FP,TreeViewTrigger null-tolerant,,high
+API00-C,88,sqlite,src/treeview.c,1238,FP,pStep==0 returns early line 1245; pView null-tolerated,,high
+EXP30-C,89,sqlite,src/treeview.c,1254,FP,pStep advanced in do-while controlling expr (line 1254); read-and-advance is well-sequenced not an EXP30 defect,,high
+EXP30-C,90,sqlite,src/treeview.c,1254,FP,duplicate of 89; same well-sequenced loop advance,,high
+API00-C,91,sqlite,src/treeview.c,1261,FP,pTrigger==0 returns early line 1268; pView null-tolerated,,high
+EXP30-C,92,sqlite,src/treeview.c,1280,FP,pTrigger advanced in do-while controlling expr (line 1280); well-sequenced loop,,high
+EXP30-C,93,sqlite,src/treeview.c,1280,FP,duplicate of 92,,high
+API00-C,94,sqlite,src/treeview.c,1301,FP,sqlite3ShowExprList passes p straight to null-tolerant TreeViewExprList; gdb helper,,high
+API00-C,95,sqlite,src/treeview.c,1302,FP,sqlite3ShowIdList passes p to null-tolerant TreeViewIdList; gdb helper,,high
+EXP34-C,96,sqlite,src/treeview.c,1306,FP,pView=0 mallocd by Push line 1305 before TreeViewLine; also Line null-tolerant,,high
+EXP34-C,97,sqlite,src/treeview.c,1307,FP,TreeViewSrcList null-tolerant and guards pSrc==0,,high

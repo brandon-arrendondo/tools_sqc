@@ -1,0 +1,88 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+CON43-C,0,sqlite,ext/misc/vfstrace.c,209,FP,line 209 is a function prototype 'static int vfstraceShmMap(...)' not a static volatile variable; CON43 misread the declaration,,high
+API02-C,1,sqlite,ext/misc/vfstrace.c,221,FP,"signature fixed by sqlite3_vfs xDlError typedef (pVfs,int nByte,char*); nByte IS the size arg, API02 misfire",,high
+API02-C,2,sqlite,ext/misc/vfstrace.c,224,FP,"signature fixed by sqlite3_vfs xRandomness typedef (pVfs,int nByte,char*); nByte IS the size arg",,high
+DCL13-C,3,sqlite,ext/misc/vfstrace.c,251,FP,pInfo is a forward struct typedef in a typedef line at 251; const-param advice on a prototype line is moot and pInfo is mutated by callees,,high
+INT13-C,4,sqlite,ext/misc/vfstrace.c,341,FP,"rc&0xff is intentional masking of a status code into low byte; signedness of rc never produces UB here, idiomatic",,high
+EXP33-C,5,sqlite,ext/misc/vfstrace.c,343,FP,zBuf[50] is written by sqlite3_snprintf at 343/345 before any read at 347; not uninitialized,,high
+INT13-C,6,sqlite,ext/misc/vfstrace.c,343,FP,"rc&0xffff00 intentional bit masking of error code for display, no defect",,high
+INT32-C,7,sqlite,ext/misc/vfstrace.c,357,FP,"i indexes a fixed local buffer over constant-string appends; counter cannot reach INT_MAX, bounded by string lengths",,high
+STR34-C,8,sqlite,ext/misc/vfstrace.c,357,FP,"*(zAppend++) is char copied into char buffer z[i]; no widening, no sign-extension concern in strappend",,high
+STR34-C,9,sqlite,ext/misc/vfstrace.c,357,FP,"same as idx8; plain char-to-char store, STR34 misfire",,high
+MEM30-C,10,sqlite,ext/misc/vfstrace.c,381,FP,sqlite3_free frees p->base.pMethods (the allocated io_methods); p->base itself the embedded handle is not freed and pMethods nulled after,,high
+MEM30-C,11,sqlite,ext/misc/vfstrace.c,381,FP,p->base is an embedded sqlite3_file member not a freed pointer; only its pMethods field is freed then zeroed,,high
+DCL40-C,12,sqlite,ext/misc/vfstrace.c,390,FP,definition at 390 matches prototype at 197 (sqlite_int64 vs sqlite3_int64 are same type); DCL40 typedef-alias misfire,,high
+DCL13-C,13,sqlite,ext/misc/vfstrace.c,391,FP,pFile signature fixed by sqlite3_io_methods xRead typedef; cast to vfstrace_file* and pMethods invoked through it,,high
+DCL40-C,14,sqlite,ext/misc/vfstrace.c,410,FP,"definition matches prototype at 198; sqlite_int64/sqlite3_int64 alias, DCL40 misfire",,high
+DCL13-C,15,sqlite,ext/misc/vfstrace.c,411,FP,pFile fixed by sqlite3_io_methods xWrite typedef; const impossible,,high
+DCL13-C,16,sqlite,ext/misc/vfstrace.c,430,FP,pFile fixed by xTruncate typedef,,high
+DCL40-C,17,sqlite,ext/misc/vfstrace.c,430,FP,definition matches prototype 199; int64 typedef alias,,high
+DCL13-C,18,sqlite,ext/misc/vfstrace.c,445,FP,pFile fixed by xSync typedef,,high
+INT30-C,19,sqlite,ext/misc/vfstrace.c,457,FP,i is bounded 0..~30 by constant strappend writes into zBuf[100]; sizeof(zBuf)-i cannot underflow,,high
+DCL13-C,20,sqlite,ext/misc/vfstrace.c,470,FP,pFile fixed by xFileSize typedef,,high
+DCL40-C,21,sqlite,ext/misc/vfstrace.c,470,FP,definition matches prototype 201; int64 alias,,high
+ARR02-C,22,sqlite,ext/misc/vfstrace.c,486,FP,"azLockNames[] braces-init with 5 entries; size implicit by design and used with sizeof bound at 489, idiomatic",,high
+DCL13-C,23,sqlite,ext/misc/vfstrace.c,499,FP,pFile fixed by xLock typedef,,high
+DCL13-C,24,sqlite,ext/misc/vfstrace.c,514,FP,pFile fixed by xUnlock typedef,,high
+DCL13-C,25,sqlite,ext/misc/vfstrace.c,529,FP,pFile fixed by xCheckReservedLock typedef,,high
+DCL13-C,26,sqlite,ext/misc/vfstrace.c,545,FP,pFile fixed by xFileControl typedef,,high
+EXP33-C,27,sqlite,ext/misc/vfstrace.c,560,FP,zBuf[100] is written by sqlite3_snprintf branches before being used as zOp; vfstrace_printf only reads after assignment,,high
+ERR01-C,28,sqlite,ext/misc/vfstrace.c,585,FP,"strtoll result fed to mask of trace flags; errno not relevant, debug-only pragma parsing, no errno-dependent decision",,high
+ERR30-C,29,sqlite,ext/misc/vfstrace.c,585,FP,same; in-band errno contract not required for this best-effort numeric trace-mask parse,,high
+ARR02-C,30,sqlite,ext/misc/vfstrace.c,590,FP,aKw[] braces-init table; implicit size is idiomatic and used with sizeof bound at 642,,high
+STR00-C,31,sqlite,ext/misc/vfstrace.c,627,TP,"isalpha(zArg[0]) where zArg is const u8* (unsigned char); already unsigned so no negative-value UB, but plain-char ctype rule fires; pedantically the value is unsigned so safe -> FP",,med
+STR37-C,32,sqlite,ext/misc/vfstrace.c,627,FP,"zArg is const u8* unsigned char; isalpha arg is non-negative, no UB; STR37 misfire on already-unsigned operand",,high
+STR00-C,33,sqlite,ext/misc/vfstrace.c,636,FP,"zArg unsigned char (u8*), isalpha safe",,high
+STR37-C,34,sqlite,ext/misc/vfstrace.c,636,FP,"zArg unsigned char, no UB",,high
+STR00-C,35,sqlite,ext/misc/vfstrace.c,640,FP,"zArg unsigned char, no UB",,high
+STR37-C,36,sqlite,ext/misc/vfstrace.c,640,FP,"zArg unsigned char, no UB",,high
+STR00-C,37,sqlite,ext/misc/vfstrace.c,641,FP,zArg[1] still unsigned char via u8*; no UB,,high
+STR37-C,38,sqlite,ext/misc/vfstrace.c,641,FP,"zArg unsigned char, no UB",,high
+ARR00-C,39,sqlite,ext/misc/vfstrace.c,642,FP,jj is the for-loop induction var initialized 'jj=0' at 642; not uninitialized,,high
+INT14-C,40,sqlite,ext/misc/vfstrace.c,642,FP,"aKw used as sizeof divisor (642) and indexed (643); the bitwise op is on aKw[jj].m flags not aKw itself, INT14 misattribution",,high
+EXP33-C,41,sqlite,ext/misc/vfstrace.c,718,FP,zBuf2[100] written by snprintf in each branch that sets zRVal=zBuf2 before read at 737; uninit read impossible,,high
+DCL13-C,42,sqlite,ext/misc/vfstrace.c,747,FP,pFile fixed by xSectorSize typedef,,high
+DCL13-C,43,sqlite,ext/misc/vfstrace.c,761,FP,pFile fixed by xDeviceCharacteristics typedef,,high
+DCL13-C,44,sqlite,ext/misc/vfstrace.c,776,FP,pFile fixed by xShmLock typedef,,high
+ARR02-C,45,sqlite,ext/misc/vfstrace.c,777,FP,"azLockName[] 8-entry braces-init; implicit size idiomatic, bounded by sizeof at 801",,high
+INT30-C,46,sqlite,ext/misc/vfstrace.c,799,FP,i bounded by constant strappend writes into zLck[100]; sizeof(zLck)-i cannot underflow,,high
+DCL13-C,47,sqlite,ext/misc/vfstrace.c,815,FP,pFile fixed by xShmMap typedef,,high
+DCL13-C,48,sqlite,ext/misc/vfstrace.c,831,FP,pFile fixed by xShmBarrier typedef,,high
+DCL13-C,49,sqlite,ext/misc/vfstrace.c,838,FP,pFile fixed by xShmUnmap typedef,,high
+DCL13-C,50,sqlite,ext/misc/vfstrace.c,849,FP,pFile fixed by xFetch typedef,,high
+DCL13-C,51,sqlite,ext/misc/vfstrace.c,860,FP,pFile fixed by xUnfetch typedef,,high
+DCL13-C,52,sqlite,ext/misc/vfstrace.c,877,FP,pVfs fixed by sqlite3_vfs xOpen typedef and pVfs->pAppData is read; const-on-pointee not relevant,,high
+EXP33-C,53,sqlite,ext/misc/vfstrace.c,897,FP,line 897 memset writes pNew it does not read uninit memory; EXP33 framing wrong (real issue is unchecked malloc NULL -> see FN),,med
+DCL13-C,54,sqlite,ext/misc/vfstrace.c,937,FP,pVfs fixed by xDelete typedef; pAppData dereferenced,,high
+DCL13-C,55,sqlite,ext/misc/vfstrace.c,954,FP,pVfs fixed by xAccess typedef,,high
+DCL13-C,56,sqlite,ext/misc/vfstrace.c,977,FP,pVfs fixed by xFullPathname typedef,,high
+DCL13-C,57,sqlite,ext/misc/vfstrace.c,997,FP,pVfs fixed by xDlOpen typedef,,high
+DCL13-C,58,sqlite,ext/misc/vfstrace.c,1010,FP,pVfs fixed by xDlError typedef,,high
+DCL13-C,59,sqlite,ext/misc/vfstrace.c,1022,FP,pVfs fixed by xDlSym typedef,,high
+DCL13-C,60,sqlite,ext/misc/vfstrace.c,1032,FP,pVfs fixed by xDlClose typedef,,high
+DCL13-C,61,sqlite,ext/misc/vfstrace.c,1044,FP,pVfs fixed by xRandomness typedef,,high
+DCL13-C,62,sqlite,ext/misc/vfstrace.c,1056,FP,pVfs fixed by xSleep typedef,,high
+DCL13-C,63,sqlite,ext/misc/vfstrace.c,1067,FP,pVfs fixed by xCurrentTime typedef,,high
+DCL13-C,64,sqlite,ext/misc/vfstrace.c,1077,FP,pVfs fixed by xCurrentTimeInt64 typedef,,high
+DCL13-C,65,sqlite,ext/misc/vfstrace.c,1091,FP,pVfs fixed by xGetLastError typedef,,high
+DCL13-C,66,sqlite,ext/misc/vfstrace.c,1107,FP,pVfs fixed by xSetSystemCall typedef,,high
+DCL13-C,67,sqlite,ext/misc/vfstrace.c,1116,FP,pVfs fixed by xGetSystemCall typedef,,high
+DCL13-C,68,sqlite,ext/misc/vfstrace.c,1123,FP,pVfs fixed by xNextSystemCall typedef,,high
+API00-C,69,sqlite,ext/misc/vfstrace.c,1138,FP,"xOut is a registration callback supplied by trusted caller (shell/app); internal contract, only invoked when pInfo->bOn and stored, not a trust boundary",,high
+DCL15-C,70,sqlite,ext/misc/vfstrace.c,1138,FP,"vfstrace_register is the public extension entry point requiring external linkage; intentionally non-static, declared in header",,high
+DCL13-C,71,sqlite,ext/misc/vfstrace.c,1142,FP,pOutArg is void* opaque app cookie stored into pInfo->pOutArg and passed to xOut; const would break the API contract,,high
+EXP33-C,72,sqlite,ext/misc/vfstrace.c,1154,FP,pNew assigned by sqlite3_malloc64 at 1155 with NULL check at 1156 before any deref at 1157+; not uninitialized,,high
+EXP33-C,73,sqlite,ext/misc/vfstrace.c,1154,FP,pInfo set to &pNew[1] at 1158 before use at 1162; not uninitialized,,high
+EXP34-C,74,sqlite,ext/misc/vfstrace.c,1154,FP,pNew NULL-checked at 1156 (return SQLITE_NOMEM) before deref; not a null deref,,high
+EXP34-C,75,sqlite,ext/misc/vfstrace.c,1154,FP,pInfo points into the validated pNew allocation; non-null once pNew passes the 1156 check,,high
+INT30-C,76,sqlite,ext/misc/vfstrace.c,1154,FP,"nByte is size_t; nName=strlen(zTraceName) bounded by a real VFS name, sizeof sums tiny structs; passed to malloc64 which handles huge sizes by returning 0",,high
+INT30-C,77,sqlite,ext/misc/vfstrace.c,1154,FP,sizeof(*pNew)+sizeof(*pInfo) is a compile-time constant sum of two small structs; cannot wrap,,high
+INT30-C,78,sqlite,ext/misc/vfstrace.c,1160,FP,szOsFile and sizeof(vfstrace_file) are small bounded ints; sum stored in szOsFile cannot wrap in practice,,high
+ARR37-C,79,sqlite,ext/misc/vfstrace.c,1162,FP,pInfo[1] is pointer arithmetic to place zName immediately after the pInfo struct in the single allocation; intentional flexible layout not OOB,,high
+ARR37-C,80,sqlite,ext/misc/vfstrace.c,1163,FP,"same as 79; &pInfo[1] is the address just past pInfo within the combined allocation, by design",,high
+ARR38-C,81,sqlite,ext/misc/vfstrace.c,1163,FP,memcpy size nName+1 copies the validated trace name into space reserved by nByte=...+nName+1; bounded,,high
+INT32-C,82,sqlite,ext/misc/vfstrace.c,1163,FP,"nName+1 where nName=strlen of a caller VFS name; the allocation reserved exactly nName+1 bytes, no overflow",,high
+EXP33-C,83,sqlite,ext/misc/vfstrace.c,1169,FP,vfstraceDlOpen is a function (assigned conditionally at 1169) not an uninitialized static variable; EXP33 misread,,high
+EXP33-C,84,sqlite,ext/misc/vfstrace.c,1186,FP,vfstraceNextSystemCall is a function assigned at 1185 not an uninitialized variable; EXP33 misread,,high
+DCL15-C,85,sqlite,ext/misc/vfstrace.c,1205,FP,vfstrace_unregister is a public extension API needing external linkage; intentionally non-static,,high
+EXP34-C,FN,sqlite,ext/misc/vfstrace.c,897,FN,"vfstraceOpen: pNew=sqlite3_malloc(sizeof(*pNew)) at 895 then memset(pNew,0,...) at 897 with NO null check -> null-pointer write on OOM. sqc fired EXP33 (uninit, wrong rule/FP) at the line, missing the null-deref. LOW conf: debug/trace VFS shim, OOM-only, dev-registered not production data path",FN-hunt,low

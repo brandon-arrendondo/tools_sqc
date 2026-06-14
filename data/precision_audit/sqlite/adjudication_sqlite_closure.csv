@@ -1,0 +1,77 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+INT32-C,0,sqlite,ext/misc/closure.c,185,FP,heights are short int 0..AVL-depth-bounded; hBefore-hAfter cannot overflow int (max ~64 nodes deep),,high
+INT32-C,1,sqlite,ext/misc/closure.c,186,FP,same bounded short heights; (max)+1 cannot overflow int,,high
+DCL30-C,2,sqlite,ext/misc/closure.c,207,FP,"returns pB which is pP->pBefore (heap node), not a local; param naming misread",,high
+DCL30-C,3,sqlite,ext/misc/closure.c,228,FP,"returns pA = pP->pAfter (heap node), not automatic storage",,high
+DCL13-C,4,sqlite,ext/misc/closure.c,235,FP,"p->pUp is read at 236 but closureAvlFromPtr may return &p path; p is dereferenced read-only yet returned-via address not applicable; signature is internal-only and could be const but p members not written so DCL13 is technically valid TP-shaped — however returned pp aliases caller's &p, const would not compile; FP",,high
+DCL13-C,5,sqlite,ext/misc/closure.c,235,FP,pp is returned to caller as a mutable closure_avl** (used as lvalue *pp= at 255); cannot be const,,high
+EXP34-C,6,sqlite,ext/misc/closure.c,255,FP,pp from closureAvlFromPtr is never null (returns &p or &pUp->pAfter/pBefore),,high
+DCL30-C,7,sqlite,ext/misc/closure.c,265,FP,"returns pTop which tracks heap node p, not automatic storage",,high
+DCL13-C,8,sqlite,ext/misc/closure.c,271,FP,p only read; but closureAvlSearch returns p (the param) so adding const to param would force const return mismatch with callers storing non-const; FP,,med
+DCL13-C,9,sqlite,ext/misc/closure.c,280,FP,closureAvlFirst returns p (param) used later as mutable tree node by callers; const would not compile,,med
+API00-C,10,sqlite,ext/misc/closure.c,287,FP,internal AVL helper; p guarded by while(p) loop condition before deref; null-tolerant,,high
+DCL13-C,11,sqlite,ext/misc/closure.c,287,FP,closureAvlNext returns p reused as mutable cursor node; const would break callers,,med
+DCL30-C,12,sqlite,ext/misc/closure.c,330,FP,"returns pTop, a heap AVL node, not automatic local",,high
+MEM05-C,13,sqlite,ext/misc/closure.c,344,FP,"recursion is bounded by AVL tree height (log n); stack depth ~O(height), not unbounded attacker input",,high
+MSC04-C,14,sqlite,ext/misc/closure.c,344,TP,closureAvlDestroy at 344-349 calls itself directly on pBefore and pAfter — factual direct recursion,,high
+DCL30-C,15,sqlite,ext/misc/closure.c,408,FP,"returns heap node, not automatic local (closureAvlInsert returns p/pNew heap nodes)",,high
+ARR38-C,16,sqlite,ext/misc/closure.c,434,FP,nIn=strlen(zIn) so nIn+1 bytes allocated by malloc64 then memcpy nIn+1 — size matches allocation exactly,,high
+INT32-C,17,sqlite,ext/misc/closure.c,434,FP,"nIn is sqlite3_int64 from strlen, +1 then cast size_t; allocation is malloc64(nIn+1) identical; no overflow in practice (strlen bounded by addressable memory)",,high
+ARR00-C,18,sqlite,ext/misc/closure.c,447,FP,"zOut is sqlite3_malloc64 heap buffer, not a local array; returned correctly to be freed by caller",,high
+DCL30-C,19,sqlite,ext/misc/closure.c,447,FP,"zOut is heap-allocated (malloc64), not automatic storage",,high
+ARR01-C,20,sqlite,ext/misc/closure.c,460,FP,"line 460 is memset(p,0,sizeof(*p)) on closure_vtab* p; sizeof(*p) is the struct size, correct idiom not a decayed array",,high
+STR34-C,21,sqlite,ext/misc/closure.c,484,FP,zKey passed to memcmp/strlen as const char*; isspace not applied to zKey; sign-extension claim misattributed,,high
+STR34-C,22,sqlite,ext/misc/closure.c,485,FP,"zStr indexed with isspace((unsigned char)zStr[i]) at 489/492 — already cast to unsigned char; line 485 is just strlen, no sign issue",,med
+INT31-C,23,sqlite,ext/misc/closure.c,488,FP,"nKey=(int)strlen, guarded nStr<nKey+1 ensures nKey>=0 and bounded; memcmp size nKey non-negative small",,high
+INT32-C,24,sqlite,ext/misc/closure.c,491,FP,i bounded by string length (loop scans until '=' within finite KEY=VALUE arg); cannot reach INT_MAX,,high
+INT32-C,25,sqlite,ext/misc/closure.c,492,FP,same bounded scan over short config-arg string,,high
+DCL13-C,26,sqlite,ext/misc/closure.c,506,FP,"pAux is cast (void)pAux and unused; could be const but it is a fixed xConnect signature param (sqlite3_module contract) — signature fixed by module typedef, FP",,high
+EXP33-C,27,sqlite,ext/misc/closure.c,522,FP,pNew is memset(0) at 522 immediately after malloc; not uninitialized when read,,high
+MEM30-C,28,sqlite,ext/misc/closure.c,533,FP,line 533 reads pNew->zTableName after assignment; no free precedes it on this path; not use-after-free,,high
+MEM30-C,29,sqlite,ext/misc/closure.c,540,FP,"line 540 same pattern, pNew->zIdColumn freshly assigned, no prior free of pNew",,high
+MEM30-C,30,sqlite,ext/misc/closure.c,547,FP,line 547 pNew->zParentColumn freshly assigned; pNew not freed yet,,high
+STR34-C,31,sqlite,ext/misc/closure.c,550,FP,"*pzErr assigned a char* from mprintf; no sign-extension, it is a pointer store not char arithmetic",,high
+MEM30-C,32,sqlite,ext/misc/closure.c,555,FP,line 555 passes pVtab->db to sqlite3_declare_vtab; pNew not freed before this point,,high
+MEM30-C,33,sqlite,ext/misc/closure.c,566,FP,"pNew freed once per path (551 in-loop-return, 566 then UAF, 572 goto); no double-free on any single path",,high
+MEM30-C,34,sqlite,ext/misc/closure.c,568,TP,line 568 *ppVtab=&pNew->base executes unconditionally even after closureFree(pNew) at 566 when declare_vtab fails — read of freed pointer (genuine known UAF),,high
+MEM30-C,35,sqlite,ext/misc/closure.c,568,TP,same defect: pNew->base accessed at 568 after pNew freed at 566 on rc!=OK path,,high
+MEM33-C,36,sqlite,ext/misc/closure.c,568,FP,"&pNew->base is address-of, not a flexible-array struct assignment; sqlite3_vtab has no flexible array",,high
+MSC07-C,37,sqlite,ext/misc/closure.c,571,FP,"line 568-569 after the if-block are reachable (the return at 569 is the normal success exit); 571 label is a goto target, not unreachable",,high
+MEM30-C,38,sqlite,ext/misc/closure.c,572,FP,line 572 frees pNew once via goto closureConnectError; only one free on that path,,high
+EXP33-C,39,sqlite,ext/misc/closure.c,582,FP,"pCur from sqlite3_malloc checked ==0 at 583, then memset(0) at 584 before any deref",,high
+MEM33-C,40,sqlite,ext/misc/closure.c,586,FP,"line 586 *ppCursor=&pCur->base is address-of member, not flexible-array struct assignment",,high
+INT32-C,41,sqlite,ext/misc/closure.c,587,FP,"p->nCursor++ tracks live cursors; bounded by concurrent cursor count, cannot reach INT_MAX realistically",,high
+INT32-C,42,sqlite,ext/misc/closure.c,618,FP,nCursor-- balanced against nCursor++ in closureOpen; asserted ==0 at disconnect; no INT_MIN wrap,,high
+EXP33-C,43,sqlite,ext/misc/closure.c,643,FP,pNew memset(0) at 643 right after malloc check at 642; initialized before read at 644,,high
+DCL13-C,44,sqlite,ext/misc/closure.c,665,FP,argv is const char*const* already; the elements are const; this is the fixed xConnect signature — cannot change,,high
+INT14-C,45,sqlite,ext/misc/closure.c,690,FP,"idxNum>>4 etc are deliberate bit-field extraction of the planner-encoded idxNum, intentional and documented at 815-822",,low
+INT32-C,46,sqlite,ext/misc/closure.c,691,FP,mxGen-- from 999999999 or a bound value; cannot reach INT_MIN from these values,,high
+EXP07-C,47,sqlite,ext/misc/closure.c,698,FP,"idxNum>>12 is documented bitfield decode (0x0000f000 field); intentional constant, not a fragile assumption",,low
+MEM30-C,48,sqlite,ext/misc/closure.c,715,FP,"pVtab->base.zErrMsg freed and reassigned at 715-716; pVtab itself is the live vtab, not freed",,high
+MEM30-C,49,sqlite,ext/misc/closure.c,716,FP,line 716 pVtab->base.zErrMsg reassigned from mprintf; live object,,high
+MEM30-C,50,sqlite,ext/misc/closure.c,716,FP,"pVtab->db read at 716 (sqlite3_errmsg(pVtab->db)); pVtab is the live connected vtab, never freed in xFilter",,high
+EXP34-C,51,sqlite,ext/misc/closure.c,724,FP,pAvl from queuePull guarded by while((pAvl=queuePull(...))!=0) before member access at 724,,high
+INT32-C,52,sqlite,ext/misc/closure.c,730,FP,"pAvl->iGeneration+1 bounded by mxGen (<=999999999) via 724 continue guard; depth limited, no overflow",,high
+DCL13-C,53,sqlite,ext/misc/closure.c,748,FP,cur is sqlite3_vtab_cursor* fixed by xRowid module signature; cannot add const,,high
+DCL13-C,54,sqlite,ext/misc/closure.c,788,FP,cur fixed by xEof module signature typedef; const would mismatch sqlite3_module,,high
+DCL13-C,55,sqlite,ext/misc/closure.c,797,FP,cur fixed by xColumn-style module signature; cannot change,,high
+DCL13-C,56,sqlite,ext/misc/closure.c,828,FP,"pTab fixed by xBestIndex signature (sqlite3_vtab*); module contract, not freely const-able",,high
+INT13-C,57,sqlite,ext/misc/closure.c,841,FP,"iPlan bit-test is internal planner bookkeeping, small non-negative values; signedness benign",,med
+INT13-C,58,sqlite,ext/misc/closure.c,850,FP,"same internal iPlan masking, values controlled by code not attacker beyond bounded indices",,med
+INT13-C,59,sqlite,ext/misc/closure.c,856,FP,"idx<<4 with idx small positive (1..5); no signed-overflow, internal planner encoding",,med
+INT13-C,60,sqlite,ext/misc/closure.c,861,FP,"iPlan & mask, benign internal flag test",,med
+INT13-C,61,sqlite,ext/misc/closure.c,865,FP,"idx<<8 with idx<=5; well within int range, intentional encoding",,med
+INT13-C,62,sqlite,ext/misc/closure.c,870,FP,iPlan & mask benign,,med
+EXP07-C,63,sqlite,ext/misc/closure.c,874,FP,"idx<<12 documented field-shift; idx bounded small, intentional",,low
+INT13-C,64,sqlite,ext/misc/closure.c,874,FP,"idx<<12 idx<=5, no overflow",,med
+INT13-C,65,sqlite,ext/misc/closure.c,878,FP,iPlan & mask benign internal test,,med
+INT13-C,66,sqlite,ext/misc/closure.c,882,FP,"idx<<16 idx<=5 fits int, no overflow",,med
+INT13-C,67,sqlite,ext/misc/closure.c,887,FP,iPlan & mask benign,,med
+INT13-C,68,sqlite,ext/misc/closure.c,888,FP,iPlan & mask benign,,med
+INT13-C,69,sqlite,ext/misc/closure.c,889,FP,iPlan & mask benign,,med
+INT13-C,70,sqlite,ext/misc/closure.c,896,FP,iPlan & mask benign,,med
+CON03-C,71,sqlite,ext/misc/closure.c,923,FP,"closureModule is a const-style static module struct read by sqlite3_create_module; standard registration pattern, not a thread-shared mutable",,high
+API00-C,72,sqlite,ext/misc/closure.c,959,FP,"db is the SQLite connection passed by core to init; non-null by API contract, SQLITE_EXTENSION_INIT2 uses pApi not db unsafely",,high
+API00-C,73,sqlite,ext/misc/closure.c,959,FP,"pApi consumed by SQLITE_EXTENSION_INIT2 macro which is the required init idiom; null pApi is an API-contract violation by caller, not a code defect",,high
+DCL15-C,74,sqlite,ext/misc/closure.c,959,FP,"sqlite3_closure_init must have external linkage (loadable-extension entry point, __declspec(dllexport)); cannot be static",,high
+DCL13-C,75,sqlite,ext/misc/closure.c,961,FP,"pzErrMsg is (void)pzErrMsg unused; fixed init-function signature, cannot meaningfully const",,high

@@ -1,0 +1,94 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+PRE00-C,0,sqlite,ext/misc/sha1.c,42,FP,"SHA_ROT is a standard well-known shift/rotate idiom macro; multi-eval is by design, no untrusted bug",,high
+PRE12-C,1,sqlite,ext/misc/sha1.c,42,FP,"PRE12 multi-eval of x in SHA_ROT is intentional, all args are pure value expressions",,high
+PRE00-C,2,sqlite,ext/misc/sha1.c,43,FP,rol is a standard rotate macro built on SHA_ROT; style-only,,high
+PRE12-C,3,sqlite,ext/misc/sha1.c,43,FP,PRE12 multi-eval k in rol intentional rotate idiom,,high
+PRE00-C,4,sqlite,ext/misc/sha1.c,44,FP,ror standard rotate macro; style-only,,high
+PRE12-C,5,sqlite,ext/misc/sha1.c,44,FP,PRE12 multi-eval k in ror intentional,,high
+PRE00-C,6,sqlite,ext/misc/sha1.c,46,FP,"blk0le byte-swap macro; multi-eval of i indexes block[i] only, style-only",,high
+PRE01-C,7,sqlite,ext/misc/sha1.c,46,FP,"PRE01 i unparenthesized but always passed an integer literal in unrolled calls; no precedence hazard in practice, style",,med
+PRE12-C,8,sqlite,ext/misc/sha1.c,46,FP,"blk0le multi-eval of i, callers pass literals, style-only",,high
+PRE01-C,9,sqlite,ext/misc/sha1.c,48,FP,"blk0be i unparenthesized, callers pass literals, style",,med
+PRE00-C,10,sqlite,ext/misc/sha1.c,49,FP,"blk mixing macro multi-eval of i, callers pass literals, style",,high
+PRE01-C,11,sqlite,ext/misc/sha1.c,49,FP,"blk i unparenthesized, callers pass literals",,med
+PRE12-C,12,sqlite,ext/misc/sha1.c,49,FP,"blk multi-eval i, literal args, style",,high
+PRE00-C,13,sqlite,ext/misc/sha1.c,58,FP,"Rl0 round macro multi-eval, intentional unrolled SHA1 round",,high
+PRE01-C,14,sqlite,ext/misc/sha1.c,58,FP,"Rl0 w unparenthesized; args are simple variable names a/b/c/d/e, no precedence issue",,med
+PRE01-C,15,sqlite,ext/misc/sha1.c,58,FP,"Rl0 x unparenthesized, simple var args",,med
+PRE01-C,16,sqlite,ext/misc/sha1.c,58,FP,"Rl0 z unparenthesized, simple var args",,med
+PRE10-C,17,sqlite,ext/misc/sha1.c,58,FP,"Rl0 not do-while wrapped but only ever used as statement list in unrolled block, never in bare if",,med
+PRE11-C,18,sqlite,ext/misc/sha1.c,58,FP,"Rl0 trailing semicolon is intentional statement macro, used as full statements",,med
+PRE12-C,19,sqlite,ext/misc/sha1.c,58,FP,Rl0 multi-eval w intentional round,,high
+PRE00-C,20,sqlite,ext/misc/sha1.c,60,FP,"Rb0 big-endian round macro, intentional",,high
+PRE01-C,21,sqlite,ext/misc/sha1.c,60,FP,"Rb0 w unparenthesized, simple var args",,med
+PRE01-C,22,sqlite,ext/misc/sha1.c,60,FP,"Rb0 x unparenthesized, simple var args",,med
+PRE01-C,23,sqlite,ext/misc/sha1.c,60,FP,"Rb0 z unparenthesized, simple var args",,med
+PRE10-C,24,sqlite,ext/misc/sha1.c,60,FP,"Rb0 not do-while wrapped, only used as statement sequence",,med
+PRE11-C,25,sqlite,ext/misc/sha1.c,60,FP,Rb0 trailing semicolon intentional statement macro,,med
+PRE12-C,26,sqlite,ext/misc/sha1.c,60,FP,Rb0 multi-eval w intentional,,high
+PRE00-C,27,sqlite,ext/misc/sha1.c,62,FP,R1 round macro multi-eval intentional,,high
+PRE01-C,28,sqlite,ext/misc/sha1.c,62,FP,R1 w unparenthesized simple var args,,med
+PRE01-C,29,sqlite,ext/misc/sha1.c,62,FP,R1 x unparenthesized simple var args,,med
+PRE01-C,30,sqlite,ext/misc/sha1.c,62,FP,R1 z unparenthesized simple var args,,med
+PRE10-C,31,sqlite,ext/misc/sha1.c,62,FP,"R1 not do-while wrapped, statement-sequence use only",,med
+PRE11-C,32,sqlite,ext/misc/sha1.c,62,FP,R1 trailing semicolon intentional,,med
+PRE12-C,33,sqlite,ext/misc/sha1.c,62,FP,R1 multi-eval w intentional,,high
+PRE00-C,34,sqlite,ext/misc/sha1.c,64,FP,R2 round macro multi-eval intentional,,high
+PRE01-C,35,sqlite,ext/misc/sha1.c,64,FP,R2 w unparenthesized simple var args,,med
+PRE01-C,36,sqlite,ext/misc/sha1.c,64,FP,R2 x unparenthesized simple var args,,med
+PRE01-C,37,sqlite,ext/misc/sha1.c,64,FP,R2 z unparenthesized simple var args,,med
+PRE10-C,38,sqlite,ext/misc/sha1.c,64,FP,"R2 not do-while wrapped, statement-sequence use only",,med
+PRE11-C,39,sqlite,ext/misc/sha1.c,64,FP,R2 trailing semicolon intentional,,med
+PRE12-C,40,sqlite,ext/misc/sha1.c,64,FP,R2 multi-eval w intentional,,high
+PRE00-C,41,sqlite,ext/misc/sha1.c,66,FP,R3 round macro multi-eval intentional,,high
+PRE01-C,42,sqlite,ext/misc/sha1.c,66,FP,R3 w unparenthesized simple var args,,med
+PRE01-C,43,sqlite,ext/misc/sha1.c,66,FP,R3 z unparenthesized simple var args,,med
+PRE10-C,44,sqlite,ext/misc/sha1.c,66,FP,"R3 not do-while wrapped, statement-sequence use only",,med
+PRE11-C,45,sqlite,ext/misc/sha1.c,66,FP,R3 trailing semicolon intentional,,med
+PRE12-C,46,sqlite,ext/misc/sha1.c,66,FP,R3 multi-eval w intentional,,high
+PRE00-C,47,sqlite,ext/misc/sha1.c,68,FP,R4 round macro multi-eval intentional,,high
+PRE01-C,48,sqlite,ext/misc/sha1.c,68,FP,R4 w unparenthesized simple var args,,med
+PRE01-C,49,sqlite,ext/misc/sha1.c,68,FP,R4 x unparenthesized simple var args,,med
+PRE01-C,50,sqlite,ext/misc/sha1.c,68,FP,R4 z unparenthesized simple var args,,med
+PRE10-C,51,sqlite,ext/misc/sha1.c,68,FP,"R4 not do-while wrapped, statement-sequence use only",,med
+PRE11-C,52,sqlite,ext/misc/sha1.c,68,FP,R4 trailing semicolon intentional,,med
+PRE12-C,53,sqlite,ext/misc/sha1.c,68,FP,R4 multi-eval w intentional,,high
+ARR30-C,54,sqlite,ext/misc/sha1.c,78,FP,"block is unsigned int[16]=64 bytes; memcpy of 64 fits exactly, analyzer miscounted 16 elements as 16 bytes",,high
+ARR38-C,55,sqlite,ext/misc/sha1.c,78,FP,"same misread; ARR38 size 64 into block which is 64 bytes (16 ints), in-bounds",,high
+STR31-C,56,sqlite,ext/misc/sha1.c,78,FP,"STR31 inapplicable, block is binary 64-byte buffer not a string, no terminator needed",,high
+INT14-C,57,sqlite,ext/misc/sha1.c,160,FP,"INT14 len<<3 then arithmetic is the standard SHA1 bit-counter, readability advisory not a bug",,high
+INT30-C,58,sqlite,ext/misc/sha1.c,160,FP,"len<<3 on unsigned int intentional mod-2^32 wrap, carry handled by count[1] update at line 161",,high
+INT32-C,59,sqlite,ext/misc/sha1.c,160,FP,"count[0] is unsigned int; wraparound is detected by <j compare and carried into count[1], by design",,high
+EXP07-C,60,sqlite,ext/misc/sha1.c,161,FP,"EXP07 len>>29 is the deliberate carry computation into the high bit-counter word, not an assumed constant",,high
+FIO50-C,61,sqlite,ext/misc/sha1.c,161,FP,FIO50 bogus: len is an unsigned int byte count not a FILE stream,,high
+FIO50-C,62,sqlite,ext/misc/sha1.c,161,FP,FIO50 bogus duplicate; no file stream involved,,high
+INT32-C,63,sqlite,ext/misc/sha1.c,161,FP,"count[1] += (len>>29)+1 is the intended 64-bit bit-count carry; overflow only after 2^64 bits, unreachable",,high
+INT13-C,64,sqlite,ext/misc/sha1.c,163,FP,"INT13 j&63 on signed int j held in [0,count[0]] then masked to [0,63]; benign style",,high
+INT14-C,65,sqlite,ext/misc/sha1.c,163,FP,"INT14 j used in shift and arithmetic for block offset, bounded [0,63], style only",,high
+INT30-C,66,sqlite,ext/misc/sha1.c,164,FP,"j in [0,63] and len from int value_bytes (<=SQLITE_MAX_LENGTH ~1e9); j+len cannot wrap unsigned, guard is correct",,high
+EXP05-C,67,sqlite,ext/misc/sha1.c,165,FP,"EXP05 misread, no const cast; (i=64-j) is an assignment expression not a cast",,high
+INT32-C,68,sqlite,ext/misc/sha1.c,165,FP,"i=64-j with j in [0,63] yields [1,64]; memcpy &buffer[j]+(64-j)=buffer+64 fits exactly, no overflow",,high
+EXP33-C,69,sqlite,ext/misc/sha1.c,167,FP,"i is assigned on both branches (line 165 sets i via i=64-j, else line 172 sets i=0) before use at 174",,high
+EXP05-C,70,sqlite,ext/misc/sha1.c,174,FP,"EXP05 misread, len-i is subtraction not a const cast",,high
+INT30-C,71,sqlite,ext/misc/sha1.c,174,FP,"len-i: after the transform loop i<=len (loop runs while i+63<len), remainder len-i in [0,63], no underflow",,high
+EXP33-C,72,sqlite,ext/misc/sha1.c,187,FP,"zBuf written by sqlite3_vsnprintf (always NUL-terminates) before strlen at line 189, not uninit",,high
+ARR30-C,73,sqlite,ext/misc/sha1.c,208,FP,"count[2], index (i>=4?0:1) is 0 or 1, in-bounds of size-2 array",,high
+EXP00-C,74,sqlite,ext/misc/sha1.c,208,FP,"EXP00 precedence-clarity advisory on the endian-independent count extraction, correct as written",,high
+EXP00-C,75,sqlite,ext/misc/sha1.c,208,FP,"EXP00 duplicate precedence advisory, expression is correct",,high
+EXP34-C,76,sqlite,ext/misc/sha1.c,208,FP,"p is &cx from caller (sha1Func/sha1QueryFunc), never null",,high
+INT14-C,77,sqlite,ext/misc/sha1.c,208,FP,"INT14 i used as shift and arithmetic in digest rendering, bounded loop, style only",,high
+INT13-C,78,sqlite,ext/misc/sha1.c,209,FP,"INT13 i>>2 on signed i bounded [0,19] in for loop, benign style",,high
+ARR30-C,79,sqlite,ext/misc/sha1.c,217,FP,"state[i>>2]: i in [0,20) so i>>2 in [0,4], in-bounds of size-5 state array",,high
+INT13-C,80,sqlite,ext/misc/sha1.c,217,FP,"INT13 i>>2 signed but i bounded [0,19], benign",,high
+DCL13-C,81,sqlite,ext/misc/sha1.c,247,FP,"argv signature is fixed by sqlite3 scalar-function callback typedef, const cannot be added",,high
+DCL13-C,82,sqlite,ext/misc/sha1.c,288,FP,"argv signature fixed by sqlite3 callback typedef, cannot const-qualify",,high
+EXP34-C,83,sqlite,ext/misc/sha1.c,321,FP,"pStmt valid here: rc checked after prepare_v2 (returns at line 312 on error), reaches 321 only on success",,high
+EXP05-C,84,sqlite,ext/misc/sha1.c,325,FP,"EXP05 (unsigned char*)z casts a const char* z to non-const but z is only read by hash_step; harmless and not a real defect path here, advisory",,high
+EXP34-C,85,sqlite,ext/misc/sha1.c,328,FP,"pStmt valid at sqlite3_step: error path returned earlier, prepare succeeded",,high
+ARR30-C,86,sqlite,ext/misc/sha1.c,343,FP,"x[9], j loops 8..1, indices in [1,8] in-bounds",,high
+DCL00-C,87,sqlite,ext/misc/sha1.c,354,TP,DCL00: r is initialized from sqlite3_column_double and never modified afterward (only &r read by memcpy); const-qualifying compiles,,med
+ARR30-C,88,sqlite,ext/misc/sha1.c,357,FP,"x[9], j loops 8..1, indices in [1,8] in-bounds",,high
+API00-C,89,sqlite,ext/misc/sha1.c,389,FP,"API00 db is the sqlite extension entry handle, validated by SQLite loader contract; advisory",,high
+API00-C,90,sqlite,ext/misc/sha1.c,389,FP,API00 pApi consumed by SQLITE_EXTENSION_INIT2 macro per extension contract; advisory,,high
+DCL13-C,91,sqlite,ext/misc/sha1.c,393,FP,"pzErrMsg signature fixed by sqlite3 extension init contract; explicitly (void)pzErrMsg unused, cannot const",,high
+CON03-C,92,sqlite,ext/misc/sha1.c,397,FP,"CON03 one is a function-static endianness probe flag in SHA1Transform, value-stable, not a real concurrency defect",,high

@@ -1,0 +1,105 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API02-C,0,sqlite,ext/misc/vfslog.c,106,FP,vlogCheckReservedLock sig fixed by sqlite3_io_methods xCheckReservedLock typedef; pResOut is single out-int not array,,high
+API02-C,1,sqlite,ext/misc/vfslog.c,117,FP,vlogFullPathname sig fixed by sqlite3_vfs xFullPathname typedef; nOut size is the int param already present,,high
+API02-C,2,sqlite,ext/misc/vfslog.c,119,FP,vlogDlError sig fixed by sqlite3_vfs xDlError typedef; nByte is the size param,,high
+API02-C,3,sqlite,ext/misc/vfslog.c,122,FP,vlogRandomness sig fixed by sqlite3_vfs xRandomness typedef; nByte is the size param,,high
+CON03-C,4,sqlite,ext/misc/vfslog.c,128,FP,vlog_vfs is a static singleton initialized once at register time then read-only; CON03 misfire on VFS table,,high
+CON03-C,5,sqlite,ext/misc/vfslog.c,153,FP,vlog_io_methods is a static const-style method table assigned once; not a mutable shared var,,high
+INT30-C,6,sqlite,ext/misc/vfslog.c,178,FP,sTime fields from gettimeofday produce a microsecond timestamp; wrap is irrelevant and value never used as a bound,,high
+INT30-C,7,sqlite,ext/misc/vfslog.c,178,FP,"tv_sec*1000000 is a timestamp computation in u64; no security-relevant overflow, result only logged",,high
+INT14-C,8,sqlite,ext/misc/vfslog.c,189,FP,INT14 readability heuristic on u64time shift+or building a FILETIME; not a defect,,high
+INT30-C,9,sqlite,ext/misc/vfslog.c,190,FP,u64time<<=32 deliberately places high dword of FILETIME; intended bit packing not overflow,,high
+DCL13-C,10,sqlite,ext/misc/vfslog.c,207,TP,vlogLogPrint is a static helper (not typedef-bound) and pLog struct fields are only read; const VLogLog* compiles since fprintf takes the FILE* by value not the struct,,med
+EXP33-C,11,sqlite,ext/misc/vfslog.c,219,FP,z1 fully initialized in both if/else branches (snprintf or z1[0]=0) before %s use at 233,,high
+EXP33-C,12,sqlite,ext/misc/vfslog.c,224,FP,z2 fully initialized in both branches before use at 233,,high
+EXP33-C,13,sqlite,ext/misc/vfslog.c,229,FP,z3 fully initialized in both branches before use at 233,,high
+INT30-C,14,sqlite,ext/misc/vfslog.c,229,FP,sizeof(z3)-4 is 2000-4=1996 compile-time constant passed as precision; no runtime wrap,,high
+FIO47-C,15,sqlite,ext/misc/vfslog.c,233,FP,z1 is char[40] array matching %s; sqc misreads array as integer,,high
+FIO47-C,16,sqlite,ext/misc/vfslog.c,233,FP,z2 is char[40] array matching %s; sqc misreads array as integer,,high
+FIO47-C,17,sqlite,ext/misc/vfslog.c,233,FP,z3 is char[2000] array matching %s; sqc misreads array as integer,,high
+INT00-C,18,sqlite,ext/misc/vfslog.c,233,FP,%lld with sqlite3_int64 (i64) is correct per SQLite portable types; not a data-model violation,,high
+INT00-C,19,sqlite,ext/misc/vfslog.c,233,FP,same as 18; %lld matches sqlite3_int64 argument,,high
+PRE32-C,20,sqlite,ext/misc/vfslog.c,233,FP,no preprocessor directive in fprintf args; sqc misreads multi-line format string continuation,,high
+DCL11-C,21,sqlite,ext/misc/vfslog.c,234,FP,sqlite3_int64 is long long on all SQLite targets; %lld matches,,high
+DCL11-C,22,sqlite,ext/misc/vfslog.c,234,FP,argument 4 is pLog->zFilename==0 a boolean int comparison matching %d; not char*,,high
+CON03-C,23,sqlite,ext/misc/vfslog.c,240,FP,allLogs is guarded by SQLITE_MUTEX_STATIC_MASTER in all mutating paths; CON03 misfire,,high
+INT32-C,24,sqlite,ext/misc/vfslog.c,248,FP,"p->nRef-- guarded by if(p) and refcount logic; nRef bounded by paired ++ in vlogLogOpen, cannot reach INT_MIN",,high
+MEM31-C,25,sqlite,ext/misc/vfslog.c,250,FP,sqlite3_mutex_alloc(STATIC_MASTER) returns a static mutex that must NOT be freed; no leak,,high
+ERR00-C,26,sqlite,ext/misc/vfslog.c,255,FP,fclose return ignored on a log file close path; benign best-effort logging not error-critical,,high
+ERR33-C,27,sqlite,ext/misc/vfslog.c,255,FP,same fclose ignored; logging VFS tolerates close failure,,high
+STR34-C,28,sqlite,ext/misc/vfslog.c,264,FP,zFilename passed to strlen/strcmp/snprintf as char* string not promoted to integer; STR34 sign-ext misfire,,high
+STR34-C,29,sqlite,ext/misc/vfslog.c,264,FP,same; zFilename used as string not integer-promoted char,,high
+INT32-C,30,sqlite,ext/misc/vfslog.c,273,FP,nName-=8 only after nName>8 guard at line 272; cannot underflow,,high
+EXP33-C,31,sqlite,ext/misc/vfslog.c,279,FP,line 279 is pTemp=sqlite3_malloc64(sizeof(*pLog)*2...); pLog not dereferenced sizeof is compile-time,,high
+EXP34-C,32,sqlite,ext/misc/vfslog.c,279,FP,no null deref of pLog at 279; sizeof(*pLog) needs no live object,,high
+INT30-C,33,sqlite,ext/misc/vfslog.c,279,FP,sizeof(*pLog)*2 is compile-time constant times 2; no runtime overflow,,high
+MEM31-C,34,sqlite,ext/misc/vfslog.c,281,FP,pMutex is SQLITE_MUTEX_STATIC_MASTER static mutex; must not be freed,,high
+EXP20-C,35,sqlite,ext/misc/vfslog.c,284,FP,memcmp==0 in if condition is idiomatic equality test; EXP20 style misfire,,high
+INT31-C,36,sqlite,ext/misc/vfslog.c,284,FP,nName is strlen result >0 guarded; conversion to size_t in memcmp is safe positive value,,high
+INT30-C,37,sqlite,ext/misc/vfslog.c,291,FP,sizeof(*pLog)*2 compile-time constant; no overflow,,high
+INT32-C,38,sqlite,ext/misc/vfslog.c,291,FP,memset size sizeof(*pLog)*2 is compile-time constant; no runtime overflow,,high
+ERR00-C,39,sqlite,ext/misc/vfslog.c,296,FP,fopen result IS checked: if(pLog->out==0) error path at 297; sqc missed the guard,,high
+FIO42-C,40,sqlite,ext/misc/vfslog.c,296,FP,pLog->out closed via fclose in vlogLogClose; lifetime spans VFS handle not this function,,high
+FIO42-C,41,sqlite,ext/misc/vfslog.c,296,FP,opened with fopen not open(); and closed in vlogLogClose; FP,,high
+FIO51-C,42,sqlite,ext/misc/vfslog.c,296,FP,FILE closed in vlogLogClose when nRef drops; resource owned by log object,,high
+WIN03-C,43,sqlite,ext/misc/vfslog.c,296,FP,"WIN03 N-flag advisory on POSIX fopen(""a""); SQLite log file, not a security boundary; informational FP",,med
+MEM31-C,44,sqlite,ext/misc/vfslog.c,300,FP,pMutex is STATIC_MASTER static mutex not heap; no leak; also leave called before returns,,high
+ARR00-C,45,sqlite,ext/misc/vfslog.c,303,FP,pLog assigned from live pTemp alloc at 289-290; pLog[1] access at 303 is on live memory not freed,,high
+ARR00-C,46,sqlite,ext/misc/vfslog.c,303,FP,same; no free of pLog before 303,,high
+MEM30-C,47,sqlite,ext/misc/vfslog.c,305,FP,pLog points to sqlite3_malloc64 heap not stack; allLogs=pLog stores heap pointer intentionally,,high
+DCL30-C,48,sqlite,ext/misc/vfslog.c,307,FP,pLog is heap-allocated and intentionally added to global list with proper refcount; not dangling,,high
+MEM30-C,49,sqlite,ext/misc/vfslog.c,307,FP,pLog is heap not stack; intentional global list insertion,,high
+INT30-C,50,sqlite,ext/misc/vfslog.c,316,FP,sizeof(zHost)-1 is 200-1=199 compile-time constant for gethostname bound; no wrap,,high
+INT30-C,51,sqlite,ext/misc/vfslog.c,317,FP,sizeof(zHost)-1 compile-time constant index for null terminator; no wrap,,high
+INT32-C,52,sqlite,ext/misc/vfslog.c,322,FP,"pLog->nRef++ paired with -- in vlogLogClose; bounded by open handle count, cannot reach INT_MAX",,high
+DCL30-C,53,sqlite,ext/misc/vfslog.c,323,FP,pLog is heap (sqlite3_malloc64) not automatic storage; returning heap pointer is correct,,high
+MEM31-C,54,sqlite,ext/misc/vfslog.c,323,FP,pMutex is STATIC_MASTER static mutex; not heap; no leak,,high
+DCL13-C,55,sqlite,ext/misc/vfslog.c,330,FP,vlogClose pFile sig fixed by sqlite3_io_methods xClose typedef; also cast to VLogFile and mutated,,high
+INT30-C,56,sqlite,ext/misc/vfslog.c,339,FP,"vlog_time()-tStart is intended elapsed-time subtraction; clock monotonic enough, value only logged",,high
+DCL13-C,57,sqlite,ext/misc/vfslog.c,354,TP,vlogSignature is a plain static helper (not typedef-bound) and p is only read for the checksum never written; const unsigned char* would compile and would even remove the cast-aways at 438/448,,med
+DCL13-C,58,sqlite,ext/misc/vfslog.c,354,FP,zCksum is the OUTPUT buffer written via snprintf(zCksum+i*2); cannot be const,,high
+INT32-C,59,sqlite,ext/misc/vfslog.c,359,FP,i*2 with i bounded by loop i<8 small; no overflow,,high
+INT30-C,60,sqlite,ext/misc/vfslog.c,363,FP,s0/s1 are unsigned checksum accumulators; wraparound is the intended Fletcher-style hash behavior,,high
+INT30-C,61,sqlite,ext/misc/vfslog.c,363,FP,pI[0]+s1 unsigned checksum accumulation; intentional wrap,,high
+INT30-C,62,sqlite,ext/misc/vfslog.c,364,FP,s1+=pI[1]+s0 unsigned checksum accumulation; intentional wrap,,high
+INT30-C,63,sqlite,ext/misc/vfslog.c,364,FP,pI[1]+s0 unsigned checksum accumulation; intentional wrap,,high
+INT32-C,64,sqlite,ext/misc/vfslog.c,368,FP,i*2 with i<8 bound; no overflow,,high
+INT14-C,65,sqlite,ext/misc/vfslog.c,376,FP,INT14 readability on bigToNative shift+add building int; idiomatic big-endian decode not a defect,,high
+DCL40-C,66,sqlite,ext/misc/vfslog.c,382,FP,vlogRead def uses sqlite_int64 which is identical typedef to sqlite3_int64 in forward decl; compatible,,high
+DCL13-C,67,sqlite,ext/misc/vfslog.c,383,FP,vlogRead pFile sig fixed by sqlite3_io_methods xRead typedef; cast to VLogFile and used,,high
+INT30-C,68,sqlite,ext/misc/vfslog.c,395,FP,vlog_time()-tStart intended elapsed subtraction; only logged,,high
+INT30-C,69,sqlite,ext/misc/vfslog.c,408,FP,((unsigned char*)zBuf)+(24-iOfst) computed only when iOfst<=24 guard so 24-iOfst>=0 and small; pointer arith on read buffer in bounds (iAmt>=28),,high
+INT32-C,70,sqlite,ext/misc/vfslog.c,408,FP,"24-iOfst guarded by iOfst<=24 so non-negative; iOfst is i64 offset, no signed overflow",,high
+EXP33-C,71,sqlite,ext/misc/vfslog.c,414,FP,zStr written by snprintf before zFree=zStr use; and only read via vlogLogPrint when zFree set; initialized in branch,,high
+DCL40-C,72,sqlite,ext/misc/vfslog.c,426,FP,vlogWrite def sqlite_int64 identical to sqlite3_int64; compatible declarations,,high
+DCL13-C,73,sqlite,ext/misc/vfslog.c,427,FP,vlogWrite pFile sig fixed by sqlite3_io_methods xWrite typedef; cast and used,,high
+EXP05-C,74,sqlite,ext/misc/vfslog.c,438,FP,(unsigned char*)z cast of const void* z for vlogSignature; signature reads not writes the buffer; benign but flagged style -- intended internal use,,high
+INT30-C,75,sqlite,ext/misc/vfslog.c,440,FP,vlog_time()-tStart intended elapsed subtraction; only logged,,high
+EXP05-C,76,sqlite,ext/misc/vfslog.c,448,FP,same const cast of z for checksum read; buffer not mutated,,high
+INT30-C,77,sqlite,ext/misc/vfslog.c,448,FP,((unsigned char*)z)+(24-iOfst) under iOfst<=24 guard and iAmt>=28; in bounds,,high
+INT32-C,78,sqlite,ext/misc/vfslog.c,448,FP,24-iOfst guarded by iOfst<=24; non-negative small,,high
+EXP33-C,79,sqlite,ext/misc/vfslog.c,454,FP,zStr written by snprintf before use; initialized in the iOfst+iAmt>=40 branch that sets zFree,,high
+DCL13-C,80,sqlite,ext/misc/vfslog.c,466,FP,vlogTruncate pFile sig fixed by sqlite3_io_methods xTruncate typedef,,high
+DCL40-C,81,sqlite,ext/misc/vfslog.c,466,FP,vlogTruncate def sqlite_int64 identical to sqlite3_int64; compatible,,high
+INT30-C,82,sqlite,ext/misc/vfslog.c,472,FP,vlog_time()-tStart intended elapsed subtraction; only logged,,high
+DCL13-C,83,sqlite,ext/misc/vfslog.c,480,FP,vlogSync pFile sig fixed by sqlite3_io_methods xSync typedef,,high
+INT30-C,84,sqlite,ext/misc/vfslog.c,486,FP,vlog_time()-tStart intended elapsed subtraction; only logged,,high
+DCL13-C,85,sqlite,ext/misc/vfslog.c,494,FP,vlogFileSize pFile sig fixed by sqlite3_io_methods xFileSize typedef,,high
+DCL40-C,86,sqlite,ext/misc/vfslog.c,494,FP,vlogFileSize def sqlite_int64 identical to sqlite3_int64; compatible,,high
+INT30-C,87,sqlite,ext/misc/vfslog.c,500,FP,vlog_time()-tStart intended elapsed subtraction; only logged,,high
+DCL13-C,88,sqlite,ext/misc/vfslog.c,508,FP,vlogLock pFile sig fixed by sqlite3_io_methods xLock typedef,,high
+INT30-C,89,sqlite,ext/misc/vfslog.c,514,FP,vlog_time()-tStart intended elapsed subtraction; only logged,,high
+DCL13-C,90,sqlite,ext/misc/vfslog.c,522,FP,vlogUnlock pFile sig fixed by sqlite3_io_methods xUnlock typedef,,high
+DCL13-C,91,sqlite,ext/misc/vfslog.c,535,FP,vlogCheckReservedLock pFile sig fixed by sqlite3_io_methods typedef,,high
+INT30-C,92,sqlite,ext/misc/vfslog.c,541,FP,vlog_time()-tStart intended elapsed subtraction; only logged,,high
+DCL13-C,93,sqlite,ext/misc/vfslog.c,550,FP,vlogFileControl pFile sig fixed by sqlite3_io_methods xFileControl typedef; cast and used,,high
+INT30-C,94,sqlite,ext/misc/vfslog.c,559,FP,vlog_time()-tStart intended elapsed subtraction; only logged,,high
+DCL13-C,95,sqlite,ext/misc/vfslog.c,577,FP,vlogSectorSize pFile sig fixed by sqlite3_io_methods xSectorSize typedef,,high
+INT30-C,96,sqlite,ext/misc/vfslog.c,583,FP,vlog_time()-tStart intended elapsed subtraction; only logged,,high
+DCL13-C,97,sqlite,ext/misc/vfslog.c,591,FP,vlogDeviceCharacteristics pFile sig fixed by sqlite3_io_methods typedef,,high
+INT30-C,98,sqlite,ext/misc/vfslog.c,597,FP,vlog_time()-tStart intended elapsed subtraction; only logged,,high
+INT30-C,99,sqlite,ext/misc/vfslog.c,626,FP,vlog_time()-tStart in vlogOpen intended elapsed subtraction; only logged,,high
+INT30-C,100,sqlite,ext/misc/vfslog.c,649,FP,vlog_time()-tStart in vlogDelete intended elapsed subtraction; only logged,,high
+INT30-C,101,sqlite,ext/misc/vfslog.c,671,FP,vlog_time()-tStart in vlogAccess intended elapsed subtraction; only logged,,high
+DCL15-C,102,sqlite,ext/misc/vfslog.c,755,FP,sqlite3_register_vfslog is a public registration entry point used via SQLITE_EXTRA_INIT; needs external linkage,,high
+INT30-C,103,sqlite,ext/misc/vfslog.c,758,FP,sizeof(VLogFile)+szOsFile is small struct-size addition at register time; parent szOsFile bounded; no realistic wrap,,high

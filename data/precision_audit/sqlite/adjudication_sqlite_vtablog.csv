@@ -1,0 +1,88 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+ARR30-C,0,sqlite,ext/misc/vtablog.c,89,FP,vtablog_skip_whitespace loops on NUL-terminated string z; isspace stops at the in-bounds NUL terminator - standard idiom no OOB,,high
+STR34-C,1,sqlite,ext/misc/vtablog.c,95,FP,z[0] passed via (unsigned char) cast to isspace at line 89 not 95 anyway here cast IS present at 96 - sign-extension already prevented STR34 misfire,,high
+ARR30-C,2,sqlite,ext/misc/vtablog.c,96,FP,ARR30 bounds claim false: z[n] with n=strlen(z) reads the in-bounds NUL terminator not OOB - though logic off-by-one exists it is not an OOB array access,,med
+INT31-C,3,sqlite,ext/misc/vtablog.c,122,FP,nTag is (int)strlen(zParam) of a compile-time literal so always small positive - strncmp size_t conversion is safe,,high
+EXP34-C,4,sqlite,ext/misc/vtablog.c,124,FP,z is the dequoted arg string from argv never NULL at line 124 and z[0] reads in-bounds char or NUL - EXP34 misfire,,high
+STR34-C,5,sqlite,ext/misc/vtablog.c,142,FP,*pzErr assigned a sqlite3_mprintf char* result not a char dereference - STR34 sign-extension misread of pointer assignment,,high
+STR34-C,6,sqlite,ext/misc/vtablog.c,145,FP,*pzVal assigned sqlite3_mprintf char* result not a char value - STR34 pointer-assignment misread,,high
+STR34-C,7,sqlite,ext/misc/vtablog.c,147,FP,*pzErr assigned sqlite3_mprintf char* result not a char value - STR34 pointer-assignment misread,,high
+DCL13-C,8,sqlite,ext/misc/vtablog.c,193,FP,pAux signature fixed by sqlite3_module xCreate/xConnect function-pointer typedef - DCL13 cannot add const,,high
+PRE32-C,9,sqlite,ext/misc/vtablog.c,206,FP,printf args at 206 are multi-line string/expr continuation no preprocessor # directive token - PRE32 misfire,,high
+DCL11-C,10,sqlite,ext/misc/vtablog.c,210,FP,argv[1]/argv[2] are const char* not size_t and %s not %d at this call - DCL11 type-inference misfire,,high
+DCL11-C,11,sqlite,ext/misc/vtablog.c,240,FP,argv[i] printed with %s and the NULL branch uses literal printf NULL not %s arg - DCL11 misread of the if/else,,high
+EXP33-C,12,sqlite,ext/misc/vtablog.c,243,FP,pNew assigned by sqlite3_malloc before use at 243 then NULL-checked at 245 - not uninitialized,,high
+ERR07-C,13,sqlite,ext/misc/vtablog.c,248,FP,atoi on zNRow lacks error checking - matches ERR07 but value is trusted CREATE-VTAB arg in a debug logging vtab not a defect worth flagging though rule fires literally,,low
+ERR34-C,14,sqlite,ext/misc/vtablog.c,248,FP,atoi error-detection - same as idx13 trusted local arg in demo module benign FP for this context,,low
+ERR07-C,15,sqlite,ext/misc/vtablog.c,250,FP,atoi on zConsumeOB lacks error checking - benign trusted-arg FP same class,,low
+ERR34-C,16,sqlite,ext/misc/vtablog.c,250,FP,atoi error-detection on zConsumeOB - benign trusted-arg FP,,low
+PRE32-C,17,sqlite,ext/misc/vtablog.c,314,FP,printf at 314 spans two physical lines no preprocessor directive token - PRE32 misfire,,high
+INT32-C,18,sqlite,ext/misc/vtablog.c,315,FP,++pTab->nCursor is a cursor counter bounded by realistic open-cursor counts never approaches INT_MAX - INT32 misfire,,high
+EXP33-C,19,sqlite,ext/misc/vtablog.c,316,FP,pCur assigned by sqlite3_malloc at 316 then NULL-checked at 317 before deref - not uninitialized,,high
+MEM33-C,20,sqlite,ext/misc/vtablog.c,320,FP,line 320 is &pCur->base address-of assignment to pointer no struct copy and no flexible array - MEM33 misfire,,high
+EXP43-C,21,sqlite,ext/misc/vtablog.c,342,FP,printf has no overlapping restrict-qualified buffers distinct args - EXP43 misfire,,high
+PRE32-C,22,sqlite,ext/misc/vtablog.c,342,FP,printf at 342 multi-line continuation no # directive - PRE32 misfire,,high
+INT15-C,23,sqlite,ext/misc/vtablog.c,344,FP,(int) cast of iRowid for %d formatting - INT15 stylistic only no defect in debug output,,low
+INT32-C,24,sqlite,ext/misc/vtablog.c,344,FP,(int)pCur->iRowid+1 is a logged display value bounded by nRow small loop count - INT32 misfire,,high
+INT32-C,25,sqlite,ext/misc/vtablog.c,345,FP,pCur->iRowid++ bounded by nRow rows in this debug vtab never near INT64_MAX - INT32 misfire,,high
+DCL13-C,26,sqlite,ext/misc/vtablog.c,354,FP,cur param fixed by sqlite3_module xColumn function-pointer typedef - DCL13 cannot add const,,high
+EXP33-C,27,sqlite,ext/misc/vtablog.c,363,FP,zVal[50] is written by sqlite3_snprintf in both if/else branches before use at 368 - not uninitialized,,high
+FIO47-C,28,sqlite,ext/misc/vtablog.c,368,FP,zVal is a char[50] buffer printed with %s correctly - FIO47 type misread,,high
+PRE32-C,29,sqlite,ext/misc/vtablog.c,368,FP,printf at 368 multi-line no # directive - PRE32 misfire,,high
+DCL11-C,30,sqlite,ext/misc/vtablog.c,369,FP,i is int and printed with %d at 369 not size_t - DCL11 type-inference misfire,,high
+DCL13-C,31,sqlite,ext/misc/vtablog.c,378,FP,cur param fixed by sqlite3_module xRowid function-pointer typedef - DCL13 cannot add const,,high
+PRE32-C,32,sqlite,ext/misc/vtablog.c,381,FP,printf at 381 multi-line no # directive - PRE32 misfire,,high
+INT15-C,33,sqlite,ext/misc/vtablog.c,382,FP,(int) cast of iRowid for %d - INT15 stylistic no defect,,low
+DCL13-C,34,sqlite,ext/misc/vtablog.c,391,FP,cur param fixed by sqlite3_module xEof function-pointer typedef - DCL13 cannot add const,,high
+PRE32-C,35,sqlite,ext/misc/vtablog.c,395,FP,printf at 395 multi-line no # directive - PRE32 misfire,,high
+EXP33-C,36,sqlite,ext/misc/vtablog.c,411,FP,z is char[50] buffer written by sqlite3_snprintf at 411 before printf at 412 - not uninitialized,,high
+EXP34-C,37,sqlite,ext/misc/vtablog.c,412,FP,z is the address of a stack buffer z[50] never null - EXP34 misfire,,high
+ARR00-C,38,sqlite,ext/misc/vtablog.c,425,FP,z[50] filled by sqlite3_snprintf at 411 before the loop reads it at 425 - ARR00 misfire,,high
+ARR30-C,39,sqlite,ext/misc/vtablog.c,425,FP,loop index i bounded by n=sqlite3_value_bytes blob length writing into printf not indexing z buffer - ARR30 misread; z here is the blob pointer not the stack buffer,,high
+ARR00-C,40,sqlite,ext/misc/vtablog.c,433,FP,z at 429 is the TEXT value pointer read in bounded scan to NUL - ARR00 misfire on a different z than the stack buffer,,high
+ARR30-C,41,sqlite,ext/misc/vtablog.c,433,FP,z is the text value pointer scanned until NUL c=z[i] bounded by terminator - ARR30 misfire,,high
+EXP30-C,42,sqlite,ext/misc/vtablog.c,433,FP,c=z[i] in for-loop test reads then i++ at the proper sequence point of the for statement - EXP30 misfire,,high
+ARR30-C,43,sqlite,ext/misc/vtablog.c,438,FP,while(*z) bounded by NUL terminator standard string scan - ARR30 misfire,,high
+ARR30-C,44,sqlite,ext/misc/vtablog.c,439,FP,inner for c=z[i] bounded by NUL terminator - ARR30 misfire,,high
+EXP30-C,45,sqlite,ext/misc/vtablog.c,439,FP,c=z[i] with i++ across for-loop sequence points well-defined - EXP30 misfire,,high
+INT32-C,46,sqlite,ext/misc/vtablog.c,440,FP,i counts chars within one printf segment of a SQL literal bounded by string length - INT32 misfire,,high
+DCL11-C,47,sqlite,ext/misc/vtablog.c,442,FP,"printf(""%.*s"",i,z) takes precision int plus pointer two args correctly matching format - DCL11/FIO47 misread of %.* width arg",,high
+FIO47-C,48,sqlite,ext/misc/vtablog.c,442,FP,same as 47 %.*s consumes i and z as precision+string both required - FIO47 arg-count misread,,high
+INT31-C,49,sqlite,ext/misc/vtablog.c,443,FP,z += i at 443 is pointer arithmetic on char* not a narrowing assignment to a char - INT31 misread of pointer increment,,high
+DCL13-C,50,sqlite,ext/misc/vtablog.c,471,FP,argv param fixed by sqlite3_module xFilter function-pointer typedef - DCL13 cannot add const,,high
+EXP33-C,51,sqlite,ext/misc/vtablog.c,506,FP,zUnknown is static char[30] written by sqlite3_snprintf at 506 before zOut=zUnknown read - not uninitialized,,high
+DCL30-C,52,sqlite,ext/misc/vtablog.c,510,FP,zOut returns either a string-literal pointer or static zUnknown[30] - neither has automatic storage so DCL30 is false,,high
+DCL13-C,53,sqlite,ext/misc/vtablog.c,520,FP,tab param fixed by sqlite3_module xBestIndex function-pointer typedef - DCL13 cannot add const,,high
+DCL11-C,54,sqlite,ext/misc/vtablog.c,527,FP,colUsed is sqlite3_uint64 printed with %016llx not %d - DCL11 misread,,high
+EXP30-C,55,sqlite,ext/misc/vtablog.c,531,FP,args to printf at 531-538 are reads of struct fields and calls with no aliasing side-effects between them - EXP30 misfire,,high
+DCL11-C,56,sqlite,ext/misc/vtablog.c,533,FP,iColumn/iTermOffset are int struct fields printed with %d - DCL11 type-inference misfire,,high
+DCL11-C,57,sqlite,ext/misc/vtablog.c,534,FP,usable is int field printed with %d not char* - DCL11 misfire,,high
+DCL11-C,58,sqlite,ext/misc/vtablog.c,535,FP,op printed via vtablogOpName returning char* with %s correctly - DCL11 misread,,high
+DCL11-C,59,sqlite,ext/misc/vtablog.c,537,FP,sqlite3_vtab_collation returns const char* printed with %s - DCL11 misfire,,high
+EXP34-C,60,sqlite,ext/misc/vtablog.c,541,FP,pVal only passed to vtablogQuote when rc==SQLITE_OK guaranteeing it was set by sqlite3_vtab_rhs_value - EXP34 misfire guarded by rc check,,high
+PRE32-C,61,sqlite,ext/misc/vtablog.c,550,FP,printf at 550 multi-line no # directive - PRE32 misfire,,high
+DCL11-C,62,sqlite,ext/misc/vtablog.c,551,FP,iColumn is int printed with %d - DCL11 misfire,,high
+INT32-C,63,sqlite,ext/misc/vtablog.c,557,FP,-pTab->iConsumeOB negation of a small user CREATE-VTAB arg never INT_MIN in this debug module - INT32 misfire,,high
+FLP34-C,64,sqlite,ext/misc/vtablog.c,564,FP,sqlite3_value_double returns double passed to %!.20g no narrowing range issue - FLP34 misfire,,high
+INT00-C,65,sqlite,ext/misc/vtablog.c,571,FP,%lld with sqlite3_int64 estimatedRows is the correct portable format - INT00 misfire,,high
+DCL13-C,66,sqlite,ext/misc/vtablog.c,583,FP,tab param fixed by sqlite3_module xUpdate function-pointer typedef - DCL13 cannot add const,,high
+DCL13-C,67,sqlite,ext/misc/vtablog.c,585,FP,argv param fixed by sqlite3_module xUpdate function-pointer typedef - DCL13 cannot add const,,high
+DCL13-C,68,sqlite,ext/misc/vtablog.c,586,FP,pRowid param fixed by sqlite3_module xUpdate function-pointer typedef - DCL13 cannot add const,,high
+DCL11-C,69,sqlite,ext/misc/vtablog.c,593,FP,i is int printed with %d at 593 not size_t - DCL11 misfire,,high
+DCL13-C,70,sqlite,ext/misc/vtablog.c,600,FP,tab param fixed by sqlite3_module xBegin function-pointer typedef - DCL13 cannot add const,,high
+DCL13-C,71,sqlite,ext/misc/vtablog.c,605,FP,tab param fixed by sqlite3_module xSync function-pointer typedef - DCL13 cannot add const,,high
+DCL13-C,72,sqlite,ext/misc/vtablog.c,610,FP,tab param fixed by sqlite3_module xCommit function-pointer typedef - DCL13 cannot add const,,high
+DCL13-C,73,sqlite,ext/misc/vtablog.c,615,FP,tab param fixed by sqlite3_module xRollback function-pointer typedef - DCL13 cannot add const,,high
+DCL13-C,74,sqlite,ext/misc/vtablog.c,620,FP,tab param fixed by sqlite3_module xSavepoint function-pointer typedef - DCL13 cannot add const,,high
+DCL13-C,75,sqlite,ext/misc/vtablog.c,625,FP,tab param fixed by sqlite3_module xRelease function-pointer typedef - DCL13 cannot add const,,high
+DCL13-C,76,sqlite,ext/misc/vtablog.c,630,FP,tab param fixed by sqlite3_module xRollbackTo function-pointer typedef - DCL13 cannot add const,,high
+DCL13-C,77,sqlite,ext/misc/vtablog.c,637,FP,tab param fixed by sqlite3_module xFindMethod function-pointer typedef - DCL13 cannot add const,,high
+DCL13-C,78,sqlite,ext/misc/vtablog.c,641,FP,ppArg param fixed by sqlite3_module xFindMethod function-pointer typedef - DCL13 cannot add const,,high
+PRE32-C,79,sqlite,ext/misc/vtablog.c,644,FP,printf at 644 multi-line no # directive - PRE32 misfire,,high
+DCL13-C,80,sqlite,ext/misc/vtablog.c,665,FP,tab param fixed by sqlite3_module xIntegrity function-pointer typedef - DCL13 cannot add const,,high
+DCL13-C,81,sqlite,ext/misc/vtablog.c,669,FP,pzErr param fixed by sqlite3_module xIntegrity function-pointer typedef - DCL13 cannot add const,,high
+CON03-C,82,sqlite,ext/misc/vtablog.c,680,FP,vtablogModule is a const-initialized static module table registered once not a cross-thread mutable shared var - CON03 misfire,,high
+API00-C,83,sqlite,ext/misc/vtablog.c,711,FP,db is the SQLite-supplied connection in the extension init entrypoint guaranteed non-null by loader contract - API00 not a trust boundary,,high
+API00-C,84,sqlite,ext/misc/vtablog.c,711,FP,pApi is supplied by the extension loader and consumed by SQLITE_EXTENSION_INIT2 contract guarantees non-null - API00 misfire,,high
+DCL15-C,85,sqlite,ext/misc/vtablog.c,711,FP,sqlite3_vtablog_init must have external linkage as the loadable-extension entrypoint - DCL15 false the name is the documented init symbol,,high
+DCL13-C,86,sqlite,ext/misc/vtablog.c,713,FP,pzErrMsg param fixed by the extension init entrypoint signature required by sqlite3_load_extension - DCL13 cannot change,,high

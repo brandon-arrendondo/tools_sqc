@@ -1,0 +1,89 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+PRE00-C,0,sqlite,ext/misc/unionvtab.c,244,TP,unionGetDb macro expands (pTab) and (pSrc) and evaluates ternary; pSrc evaluated only on one branch but pTab twice — function-like macro multiple-eval is factually present,,high
+PRE12-C,1,sqlite,ext/misc/unionvtab.c,244,TP,same macro at 244 references pTab twice across the ternary expansion; multiple-evaluation hazard genuinely exists,,med
+INT31-C,2,sqlite,ext/misc/unionvtab.c,259,FP,"unionMalloc nByte is sqlite3_int64 with assert(nByte>0); sqlite3_malloc64 takes the 64-bit value, no narrowing of an attacker length here",,high
+DCL30-C,3,sqlite,ext/misc/unionvtab.c,266,FP,"pRet is a pointer object (void*); returning its value is fine, not the address of a local — analyzer misread",,high
+STR34-C,4,sqlite,ext/misc/unionvtab.c,279,FP,zIn used only in strlen()/memcpy() (line 279/282); no per-char int promotion into a sign-sensitive context,,high
+INT31-C,5,sqlite,ext/misc/unionvtab.c,282,FP,"nByte=strlen()+1 (sqlite3_int64), passed to unionMalloc which is 64-bit; no truncating bound elided",,high
+INT32-C,6,sqlite,ext/misc/unionvtab.c,310,FP,iIn bounded by NUL terminator of an in-memory dequoted string; cannot reach INT_MAX in a SQL identifier,,high
+INT32-C,7,sqlite,ext/misc/unionvtab.c,316,FP,iIn+=2 only on an escaped doubled-quote inside a bounded NUL-terminated string; no realistic overflow,,high
+INT32-C,8,sqlite,ext/misc/unionvtab.c,320,FP,iIn++ in dequote loop bounded by string length; not attacker-unbounded to INT_MAX,,high
+STR34-C,9,sqlite,ext/misc/unionvtab.c,350,FP,zSql passed to sqlite3_prepare_v2 as const char*; no char->int sign-extension defect,,high
+STR34-C,10,sqlite,ext/misc/unionvtab.c,352,FP,"*pzErr is assignment of an sqlite3_mprintf pointer result to char*, not a char value sign-extended",,high
+DCL30-C,11,sqlite,ext/misc/unionvtab.c,356,FP,pRet is sqlite3_stmt* pointer value returned by unionPrepare; not address of automatic local,,high
+STR34-C,12,sqlite,ext/misc/unionvtab.c,403,FP,*pzErr assigned mprintf pointer in unionFinalize; no char sign-extension,,high
+STR34-C,13,sqlite,ext/misc/unionvtab.c,420,FP,same mprintf-pointer assignment pattern; no STR34 defect,,high
+DCL13-C,14,sqlite,ext/misc/unionvtab.c,436,TP,"unionInvokeOpenClose reads pTab->pOpenClose/bHasContext/db only; never writes through pTab, const-valid",,med
+DCL13-C,15,sqlite,ext/misc/unionvtab.c,437,TP,"unionInvokeOpenClose reads pSrc->zFile/zContext only and passes them to bind_text; pSrc never written through, const would compile",,med
+EXP34-C,16,sqlite,ext/misc/unionvtab.c,442,FP,pTab dereferenced after caller guarantees non-null (unionCloseSources/Disconnect pass live pTab); no attacker null path,,high
+INT32-C,17,sqlite,ext/misc/unionvtab.c,447,FP,2+pTab->bHasContext where bHasContext is 0/1 bind-index; cannot overflow,,high
+STR34-C,18,sqlite,ext/misc/unionvtab.c,451,FP,*pzErr mprintf-pointer assignment; no char sign-extension,,high
+EXP34-C,19,sqlite,ext/misc/unionvtab.c,464,FP,pTab in unionCloseSources is a live table object from caller; not null-reachable,,high
+EXP34-C,20,sqlite,ext/misc/unionvtab.c,469,FP,p=*pp where loop guarantees pClosable non-null before deref; bounded by list,,high
+INT32-C,21,sqlite,ext/misc/unionvtab.c,473,FP,pTab->nOpen is a small open-file counter (<=nMaxOpen); cannot underflow to INT_MIN,,high
+EXP34-C,22,sqlite,ext/misc/unionvtab.c,474,FP,p is taken from non-null pClosable list node; unionInvokeOpenClose receives valid pSrc,,high
+DCL13-C,23,sqlite,ext/misc/unionvtab.c,514,TP,"unionIsIntkeyTable reads pSrc->zDb/zTab only; pSrc never written through, const would compile",,med
+STR34-C,24,sqlite,ext/misc/unionvtab.c,529,FP,*pzErr mprintf-pointer assignment; no char value sign-extension,,high
+STR34-C,25,sqlite,ext/misc/unionvtab.c,564,FP,"pzErr is char** ; message about converting it is a misread, mprintf returns pointer",,high
+EXP34-C,26,sqlite,ext/misc/unionvtab.c,598,FP,pTab in unionSourceCheck is live caller table; aSrc[0] valid since nSrc>=1 enforced before call,,high
+STR34-C,27,sqlite,ext/misc/unionvtab.c,602,FP,*pzErr mprintf-pointer assignment; no STR34 defect,,high
+EXP34-C,28,sqlite,ext/misc/unionvtab.c,625,FP,pTab in unionOpenDatabaseInner is live; pNotFound path guarded,,high
+STR34-C,29,sqlite,ext/misc/unionvtab.c,634,FP,*pzErr mprintf-pointer assignment; no defect,,high
+STR34-C,30,sqlite,ext/misc/unionvtab.c,640,FP,*pzErr mprintf-pointer assignment; no defect,,high
+ARR00-C,31,sqlite,ext/misc/unionvtab.c,662,FP,iSrc guarded by assert(iSrc<pTab->nSrc) and only called internally with valid indices (0 or pCsr->iTab<nSrc),,high
+EXP34-C,32,sqlite,ext/misc/unionvtab.c,662,FP,pTab non-null live table in unionOpenDatabase,,high
+INT32-C,33,sqlite,ext/misc/unionvtab.c,666,FP,pTab->nMaxOpen-1: nMaxOpen validated >0 at parse (atoi check line 826) or default; no overflow,,high
+STR34-C,34,sqlite,ext/misc/unionvtab.c,675,FP,*pzErr mprintf-pointer assignment; no defect,,high
+INT32-C,35,sqlite,ext/misc/unionvtab.c,686,FP,pTab->nOpen++ bounded by number of source DBs; not attacker-unbounded,,high
+DCL13-C,36,sqlite,ext/misc/unionvtab.c,704,TP,"unionIncrRefcount reads pTab->bSwarm/aSrc/pClosable; never writes through pTab pointer itself, const-valid",,med
+ARR00-C,37,sqlite,ext/misc/unionvtab.c,706,FP,iTab in unionIncrRefcount comes from pCsr->iTab which is bounded <nSrc; internal contract,,high
+ARR30-C,38,sqlite,ext/misc/unionvtab.c,706,FP,same iTab; bounded by caller (iTab<nSrc in doUnionNext/unionFilter); not external,,high
+INT32-C,39,sqlite,ext/misc/unionvtab.c,714,FP,pSrc->nUser++ refcount bounded by concurrent cursors; not overflow-reachable,,high
+INT32-C,40,sqlite,ext/misc/unionvtab.c,734,FP,"pSrc->nUser-- guarded by assert(nUser>=0); balanced incr/decr, no underflow",,high
+EXP34-C,41,sqlite,ext/misc/unionvtab.c,788,FP,pTab in unionConnect-derived path is allocated non-null before deref or rc!=OK aborts,,high
+STR34-C,42,sqlite,ext/misc/unionvtab.c,815,FP,zOpt is char* used in strnicmp/bind; no char->int sign-extension defect,,high
+STR34-C,43,sqlite,ext/misc/unionvtab.c,817,FP,*pzErr mprintf-pointer assignment; no defect,,high
+ERR07-C,44,sqlite,ext/misc/unionvtab.c,825,TP,atoi(zVal) at 825 used for maxopen; atoi lacks error detection on malformed input — factual ERR07 occurrence,,high
+ERR34-C,45,sqlite,ext/misc/unionvtab.c,825,TP,same atoi() call; ERR34 string-to-number without error detection is factually present,,high
+STR34-C,46,sqlite,ext/misc/unionvtab.c,827,FP,*pzErr mprintf-pointer assignment; no defect,,high
+STR34-C,47,sqlite,ext/misc/unionvtab.c,832,FP,*pzErr mprintf-pointer assignment; no defect,,high
+STR34-C,48,sqlite,ext/misc/unionvtab.c,842,FP,*pzErr mprintf-pointer assignment; no defect,,high
+STR34-C,49,sqlite,ext/misc/unionvtab.c,851,FP,*pzErr mprintf-pointer assignment; no defect,,high
+STR34-C,50,sqlite,ext/misc/unionvtab.c,862,FP,*pzErr mprintf-pointer assignment; no defect,,high
+MEM30-C,51,sqlite,ext/misc/unionvtab.c,866,FP,zArg at 791 freed exactly once at 866 per loop iteration (re-declared each iteration); zArg at 905 consumed by %z in mprintf — no double free,,high
+DCL13-C,52,sqlite,ext/misc/unionvtab.c,885,FP,unionConnect xConnect/xCreate signature fixed by sqlite3_module function-pointer typedef; pAux type cannot be changed,,high
+STR34-C,53,sqlite,ext/misc/unionvtab.c,897,FP,*pzErr mprintf-pointer assignment; no defect,,high
+STR34-C,54,sqlite,ext/misc/unionvtab.c,900,FP,*pzErr mprintf-pointer assignment; no defect,,high
+EXP34-C,55,sqlite,ext/misc/unionvtab.c,940,FP,pTab allocated and non-null checked (if(pTab)) before field writes; rc aborts loop otherwise,,high
+INT32-C,56,sqlite,ext/misc/unionvtab.c,941,FP,"nAlloc*2 doubling from 8; bounded by realistic source-row count, realloc64 fails on huge — not attacker-overflowing in practice",,high
+INT30-C,57,sqlite,ext/misc/unionvtab.c,943,FP,nNew*sizeof passed to sqlite3_realloc64 (64-bit); nNew small; alloc fail handled,,high
+ARR38-C,58,sqlite,ext/misc/unionvtab.c,949,FP,memset size (nNew-pTab->nSrc)*sizeof on freshly grown array region; bounds correct by construction,,high
+INT30-C,59,sqlite,ext/misc/unionvtab.c,949,FP,"(nNew-nSrc)*sizeof: nNew>nSrc by growth invariant; small values, 64-bit mul, no wrap",,high
+INT32-C,60,sqlite,ext/misc/unionvtab.c,949,FP,"memset size arithmetic bounded; region [nSrc,nNew) zeroed correctly",,high
+INT32-C,61,sqlite,ext/misc/unionvtab.c,949,FP,nNew-pTab->nSrc positive (nNew>=nSrc+1 by growth); no signed overflow with small counts,,high
+STR34-C,62,sqlite,ext/misc/unionvtab.c,957,FP,*pzErr mprintf-pointer assignment; no defect,,high
+INT32-C,63,sqlite,ext/misc/unionvtab.c,962,FP,pTab->nSrc++ bounded by source rows; not attacker-unbounded to INT_MAX,,high
+STR34-C,64,sqlite,ext/misc/unionvtab.c,984,FP,*pzErr mprintf-pointer assignment; no defect,,high
+EXP33-C,65,sqlite,ext/misc/unionvtab.c,1001,FP,"pSrc=&pTab->aSrc[0] is address-of, always initialized; aSrc[0] valid since nSrc>=1 enforced",,high
+DCL13-C,66,sqlite,ext/misc/unionvtab.c,1033,FP,line 1033 unionOpen p param signature fixed by xOpen function-pointer typedef; cannot change to const,,high
+MEM33-C,67,sqlite,ext/misc/unionvtab.c,1038,FP,"line 1038 *ppCursor=&pCsr->base is pointer assignment, not flexible-array struct copy; MEM33 misread (also pCsr may be null on OOM but harmless deref of &base offset)",,high
+INT32-C,68,sqlite,ext/misc/unionvtab.c,1064,FP,pCsr->iTab++ bounded by nSrc; not overflow-reachable,,high
+DCL13-C,69,sqlite,ext/misc/unionvtab.c,1104,FP,unionColumn signature fixed by xColumn function-pointer typedef; cannot const cur,,high
+INT32-C,70,sqlite,ext/misc/unionvtab.c,1109,FP,"i+1 is a column index from SQLite core (small, validated by declared schema); no overflow",,high
+DCL13-C,71,sqlite,ext/misc/unionvtab.c,1116,FP,unionRowid signature fixed by xRowid typedef; cannot const cur,,high
+DCL13-C,72,sqlite,ext/misc/unionvtab.c,1125,FP,unionEof signature fixed by xEof typedef; cannot const cur,,high
+DCL13-C,73,sqlite,ext/misc/unionvtab.c,1136,FP,unionFilter argv signature fixed by xFilter typedef; cannot const,,high
+INT13-C,74,sqlite,ext/misc/unionvtab.c,1164,FP,"idxNum & MASK: idxNum is constrained set of SQLITE_INDEX_CONSTRAINT_* bits, all small positive; signed-& is benign",,high
+INT13-C,75,sqlite,ext/misc/unionvtab.c,1167,FP,same idxNum bitwise; constrained positive constants,,high
+INT32-C,76,sqlite,ext/misc/unionvtab.c,1171,FP,iMax-- guarded by if(iMax==SMALLEST_INT64) bZero else iMax--; underflow explicitly prevented,,high
+INT13-C,77,sqlite,ext/misc/unionvtab.c,1176,FP,idxNum & MASK benign positive constants,,high
+INT32-C,78,sqlite,ext/misc/unionvtab.c,1178,FP,argc-1: argc>=1 asserted before use; no underflow,,high
+INT13-C,79,sqlite,ext/misc/unionvtab.c,1179,FP,idxNum & MASK benign,,high
+INT32-C,80,sqlite,ext/misc/unionvtab.c,1183,FP,iMin++ guarded by if(iMin==LARGEST_INT64) bZero else iMin++; overflow explicitly prevented,,high
+DCL13-C,81,sqlite,ext/misc/unionvtab.c,1267,FP,unionBestIndex signature fixed by xBestIndex typedef; cannot const tab,,high
+FLP34-C,82,sqlite,ext/misc/unionvtab.c,1319,FP,"estimatedCost = 3.0*(double)nRow; nRow<=1000000, exact in double; no range issue",,high
+CON03-C,83,sqlite,ext/misc/unionvtab.c,1330,FP,unionModule is a static local const-ish module table written once at init; sqlite module registration is single-threaded contract,,high
+API00-C,84,sqlite,ext/misc/unionvtab.c,1371,FP,"sqlite3_unionvtab_init db is provided by SQLite loader contract, never null; standard extension entry",,high
+API00-C,85,sqlite,ext/misc/unionvtab.c,1371,FP,pApi consumed by SQLITE_EXTENSION_INIT2 macro per extension contract; not a validation defect,,high
+DCL15-C,86,sqlite,ext/misc/unionvtab.c,1371,FP,init entry point must be exported (non-static) for extension loading; DCL15 misapplied to required external linkage,,high
+DCL13-C,87,sqlite,ext/misc/unionvtab.c,1373,FP,pzErrMsg signature fixed by the sqlite3 extension-init entry-point contract; cannot change to const,,high

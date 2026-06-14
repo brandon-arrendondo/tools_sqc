@@ -1,0 +1,87 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+PRE01-C,0,sqlite,src/pcache.c,68,FP,pcacheTrace(X) expands to a printf-arglist substitution where parenthesizing X is impossible/wrong (X is a parenthesized printf arg-tuple) standard sqc PRE01 misfire on trace macro,,high
+PRE10-C,1,sqlite,src/pcache.c,68,FP,pcacheTrace(X) is a single guarded if-statement not a multistatement block and is only used as a statement-expansion never in a dangling-else context FP,,high
+DCL13-C,2,sqlite,src/pcache.c,69,FP,pLower is dereferenced read-only (pLower->pExtra pLower->pBuf) but signature is debug helper not const-required and matches no callback typedef yet harmless either way still FP since flagged param IS only read but it is debug-only DCL13 noise,,high
+DCL11-C,3,sqlite,src/pcache.c,80,FP,DCL11 format %p with PgHdr* arg is printf-style void* pass at line 80 prints &pPg pointer not a PgHdr value misread arg type FP,,high
+DCL13-C,4,sqlite,src/pcache.c,111,FP,pageOnDirtyList only reads pCache->pDirty const-correct in principle but DCL13 advisory noise on internal helper FP,,high
+DCL13-C,5,sqlite,src/pcache.c,111,FP,pPg only compared by pointer equality never written through DCL13 advisory FP,,high
+DCL13-C,6,sqlite,src/pcache.c,118,FP,pageNotOnDirtyList reads pCache->pDirty only DCL13 advisory FP,,high
+DCL13-C,7,sqlite,src/pcache.c,118,FP,pPg only compared by pointer DCL13 advisory FP,,high
+API00-C,8,sqlite,src/pcache.c,140,FP,sqlite3PcachePageSanity asserts pPg!=0 immediately (line 142) internal assert-only contract not a trust boundary API00 FP,,high
+EXP34-C,9,sqlite,src/pcache.c,196,FP,pPage->pCache deref at 196 pcacheManageDirtyList caller always passes a live PgHdr (callers Release/Drop/MakeDirty assert nRef>0) never null FP,,high
+EXP34-C,10,sqlite,src/pcache.c,202,FP,p assigned from pPage->pCache then deref guarded by all callers passing non-null page FP,,high
+DCL13-C,11,sqlite,src/pcache.c,265,FP,pcacheUnpin p read-only via p->pCache but stored nowhere DCL13 advisory however p IS only read FP noise,,high
+EXP34-C,12,sqlite,src/pcache.c,266,FP,p->pCache deref at 266 caller pcacheManageDirtyList/Release pass live page never null FP,,high
+DCL13-C,13,sqlite,src/pcache.c,277,FP,numberOfCachePages reads p->szCache only DCL13 advisory FP,,high
+INT32-C,14,sqlite,src/pcache.c,288,FP,-1024*(i64)p->szCache szCache is a PRAGMA-bounded int promoted to i64 product cannot overflow i64 INT32 FP,,high
+INT32-C,15,sqlite,src/pcache.c,288,FP,p->szPage+p->szExtra both small ints (szPage page size <=65536 szExtra struct size) sum cannot overflow int FP,,high
+INT33-C,16,sqlite,src/pcache.c,288,FP,division by szPage+szExtra szPage set to 1 in Open then page size>=512 szExtra asserted>=8 so divisor always >=9 never zero FP,,high
+API00-C,17,sqlite,src/pcache.c,333,FP,xStress stored into p->xStress then later invoked caller (pager) always supplies valid callback internal contract API00 FP,,high
+API00-C,18,sqlite,src/pcache.c,333,FP,p is preallocated by caller via sqlite3PcacheSize then memset internal contract never null API00 FP,,high
+DCL13-C,19,sqlite,src/pcache.c,338,FP,pStress is stored into p->pStress (void* opaque arg) const would break assignment to non-const field DCL13 FP,,high
+API00-C,20,sqlite,src/pcache.c,359,FP,sqlite3PcacheSetPageSize asserts pCache state (line 360) internal caller contract API00 FP,,high
+API00-C,21,sqlite,src/pcache.c,403,FP,sqlite3PcacheFetch asserts pCache!=0 line 411 internal contract API00 FP,,high
+DCL13-C,22,sqlite,src/pcache.c,404,FP,pCache->pCache read and pCache->eCreate read only no write through pointer but signature is public API and pointee fields read const-feasible yet this is advisory still FP noise on hot-path API,,high
+INT14-C,23,sqlite,src/pcache.c,423,FP,INT14 pCache used with bitwise and arithmetic is eCreate=createFlag&pCache->eCreate the & is on the int eCreate value not pointer readability-only false claim FP,,high
+DCL30-C,24,sqlite,src/pcache.c,431,FP,returns pRes which is sqlite3_pcache_page* assigned from xFetch (heap-managed by pcache module) not address of a local DCL30 misread FP,,high
+API00-C,25,sqlite,src/pcache.c,445,FP,ppPage written *ppPage at 488 caller always passes &local valid pointer internal contract API00 FP,,high
+EXP30-C,26,sqlite,src/pcache.c,474,FP,EXP30 unsequenced calls at 474 inside SQLITE_LOG_CACHE_SPILL log call args are read-only getters with no shared-state side effects ordering irrelevant FP,,high
+MSC04-C,27,sqlite,src/pcache.c,501,TP,pcacheFetchFinishWithInit -> sqlite3PcacheFetchFinish -> pcacheFetchFinishWithInit indirect recursion genuinely exists in source (terminates after one bounce since pPage set before recall) MSC04 TP,,med
+EXP08-C,28,sqlite,src/pcache.c,510,FP,EXP08 memset(&pPgHdr->pDirty ...) takes address of a struct member then memset offset math is sizeof/offsetof of same struct well-defined no char* cast needed FP,,high
+INT30-C,29,sqlite,src/pcache.c,510,FP,"sizeof(PgHdr)-offsetof(PgHdr,pDirty) offsetof of an earlier member is always < sizeof so subtraction of size_t cannot wrap FP",,high
+INT32-C,30,sqlite,src/pcache.c,510,FP,same size arg is a compile-time constant struct-layout expression cannot overflow INT32 FP,,high
+API00-C,31,sqlite,src/pcache.c,528,FP,sqlite3PcacheFetchFinish asserts pPage!=0 line 535 and pCache is caller-supplied valid handle API00 FP,,high
+MSC04-C,32,sqlite,src/pcache.c,528,TP,sqlite3PcacheFetchFinish -> pcacheFetchFinishWithInit -> sqlite3PcacheFetchFinish indirect recursion genuinely present MSC04 TP,,med
+DCL30-C,33,sqlite,src/pcache.c,544,FP,returns pPgHdr a PgHdr* derived from pPage->pExtra (pcache-module heap) not a local variable address DCL30 misread FP,,high
+API00-C,34,sqlite,src/pcache.c,551,FP,sqlite3PcacheRelease asserts p->nRef>0 line 552 caller contract live page API00 FP,,high
+EXP34-C,35,sqlite,src/pcache.c,552,FP,p->pCache deref at 552 after assert nRef>0 page is live never null FP,,high
+API00-C,36,sqlite,src/pcache.c,567,FP,sqlite3PcacheRef asserts p->nRef>0 API00 FP,,high
+API00-C,37,sqlite,src/pcache.c,579,FP,sqlite3PcacheDrop asserts p->nRef==1 API00 FP,,high
+EXP34-C,38,sqlite,src/pcache.c,580,FP,p->flags deref at 580 after assert nRef==1 live page FP,,high
+EXP34-C,39,sqlite,src/pcache.c,594,FP,p->flags deref at 594 after assert nRef>0 live page FP,,high
+API00-C,40,sqlite,src/pcache.c,613,FP,sqlite3PcacheMakeClean asserts sanity and DIRTY flag on p API00 FP,,high
+API00-C,41,sqlite,src/pcache.c,630,FP,sqlite3PcacheCleanAll pCache used to read pDirty caller supplies live cache API00 FP,,high
+DCL13-C,42,sqlite,src/pcache.c,630,FP,pCache read-only (pDirty traversal) but operations mutate pages via pointer not the cache field DCL13 advisory FP,,high
+API00-C,43,sqlite,src/pcache.c,641,FP,sqlite3PcacheClearWritable iterates pCache->pDirty caller contract API00 FP,,high
+API00-C,44,sqlite,src/pcache.c,653,FP,sqlite3PcacheClearSyncFlags iterates dirty list caller contract API00 FP,,high
+API00-C,45,sqlite,src/pcache.c,664,FP,sqlite3PcacheMove asserts p->nRef>0 newPgno>0 sanity API00 FP,,high
+API00-C,46,sqlite,src/pcache.c,696,FP,sqlite3PcacheTruncate guards on pCache->pCache caller supplies valid cache API00 FP,,high
+DCL13-C,47,sqlite,src/pcache.c,696,FP,pCache fields mutated indirectly (xFetch xTruncate calls) and pCache->pCache read const not appropriate for public mutating API DCL13 FP,,high
+API00-C,48,sqlite,src/pcache.c,729,FP,sqlite3PcacheClose asserts pCache->pCache!=0 API00 FP,,high
+DCL13-C,49,sqlite,src/pcache.c,729,FP,pCache passed to xDestroy via pCache->pCache mutating close DCL13 FP,,high
+API00-C,50,sqlite,src/pcache.c,738,FP,sqlite3PcacheClear delegates to Truncate caller contract API00 FP,,high
+DCL13-C,51,sqlite,src/pcache.c,746,FP,pcacheMergeDirtyList pA->pDirty is reassigned (pA=pA->pDirty) and pA->pgno read but pTail->pDirty=pA stores pA into a list so const would be wrong and pA traversed/mutated FP,,high
+DCL13-C,52,sqlite,src/pcache.c,746,FP,pB similarly traversed and linked into result list const inappropriate FP,,high
+EXP34-C,53,sqlite,src/pcache.c,754,FP,pA->pgno deref at 754 guarded by assert pA!=0 && pB!=0 line 749 FP,,high
+EXP34-C,54,sqlite,src/pcache.c,762,FP,pB->pgno deref at 762 guarded by same assert line 749 FP,,high
+EXP33-C,55,sqlite,src/pcache.c,769,FP,result is local PgHdr struct only result.pDirty is read at return 769 pTail=&result and every branch writes pTail->pDirty before break so result.pDirty always assigned EXP33 FP,,high
+DCL13-C,56,sqlite,src/pcache.c,783,FP,pcacheSortDirtyList pIn is traversed (pIn=p->pDirty) and p->pDirty mutated const would be wrong DCL13 FP,,high
+ARR30-C,57,sqlite,src/pcache.c,792,FP,a[i] index i bounded by loop guard ALWAYS(i<N_SORT_BUCKET-1) i.e. i<31 array size 32 in bounds ARR30 FP,,high
+ARR30-C,58,sqlite,src/pcache.c,793,FP,a[i]=p index i<31 in bounds of 32 FP,,high
+ARR30-C,59,sqlite,src/pcache.c,796,FP,"pcacheMergeDirtyList(a[i],p) i<31 in bounds FP",,high
+ARR30-C,60,sqlite,src/pcache.c,797,FP,a[i]=0 i<31 in bounds FP,,high
+DCL30-C,61,sqlite,src/pcache.c,812,FP,returns p which is a[0] / merged PgHdr* from the input list (heap pages) not address of local DCL30 misread FP,,high
+API00-C,62,sqlite,src/pcache.c,818,FP,sqlite3PcacheDirtyList iterates pCache->pDirty caller contract API00 FP,,high
+DCL13-C,63,sqlite,src/pcache.c,818,FP,pCache->pDirty read but p->pDirty written (mutates pages) and used by sort const inappropriate DCL13 FP,,high
+API00-C,64,sqlite,src/pcache.c,832,FP,sqlite3PcacheRefCount returns pCache->nRefSum caller contract API00 FP,,high
+DCL13-C,65,sqlite,src/pcache.c,832,FP,pCache only read (return nRefSum) const would be feasible here but public-API symmetry and advisory DCL13 FP,,low
+API00-C,66,sqlite,src/pcache.c,839,FP,sqlite3PcachePageRefcount returns p->nRef caller supplies live page API00 FP,,high
+DCL13-C,67,sqlite,src/pcache.c,839,FP,p only read (return p->nRef) const feasible but advisory DCL13 FP,,low
+API00-C,68,sqlite,src/pcache.c,846,FP,sqlite3PcachePagecount asserts pCache->pCache!=0 API00 FP,,high
+DCL13-C,69,sqlite,src/pcache.c,846,FP,pCache passed to xPagecount via pCache->pCache not const-appropriate for the call DCL13 FP,,high
+API00-C,70,sqlite,src/pcache.c,855,FP,sqlite3PcacheGetCachesize SQLITE_TEST-only reads pCache caller contract API00 FP,,high
+API00-C,71,sqlite,src/pcache.c,863,FP,sqlite3PcacheSetCachesize mutates pCache->szCache caller contract API00 FP,,high
+API00-C,72,sqlite,src/pcache.c,875,FP,sqlite3PcacheSetSpillsize asserts p->pCache!=0 mutates p->szSpill API00 FP,,high
+INT32-C,73,sqlite,src/pcache.c,880,FP,-1024*(i64)mxPage mxPage int promoted to i64 product fits i64 INT32 FP,,high
+INT32-C,74,sqlite,src/pcache.c,880,FP,p->szPage+p->szExtra small ints sum no overflow FP,,high
+INT33-C,75,sqlite,src/pcache.c,880,FP,divisor szPage+szExtra szPage>=1 szExtra>=8 never zero INT33 FP,,high
+API00-C,76,sqlite,src/pcache.c,892,FP,sqlite3PcacheShrink asserts pCache->pCache!=0 API00 FP,,high
+DCL13-C,77,sqlite,src/pcache.c,892,FP,pCache passed to xShrink via pCache->pCache mutating DCL13 FP,,high
+API00-C,78,sqlite,src/pcache.c,907,FP,sqlite3PCachePercentDirty iterates pCache->pDirty caller contract API00 FP,,high
+INT32-C,79,sqlite,src/pcache.c,912,FP,(i64)nDirty*100 nDirty is a counted page count cast to i64 product cannot overflow i64 INT32 FP,,high
+INT33-C,80,sqlite,src/pcache.c,912,FP,division by nCache guarded by ternary nCache ? ... : 0 at line 912 never divides when zero INT33 FP,,high
+API00-C,81,sqlite,src/pcache.c,919,FP,sqlite3PCacheIsDirty reads pCache->pDirty caller contract API00 FP,,high
+DCL13-C,82,sqlite,src/pcache.c,919,FP,pCache only read (return pDirty!=0) const feasible but advisory DCL13 FP,,low
+API00-C,83,sqlite,src/pcache.c,930,FP,sqlite3PcacheIterateDirty iterates pCache->pDirty caller contract API00 FP,,high
+API00-C,84,sqlite,src/pcache.c,930,FP,xIter is a callback invoked at line 933 caller always supplies valid fn internal contract API00 FP,,high
+DCL13-C,85,sqlite,src/pcache.c,930,FP,pCache->pDirty read only iteration const feasible but advisory mutation via callback possible DCL13 FP,,high

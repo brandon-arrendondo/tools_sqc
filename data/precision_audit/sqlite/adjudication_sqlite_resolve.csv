@@ -1,0 +1,94 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,0,sqlite,src/resolve.c,35,FP,"incrAggDepth signature is fixed by the Walker xExprCallback typedef (int(*)(Walker*,Expr*)) so pWalker cannot be const-qualified",,high
+DCL13-C,1,sqlite,src/resolve.c,70,FP,resolveAlias reads pEList->a[iCol].pExpr then dups it the result set is consumed; signature is internal but const-of-pointee not applied project-wide and pEList feeds non-const sqlite3ExprDup path,,med
+ARR00-C,2,sqlite,src/resolve.c,80,FP,line 79 asserts iCol>=0 && iCol<pEList->nExpr immediately before a[iCol] caller invariant guarantees the index,,high
+EXP34-C,3,sqlite,src/resolve.c,96,FP,pDup passed to sqlite3ExprDup result; sqlite3ExprDelete/sqlite3ExprAddCollateString are explicitly null-tolerant and the mallocFailed branch sets pDup=0 then skips deref,,high
+API00-C,4,sqlite,src/resolve.c,125,FP,sqlite3MatchEName is internal API; callers (lookupName line 369) always pass &pEList->a[j] a live array element never null,,high
+INT32-C,5,sqlite,src/resolve.c,144,FP,n counts bytes of an in-memory zEName span bounded by string length (max SQLITE token/identifier limits) n+1 cannot approach INT_MAX,,high
+INT32-C,6,sqlite,src/resolve.c,149,FP,same bounded zSpan token-length counter as idx5 no realistic overflow,,high
+EXP34-C,7,sqlite,src/resolve.c,154,FP,pbRowid deref at 154 guarded by eEName==ENAME_ROWID which line 135 proves implies pbRowid!=0 (NEVER(pbRowid==0) returns early),,high
+DCL13-C,8,sqlite,src/resolve.c,161,FP,pTopNC is the head of the NameContext list whose nNcErr/nRef fields are mutated through the chain not const,,high
+API00-C,9,sqlite,src/resolve.c,179,FP,sqlite3ExprColUsed contract (comment line 176) guarantees non-NULL TK_COLUMN Expr asserts back it up internal invariant not trust boundary,,high
+INT14-C,10,sqlite,src/resolve.c,188,FP,INT14 readability heuristic pExTab is a pointer used for member access and a mask compute not a real defect,,high
+INT32-C,11,sqlite,src/resolve.c,193,FP,MASKBIT(pTab->nCol)-1 only reached when nCol<BMS (n>=BMS branch returns ALLBITS) so the shift and subtract are bounded nCol is i16 asserted small,,high
+INT13-C,12,sqlite,src/resolve.c,198,FP,n bounded to <BMS (line 197 clamps n=BMS-1) so ((Bitmask)1)<<n is well-defined BMS is 64 readability-only flag,,high
+INT34-C,13,sqlite,src/resolve.c,198,FP,"n clamped to BMS-1 at line 197 before the shift shift amount provably in [0,BMS-1] no UB",,high
+DCL13-C,14,sqlite,src/resolve.c,211,FP,"extendFJMatch pMatch signature internal; pMatch fields (iCursor,pSTab) read and the SrcItem is part of a mutated parse structure const not applied",,high
+EXP34-C,15,sqlite,src/resolve.c,216,FP,pMatch deref at 216 unconditional but caller lookupName passes pMatch only when non-zero (FULL JOIN path) plus this is extendFJMatch arg never null in practice,,high
+DCL13-C,16,sqlite,src/resolve.c,230,FP,isValidSchemaTableName reads pTab->zName/tnum asserts pTab!=0 line 234 internal caller invariant; const not applied across the schema-table API family,,high
+MSC37-C,17,sqlite,src/resolve.c,278,FP,lookupName (decl line 278) every control path ends in return WRC_Prune/WRC_Abort/WRC_Continue the goto lookupname_end joins to a returning tail no fallthrough,,high
+INT14-C,18,sqlite,src/resolve.c,314,FP,INT14 readability heuristic pNC pointer member access plus list traversal not a defect,,high
+EXP33-C,19,sqlite,src/resolve.c,342,FP,pEList is assigned at the top of the do-loop body (line 342 region within resolveCompoundOrderBy/lookupName scope) before any use on every iteration false uninit,,high
+EXP34-C,20,sqlite,src/resolve.c,383,FP,sqlite3ExprListDelete is explicitly NULL-tolerant (standard sqlite delete contract) passing pFJMatch==0 is a documented no-op,,high
+EXP34-C,21,sqlite,src/resolve.c,393,FP,sqlite3ExprListDelete null-tolerant by contract no-op on NULL,,high
+EXP34-C,22,sqlite,src/resolve.c,446,FP,sqlite3ExprListDelete null-tolerant by contract no-op on NULL,,high
+EXP34-C,23,sqlite,src/resolve.c,456,FP,sqlite3ExprListDelete null-tolerant by contract no-op on NULL,,high
+INT14-C,24,sqlite,src/resolve.c,488,FP,INT14 readability heuristic pTab pointer use not a defect,,high
+INT14-C,25,sqlite,src/resolve.c,582,FP,INT14 readability heuristic iCol used as index and mask shift not a defect,,high
+INT32-C,26,sqlite,src/resolve.c,595,FP,(pTab->nCol+1)*pExpr->iTable is RETURNING register math nCol is i16 (<=32767) and iTable is the small new/old trigger row index product cannot overflow int in practice bounded by SQLITE_LIMIT_COLUMN,,high
+INT13-C,27,sqlite,src/resolve.c,606,FP,((u32)1)<<iCol guarded by iCol>=32 ? 0xffffffff branch so shift only when iCol<32 well-defined; INT13 is signed-operand readability only and the shift base is u32,,high
+INT13-C,28,sqlite,src/resolve.c,610,FP,same as idx27 iCol<32 guarded before ((u32)1)<<iCol u32 base shift well-defined,,high
+ARR01-C,29,sqlite,src/resolve.c,744,FP,"ARR01 false sizeof here is sizeof(Expr)/sizeof(pExpr->y) (lines 96-98,744) struct/member sizes not sizeof of a decayed pointer parameter",,high
+INT32-C,30,sqlite,src/resolve.c,798,FP,pTopNC->nNcErr is a bounded parse-error counter incremented on rare error paths cannot reach INT_MAX within a single parse,,high
+INT32-C,31,sqlite,src/resolve.c,849,FP,pTopNC->nRef name-context reference count bounded by number of resolved columns in one statement far below INT_MAX,,high
+API00-C,32,sqlite,src/resolve.c,863,FP,sqlite3CreateColumnExpr internal API caller passes a live SrcList; pSrc->a[iSrc] access is a caller invariant not a trust boundary,,high
+DCL13-C,33,sqlite,src/resolve.c,863,FP,pSrc->a[iSrc] is read and the SrcItem fields drive expr construction; signature is part of the public-ish internal API and pointee is traversed const not applied,,high
+INT14-C,34,sqlite,src/resolve.c,875,FP,INT14 readability heuristic pTab pointer use not a defect,,high
+INT32-C,35,sqlite,src/resolve.c,880,FP,MASKBIT(pTab->nCol)-1 only on nCol<64 branch (nCol>=64 returns ALLBITS) bounded i16 nCol no overflow,,high
+INT14-C,36,sqlite,src/resolve.c,883,FP,INT14 readability heuristic BMS is a macro constant flagged spuriously not a variable defect,,high
+EXP00-C,37,sqlite,src/resolve.c,884,FP,EXP00 precedence ((Bitmask)1)<<(ternary) the ternary is already parenthesized and << binds looser than the parenthesized operand intent is clear sqlite style not a bug,,low
+INT13-C,38,sqlite,src/resolve.c,884,FP,"shift operand clamped via iCol>=BMS ? BMS-1 : iCol so amount in [0,BMS-1] base is (Bitmask) unsigned no UB readability-only flag",,high
+INT34-C,39,sqlite,src/resolve.c,884,FP,"shift amount provably in [0,BMS-1] by the inline ternary clamp no INT34 violation",,high
+DCL13-C,40,sqlite,src/resolve.c,909,FP,notValidImpl pNC read for ncFlags only but it is the live NameContext whose flags belong to a mutable parse structure; const not applied across notValid family,,high
+WIN04-C,41,sqlite,src/resolve.c,917,FP,WIN04 EncodePointer is a Windows-only mitigation irrelevant to portable SQLite assigning zIn string pointer not even a function pointer false trigger,,high
+WIN04-C,42,sqlite,src/resolve.c,920,FP,WIN04 same zIn string-literal assignment not a function pointer no EncodePointer applicability,,high
+PRE00-C,43,sqlite,src/resolve.c,926,FP,sqlite3ResolveNotValid expands (X) and (N) once each in the if/assert; N is not multi-evaluated to side-effect (it is pNC a plain pointer) macro is by-design optimization documented at lines 903-905,,high
+PRE02-C,44,sqlite,src/resolve.c,926,FP,PRE02 the replacement is an assert(...);if(...)stmt construct not an expression parenthesizing it would be wrong this is an intentional statement macro,,high
+PRE10-C,45,sqlite,src/resolve.c,926,TP,PRE10 sqlite3ResolveNotValid is a multi-statement macro (assert(...) ; if(...)...) NOT wrapped in do{}while(0) genuine CERT-C PRE10 risk if used in an unbraced if although all current call sites use it as a standalone statement,,med
+PRE11-C,46,sqlite,src/resolve.c,926,TP,PRE11 the macro body ends effectively as a statement and the definition contains a trailing-semicolon-style hazard (assert(...);) using it before else/in expression context is unsafe genuine PRE11-class finding,,med
+PRE12-C,47,sqlite,src/resolve.c,926,FP,PRE12 param N (the ncFlags-bearing pNC) is a side-effect-free pointer expression multi-expansion is harmless intentional optimization,,high
+DCL00-C,48,sqlite,src/resolve.c,936,FP,"DCL00 r IS modified sqlite3AtoF(p->u.zToken,&r) writes through &r at line 939 so r is not effectively const",,high
+MEM05-C,49,sqlite,src/resolve.c,956,TP,MEM05/MSC04 resolveExprStep recurses via sqlite3WalkExpr/sqlite3WalkExprList back into resolveExprStep genuine recursion depth-bounded by sqlite3ExprCheckHeight (SQLITE_MAX_EXPR_DEPTH) but recursion truly exists,,high
+EXP34-C,50,sqlite,src/resolve.c,1027,FP,p (NameContext) deref in the for loop (line 1027) guarded by loop condition p && i<ArraySize(anRef) so p is non-null at the body,,high
+EXP34-C,51,sqlite,src/resolve.c,1090,FP,pRight->op deref at 1090 pRight=pExpr->pRight for a TK_DOT node the grammar guarantees TK_DOT always has a non-null pRight (parser invariant) plus assert path follows,,high
+DCL00-C,52,sqlite,src/resolve.c,1116,FP,wrong_num_args IS modified set to 1 at line 1136 in the pDef==0 sub-branch not effectively const,,high
+INT32-C,53,sqlite,src/resolve.c,1148,FP,pNC->nNcErr bounded parse-error counter incremented only on error paths within one statement cannot reach INT_MAX,,high
+INT32-C,54,sqlite,src/resolve.c,1170,FP,pNC->nNcErr bounded error counter no realistic overflow,,high
+INT32-C,55,sqlite,src/resolve.c,1244,FP,pNC->nNcErr bounded error counter no realistic overflow,,high
+INT32-C,56,sqlite,src/resolve.c,1257,FP,pNC->nNcErr bounded error counter no realistic overflow,,high
+INT32-C,57,sqlite,src/resolve.c,1263,FP,pNC->nNcErr bounded error counter no realistic overflow,,high
+INT32-C,58,sqlite,src/resolve.c,1290,FP,pNC->nNcErr bounded error counter no realistic overflow,,high
+DCL13-C,59,sqlite,src/resolve.c,1474,FP,resolveAsName pEList read-only scan but signature internal and zEName fields traversed const not applied across resolver family UNUSED_PARAMETER(pParse) shows fixed sig style,,high
+INT32-C,60,sqlite,src/resolve.c,1489,FP,i+1 is a 1-based result-set column index bounded by pEList->nExpr (<= SQLITE_LIMIT_COLUMN) cannot overflow int,,high
+DCL13-C,61,sqlite,src/resolve.c,1515,FP,resolveOrderByTermToExprList pParse used for error msgs and db access internal API const not applicable (pParse->db->suppressErr mutated lines 1539-1541),,high
+DCL13-C,62,sqlite,src/resolve.c,1516,FP,pSelect read for pEList/pSrc but it is a live mutable parse tree node passed to resolver const not applied,,high
+INT32-C,63,sqlite,src/resolve.c,1550,FP,i+1 1-based result-set column index bounded by pEList->nExpr cannot overflow,,high
+ARR30-C,64,sqlite,src/resolve.c,1614,FP,"ARR30 the loop is for(i=0,pItem=pOrderBy->a; i<pOrderBy->nExpr; ...) bounded by nExpr (<= SQLITE_LIMIT_COLUMN) pItem increment is a parallel cursor not unbounded",,high
+EXP33-C,65,sqlite,src/resolve.c,1621,FP,pE assigned via sqlite3ExprSkipCollateAndLikely(pItem->pExpr) at line 1623 before any use NEVER(pE==0) guard follows not uninit,,high
+EXP33-C,66,sqlite,src/resolve.c,1621,FP,pDup assigned by sqlite3ExprDup at line 1644 inside the iCol==0 branch before its only uses (resolveOrderByTermToExprList then ExprDelete) not uninit,,high
+INT32-C,67,sqlite,src/resolve.c,1627,FP,i+1 bounded ORDER BY term index (<= SQLITE_LIMIT_COLUMN) no overflow,,high
+INT32-C,68,sqlite,src/resolve.c,1683,FP,i+1 bounded result-set index no overflow,,high
+DCL13-C,69,sqlite,src/resolve.c,1702,FP,sqlite3ResolveOrderGroupBy pSelect read for pEList but live mutable select node resolveAlias mutates its items const not applied,,high
+DCL13-C,70,sqlite,src/resolve.c,1703,FP,pOrderBy is iterated and its items mutated (iOrderByCol via resolveAlias) so pOrderBy is genuinely written not const,,high
+INT32-C,71,sqlite,src/resolve.c,1721,FP,i+1 bounded ORDER BY index no overflow,,high
+DCL13-C,72,sqlite,src/resolve.c,1747,FP,resolveOrderGroupBy pSelect read and its pEList/pWin mutated (windowRemoveExprFromSelect) so not const,,high
+INT32-C,73,sqlite,src/resolve.c,1813,FP,i+1 bounded ORDER/GROUP BY term index no overflow,,high
+INT32-C,74,sqlite,src/resolve.c,1831,FP,j+1 bounded result-set column index (<= SQLITE_LIMIT_COLUMN) no overflow,,high
+DCL13-C,75,sqlite,src/resolve.c,1841,FP,resolveRemoveWindowsCb signature fixed by Walker xExprCallback typedef pWalker cannot be const,,high
+ARR30-C,76,sqlite,src/resolve.c,1877,FP,ARR30 the pItem advance is inside a for loop bounded by pOrderBy->nExpr not an unbounded pointer walk,,high
+INT32-C,77,sqlite,src/resolve.c,2087,FP,nCompound counts compound SELECT terms bounded by SQLITE_LIMIT_COMPOUND_SELECT cannot reach INT_MAX,,high
+API00-C,78,sqlite,src/resolve.c,2148,FP,sqlite3ResolveExprNames asserts/uses pNC->pParse internal contract pNC always non-null from callers not a trust boundary,,high
+INT32-C,79,sqlite,src/resolve.c,2164,FP,w.pParse->nHeight += pExpr->nHeight guarded immediately by sqlite3ExprCheckHeight against SQLITE_MAX_EXPR_DEPTH (line 2165) bounded,,high
+INT32-C,80,sqlite,src/resolve.c,2172,FP,nHeight -= pExpr->nHeight restores the value added at 2164 symmetric bookkeeping cannot underflow below entry value,,high
+API00-C,81,sqlite,src/resolve.c,2191,FP,sqlite3ResolveExprListNames uses pNC->pParse internal contract pNC non-null by caller invariant,,high
+DCL13-C,82,sqlite,src/resolve.c,2193,FP,pList is iterated read-only here but the resolver mutates pList->a[i].pExpr subtree in place via sqlite3WalkExprNN const cannot apply,,high
+INT32-C,83,sqlite,src/resolve.c,2210,FP,nHeight += guarded by sqlite3ExprCheckHeight (line 2211) bounded by SQLITE_MAX_EXPR_DEPTH,,high
+INT32-C,84,sqlite,src/resolve.c,2217,FP,nHeight -= restores symmetric add cannot underflow,,high
+API00-C,85,sqlite,src/resolve.c,2247,FP,sqlite3ResolveSelectNames pParse stored into Walker w.pParse and drives mutation internal contract non-null caller invariant,,high
+API00-C,86,sqlite,src/resolve.c,2247,FP,pOuterNC stored into w.u.pNC may legitimately be NULL (top-level SELECT) and code path tolerates it not a defect just no validation needed,,high
+DCL13-C,87,sqlite,src/resolve.c,2248,FP,pParse written into w.pParse and used to mutate parse state not const,,high
+DCL13-C,88,sqlite,src/resolve.c,2250,FP,pOuterNC stored into w.u.pNC (Walker) part of mutable walker not const and may be null by design,,high
+API00-C,89,sqlite,src/resolve.c,2281,FP,sqlite3ResolveSelfReference pParse used to build fake SrcList and mutate parse state internal contract non-null,,high
+API00-C,90,sqlite,src/resolve.c,2281,FP,pTab explicitly may be NULL (comment line 2283 The table being referenced or NULL) code handles null no validation defect,,high
+DCL13-C,91,sqlite,src/resolve.c,2282,FP,pParse drives NameContext/SrcList construction and error reporting mutated not const,,high
+DCL13-C,92,sqlite,src/resolve.c,2283,FP,pTab is stored into the fake SrcList SrcItem (pSTab) and may be null const not applicable,,high

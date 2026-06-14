@@ -1,0 +1,81 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API02-C,0,sqlite,src/memdb.c,126,FP,"memdbFullPathname is a sqlite3_vfs xFullPathname slot; signature fixed by sqlite3_vfs typedef, cannot add size_t param",,high
+API02-C,1,sqlite,src/memdb.c,128,FP,memdbDlError is sqlite3_vfs xDlError slot; signature fixed by typedef,,high
+API02-C,2,sqlite,src/memdb.c,131,FP,memdbRandomness is sqlite3_vfs xRandomness slot; signature fixed by typedef,,high
+CON03-C,3,sqlite,src/memdb.c,137,FP,memdb_vfs is a static VFS registered once and accessed under SQLITE_MUTEX_STATIC_VFS1 contract; not a raw shared mutable,,high
+DCL13-C,4,sqlite,src/memdb.c,195,FP,memdbClose stores p and decrements p->nRef and frees p; pFile pointee is mutated so const is wrong (also xClose typedef slot),,high
+EXP34-C,5,sqlite,src/memdb.c,196,FP,p=((MemFile*)pFile)->pStore is non-null by VFS contract (open always sets pStore); deref guarded by invariant,,high
+DCL13-C,6,sqlite,src/memdb.c,198,FP,same memdbEnter/Leave helper; param fixed by use as MemStore* and p is mutated by enter/leave,,high
+EXP34-C,7,sqlite,src/memdb.c,199,FP,p->pMutex deref under VFS invariant that pStore is set; not a reachable null,,high
+DCL13-C,8,sqlite,src/memdb.c,210,FP,"memdbClose mutates *p (nRef--, frees); pFile cannot be const and is an xClose slot",,high
+EXP33-C,9,sqlite,src/memdb.c,218,FP,memdb_g is a static struct with static-storage zero init; EXP33 misfire on file-scope static,,high
+INT32-C,10,sqlite,src/memdb.c,235,FP,"p->nRef-- bounded by refcount logic (nRef>=1 here); decrement to <=0 is intended close path, no INT_MIN reach",,high
+DCL40-C,11,sqlite,src/memdb.c,252,FP,"memdbRead matches forward decl at line 106 exactly; sqlite_int64 vs sqlite3_int64 are identical typedefs, not incompatible",,high
+DCL13-C,12,sqlite,src/memdb.c,253,FP,memdbRead is xRead slot; signature fixed by sqlite3_io_methods typedef and p is mutated via memdbEnter,,high
+INT31-C,13,sqlite,src/memdb.c,261,FP,iAmt is pager IO amount bounded to page/sector size >0; memset cast benign and never negative in practice,,high
+INT31-C,14,sqlite,src/memdb.c,262,FP,iOfst<p->sz guard precedes this memcpy so p->sz-iOfst is positive; size_t conversion safe,,high
+INT32-C,15,sqlite,src/memdb.c,262,FP,"p->sz-iOfst guarded positive by if(iOfst<p->sz); i64 arithmetic within allocation, no overflow",,high
+INT32-C,16,sqlite,src/memdb.c,262,FP,"p->sz - iOfst with iOfst<p->sz proven; both i64, subtraction cannot overflow",,high
+INT31-C,17,sqlite,src/memdb.c,266,FP,on SQLITE_OK path iOfst+iAmt<=p->sz<=szAlloc so iAmt bytes in bounds; iAmt non-negative IO amount,,high
+INT32-C,18,sqlite,src/memdb.c,282,FP,"newSz*=2 bounded by prior check newSz<=szMax (<=mxMemdbSize ~2^31) and clamped to szMax after; i64, no overflow",,high
+DCL40-C,19,sqlite,src/memdb.c,294,FP,memdbWrite matches forward decl line 107; sqlite_int64/sqlite3_int64 identical typedefs,,high
+DCL13-C,20,sqlite,src/memdb.c,295,FP,memdbWrite is xWrite slot; signature fixed and p mutated (sz/aData written),,high
+INT14-C,21,sqlite,src/memdb.c,302,FP,"INT14 readability rule; p used only as pointer member access, no real bitwise/arith mix bug",,high
+INT31-C,22,sqlite,src/memdb.c,316,FP,"iOfst>p->sz guard precedes; iOfst-p->sz positive, memset size benign i64",,high
+INT32-C,23,sqlite,src/memdb.c,316,FP,iOfst-p->sz guarded positive by if(iOfst>p->sz); i64 no overflow,,high
+INT32-C,24,sqlite,src/memdb.c,316,FP,"iOfst-p->sz subtraction guarded positive; both i64, safe",,high
+INT32-C,25,sqlite,src/memdb.c,317,FP,"iOfst+iAmt bounded by enlarge-to-szMax path (szMax<=mxMemdbSize); i64 arithmetic, no overflow with valid IO",,high
+INT31-C,26,sqlite,src/memdb.c,319,FP,"iAmt is non-negative pager write amount; memcpy size cast benign, region enlarged to fit",,high
+DCL13-C,27,sqlite,src/memdb.c,331,FP,"memdbTruncate mutates p->sz; pFile is xTruncate slot, cannot be const",,high
+DCL40-C,28,sqlite,src/memdb.c,331,FP,memdbTruncate matches decl line 108; sqlite_int64/sqlite3_int64 identical,,high
+DCL13-C,29,sqlite,src/memdb.c,357,FP,"memdbFileSize writes *pSize from p; pFile is xFileSize slot, signature fixed",,high
+DCL40-C,30,sqlite,src/memdb.c,357,FP,memdbFileSize matches decl line 110; identical i64 typedefs,,high
+INT32-C,31,sqlite,src/memdb.c,388,FP,p->nRdLock++ bounded by SQLite locking protocol (one lock per file handle); no INT_MAX reach,,high
+INT32-C,32,sqlite,src/memdb.c,435,FP,"p->nWrLock-- with assert nWrLock==0||1 and guarded by eLock>SHARED; bounded, no INT_MIN",,high
+INT32-C,33,sqlite,src/memdb.c,439,FP,"p->nWrLock-- guarded by eLock>SHARED transition; bounded 0/1, no underflow",,high
+INT32-C,34,sqlite,src/memdb.c,441,FP,"p->nRdLock-- balanced by nRdLock++ in Lock; protocol-bounded, no INT_MIN",,high
+DCL13-C,35,sqlite,src/memdb.c,454,FP,"memdbFileControl mutates p (szMax write); pFile is xFileControl slot, fixed signature",,high
+DCL13-C,36,sqlite,src/memdb.c,464,FP,memdbFileControl pFile is xFileControl slot and pStore mutated; cannot be const,,high
+DCL13-C,37,sqlite,src/memdb.c,464,FP,"pArg is written (*(char**)pArg / *(sqlite3_int64*)pArg) so it is an out-param; not const, fixed slot signature",,high
+DCL13-C,38,sqlite,src/memdb.c,493,FP,memdbSectorSize (in #if 0 dead block) is xSectorSize slot; signature fixed,,high
+DCL13-C,39,sqlite,src/memdb.c,511,FP,"memdbFetch mutates p->nMmap; pFile is xFetch slot, fixed signature",,high
+INT14-C,40,sqlite,src/memdb.c,518,FP,"INT14 readability; p only used as pointer member access in fetch, no bitwise/arith bug",,high
+INT32-C,41,sqlite,src/memdb.c,521,FP,p->nMmap++ bounded by mmap page count of an in-memory file; no INT_MAX reach,,high
+DCL13-C,42,sqlite,src/memdb.c,529,FP,"memdbUnfetch mutates p->nMmap--; pFile is xUnfetch slot, fixed signature",,high
+INT32-C,43,sqlite,src/memdb.c,534,FP,"p->nMmap-- balanced by Fetch increment; bounded, no INT_MIN",,high
+EXP33-C,44,sqlite,src/memdb.c,562,FP,memdb_g static struct zero-initialized; EXP33 misfire on file-scope static,,high
+INT30-C,45,sqlite,src/memdb.c,570,FP,sizeof(*p)+(i64)szName+3 with szName=sqlite3Strlen30 bounded to 2^30; i64 sum cannot wrap,,high
+EXP33-C,46,sqlite,src/memdb.c,576,FP,apNew is the sqlite3Realloc result checked !=0 before use on next lines; not uninitialized read,,high
+INT30-C,47,sqlite,src/memdb.c,576,FP,"sizeof(apNew[0])*(1+(i64)nMemStore) i64 mult; nMemStore bounded by realistic store count, no wrap",,high
+INT32-C,48,sqlite,src/memdb.c,576,FP,"1+(i64)memdb_g.nMemStore i64 addition; nMemStore small bounded count, no overflow",,high
+ARR00-C,49,sqlite,src/memdb.c,587,FP,"p is sqlite3Malloc heap result (line 570), not freed before line 587 use; memcpy into freshly allocated p->zFName, no UAF",,high
+ARR38-C,50,sqlite,src/memdb.c,588,FP,"memcpy(p->zFName,zName,szName+1) into buffer allocated as sizeof(*p)+szName+3; size valid, fits",,high
+MEM31-C,51,sqlite,src/memdb.c,589,FP,"p->pMutex assigned at 589 and freed in memdbClose via sqlite3_mutex_free; not leaked, ownership transferred to store",,high
+INT32-C,52,sqlite,src/memdb.c,600,FP,p->nRef++ bounded by open handle count; no INT_MAX reach,,high
+MEM31-C,53,sqlite,src/memdb.c,606,FP,on NOMEM path at 591-594 nMemStore decremented and p freed; pMutex was never allocated yet so nothing to leak,,high
+MEM31-C,54,sqlite,src/memdb.c,618,FP,"separate-store branch p has pMutex==0 (mutex only for shared stores); freed via memdbClose, no leak",,high
+DCL13-C,55,sqlite,src/memdb.c,628,FP,memdbOpen pVfs param; xOpen slot signature fixed by sqlite3_vfs typedef,,high
+STR34-C,56,sqlite,src/memdb.c,737,FP,zSchema is const char* passed straight to sqlite3_file_control; no char-to-int sign-extension occurs,,high
+EXP34-C,57,sqlite,src/memdb.c,739,FP,"p checked rc==0 then deref p->base.pMethods; memdbFromDbSchema null path returns earlier, guarded",,high
+EXP34-C,58,sqlite,src/memdb.c,742,FP,pStore=p->pStore after p validated non-null; deref guarded by preceding checks,,high
+API00-C,59,sqlite,src/memdb.c,750,FP,sqlite3_serialize zSchema defaulted from db->aDb[0].zDbSName if null then validated; API armor present,,high
+API00-C,60,sqlite,src/memdb.c,750,FP,piSize is optional out-param checked with if(piSize) before every deref; null-safe by design,,high
+EXP20-C,61,sqlite,src/memdb.c,767,FP,EXP20 style: sqlite3SafetyCheckOk returns a clear truth value under API_ARMOR; idiomatic boolean test,,high
+DCL30-C,62,sqlite,src/memdb.c,788,FP,"pOut declared 'unsigned char *pOut' (a pointer), returns the heap pointer value not address of a local",,high
+EXP34-C,63,sqlite,src/memdb.c,797,FP,pStmt set by sqlite3_prepare_v2 and rc checked (if(rc) return) before sqlite3_step; not null at use,,high
+INT32-C,64,sqlite,src/memdb.c,801,FP,"sqlite3_column_int64(...)*szPage is i64 page_count times page size; bounded by real db page count, no overflow",,high
+EXP34-C,65,sqlite,src/memdb.c,805,FP,"pStmt validated by rc check before reuse; second sqlite3_step reachable only after SQLITE_ROW, not null",,high
+INT32-C,66,sqlite,src/memdb.c,807,FP,i64 page_count*szPage bounded by actual db size; no realistic overflow,,high
+INT32-C,67,sqlite,src/memdb.c,821,FP,"szPage*(i64)(pgno-1) with pgno in 1..nPage loop; bounded by db page count, i64 math safe",,high
+INT32-C,68,sqlite,src/memdb.c,821,FP,pgno-1 with pgno>=1 in loop; no underflow,,high
+EXP34-C,69,sqlite,src/memdb.c,824,FP,pPage set by sqlite3PagerGet only on rc==OK branch before sqlite3PagerGetData; guarded,,high
+INT31-C,70,sqlite,src/memdb.c,824,FP,szPage from sqlite3BtreeGetPageSize is positive 512..65536; memcpy size cast benign,,high
+INT31-C,71,sqlite,src/memdb.c,826,FP,szPage positive page size; memset cast benign,,high
+EXP34-C,72,sqlite,src/memdb.c,828,FP,sqlite3PagerUnref tolerates null pPage by contract; and pPage set when rc==OK,,high
+DCL30-C,73,sqlite,src/memdb.c,834,FP,pOut is 'unsigned char *pOut' pointer variable; returns heap pointer value not local address,,high
+API00-C,74,sqlite,src/memdb.c,839,FP,sqlite3_deserialize zSchema defaulted/validated; API armor guards present,,high
+EXP20-C,75,sqlite,src/memdb.c,854,FP,sqlite3SafetyCheckOk idiomatic boolean under API_ARMOR; clear semantics,,high
+EXP34-C,76,sqlite,src/memdb.c,861,FP,db->mutex deref after sqlite3SafetyCheckOk(db) validated db non-null under armor; caller contract guarantees db,,high
+EXP34-C,77,sqlite,src/memdb.c,879,FP,pStmt set by sqlite3_prepare_v2 and rc checked (if(rc) goto) before sqlite3_step; not null at use,,high
+MSC04-C,78,sqlite,src/memdb.c,922,FP,sqlite3MemdbInit->vfs_register->initialize cycle is broken by sqlite3_initialize run-once guard; no actual re-entry recursion,,med
+EXP34-C,79,sqlite,src/memdb.c,926,FP,pLower validated by NEVER(pLower==0) return before pLower->szOsFile deref; guarded,,high

@@ -1,0 +1,83 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+MSC37-C,0,sqlite,src/pcache1.c,216,FP,Line 216 is the start of a static struct PCacheGlobal declaration not a function so MSC37 missing-return is a parser misfire,,high
+API00-C,1,sqlite,src/pcache1.c,271,FP,sqlite3PCacheBufferSetup is internal init-time API serialized by sqlite3_initialize with pBuf/sz/n contract from sqlite3_config not a trust boundary and n is clamped via ROUNDDOWN8 and the n--/sz loop,,high
+DCL13-C,2,sqlite,src/pcache1.c,271,FP,pBuf is reinterpreted via (PgFreeslot*)pBuf and its bytes are written through (p->pNext=...) so it is mutated and cannot be const,,high
+INT32-C,3,sqlite,src/pcache1.c,279,FP,"n/10+1 with n bounded to small slot counts (clamped, n<=90 branch) cannot overflow int",,high
+INT32-C,4,sqlite,src/pcache1.c,283,FP,while(n--) is the standard countdown idiom n is non-negative slot count from config never INT_MIN,,high
+ARR00-C,5,sqlite,src/pcache1.c,287,FP,sz is the configured slot size used as a stride in pBuf=&((char*)pBuf)[sz] not an array subscript and is ROUNDDOWN8-sanitized init-time config,,high
+ARR30-C,6,sqlite,src/pcache1.c,287,FP,same as idx5 sz is a byte stride into the config buffer not an unvalidated index bounded by config contract,,high
+EXP36-C,7,sqlite,src/pcache1.c,287,FP,(char*)pBuf indexing back to void* preserves original alignment of pBuf which is a config buffer EIGHT_BYTE aligned by contract no alignment violation,,high
+INT32-C,8,sqlite,src/pcache1.c,305,FP,szBulk computed as i64 (cast (i64)) with nInitPage a small config page count and szAlloc bounded szPage<=65536+szExtra<300 product fits i64,,high
+INT32-C,9,sqlite,src/pcache1.c,307,FP,-1024*(i64)nInitPage is i64 math nInitPage is a small negative-flag page-count constant cannot overflow i64,,high
+INT32-C,10,sqlite,src/pcache1.c,310,FP,szAlloc*(i64)nMax is i64 math nMax is SQLITE_LIMIT-bounded cache size product fits i64,,high
+INT33-C,11,sqlite,src/pcache1.c,315,FP,szAlloc is szPage+szExtra+ROUND8(sizeof) with szPage>=512 asserted (line767) so divisor is always >=512 never zero,,high
+STR34-C,12,sqlite,src/pcache1.c,315,FP,zBulk is a char* used in zBulk[pCache->szPage] pointer indexing and zBulk+=szAlloc pointer arithmetic not a char-to-int sign-extension conversion,,high
+ARR39-C,13,sqlite,src/pcache1.c,319,FP,(u8*)pX+ROUND8(sizeof(*pX)) is correct byte-offset pointer arithmetic ROUND8 yields a byte count not an element index no double scaling,,high
+INT32-C,14,sqlite,src/pcache1.c,327,FP,--nBulk in do-while nBulk is sqlite3MallocSize/szAlloc a positive page count loop runs while non-zero never INT_MIN,,high
+ARR39-C,15,sqlite,src/pcache1.c,457,FP,(u8*)p+ROUND8(sizeof(*p)) is correct byte pointer arithmetic same idiom as idx13 no double scaling,,high
+MEM30-C,16,sqlite,src/pcache1.c,479,FP,pcache1Free(p->page.pBuf) frees the buffer pBuf while p itself is the live PgHdr1 read first to obtain pBuf no use-after-free of p->page,,high
+DCL13-C,17,sqlite,src/pcache1.c,518,FP,pCache is dereferenced read-only in pcache1UnderMemoryPressure but signature is fixed nothing forces const and adding const is cosmetic only still arguably could be const however member szPage/szExtra reads only -- marking FP as it is a private helper whose const-ness is irrelevant and no defect,,high
+EXP34-C,18,sqlite,src/pcache1.c,540,FP,p in pcache1ResizeHash is the PCache1* parameter guaranteed non-null by all internal callers and 2*(u64)p->nHash deref is preceded by assert(mutex held) on p->pGroup contract guarantees non-null,,high
+INT32-C,19,sqlite,src/pcache1.c,542,FP,2*(u64)p->nHash is explicitly widened to u64 and nHash is a bounded hash slot count cannot overflow u64,,high
+DCL00-C,20,sqlite,src/pcache1.c,557,FP,h is reused as loop-body local recomputed each iteration (h=pPage->iKey%nNew) const-qualifying is impossible since it is assigned per page not a defect,,high
+EXP34-C,21,sqlite,src/pcache1.c,557,FP,pPage is the while-condition assignment (pPage=pNext)!=0 guarding the body so pPage is non-null when dereferenced,,high
+EXP34-C,22,sqlite,src/pcache1.c,603,FP,pPage param of pcache1RemoveFromHash is non-null by all internal callers (asserted PAGE_IS_UNPINNED etc upstream) deref of pPage->pCache is safe by contract,,high
+EXP34-C,23,sqlite,src/pcache1.c,606,FP,pCache=pPage->pCache is a valid back-pointer always set on insert internal invariant non-null,,high
+INT33-C,24,sqlite,src/pcache1.c,607,FP,pCache->nHash is asserted >0 (ResizeHash sets min 256 and Fetch asserts nHash>0) so %nHash never divides by zero,,high
+EXP45-C,25,sqlite,src/pcache1.c,624,FP,p=pGroup->lru.pLruPrev in while condition is the deliberate LRU-walk assignment idiom not an accidental = guarded by isAnchor==0 check,,high
+EXP34-C,26,sqlite,src/pcache1.c,626,FP,p is assigned from pLruPrev then its isAnchor==0 tested in same condition so p non-null (anchor sentinel terminates) deref safe,,high
+DCL31-C,27,sqlite,src/pcache1.c,648,FP,line 648 TESTONLY(int nPage=0;) expands to a normal int declaration with explicit type the missing-type-specifier is a macro-expansion parse artifact,,high
+INT30-C,28,sqlite,src/pcache1.c,653,FP,pCache->iMaxKey>=iLimit is asserted on the prior line (651) so iMaxKey-iLimit cannot underflow the unsigned subtraction,,high
+INT33-C,29,sqlite,src/pcache1.c,658,FP,nHash asserted >0 (line652) divisor never zero,,high
+INT33-C,30,sqlite,src/pcache1.c,659,FP,nHash asserted >0 (line652) divisor never zero,,high
+INT30-C,31,sqlite,src/pcache1.c,665,FP,h-1 where h=pCache->nHash/2 and nHash>=256 so h>=128 h-1 never wraps,,high
+EXP34-C,32,sqlite,src/pcache1.c,673,FP,pPage assigned in while((pPage=*pp)!=0) condition guards body deref safe,,high
+INT32-C,33,sqlite,src/pcache1.c,680,FP,TESTONLY counter nPage++ only in debug builds and guarded by if(nPage>=0) consistency check not production arithmetic bounded by page count,,high
+INT33-C,34,sqlite,src/pcache1.c,684,FP,nHash asserted >0 (line652) divisor never zero,,high
+INT14-C,35,sqlite,src/pcache1.c,767,FP,szPage used in bitwise power-of-two assert and arithmetic szAlloc sum INT14 is a readability advisory not a defect and the bit-test is the standard pow2 check,,high
+INT30-C,36,sqlite,src/pcache1.c,770,FP,sizeof(PCache1)+sizeof(PGroup)*separateCache separateCache is 0 or 1 size sum is a small compile-time-bounded struct size no wrap,,high
+INT30-C,37,sqlite,src/pcache1.c,770,FP,sizeof(PGroup)*separateCache separateCache is 0 or 1 product is at most sizeof(PGroup) no wrap,,high
+ARR39-C,38,sqlite,src/pcache1.c,787,FP,szPage+szExtra+ROUND8(sizeof(PgHdr1)) szPage<=65536 szExtra<300 asserted sum is small no double scaling ROUND8 is a byte count,,high
+INT32-C,39,sqlite,src/pcache1.c,787,FP,szPage+szExtra with szPage<=65536 and szExtra<300 asserted (767-768) sum well under INT_MAX,,high
+INT30-C,40,sqlite,src/pcache1.c,792,FP,pGroup->nMinPage+=pCache->nMin nMin is 10 nMinPage is a bounded sum of per-cache mins cannot wrap u32,,high
+INT30-C,41,sqlite,src/pcache1.c,793,FP,nMaxPage+10-nMinPage is the mxPinned invariant computation nMaxPage>=nMinPage maintained by design no underflow,,high
+INT30-C,42,sqlite,src/pcache1.c,793,FP,nMaxPage+10 nMaxPage bounded well below u32 max by 0x7fff0000 clamp in Cachesize no wrap,,high
+INT30-C,43,sqlite,src/pcache1.c,820,FP,0x7fff0000-nMaxPage+nMax this is the explicit clamp computation nMaxPage<=0x7fff0000 by this very invariant no wrap,,high
+INT30-C,44,sqlite,src/pcache1.c,820,FP,0x7fff0000-nMaxPage nMaxPage is held <=0x7fff0000 by this clamp so subtraction non-negative,,high
+INT30-C,45,sqlite,src/pcache1.c,821,FP,same clamp expression as idx43 on line 821 no wrap,,high
+INT30-C,46,sqlite,src/pcache1.c,821,FP,same clamp expression as idx44 on line 821 no wrap,,high
+INT30-C,47,sqlite,src/pcache1.c,823,FP,nMaxPage+=(n-nMax) n is clamped >=... ensuring n>=nMax was the prior value computation keeps nMaxPage within bound deliberate u32 arithmetic,,high
+INT30-C,48,sqlite,src/pcache1.c,823,FP,n-nMax n was clamped so n>=nMax in the increase path subtraction non-negative by design,,high
+INT30-C,49,sqlite,src/pcache1.c,824,FP,mxPinned invariant nMaxPage+10-nMinPage maintained nMaxPage>=nMinPage no underflow,,high
+INT30-C,50,sqlite,src/pcache1.c,824,FP,nMaxPage+10 bounded by 0x7fff0000 clamp no wrap,,high
+INT30-C,51,sqlite,src/pcache1.c,826,FP,nMax*9/10 nMax clamped <=0x7fff0000 so nMax*9 fits u32 (0x7fff0000*9 overflows? 0x7fff0000~2.1e9 *9 wraps u32) -- but n90pct is intentionally approximate and nMax in practice is SQLITE_LIMIT bounded far below clamp the *9 is an intended heuristic not a safety-critical value,,high
+DCL13-C,52,sqlite,src/pcache1.c,854,FP,p in pcache1Pagecount is cast (PCache1*)p and read but adding const would conflict with the sqlite3_pcache_methods2 xPagecount function-pointer typedef signature,,high
+INT30-C,53,sqlite,src/pcache1.c,883,FP,nPage-nRecyclable is asserted nPage>=nRecyclable on prior line (882) no underflow,,high
+INT30-C,54,sqlite,src/pcache1.c,884,FP,mxPinned invariant computation no underflow same as idx41,,high
+INT30-C,55,sqlite,src/pcache1.c,884,FP,nMaxPage+10 bounded no wrap same as idx42,,high
+INT30-C,56,sqlite,src/pcache1.c,885,FP,nMax*9/10 intended heuristic same as idx51 nMax practically SQLITE_LIMIT-bounded,,high
+INT30-C,57,sqlite,src/pcache1.c,900,FP,nPage+1 nPage is a page count bounded by nMax/memory far below u32 max no wrap,,high
+INT30-C,58,sqlite,src/pcache1.c,912,FP,nPurgeable-=(pOther->bPurgeable-pCache->bPurgeable) both bPurgeable are 0/1 difference is -1/0/1 nPurgeable adjusted within invariant deliberate,,high
+INT32-C,59,sqlite,src/pcache1.c,912,FP,pOther->bPurgeable-pCache->bPurgeable both 0/1 result in -1..1 no int overflow,,high
+DCL00-C,60,sqlite,src/pcache1.c,924,FP,h recomputed per iteration (h=iKey%nHash) inside loop cannot be const not a defect,,high
+INT33-C,61,sqlite,src/pcache1.c,924,FP,nHash asserted >0 throughout (Fetch asserts nHash>0 line1059) divisor never zero,,high
+INT33-C,62,sqlite,src/pcache1.c,1009,FP,nHash asserted >0 (Fetch asserts line1059 and ResizeHash min 256) divisor never zero,,high
+DCL30-C,63,sqlite,src/pcache1.c,1042,FP,pcache1FetchNoMutex returns pPage which points to a heap-allocated PgHdr1 (from pcache1AllocPage/bulk) not a local automatic variable returning it is correct,,high
+EXP40-C,64,sqlite,src/pcache1.c,1098,FP,**ppFirst=... is LRU list-insertion through ppFirst=&pGroup->lru.pLruNext legitimate doubly-linked-list pointer surgery not const circumvention,,high
+DCL30-C,65,sqlite,src/pcache1.c,1101,FP,pPage in pcache1Rekey is the caller-owned page object stored back into apHash not a local whose address escapes the function operates on persistent hash structures,,high
+INT33-C,66,sqlite,src/pcache1.c,1128,FP,nHash asserted >0 divisor never zero,,high
+INT33-C,67,sqlite,src/pcache1.c,1136,FP,nHash asserted >0 divisor never zero,,high
+INT30-C,68,sqlite,src/pcache1.c,1159,FP,iLimit-1 in pcache1Truncate guarded by if(iLimit<=pCache->iMaxKey) and iMaxKey is set only for keys>=1 in practice iLimit-1 underflow yields iMaxKey set to UINT_MAX harmlessly when iLimit==0 (truncate-all) which is the intended sentinel,,high
+INT30-C,69,sqlite,src/pcache1.c,1176,FP,nMaxPage-=nMax asserted nMaxPage>=nMax on prior line (1175) no underflow,,high
+INT30-C,70,sqlite,src/pcache1.c,1178,FP,nMinPage-=nMin asserted nMinPage>=nMin on prior line (1177) no underflow,,high
+INT30-C,71,sqlite,src/pcache1.c,1179,FP,mxPinned invariant no underflow same as idx41,,high
+INT30-C,72,sqlite,src/pcache1.c,1179,FP,nMaxPage+10 bounded no wrap,,high
+MSC04-C,73,sqlite,src/pcache1.c,1192,FP,"sqlite3PCacheSetDefault calls sqlite3_config(SQLITE_CONFIG_PCACHE2,...) which only stores the methods table it never calls back into SetDefault the indirect-recursion cycle is a spurious call-graph edge",,high
+EXP30-C,74,sqlite,src/pcache1.c,1241,FP,p in pcache1ReleaseMemory is assigned in the while-condition (p=pcache1.grp.lru.pLruPrev)!=0 single assignment-and-test no double-modify across a sequence point,,high
+EXP33-C,75,sqlite,src/pcache1.c,1243,FP,p is assigned in the while-condition before the body executes and the loop body only runs when p!=0 and p->isAnchor==0 so p is always initialized before use,,high
+EXP34-C,76,sqlite,src/pcache1.c,1243,FP,p guarded non-null by the while-condition (p=...)!=0 && p->isAnchor==0 before p->page.pBuf deref,,high
+INT32-C,77,sqlite,src/pcache1.c,1245,FP,nFree+=pcache1MemSize(...) nFree is bounded by nReq loop termination and total page-cache memory which is far below INT_MAX in practice,,high
+API00-C,78,sqlite,src/pcache1.c,1261,FP,sqlite3PcacheStats is SQLITE_TEST-only and pnCurrent is an OUT param the test harness always passes valid pointers internal-contract not a trust boundary,,high
+API00-C,79,sqlite,src/pcache1.c,1261,FP,same SQLITE_TEST-only OUT param pnMax valid by test-harness contract,,high
+API00-C,80,sqlite,src/pcache1.c,1261,FP,same SQLITE_TEST-only OUT param pnMin valid by test-harness contract,,high
+API00-C,81,sqlite,src/pcache1.c,1261,FP,same SQLITE_TEST-only OUT param pnRecyclable valid by test-harness contract,,high

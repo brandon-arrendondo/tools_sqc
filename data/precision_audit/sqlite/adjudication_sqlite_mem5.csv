@@ -1,0 +1,72 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+MSC37-C,0,sqlite,src/mem5.c,92,FP,"Line 92 is the head of the Mem5Global struct definition, not a function body; MSC37 misparse of SQLITE_WSD struct",,high
+ENV01-C,1,sqlite,src/mem5.c,124,FP,"Line 124 aiFreelist[LOGMAX+1] is a fixed compile-time array member, no environment variable involved",,high
+MEM05-C,2,sqlite,src/mem5.c,124,FP,"aiFreelist[LOGMAX+1] size is a macro constant, not a runtime-sized VLA",,high
+ARR00-C,3,sqlite,src/mem5.c,153,FP,memsys5Unlink i is asserted i>=0 && i<mem5.nBlock at line 151 and callers are internal with the invariant,,high
+ARR00-C,4,sqlite,src/mem5.c,158,FP,iLogsize asserted iLogsize>=0 && iLogsize<=LOGMAX at line 152 bounding aiFreelist index,,high
+ARR00-C,5,sqlite,src/mem5.c,176,FP,memsys5Link i asserted i>=0 && i<mem5.nBlock at line 174 under held mutex,,high
+ARR00-C,6,sqlite,src/mem5.c,178,FP,iLogsize asserted 0..LOGMAX at line 175 bounding aiFreelist[iLogsize],,high
+ARR00-C,7,sqlite,src/mem5.c,184,FP,same iLogsize 0..LOGMAX assert governs the write at line 184,,high
+DCL13-C,8,sqlite,src/mem5.c,201,FP,memsys5Size signature is fixed by sqlite3_mem_methods.xSize typedef int(*)(void*) so const param would break the methods table,,high
+FLP03-C,9,sqlite,src/mem5.c,204,FP,"Line 204 is integer division of pointer offset by szAtom, no floating point present",,high
+INT14-C,10,sqlite,src/mem5.c,204,FP,"mem5 is a struct accessed via member; szAtom set >=8 in init, bit/arith mix is intended size-class math",,high
+INT33-C,11,sqlite,src/mem5.c,204,FP,"mem5.szAtom is always >=8 (forced up to >=sizeof(Mem5Link) in init), divisor never zero",,high
+INT14-C,12,sqlite,src/mem5.c,206,FP,CTRL_LOGSIZE is a 0x1f mask constant; mixing mask and arithmetic is the intended size-class decode,,high
+INT14-C,13,sqlite,src/mem5.c,206,FP,i is an in-bounds block index; bit/arith mix is intended pool addressing,,high
+INT32-C,14,sqlite,src/mem5.c,206,FP,aCtrl&CTRL_LOGSIZE caps shift to <=31 and actual logsize bounded by LOGMAX(30); intended size math,,high
+INT32-C,15,sqlite,src/mem5.c,259,FP,"iBin>iLogsize>=0 loop guard ensures iBin>0 before iBin--, never reaches INT_MIN",,high
+INT13-C,16,sqlite,src/mem5.c,260,FP,iBin bounded 0..LOGMAX; signed shift of small size-class value is intended buddy-split math,,high
+INT32-C,17,sqlite,src/mem5.c,260,FP,1<<iBin with iBin<=LOGMAX(30) cannot overflow a 32-bit int; intended,,high
+INT13-C,18,sqlite,src/mem5.c,261,FP,"iBin used as size-class index, value <=LOGMAX; OR with CTRL_FREE is intended aCtrl encoding",,high
+INT32-C,19,sqlite,src/mem5.c,261,FP,i+newSize is an in-pool block index bounded by the free block just unlinked; intended,,high
+INT32-C,20,sqlite,src/mem5.c,262,FP,same i+newSize bounded block index used as aCtrl subscript; intended,,high
+INT32-C,21,sqlite,src/mem5.c,270,FP,iFullSz-nByte is debug-only fragmentation stat with iFullSz>=nByte by construction,,high
+INT31-C,22,sqlite,src/mem5.c,280,FP,"iFullSz is a positive power-of-two allocation size; memset under SQLITE_DEBUG only, no truncation risk",,high
+DCL13-C,23,sqlite,src/mem5.c,290,TP,memsys5FreeUnsafe pOld is only read for pointer arithmetic never written through and is internal static not bound by a methods typedef so const void* would compile,,med
+FLP03-C,24,sqlite,src/mem5.c,297,FP,"Line 297 is integer division by szAtom, no floating point",,high
+INT14-C,25,sqlite,src/mem5.c,297,FP,mem5 struct member access; bit/arith size-class math is intended,,high
+INT33-C,26,sqlite,src/mem5.c,297,FP,"mem5.szAtom always >=8, divisor never zero",,high
+INT33-C,27,sqlite,src/mem5.c,301,FP,"mem5.szAtom always >=8, modulo divisor never zero",,high
+INT14-C,28,sqlite,src/mem5.c,302,FP,iBlock is in-bounds block index; bit/arith mix is intended,,high
+INT13-C,29,sqlite,src/mem5.c,305,FP,iLogsize is masked from aCtrl (<=31) and <LOGMAX in this loop; intended shift,,high
+INT32-C,30,sqlite,src/mem5.c,305,FP,1<<iLogsize bounded by LOGMAX cannot overflow; intended buddy size,,high
+INT13-C,31,sqlite,src/mem5.c,320,FP,iLogsize size-class value ORed with CTRL_FREE is the intended aCtrl encoding,,high
+INT13-C,32,sqlite,src/mem5.c,323,FP,iBlock>>iLogsize uses a bounded in-pool index; intended buddy address math,,high
+INT34-C,33,sqlite,src/mem5.c,323,FP,iLogsize is u32 derived from CTRL_LOGSIZE mask (<=31) and <LOGMAX; shift amount always valid,,high
+INT13-C,34,sqlite,src/mem5.c,330,FP,iLogsize ORed with CTRL_FREE is the intended aCtrl byte encoding,,high
+INT13-C,35,sqlite,src/mem5.c,334,FP,same intended CTRL_FREE|iLogsize encoding,,high
+INT13-C,36,sqlite,src/mem5.c,338,FP,same intended CTRL_FREE|iLogsize encoding,,high
+INT14-C,37,sqlite,src/mem5.c,395,FP,nBytes power-of-two allocation size; any bit/arith mix is intended,,high
+INT31-C,38,sqlite,src/mem5.c,406,FP,nOld from memsys5Size is a positive allocation size; memcpy length safe by construction,,high
+DCL30-C,39,sqlite,src/mem5.c,409,FP,p is a void* holding the heap pointer from memsys5Malloc; returning it is not returning the address of a local,,high
+FLP30-C,40,sqlite,src/mem5.c,432,FP,iFullSz is declared int not float; FLP30 misparse of an integer loop counter,,high
+INT13-C,41,sqlite,src/mem5.c,449,FP,iLog bounded by sizeof(int)*8-1 guard; intended log2 shift,,high
+DCL03-C,42,sqlite,src/mem5.c,474,TP,assert((sizeof(Mem5Link)&(sizeof(Mem5Link)-1))==0) is a pure compile-time constant expression that should use static_assert,,med
+INT14-C,43,sqlite,src/mem5.c,474,FP,"Mem5Link is a typedef name in sizeof; bit/arith mix is a compile-time constant, no runtime variable",,high
+INT30-C,44,sqlite,src/mem5.c,474,FP,sizeof(Mem5Link) is >=8 so sizeof-1 cannot wrap; compile-time constant,,high
+INT13-C,45,sqlite,src/mem5.c,482,FP,nMinLog from memsys5Log is small and bounded; intended shift to compute szAtom,,high
+INT32-C,46,sqlite,src/mem5.c,482,FP,1<<nMinLog with bounded nMinLog cannot overflow; intended,,high
+INT34-C,47,sqlite,src/mem5.c,482,FP,nMinLog non-negative and bounded by memsys5Log return; shift amount valid,,high
+INT14-C,48,sqlite,src/mem5.c,484,FP,mem5 struct member; size-class arithmetic intended,,high
+FLP03-C,49,sqlite,src/mem5.c,487,FP,"Line 487 is integer division, no floating point",,high
+INT30-C,50,sqlite,src/mem5.c,487,FP,szAtom>=8 plus sizeof(u8)=1 cannot wrap; intended block-count math,,high
+INT33-C,51,sqlite,src/mem5.c,487,FP,"(szAtom+1) divisor always >=9, never zero",,high
+INT13-C,52,sqlite,src/mem5.c,497,FP,ii ranges LOGMAX..0; signed shift of bounded value is intended freelist seeding,,high
+INT32-C,53,sqlite,src/mem5.c,497,FP,1<<ii with ii<=LOGMAX(30) cannot overflow; intended,,high
+INT34-C,54,sqlite,src/mem5.c,497,FP,ii in 0..LOGMAX is a valid non-negative bounded shift amount,,high
+INT13-C,55,sqlite,src/mem5.c,499,FP,ii size-class value ORed with CTRL_FREE is intended aCtrl encoding,,high
+INT32-C,56,sqlite,src/mem5.c,501,FP,iOffset+=nAlloc only executes after the (iOffset+nAlloc)<=mem5.nBlock guard at line 498,,high
+API00-C,57,sqlite,src/mem5.c,528,FP,sqlite3Memsys5Dump checks if(zFilename==0||zFilename[0]==0) at line 533 before use,,high
+ERR00-C,58,sqlite,src/mem5.c,536,FP,fopen result is checked by if(out==0) at line 537,,high
+FIO03-C,59,sqlite,src/mem5.c,536,FP,SQLITE_TEST-only debug dump tool writing a diagnostic log; not a security-sensitive exclusive-create path,,high
+FIO06-C,60,sqlite,src/mem5.c,536,FP,SQLITE_TEST diagnostic dump; permission control via open() is not warranted here,,high
+WIN03-C,61,sqlite,src/mem5.c,536,FP,SQLITE_TEST diagnostic dump; Windows handle-inheritance hardening not relevant to this debug tool,,high
+PRE32-C,62,sqlite,src/mem5.c,538,FP,fprintf args are a multi-line string-literal continuation with no preprocessor # directive token,,high
+INT14-C,63,sqlite,src/mem5.c,545,FP,i loop index; bit/arith mix in size reporting is intended,,high
+INT13-C,64,sqlite,src/mem5.c,547,FP,szAtom<<i is intended size-class display math; bounded i,,high
+INT00-C,65,sqlite,src/mem5.c,549,FP,%llu matches u64 nAlloc/totalAlloc; intended portable 64-bit format,,high
+INT00-C,66,sqlite,src/mem5.c,550,FP,%llu matches u64 field; intended,,high
+INT00-C,67,sqlite,src/mem5.c,551,FP,%llu matches u64 field; intended,,high
+ERR33-C,68,sqlite,src/mem5.c,559,FP,fflush(stdout) in a SQLITE_TEST diagnostic dump; ignored return is benign in this debug tool,,high
+ERR00-C,69,sqlite,src/mem5.c,561,FP,fclose in SQLITE_TEST diagnostic dump; ignored return is benign here,,high
+ERR33-C,70,sqlite,src/mem5.c,561,FP,fclose return in SQLITE_TEST diagnostic dump; benign for a debug log file,,high

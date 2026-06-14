@@ -1,0 +1,74 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+ARR02-C,0,sqlite,ext/misc/vfsstat.c,76,FP,"azFile[] is a brace-initialized const string table; size fixed by initializer, CERT ARR02 advisory not a defect",,high
+ARR02-C,1,sqlite,ext/misc/vfsstat.c,102,FP,azStat[] brace-initialized const table sized by initializer,,high
+ARR02-C,2,sqlite,ext/misc/vfsstat.c,105,FP,azStatAny[] brace-initialized const table sized by initializer,,high
+API02-C,3,sqlite,ext/misc/vfsstat.c,156,FP,pResOut is fixed by sqlite3_io_methods xCheckReservedLock typedef; single-int out param not an array,,high
+CON43-C,4,sqlite,ext/misc/vfsstat.c,160,FP,vstatShmMap is a function not a variable; sqc misread the static fn decl as a shared volatile var,,high
+API02-C,5,sqlite,ext/misc/vfsstat.c,173,FP,zOut buffer size carried by adjacent nOut param and VFS contract; signature fixed by sqlite3_vfs typedef,,high
+API02-C,6,sqlite,ext/misc/vfsstat.c,175,FP,zErrMsg paired with nByte size arg and sqlite3_vfs xDlError typedef fixes signature,,high
+API02-C,7,sqlite,ext/misc/vfsstat.c,178,FP,zOut paired with nByte and sqlite3_vfs xRandomness typedef fixes signature,,high
+CON03-C,8,sqlite,ext/misc/vfsstat.c,184,FP,vstat_vfs single-threaded counter design documented as intentionally unsynchronized harmless,,high
+DCL13-C,9,sqlite,ext/misc/vfsstat.c,236,FP,pFile signature fixed by sqlite3_io_methods xClose typedef and cast to mutable VStatFile,,high
+DCL40-C,10,sqlite,ext/misc/vfsstat.c,250,FP,forward decl uses sqlite3_int64 vs definition sqlite_int64 which are compatible typedef aliases,,high
+DCL13-C,11,sqlite,ext/misc/vfsstat.c,251,FP,pFile fixed by sqlite3_io_methods xRead typedef cast to mutable VStatFile,,high
+ARR30-C,12,sqlite,ext/misc/vfsstat.c,260,FP,STATCNT index filetype<=8 stat<=6 yields max 62 < MXCNT 63 all compile-time constants,,high
+ARR30-C,13,sqlite,ext/misc/vfsstat.c,262,FP,same STATCNT bounded index with constant args,,high
+DCL40-C,14,sqlite,ext/misc/vfsstat.c,270,FP,sqlite3_int64 vs sqlite_int64 are compatible typedef aliases not incompatible,,high
+DCL13-C,15,sqlite,ext/misc/vfsstat.c,271,FP,pFile fixed by xWrite typedef cast to mutable VStatFile,,high
+ARR30-C,16,sqlite,ext/misc/vfsstat.c,280,FP,STATCNT bounded constant index,,high
+ARR30-C,17,sqlite,ext/misc/vfsstat.c,282,FP,STATCNT bounded constant index,,high
+DCL13-C,18,sqlite,ext/misc/vfsstat.c,290,FP,pFile fixed by xTruncate typedef,,high
+DCL40-C,19,sqlite,ext/misc/vfsstat.c,290,FP,sqlite_int64 vs sqlite3_int64 compatible aliases,,high
+DCL13-C,20,sqlite,ext/misc/vfsstat.c,300,FP,pFile fixed by xSync typedef,,high
+ARR30-C,21,sqlite,ext/misc/vfsstat.c,304,FP,STATCNT bounded constant index,,high
+DCL13-C,22,sqlite,ext/misc/vfsstat.c,311,FP,pFile fixed by xFileSize typedef,,high
+DCL40-C,23,sqlite,ext/misc/vfsstat.c,311,FP,sqlite_int64 vs sqlite3_int64 compatible aliases,,high
+DCL13-C,24,sqlite,ext/misc/vfsstat.c,321,FP,pFile fixed by xLock typedef,,high
+ARR30-C,25,sqlite,ext/misc/vfsstat.c,325,FP,STATCNT bounded constant index,,high
+DCL13-C,26,sqlite,ext/misc/vfsstat.c,332,FP,pFile fixed by xUnlock typedef,,high
+ARR30-C,27,sqlite,ext/misc/vfsstat.c,336,FP,STATCNT bounded constant index,,high
+DCL13-C,28,sqlite,ext/misc/vfsstat.c,343,FP,pFile fixed by xCheckReservedLock typedef,,high
+ARR30-C,29,sqlite,ext/misc/vfsstat.c,347,FP,STATCNT bounded constant index,,high
+DCL13-C,30,sqlite,ext/misc/vfsstat.c,354,FP,pFile fixed by xFileControl typedef and pArg may be written so not pure const anyway,,high
+DCL13-C,31,sqlite,ext/misc/vfsstat.c,367,FP,pFile fixed by xSectorSize typedef,,high
+DCL13-C,32,sqlite,ext/misc/vfsstat.c,377,FP,pFile fixed by xDeviceCharacteristics typedef,,high
+DCL13-C,33,sqlite,ext/misc/vfsstat.c,386,FP,pFile fixed by xShmMap typedef,,high
+DCL13-C,34,sqlite,ext/misc/vfsstat.c,397,FP,pFile fixed by xShmLock typedef,,high
+DCL13-C,35,sqlite,ext/misc/vfsstat.c,403,FP,pFile fixed by xShmBarrier typedef,,high
+DCL13-C,36,sqlite,ext/misc/vfsstat.c,409,FP,pFile fixed by xShmUnmap typedef,,high
+DCL13-C,37,sqlite,ext/misc/vfsstat.c,416,FP,pFile fixed by xFetch typedef,,high
+DCL13-C,38,sqlite,ext/misc/vfsstat.c,426,FP,pFile fixed by xUnfetch typedef,,high
+ARR30-C,39,sqlite,ext/misc/vfsstat.c,463,FP,STATCNT bounded constant index in vstatOpen,,high
+ARR30-C,40,sqlite,ext/misc/vfsstat.c,476,FP,STATCNT bounded constant index in vstatDelete,,high
+ARR30-C,41,sqlite,ext/misc/vfsstat.c,492,FP,STATCNT bounded constant index in vstatAccess,,high
+ARR30-C,42,sqlite,ext/misc/vfsstat.c,507,FP,STATCNT bounded constant index in vstatFullPathname,,high
+ARR30-C,43,sqlite,ext/misc/vfsstat.c,546,FP,STATCNT bounded constant index in vstatRandomness,,high
+ARR30-C,44,sqlite,ext/misc/vfsstat.c,555,FP,STATCNT bounded constant index in vstatSleep,,high
+ARR30-C,45,sqlite,ext/misc/vfsstat.c,563,FP,STATCNT bounded constant index in vstatCurrentTime,,high
+ARR30-C,46,sqlite,ext/misc/vfsstat.c,571,FP,STATCNT bounded constant index in vstatCurrentTimeInt64,,high
+DCL13-C,47,sqlite,ext/misc/vfsstat.c,601,FP,pAux fixed by sqlite3_module xConnect typedef and is opaque void*,,high
+DCL13-C,48,sqlite,ext/misc/vfsstat.c,604,FP,pzErr fixed by xConnect typedef; out-param for error message,,high
+EXP33-C,49,sqlite,ext/misc/vfsstat.c,616,FP,pNew assigned from sqlite3_malloc before any deref; null checked next line,,high
+MEM12-C,50,sqlite,ext/misc/vfsstat.c,617,FP,on NOMEM pNew is 0 nothing leaked; on success *ppVtab is owned by vtab lifecycle not leaked,,high
+MEM12-C,51,sqlite,ext/misc/vfsstat.c,620,FP,return path returns rc with allocation handed to caller via ppVtab not leaked,,high
+DCL13-C,52,sqlite,ext/misc/vfsstat.c,634,FP,p fixed by sqlite3_module xOpen typedef,,high
+EXP33-C,53,sqlite,ext/misc/vfsstat.c,636,FP,pCur assigned from sqlite3_malloc before deref and null-checked,,high
+MEM33-C,54,sqlite,ext/misc/vfsstat.c,639,FP,line 639 is pointer assignment *ppCursor=&pCur->base not a struct copy of flexible array,,high
+DCL13-C,55,sqlite,ext/misc/vfsstat.c,656,FP,cur fixed by sqlite3_module xClose typedef,,high
+DCL13-C,56,sqlite,ext/misc/vfsstat.c,666,FP,cur fixed by xNext typedef,,high
+EXP33-C,57,sqlite,ext/misc/vfsstat.c,683,FP,aVfsCnt is a static global zero-initialized at load not uninitialized,,high
+DCL13-C,58,sqlite,ext/misc/vfsstat.c,693,FP,cur fixed by xColumn typedef,,high
+DCL40-C,59,sqlite,ext/misc/vfsstat.c,693,FP,sqlite_int64 vs sqlite3_int64 compatible aliases in vstattabRowid,,high
+DCL13-C,60,sqlite,ext/misc/vfsstat.c,703,FP,cur fixed by xEof typedef,,high
+DCL13-C,61,sqlite,ext/misc/vfsstat.c,715,FP,argv fixed by xFilter typedef and is sqlite3_value** opaque,,high
+DCL13-C,62,sqlite,ext/misc/vfsstat.c,726,FP,tab fixed by sqlite3_module xBestIndex typedef,,high
+DCL13-C,63,sqlite,ext/misc/vfsstat.c,727,FP,pIdxInfo fixed by xBestIndex typedef and bestindex may write it,,high
+DCL13-C,64,sqlite,ext/misc/vfsstat.c,738,FP,tab fixed by xUpdate typedef,,high
+DCL13-C,65,sqlite,ext/misc/vfsstat.c,739,FP,argv fixed by xUpdate typedef,,high
+DCL13-C,66,sqlite,ext/misc/vfsstat.c,740,FP,pRowid fixed by xUpdate typedef; out-param,,high
+MEM30-C,67,sqlite,ext/misc/vfsstat.c,753,FP,line 753 writes a global array element aVfsCnt[iRowid]=x no stack pointer escapes,,high
+CON03-C,68,sqlite,ext/misc/vfsstat.c,757,FP,VfsStatModule is a const-style static module table not a mutable shared var,,high
+DCL13-C,69,sqlite,ext/misc/vfsstat.c,791,FP,pzErrMsg fixed by extension init/register signature; out-param for error text,,high
+API00-C,70,sqlite,ext/misc/vfsstat.c,806,FP,pApi guaranteed non-null by loader contract; SQLITE_EXTENSION_INIT2 internal invariant,,high
+DCL15-C,71,sqlite,ext/misc/vfsstat.c,806,FP,sqlite3_vfsstat_init is the extension entry point and requires external linkage,,high
+INT30-C,72,sqlite,ext/misc/vfsstat.c,815,FP,szOsFile is a small int VFS field summed into szOsFile int no realistic wrap,,high

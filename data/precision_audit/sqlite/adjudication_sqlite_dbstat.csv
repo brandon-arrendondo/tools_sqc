@@ -1,0 +1,99 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+PRE00-C,0,sqlite,src/dbstat.c,150,TP,get2byte(x) expands to (x)[0]<<8|(x)[1] which evaluates argument x twice - genuine PRE00 multi-evaluation macro,,high
+PRE12-C,1,sqlite,src/dbstat.c,150,TP,same get2byte macro evaluates param x twice - genuine PRE12 multi-eval defect even if args here are side-effect-free,,high
+DCL13-C,2,sqlite,src/dbstat.c,158,FP,statConnect signature fixed by sqlite3_module xCreate/xConnect function-pointer typedef - pAux cannot be const-qualified,,high
+STR34-C,3,sqlite,src/dbstat.c,173,FP,*pzErr assigned a char* from sqlite3_mprintf (pointer store) not a sign-extended char value - STR34 misread of char** assignment,,high
+DCL13-C,4,sqlite,src/dbstat.c,215,FP,statBestIndex signature fixed by sqlite3_module xBestIndex typedef - tab param cannot change qualification,,high
+DCL13-C,5,sqlite,src/dbstat.c,290,FP,statOpen signature fixed by sqlite3_module xOpen typedef - pVTab cannot be const,,high
+MEM30-C,6,sqlite,src/dbstat.c,311,FP,statClearCells frees p->aCell[i].aOvfl then frees aCell then sets aCell=0 - no read after free of aCell,,high
+ARR30-C,7,sqlite,src/dbstat.c,334,FP,aPage is StatPage[32] fixed array indexed by i bounded by ArraySize()==32 in statResetCsr loop - in bounds,,high
+ARR30-C,8,sqlite,src/dbstat.c,335,FP,same aPage[32] index i<ArraySize bound - sqlite3_free(pCsr->aPage[i].aPg) in-bounds,,high
+MEM30-C,9,sqlite,src/dbstat.c,335,FP,no UAF - loop reads aPage[i] members then frees aPg and nulls it each iteration over fixed 32-elem array,,high
+ARR30-C,10,sqlite,src/dbstat.c,336,FP,aPage[i].aPg=0 assignment in-bounds for i<32 - fixed array no overflow,,high
+INT32-C,11,sqlite,src/dbstat.c,381,FP,nUsable bounded by page size (max 65536); (nUsable-12)*32/255-23 cannot overflow int with page<=64KB,,high
+INT32-C,12,sqlite,src/dbstat.c,381,FP,(nUsable-12)*32 max ~2.1M well within int range - page size bounded,,high
+INT32-C,13,sqlite,src/dbstat.c,381,FP,nUsable-12 with nUsable<=65536 cannot overflow,,high
+INT32-C,14,sqlite,src/dbstat.c,382,FP,nUsable-35 bounded by page size cannot overflow int,,high
+INT32-C,15,sqlite,src/dbstat.c,384,FP,index-node branch same bounded page-size arithmetic - no overflow,,high
+INT32-C,16,sqlite,src/dbstat.c,384,FP,(nUsable-12)*32 bounded - no overflow,,high
+INT32-C,17,sqlite,src/dbstat.c,384,FP,nUsable-12 bounded - no overflow,,high
+INT32-C,18,sqlite,src/dbstat.c,385,FP,(nUsable-12)*64/255-23 with page<=64KB max ~16K - no overflow,,high
+INT32-C,19,sqlite,src/dbstat.c,385,FP,(nUsable-12)*64 max ~4.2M within int - no overflow,,high
+INT32-C,20,sqlite,src/dbstat.c,385,FP,nUsable-12 bounded - no overflow,,high
+INT10-C,21,sqlite,src/dbstat.c,388,FP,modulo operands nTotal/nMinLocal derived from bounded page math; not negative in practice and nLocal<0 checked at caller line 467,,med
+INT32-C,22,sqlite,src/dbstat.c,388,FP,nMinLocal + bounded modulo result - both small page-derived values - no overflow,,high
+INT32-C,23,sqlite,src/dbstat.c,388,FP,nTotal-nMinLocal small page-derived values - no overflow,,high
+INT32-C,24,sqlite,src/dbstat.c,388,FP,nUsable-4 bounded by page size - no overflow,,high
+INT33-C,25,sqlite,src/dbstat.c,388,FP,"nUsable-4 cannot be zero - nUsable=szPage-reserve, szPage>=512 (min page), reserve bounded so divisor positive",,med
+ARR36-C,26,sqlite,src/dbstat.c,389,FP,ARR36 misfire - nMinLocal and nUsable are ints not pointers; '>' is scalar comparison at line 389,,high
+ARR37-C,27,sqlite,src/dbstat.c,406,FP,aHdr is u8* into page buffer; aHdr[0] is valid pointer indexing not an array-decl confusion - ARR37 stylistic misfire,,high
+INT32-C,28,sqlite,src/dbstat.c,416,FP,nHdr+=100 only when iPgno==1; nHdr starts 8 or 12 - no overflow,,high
+ARR37-C,29,sqlite,src/dbstat.c,417,FP,aHdr[3] valid index into page header buffer - ARR37 stylistic misfire,,high
+ARR37-C,30,sqlite,src/dbstat.c,421,FP,aHdr[5] valid page-header index - ARR37 stylistic misfire,,high
+INT32-C,31,sqlite,src/dbstat.c,421,FP,get2byte result minus small ints - bounded page values no overflow,,high
+INT32-C,32,sqlite,src/dbstat.c,421,FP,get2byte(&aHdr[5]) max 65535 minus nHdr - no overflow,,high
+INT32-C,33,sqlite,src/dbstat.c,421,FP,2*p->nCell with nCell max 65535 = 131070 within int - no overflow,,high
+ARR37-C,34,sqlite,src/dbstat.c,422,FP,aHdr[7] valid page-header byte index - ARR37 stylistic misfire,,high
+INT32-C,35,sqlite,src/dbstat.c,422,FP,nUnused += single byte aHdr[7] (0-255) - no overflow,,high
+ARR37-C,36,sqlite,src/dbstat.c,423,FP,aHdr[1] valid page-header index - ARR37 stylistic misfire,,high
+INT32-C,37,sqlite,src/dbstat.c,427,FP,nUnused += get2byte (0-65535) accumulated over freeblock chain bounded by page - no realistic overflow,,high
+ARR37-C,38,sqlite,src/dbstat.c,433,FP,aHdr[8] valid page-header index - ARR37 stylistic misfire,,high
+INT32-C,39,sqlite,src/dbstat.c,440,FP,szPage(max 65536) - reserve(0-255) - no overflow,,high
+INT30-C,40,sqlite,src/dbstat.c,442,FP,"(nCell+1)*sizeof(StatCell) - nCell max 65535, product ~2.4MB fits size_t - sqlite3_malloc64 takes u64 no wrap",,high
+INT32-C,41,sqlite,src/dbstat.c,442,FP,nCell+1 with nCell max 65535 - no int overflow,,high
+ARR38-C,42,sqlite,src/dbstat.c,444,FP,memset size (nCell+1)*sizeof(StatCell) matches the malloc64 just checked non-null - valid size,,high
+INT30-C,43,sqlite,src/dbstat.c,444,FP,same bounded (nCell+1)*sizeof product in size_t - no wrap,,high
+INT32-C,44,sqlite,src/dbstat.c,444,FP,memset size arithmetic bounded by nCell<=65535 - no overflow,,high
+INT32-C,45,sqlite,src/dbstat.c,444,FP,nCell+1 bounded - no overflow,,high
+INT32-C,46,sqlite,src/dbstat.c,449,FP,nHdr+i*2 with nHdr<=112 and i<nCell - index arithmetic in int range (see FN note on overread bound),,high
+INT32-C,47,sqlite,src/dbstat.c,449,FP,i*2 with i<nCell<=65535 max 131068 within int - no overflow,,high
+INT32-C,48,sqlite,src/dbstat.c,453,FP,iOff+=4 after iOff validated <szPage<=65536 at line 450 - no overflow,,high
+EXP33-C,49,sqlite,src/dbstat.c,460,FP,nPayload passed by-ref to getVarint32 macro which assigns it before use - not uninitialized (EXP33 misread of out-param macro),,high
+INT32-C,50,sqlite,src/dbstat.c,460,FP,iOff += varint length (1-5) after iOff bounded by szPage check - no overflow,,high
+INT32-C,51,sqlite,src/dbstat.c,463,FP,iOff += sqlite3GetVarint length (1-9) - bounded - no overflow,,high
+INT32-C,52,sqlite,src/dbstat.c,473,FP,(nPayload-nLocal)+nUsable-4-1 - nPayload guarded <=0x7fffffff at line 474; bounded math - no overflow,,high
+INT32-C,53,sqlite,src/dbstat.c,473,FP,same overflow-cell-count expression bounded by nPayload<=0x7fffffff guard - no overflow,,high
+INT32-C,54,sqlite,src/dbstat.c,473,FP,(nPayload-nLocal)+nUsable bounded by 0x7fffffff payload guard - no overflow,,high
+INT32-C,55,sqlite,src/dbstat.c,473,FP,nUsable-4 bounded - no overflow,,high
+INT33-C,56,sqlite,src/dbstat.c,473,FP,"nUsable-4 divisor positive - nUsable=szPage-reserve, szPage>=512 min page size guarantees nonzero",,med
+INT32-C,57,sqlite,src/dbstat.c,477,FP,nOvfl-1 where nOvfl>=1 since nPayload>nLocal entered this branch - no overflow no underflow,,high
+INT30-C,58,sqlite,src/dbstat.c,479,FP,sizeof(u32)*nOvfl - nOvfl bounded by payload/(nUsable-4); sqlite3_malloc64 u64 arg no wrap,,high
+INT32-C,59,sqlite,src/dbstat.c,481,FP,iOff+nLocal validated by iOff+nLocal+4>nUsable guard at line 474 before use - no overflow,,high
+INT32-C,60,sqlite,src/dbstat.c,484,FP,j-1 with j>=1 in loop - no underflow,,high
+EXP34-C,61,sqlite,src/dbstat.c,491,FP,pPg initialized to 0 line 485 then sqlite3PagerGet sets it; on rc!=OK returns before use - not null at line 491 deref,,high
+EXP34-C,62,sqlite,src/dbstat.c,492,FP,pPg non-null when reaching sqlite3PagerUnref (rc==OK path) - not null deref,,high
+MSC07-C,63,sqlite,src/dbstat.c,501,FP,statPageIsCorrupt label has 3 statements (flags=0;statClearCells;return) - return is reachable not dead - MSC07 misfire,,high
+EXP34-C,64,sqlite,src/dbstat.c,557,FP,pDbPage set by sqlite3PagerGet under rc==SQLITE_OK guard before sqlite3PagerGetData at 557 - not null,,high
+INT31-C,65,sqlite,src/dbstat.c,558,FP,pgsz from sqlite3BtreeGetPageSize is positive page size (512-65536) - memcpy size benign conversion not INT31 defect,,high
+EXP34-C,66,sqlite,src/dbstat.c,559,FP,pDbPage non-null inside rc==OK block before sqlite3PagerUnref - not null,,high
+EXP33-C,67,sqlite,src/dbstat.c,613,FP,pCell assigned &p->aCell[p->iCell] before inner while loop uses it - assigned on entry not uninitialized,,high
+INT32-C,68,sqlite,src/dbstat.c,620,FP,pCsr->nPage++ page counter bounded by db page count (<2^31) - no realistic overflow,,high
+INT32-C,69,sqlite,src/dbstat.c,623,FP,nUsable-4 bounded by page size - no overflow,,high
+INT32-C,70,sqlite,src/dbstat.c,626,FP,nUsable-4-pCell->nLastOvfl all bounded page-derived ints - no overflow,,high
+INT32-C,71,sqlite,src/dbstat.c,626,FP,nUsable-4 bounded - no overflow,,high
+INT32-C,72,sqlite,src/dbstat.c,629,FP,pCell->iOvfl++ bounded by nOvfl (overflow chain length) - no overflow,,high
+INT32-C,73,sqlite,src/dbstat.c,641,FP,p->iCell++ bounded by p->nCell<=65535 - no overflow,,high
+INT32-C,74,sqlite,src/dbstat.c,646,FP,pCsr->iPage-- bounded; aggregate exit checks iPage<0 - no INT_MIN underflow,,high
+INT32-C,75,sqlite,src/dbstat.c,654,FP,pCsr->iPage++ checked >=ArraySize(32) immediately after at line 655 - bounded no overflow,,high
+ARR37-C,76,sqlite,src/dbstat.c,662,FP,p is StatPage*; p[1] is valid next-array-element access (aPage[iPage+1]) bounds-checked at 655 - ARR37 misfire,,high
+ARR37-C,77,sqlite,src/dbstat.c,664,FP,p[1] valid aPage element access bounds-checked - ARR37 misfire,,high
+ARR37-C,78,sqlite,src/dbstat.c,666,FP,p[1] valid array element - ARR37 misfire,,high
+ARR37-C,79,sqlite,src/dbstat.c,666,FP,p[1] valid array element - ARR37 misfire,,high
+INT32-C,80,sqlite,src/dbstat.c,667,FP,pCsr->nPage++ bounded by page count - no overflow,,high
+ARR37-C,81,sqlite,src/dbstat.c,668,FP,p[1] valid array element - ARR37 misfire,,high
+ARR37-C,82,sqlite,src/dbstat.c,670,FP,p[1] valid array element - ARR37 misfire,,high
+INT32-C,83,sqlite,src/dbstat.c,673,FP,p->iCell++ bounded by nCell - no overflow,,high
+INT32-C,84,sqlite,src/dbstat.c,703,FP,pCsr->nCell += p->nCell both bounded by page-cell counts - no realistic overflow,,high
+INT32-C,85,sqlite,src/dbstat.c,712,FP,nPayload += nLocal accumulated over cells - bounded payload - i64/int benign no realistic overflow,,high
+DCL13-C,86,sqlite,src/dbstat.c,726,FP,statEof signature fixed by sqlite3_module xEof typedef - pCursor cannot be const,,high
+DCL13-C,87,sqlite,src/dbstat.c,738,FP,statFilter signature fixed by sqlite3_module xFilter typedef - argv cannot be const-requalified,,high
+MEM31-C,88,sqlite,src/dbstat.c,775,FP,pSql freed via sqlite3_str_finish at line 789 which frees the str object - no leak,,high
+MEM31-C,89,sqlite,src/dbstat.c,791,FP,the only early returns before str_finish are the NOMEM return at 791 (after finish) - str_finish always reached; sqlite3_str_finish frees internal buffer,,high
+MEM31-C,90,sqlite,src/dbstat.c,801,FP,pSql converted to zSql via sqlite3_str_finish (frees the sqlite3_str) then zSql freed at 794 - no leak,,high
+DCL13-C,91,sqlite,src/dbstat.c,805,FP,statColumn signature fixed by sqlite3_module xColumn typedef - pCursor cannot be const,,high
+EXP34-C,92,sqlite,src/dbstat.c,854,FP,db from sqlite3_context_db_handle is guaranteed non-null by API contract - internal invariant not trust boundary,,high
+DCL13-C,93,sqlite,src/dbstat.c,865,FP,statRowid signature fixed by sqlite3_module xRowid typedef - pCursor cannot be const,,high
+API00-C,94,sqlite,src/dbstat.c,874,FP,sqlite3DbstatRegister db param passed to sqlite3_create_module which is the registration API; internal caller invariant guarantees non-null,,high
+CON03-C,95,sqlite,src/dbstat.c,875,FP,dbstat_module is static const-data sqlite3_module struct passed by-ptr to create_module; CON03 misfire on local static not shared mutable state,,high
+DCL13-C,96,sqlite,src/dbstat.c,905,FP,sqlite3DbstatRegister db is passed to create_module which mutates db's module list - not const-eligible,,high
+ARR30-C,FN,sqlite,src/dbstat.c,449,FN,"statDecodePage cell-pointer read get2byte(&aData[nHdr+i*2]) for i<p->nCell; nCell=get2byte(&aHdr[3]) (<=65535) is NEVER bounded vs page size before the loop, only post-read iOff checked at 450. aPg buffer = pgsz+256 (DBSTAT_PAGE_PADDING_BYTES); crafted corrupt page (small pgsz, nCell huge) overreads far past buffer via SELECT*FROM dbstat on a malicious DB. sqc emitted only INT32 (FP) at 449, not the OOB read. LOW conf: dbstat is dbsqlfuzz-hardened + padding added deliberately, needs ASAN confirm; HEAD deferred",FN-hunt,low

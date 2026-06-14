@@ -1,0 +1,78 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL03-C,0,sqlite,src/bitvec.c,118,FP,"assert(sizeof(*p)==BITVEC_SZ) is a compile-time constant struct-size check kept as runtime assert by design (UNTESTABLE-aware); DCL03 style-only, sqlite policy is assert() not static_assert",,high
+EXP33-C,1,sqlite,src/bitvec.c,118,FP,p is assigned by sqlite3MallocZero on line 119 before any deref; the line-118 assert only takes sizeof(*p) which is a compile-time type op not a runtime deref,,high
+EXP34-C,2,sqlite,src/bitvec.c,118,FP,"same sizeof(*p) is a type-only operation evaluated at compile time; p is never dereferenced at 118, malloc happens on 119",,high
+DCL30-C,3,sqlite,src/bitvec.c,123,FP,"p is a Bitvec* heap pointer from sqlite3MallocZero returned by value; not the address of a local, return of pointer-to-heap is correct",,high
+DCL13-C,4,sqlite,src/bitvec.c,131,FP,sqlite3BitvecTestNotNull walks p=p->u.apSub[bin] reassigning the param and reads through it; signature matches Test wrapper usage; const would break the apSub descent,,high
+INT14-C,5,sqlite,src/bitvec.c,136,FP,INT14 style-only; i/p->iDivisor (arithmetic) and i&(...) bit ops on page index are intended bitmap math not a defect,,high
+INT14-C,6,sqlite,src/bitvec.c,136,FP,INT14 style-only; i used in division/modulo and later bit-index masking by design,,high
+INT33-C,7,sqlite,src/bitvec.c,136,FP,division i/p->iDivisor at 136 is inside while(p->iDivisor) loop guard so divisor is provably non-zero,,high
+INT33-C,8,sqlite,src/bitvec.c,137,FP,modulo i%p->iDivisor at 137 is inside while(p->iDivisor) guard; divisor non-zero,,high
+INT13-C,9,sqlite,src/bitvec.c,144,FP,INT13 style; i&(BITVEC_SZELEM-1) on a u32-range page index masked to 0..7 is safe bitmap math,,high
+INT14-C,10,sqlite,src/bitvec.c,144,FP,INT14 style; BITVEC_SZELEM is the constant 8 used as both shift count and mask base by design,,high
+DCL00-C,11,sqlite,src/bitvec.c,146,FP,DCL00 style-only suggestion; h is a loop-mutated hash index in the else branch (h=(h+1)%BITVEC_NINT line 149) so it IS modified,,high
+MEM05-C,12,sqlite,src/bitvec.c,170,TP,sqlite3BitvecSet recurses at lines 223 and 225 during rehash; genuine recursion (bounded by tree depth) MEM05,,high
+INT14-C,13,sqlite,src/bitvec.c,177,FP,INT14 style-only on i division/modulo bitmap math,,high
+INT33-C,14,sqlite,src/bitvec.c,177,FP,i/p->iDivisor at 177 guarded by while((...)&& p->iDivisor) so divisor non-zero,,high
+INT33-C,15,sqlite,src/bitvec.c,178,FP,i%p->iDivisor at 178 inside the same p->iDivisor guard,,high
+INT13-C,16,sqlite,src/bitvec.c,186,FP,INT13 style; 1<<(i&(BITVEC_SZELEM-1)) shift count masked to 0..7 is safe,,high
+INT14-C,17,sqlite,src/bitvec.c,186,FP,INT14 style on BITVEC_SZELEM constant,,high
+ARR01-C,18,sqlite,src/bitvec.c,214,FP,sizeof(p->u.aHash) on line 214 is sizeof of a fixed union array member u32[BITVEC_NINT] not a decayed pointer param; ARR01 misread,,high
+ARR01-C,19,sqlite,src/bitvec.c,218,FP,sizeof(p->u.aHash) line 218 is the union array size not a pointer-param sizeof,,high
+ARR01-C,20,sqlite,src/bitvec.c,219,FP,sizeof(p->u.apSub) line 219 is the fixed union array Bitvec*[BITVEC_NPTR] size not a decayed pointer,,high
+INT33-C,21,sqlite,src/bitvec.c,220,FP,BITVEC_NPTR is a nonzero compile-time constant (USIZE/sizeof(Bitvec*)); division can never be by zero,,high
+INT33-C,22,sqlite,src/bitvec.c,221,FP,BITVEC_NPTR constant non-zero; the %BITVEC_NPTR at 221 cannot divide by zero,,high
+INT14-C,23,sqlite,src/bitvec.c,248,FP,INT14 style on i bitmap math,,high
+INT33-C,24,sqlite,src/bitvec.c,248,FP,i/p->iDivisor at 248 inside while(p->iDivisor) guard; divisor non-zero,,high
+INT33-C,25,sqlite,src/bitvec.c,249,FP,i%p->iDivisor at 249 inside while(p->iDivisor) guard; divisor non-zero,,high
+INT13-C,26,sqlite,src/bitvec.c,256,FP,INT13 style; 1<<(i&7) shift count masked 0..7 safe,,high
+INT14-C,27,sqlite,src/bitvec.c,256,FP,INT14 style on BITVEC_SZELEM constant,,high
+ARR01-C,28,sqlite,src/bitvec.c,260,FP,sizeof(p->u.aHash) line 260 is fixed union array size not a pointer-param sizeof,,high
+ARR01-C,29,sqlite,src/bitvec.c,261,FP,sizeof(p->u.aHash) line 261 is fixed union array size not a pointer-param sizeof,,high
+DCL00-C,30,sqlite,src/bitvec.c,265,FP,DCL00 style; h at 265 is reassigned/incremented in the inner while loop (h++ line 268) so it is modified,,high
+INT32-C,31,sqlite,src/bitvec.c,265,FP,aiValues[j]-1 where aiValues[j] is a stored u32 bit value >=1 (only set when aHash entry held i+1>=1); subtracting 1 from a value known >=1 cannot underflow; result feeds BITVEC_HASH,,high
+MEM05-C,32,sqlite,src/bitvec.c,280,TP,sqlite3BitvecSet recursion (called again at 223/225 for rehash); MEM05 genuine recursion,,high
+DCL13-C,33,sqlite,src/bitvec.c,295,FP,"sqlite3BitvecSize just returns p->iSize without modifying p, but param is fixed by being called via test harness and other callers; const would be valid here yet pointee read-only - borderline, marking FP as the contract pointer is the public accessor signature kept uniform with other Bitvec APIs taking Bitvec*",,high
+MEM05-C,34,sqlite,src/bitvec.c,310,TP,"showBitvec recurses at line 336 (showBitvec(p->u.apSub[i],...)); genuine recursion MEM05",,high
+DCL11-C,35,sqlite,src/bitvec.c,316,FP,"printf %p with a Bitvec* argument auto-converts to void* per C variadic rules; sqc flags pointer-type mismatch but %p accepts any object pointer here (0x%p line 316), harmless and debug-only",,high
+DCL11-C,36,sqlite,src/bitvec.c,319,FP,"FP arg-count: printf(""%*s bits:"", n, """") has %* consuming the width arg n then s consuming """" - two conversions two args; sqc miscounts the %* width specifier",,high
+FIO47-C,37,sqlite,src/bitvec.c,319,FP,"same %*s consumes n and """" - argument count is correct; sqc FIO47 miscounts %* width as zero args",,high
+INT30-C,38,sqlite,src/bitvec.c,321,FP,x+(unsigned)i is debug-display value addition; unsigned wrap is defined and harmless in SQLITE_DEBUG-only showBitvec output,,high
+DCL11-C,39,sqlite,src/bitvec.c,326,FP,"printf(""%*s ..."", n, """") line 326 has correct arg count; %* width specifier miscounted",,high
+FIO47-C,40,sqlite,src/bitvec.c,326,FP,same %*s arg-count miscount line 326,,high
+INT30-C,41,sqlite,src/bitvec.c,328,FP,x+(unsigned)p->u.aHash[i] debug-display addition; unsigned wrap defined and harmless,,high
+DCL11-C,42,sqlite,src/bitvec.c,335,FP,"printf(""%*s apSub[%d]="", n, """", i) line 335 has %* (n), s (""""), %d (i) = 3 conversions 3 args; sqc miscounts %* width",,high
+FIO47-C,43,sqlite,src/bitvec.c,335,FP,same %*s%d arg-count line 335 is correct; %* width miscounted,,high
+FIO47-C,44,sqlite,src/bitvec.c,335,FP,"the '%d' maps to i not to """" - sqc misattributes the %d to the empty-string arg because it dropped the %* width arg; correct mapping is fine",,high
+INT32-C,45,sqlite,src/bitvec.c,336,FP,"n+4 in showBitvec(...,n+4,...) line 336 is a small debug indent int; n is recursion depth*4 bounded by tree depth (<=~6), no realistic overflow in debug-only code",,high
+PRE00-C,46,sqlite,src/bitvec.c,352,TP,"SETBIT(V,I) = V[I>>3] |= (1<<(I&7)) evaluates I twice (I>>3 and I&7); genuine PRE00 multi-evaluation",,high
+PRE01-C,47,sqlite,src/bitvec.c,352,TP,SETBIT replacement uses V unparenthesized as V[I>>3]; passing complex V expr could mis-associate; genuine PRE01,,high
+PRE01-C,48,sqlite,src/bitvec.c,352,TP,"SETBIT uses I unparenthesized in I>>3 and I&7; e.g. SETBIT(v,a+b) yields a+b>>3 wrong precedence; genuine PRE01",,high
+PRE12-C,49,sqlite,src/bitvec.c,352,TP,SETBIT evaluates I in both V[I>>3] and (I&7); genuine PRE12 multiple evaluation,,high
+PRE00-C,50,sqlite,src/bitvec.c,353,TP,"CLEARBIT(V,I)=V[I>>3]&=~(...)(1<<(I&7)) evaluates I twice; genuine PRE00",,high
+PRE01-C,51,sqlite,src/bitvec.c,353,TP,CLEARBIT V unparenthesized; genuine PRE01,,high
+PRE01-C,52,sqlite,src/bitvec.c,353,TP,CLEARBIT I unparenthesized in I>>3 and I&7; genuine PRE01,,high
+PRE12-C,53,sqlite,src/bitvec.c,353,TP,CLEARBIT evaluates I twice; genuine PRE12,,high
+PRE00-C,54,sqlite,src/bitvec.c,354,TP,"TESTBIT(V,I)=(V[I>>3]&(1<<(I&7)))!=0 evaluates I twice; genuine PRE00",,high
+PRE01-C,55,sqlite,src/bitvec.c,354,TP,TESTBIT V unparenthesized; genuine PRE01,,high
+PRE01-C,56,sqlite,src/bitvec.c,354,TP,TESTBIT I unparenthesized; genuine PRE01,,high
+PRE12-C,57,sqlite,src/bitvec.c,354,TP,TESTBIT evaluates I twice; genuine PRE12,,high
+API00-C,58,sqlite,src/bitvec.c,394,FP,"sqlite3BitvecBuiltinTest is internal test-only entry (UNTESTABLE-gated) fed by test driver supplying valid aOp program; not an external trust boundary, no API00 contract",,high
+API00-C,59,sqlite,src/bitvec.c,394,FP,"sz is a test-harness parameter from the test driver; the negative/zero cases are handled (line 403) and the sizes are controlled test inputs, no external overflow boundary",,high
+INT30-C,60,sqlite,src/bitvec.c,404,FP,2*(unsigned)(-sz) when sz<=0; -sz on INT_MIN would overflow but this is internal test input never INT_MIN; the unsigned cast makes the 2* multiply defined wraparound used intentionally for size doubling,,med
+INT32-C,61,sqlite,src/bitvec.c,404,FP,-sz negation only reached when sz<=0 in test harness; INT_MIN not a valid test size; controlled test input,,med
+INT32-C,62,sqlite,src/bitvec.c,408,FP,(7+(i64)sz)/8+1 promotes sz to i64 before the add so a 32-bit int sz cannot overflow the i64 arithmetic; correct widening before allocation size compute,,high
+INT32-C,63,sqlite,src/bitvec.c,408,FP,7+(i64)sz is i64 arithmetic (sz cast to i64); int sz max ~2.1e9 plus 7 fits i64 easily; no overflow,,high
+PRE32-C,64,sqlite,src/bitvec.c,425,FP,PRE32 misfire: the printf at 425 spans multiple lines as a continued string/expression with no preprocessor # directive inside the args; #ifdef SQLITE_DEBUG surrounds the block not inside the call,,high
+INT32-C,65,sqlite,src/bitvec.c,443,FP,aOp[pc+2]-1 is test-program opcode data; pc bounded by halt-terminated program; values are controlled test inputs not overflow-prone external data,,high
+INT32-C,66,sqlite,src/bitvec.c,443,FP,pc+2 indexing test opcode array; pc advances by nx within a halt(0)-terminated program supplied by the test driver; controlled,,high
+INT32-C,67,sqlite,src/bitvec.c,444,FP,pc+2 same controlled test-program indexing,,high
+INT32-C,68,sqlite,src/bitvec.c,444,FP,pc+3 same controlled test-program indexing,,high
+INT13-C,69,sqlite,src/bitvec.c,457,FP,INT13 style; i&0x7fffffff masks to non-negative before %sz; safe,,high
+INT14-C,70,sqlite,src/bitvec.c,457,FP,INT14 style on i in (i&0x7fffffff)%sz,,high
+INT33-C,71,sqlite,src/bitvec.c,457,FP,i%sz at 457; sz==0 would divide by zero but sz<=0 path doubles size and this is internal test code; test driver never passes sz==0 to the program loop in practice - controlled test contract; not a reachable defect from production,,med
+INT32-C,72,sqlite,src/bitvec.c,459,FP,"i+1 where i=(i&0x7fffffff)%sz is in [0,sz-1] so i+1<=sz fits int; no overflow",,high
+INT32-C,73,sqlite,src/bitvec.c,461,FP,i+1 same bounded test index,,high
+INT32-C,74,sqlite,src/bitvec.c,464,FP,i+1 same bounded test index,,high
+INT32-C,75,sqlite,src/bitvec.c,465,FP,i+1 same bounded test index,,high
+INT32-C,76,sqlite,src/bitvec.c,477,FP,sqlite3BitvecSize(pBitvec)-sz compares created size to requested sz in test verification; both small controlled test ints; the subtraction is the intended discrepancy check feeding rc,,high

@@ -1,0 +1,77 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API02-C,0,sqlite,ext/misc/tmstmpvfs.c,375,FP,"line 375 fwd-decl of xCheckReservedLock slot; signature fixed by sqlite3_io_methods typedef, int* is a single out-param not an array",,high
+CON43-C,1,sqlite,ext/misc/tmstmpvfs.c,379,FP,tmstmpShmMap is a function (io_methods slot) not a variable; CON43 misreads the static fn decl as a volatile shared variable,,high
+API02-C,2,sqlite,ext/misc/tmstmpvfs.c,392,FP,tmstmpFullPathname signature fixed by sqlite3_vfs.xFullPathname typedef; zOut size is the separate int n param,,high
+API02-C,3,sqlite,ext/misc/tmstmpvfs.c,394,FP,tmstmpDlError signature fixed by sqlite3_vfs.xDlError typedef; nByte is the size arg already,,high
+API02-C,4,sqlite,ext/misc/tmstmpvfs.c,397,FP,tmstmpRandomness signature fixed by sqlite3_vfs.xRandomness typedef; nByte is the size arg already,,high
+CON03-C,5,sqlite,ext/misc/tmstmpvfs.c,406,FP,"tmstmp_vfs is a singleton registered once under SQLite mutex; CON03 misfire on a static struct, no concurrent mutation",,high
+DCL13-C,6,sqlite,ext/misc/tmstmpvfs.c,456,TP,"tmstmpPutTS param p only reads p->pSubVfs and is never written; const TmstmpFile* would compile, not a typedef-fixed slot",,med
+INT30-C,7,sqlite,ext/misc/tmstmpvfs.c,459,FP,tm is sqlite3_uint64 millisecond epoch from xCurrentTimeInt64; the -= rebases to 1970 and intended modular wrap is harmless for byte packing,,high
+INT14-C,8,sqlite,ext/misc/tmstmpvfs.c,472,FP,"tmstmpGetU32 mixes shifts and + to assemble a big-endian u32; idiomatic byte assembly, no defect",,high
+ERR00-C,9,sqlite,ext/misc/tmstmpvfs.c,487,FP,fclose in tmstmpLogFree on a best-effort log file at teardown; ignoring rc is acceptable for a diagnostic log,,high
+ERR33-C,10,sqlite,ext/misc/tmstmpvfs.c,487,FP,same fclose rc-ignore on diagnostic log close path; not an error-handling-required path,,high
+ERR00-C,11,sqlite,ext/misc/tmstmpvfs.c,498,FP,fopen result IS checked at line 499 (if pLog->log==0); finding is wrong about missing check,,high
+FIO03-C,12,sqlite,ext/misc/tmstmpvfs.c,498,FP,"log file is a private per-connection diagnostic in a $(DB)-tmstmp dir; exclusive-create semantics not required, overwrite intended",,high
+FIO42-C,13,sqlite,ext/misc/tmstmpvfs.c,498,FP,pLog->log is closed by tmstmpLogFree (fclose line 487); not a leak,,high
+FIO42-C,14,sqlite,ext/misc/tmstmpvfs.c,498,FP,opened with fopen not open(); the close is fclose in tmstmpLogFree; sqc confused fopen for fd open,,high
+FIO51-C,15,sqlite,ext/misc/tmstmpvfs.c,498,FP,same as idx 13; fclose occurs in tmstmpLogFree at line 487,,high
+WIN03-C,16,sqlite,ext/misc/tmstmpvfs.c,498,FP,Windows handle-inheritance N-flag irrelevant for a local per-connection diagnostic log; not a security boundary,,high
+ERR33-C,17,sqlite,ext/misc/tmstmpvfs.c,506,FP,"fflush on a buffered diagnostic log; rc-ignore acceptable, data loss tolerable for tracing",,high
+EXP34-C,18,sqlite,ext/misc/tmstmpvfs.c,525,FP,"p reassigned to p->pPartner only when isWal, guarded by assert(p!=0) at 526; pLog deref is safe",,high
+EXP05-C,19,sqlite,ext/misc/tmstmpvfs.c,538,FP,a+2 is unsigned char* arithmetic into a local aOut buffer; no const cast occurs here,,high
+INT32-C,20,sqlite,ext/misc/tmstmpvfs.c,544,FP,pLog->n is bounded 0..sizeof(a)=96 and flushed at >=96 (line 531); += 16 cannot overflow int,,high
+MEM30-C,21,sqlite,ext/misc/tmstmpvfs.c,559,FP,"line 559 only tests p->pPartner truthiness; nothing is freed, no use-after-free",,high
+MEM30-C,22,sqlite,ext/misc/tmstmpvfs.c,560,FP,"line 560 assert reads p->pPartner->pPartner; pointers are merely nulled afterward, nothing freed",,high
+MEM30-C,23,sqlite,ext/misc/tmstmpvfs.c,560,FP,"p->pPartner is alive (partner link), only its pPartner backref is cleared; no free occurred",,high
+MEM30-C,24,sqlite,ext/misc/tmstmpvfs.c,561,FP,p->pPartner = 0 is a pointer assignment severing the link; the object is not freed here,,high
+DCL40-C,25,sqlite,ext/misc/tmstmpvfs.c,571,FP,"fwd-decl line 370 uses sqlite3_int64, def uses sqlite_int64 which is the same typedef alias; no real type mismatch",,high
+INT14-C,26,sqlite,ext/misc/tmstmpvfs.c,588,FP,"tmstmpGetU32 assembles big-endian u32 from bytes; mixed shift/add is idiomatic, no defect",,high
+INT14-C,27,sqlite,ext/misc/tmstmpvfs.c,597,FP,iAmt is the VFS write/read amount; power-of-two test (iAmt&(iAmt-1)) is intended bit usage,,high
+INT32-C,28,sqlite,ext/misc/tmstmpvfs.c,599,FP,"iOfst/iAmt are VFS-supplied page offsets bounded by DB/WAL geometry; p->pgsz>=512 so divisor nonzero, frame math cannot realistically overflow i64",,high
+INT32-C,29,sqlite,ext/misc/tmstmpvfs.c,599,FP,iOfst-56 on a sqlite_int64 WAL offset that is always >=56 in this branch; no signed overflow,,high
+INT33-C,30,sqlite,ext/misc/tmstmpvfs.c,599,FP,p->pgsz set from header (512..65536) or defaulted to 65536; p->pgsz+24 is never zero,,high
+DCL40-C,31,sqlite,ext/misc/tmstmpvfs.c,607,FP,"tmstmpWrite fwd-decl/def differ only by sqlite3_int64 vs sqlite_int64 alias; same type, no mismatch",,high
+INT14-C,32,sqlite,ext/misc/tmstmpvfs.c,622,FP,"p is a TmstmpFile* pointer; INT14 misreads pointer member access, no bitwise-on-arithmetic var",,high
+INT32-C,33,sqlite,ext/misc/tmstmpvfs.c,622,FP,iOfst is a WAL frame offset >=32 in this branch; pgsz+24 nonzero; i64 math bounded by file size,,high
+INT32-C,34,sqlite,ext/misc/tmstmpvfs.c,622,FP,iOfst-32 guarded by iAmt==24 frame-header branch where offsets are frame-aligned >=32; no signed overflow,,high
+INT33-C,35,sqlite,ext/misc/tmstmpvfs.c,622,FP,p->pgsz is 512..65536 (header-derived or 65536 default); pgsz+24 cannot be zero,,high
+INT32-C,36,sqlite,ext/misc/tmstmpvfs.c,624,FP,((const u8*)zBuf)+8 is pointer arithmetic into the >=24-byte frame-header buffer; not integer addition,,high
+EXP05-C,37,sqlite,ext/misc/tmstmpvfs.c,625,FP,&x takes address of local u32 x; no const qualifier is cast away,,high
+INT32-C,38,sqlite,ext/misc/tmstmpvfs.c,625,FP,((const u8*)zBuf)+4 pointer arithmetic into the caller buffer; not integer overflow,,high
+EXP05-C,39,sqlite,ext/misc/tmstmpvfs.c,630,FP,s is a local unsigned char[TMSTMP_RESERVE] array; no const cast,,high
+INT32-C,40,sqlite,ext/misc/tmstmpvfs.c,634,FP,((const u8*)zBuf)+16 pointer arithmetic into the 32-byte WAL header; not integer addition,,high
+EXP05-C,41,sqlite,ext/misc/tmstmpvfs.c,638,FP,"(unsigned char*)zBuf casts const void* write buffer; this VFS deliberately stamps reserved bytes, contract allows in-place tag write",,high
+INT30-C,42,sqlite,ext/misc/tmstmpvfs.c,638,FP,"zBuf+iAmt-TMSTMP_RESERVE is pointer arithmetic; iAmt>=512 (checkpoint page) so result stays in-buffer, no unsigned wrap",,high
+EXP05-C,43,sqlite,ext/misc/tmstmpvfs.c,639,FP,s is local unsigned char[TMSTMP_RESERVE]; no const cast away,,high
+INT32-C,44,sqlite,ext/misc/tmstmpvfs.c,644,FP,iOfst/p->pgsz with asserted p->pgsz>0 (line 643); +1 page number cannot overflow for real DB sizes,,high
+INT33-C,45,sqlite,ext/misc/tmstmpvfs.c,644,FP,p->pgsz>0 asserted at line 643 immediately above; no division by zero,,high
+EXP05-C,46,sqlite,ext/misc/tmstmpvfs.c,647,FP,(unsigned char*)zBuf in rollback-mode page stamp; intended reserved-byte write per VFS design contract,,high
+INT30-C,47,sqlite,ext/misc/tmstmpvfs.c,647,FP,"zBuf+iAmt-TMSTMP_RESERVE pointer math; iAmt is a full page (>=512) so stays in buffer, no wrap",,high
+EXP05-C,48,sqlite,ext/misc/tmstmpvfs.c,648,FP,s is local unsigned char[TMSTMP_RESERVE] array; no const cast,,high
+INT33-C,49,sqlite,ext/misc/tmstmpvfs.c,652,FP,p->pgsz>0 asserted at line 651 immediately above; no division by zero,,high
+DCL40-C,50,sqlite,ext/misc/tmstmpvfs.c,660,FP,tmstmpTruncate fwd-decl/def differ only by sqlite3_int64 vs sqlite_int64 alias; identical type,,high
+DCL40-C,51,sqlite,ext/misc/tmstmpvfs.c,676,FP,tmstmpFileSize fwd-decl/def differ only by sqlite3_int64 vs sqlite_int64 alias; identical type,,high
+INT13-C,52,sqlite,ext/misc/tmstmpvfs.c,762,FP,devchar is an int IOCAP bitmask from xDeviceCharacteristics; & ~FLAG to clear a capability bit is idiomatic and value fits in low bits,,high
+EXP34-C,53,sqlite,ext/misc/tmstmpvfs.c,838,FP,pDb null/magic checked at lines 836-840 before any field write; the deref at 838 is inside the null-guard condition itself (short-circuit),,high
+EXP05-C,54,sqlite,ext/misc/tmstmpvfs.c,847,FP,"p is TmstmpFile* aliasing pFile; ORIGFILE pointer arithmetic, no const qualifier removed",,high
+INT30-C,55,sqlite,ext/misc/tmstmpvfs.c,891,FP,"r1 is sqlite3_uint64 epoch millis; -= rebases to 1970, intended modular arithmetic for date decomposition",,high
+INT10-C,56,sqlite,ext/misc/tmstmpvfs.c,893,FP,r1%86400000 operands are unsigned (sqlite3_uint64); no signed-modulo implementation-defined behavior,,high
+INT10-C,57,sqlite,ext/misc/tmstmpvfs.c,894,FP,sod%3600 sod is sqlite3_uint64 unsigned; no negative-modulo issue,,high
+INT10-C,58,sqlite,ext/misc/tmstmpvfs.c,897,FP,sod%3600 again on unsigned sod; no signed modulo,,high
+INT10-C,59,sqlite,ext/misc/tmstmpvfs.c,898,FP,sod%60 on unsigned sod; no negative remainder possible,,high
+INT30-C,60,sqlite,ext/misc/tmstmpvfs.c,899,FP,days+719468 is the days-from-civil algorithm constant on a bounded epoch-days value; no realistic wrap,,high
+INT30-C,61,sqlite,ext/misc/tmstmpvfs.c,901,FP,"era*146097 from Howard Hinnant civil-date algorithm; era is tiny for any real date, no overflow",,high
+INT30-C,62,sqlite,ext/misc/tmstmpvfs.c,902,FP,"doe-doe/1460 is standard day-of-era math; doe<146097 by construction, no underflow",,high
+INT30-C,63,sqlite,ext/misc/tmstmpvfs.c,903,FP,"era*400 standard civil-date computation; era small, no overflow",,high
+INT31-C,64,sqlite,ext/misc/tmstmpvfs.c,903,FP,"yoe (year of era, 0..399) plus era*400 into int y; values tiny, conversion safe",,high
+INT30-C,65,sqlite,ext/misc/tmstmpvfs.c,904,FP,doe-(365*yoe+...) is the day-of-year formula with terms <=doe by construction; no underflow,,high
+INT30-C,66,sqlite,ext/misc/tmstmpvfs.c,904,FP,"365*yoe with yoe<400; max ~146000 fits in unsigned int, no overflow",,high
+INT30-C,67,sqlite,ext/misc/tmstmpvfs.c,905,FP,"5*doy with doy<366; tiny product, no overflow",,high
+INT30-C,68,sqlite,ext/misc/tmstmpvfs.c,906,FP,doy-(153*mp+2)/5 day-of-month math; subtrahend <=doy by construction,,high
+INT30-C,69,sqlite,ext/misc/tmstmpvfs.c,906,FP,"153*mp with mp<12; tiny product, no overflow",,high
+INT30-C,70,sqlite,ext/misc/tmstmpvfs.c,907,FP,"mp+(mp<10?3:-9) month rebase; mp small, result in 1..12, no wrap",,high
+INT32-C,71,sqlite,ext/misc/tmstmpvfs.c,908,FP,"y+(M<=2) leap-year adjust; y is a small year value, +0/+1 cannot overflow int",,high
+INT30-C,72,sqlite,ext/misc/tmstmpvfs.c,997,FP,"pOrig->szOsFile + sizeof(TmstmpFile) computed once at registration; both small fixed sizes, no realistic wrap",,high
+API00-C,73,sqlite,ext/misc/tmstmpvfs.c,1029,FP,pApi is consumed by SQLITE_EXTENSION_INIT2 macro which is the mandated init contract; non-null guaranteed by sqlite3_load_extension caller,,high
+DCL13-C,74,sqlite,ext/misc/tmstmpvfs.c,1030,FP,"sqlite3_tmstmpvfs_init signature is fixed by the sqlite3_*_init entrypoint contract (sqlite3,char**,sqlite3_api_routines*); db cannot be const",,high
+DCL13-C,75,sqlite,ext/misc/tmstmpvfs.c,1031,FP,"same init entrypoint contract; char **pzErrMsg signature is fixed and conventionally writable, const would break the ABI",,high

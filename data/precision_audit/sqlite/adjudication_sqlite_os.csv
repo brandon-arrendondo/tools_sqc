@@ -1,0 +1,78 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+PRE00-C,0,sqlite,src/os.c,66,TP,DO_OS_MALLOC_TEST(x) expands x twice (!x and sqlite3JournalIsInMemory(x)) so a side-effecting arg multi-evaluates,,high
+PRE01-C,1,sqlite,src/os.c,66,TP,"param x unparenthesized in replacement text (!x, fn(x)); technically a PRE01 hygiene issue",,med
+PRE02-C,2,sqlite,src/os.c,66,FP,replacement list is an if-statement block not an expression so wrapping it in parens is meaningless,,high
+PRE10-C,3,sqlite,src/os.c,66,TP,macro is if(...){...} multistatement not wrapped in do-while; misuse in braceless if would break,,high
+PRE12-C,4,sqlite,src/os.c,66,TP,same as idx0 PRE12 multi-evaluation of x,,high
+API00-C,5,sqlite,src/os.c,82,FP,"sqlite3OsClose internal contract; pId always a valid sqlite3_file* from caller, not a trust boundary",,high
+EXP34-C,6,sqlite,src/os.c,83,FP,pId->pMethods access guarded by SQLite internal invariant; pId never null from core callers,,high
+API00-C,7,sqlite,src/os.c,88,FP,API00 internal contract; id is a live file handle supplied by core,,high
+API00-C,8,sqlite,src/os.c,88,FP,pBuf supplied by core caller; internal contract not trust boundary,,high
+EXP34-C,9,sqlite,src/os.c,90,FP,id->pMethods deref guarded by internal invariant,,high
+API00-C,10,sqlite,src/os.c,92,FP,API00 internal contract on id,,high
+EXP34-C,11,sqlite,src/os.c,94,FP,id->pMethods deref internal invariant,,high
+API00-C,12,sqlite,src/os.c,96,FP,API00 internal contract on id,,high
+API00-C,13,sqlite,src/os.c,99,FP,API00 internal contract on id,,high
+EXP34-C,14,sqlite,src/os.c,101,FP,id->pMethods deref internal invariant,,high
+API00-C,15,sqlite,src/os.c,103,FP,API00 internal contract on id,,high
+API00-C,16,sqlite,src/os.c,103,FP,pSize out-param from core caller; internal contract,,high
+EXP34-C,17,sqlite,src/os.c,105,FP,id->pMethods deref internal invariant,,high
+API00-C,18,sqlite,src/os.c,107,FP,API00 internal contract on id,,high
+API00-C,19,sqlite,src/os.c,112,FP,API00 internal contract on id,,high
+API00-C,20,sqlite,src/os.c,116,FP,API00 internal contract on id,,high
+API00-C,21,sqlite,src/os.c,116,FP,pResOut out-param internal contract,,high
+API00-C,22,sqlite,src/os.c,129,FP,"pArg passthrough to xFileControl; id null-checked at line 130, pArg opaque op-specific",,high
+API00-C,23,sqlite,src/os.c,157,FP,API00 internal contract on id,,high
+API00-C,24,sqlite,src/os.c,161,FP,API00 internal contract on id,,high
+WIN04-C,25,sqlite,src/os.c,162,FP,WIN04 EncodePointer is inapplicable to portable VFS method-pointer table; misfire,,high
+DCL31-C,26,sqlite,src/os.c,163,FP,xSectorSize is a local function-pointer variable declared on line 162 then called; not an undeclared function,,high
+EXP34-C,27,sqlite,src/os.c,166,FP,id->pMethods deref internal invariant,,high
+API00-C,28,sqlite,src/os.c,170,FP,API00 internal contract on id,,high
+API00-C,29,sqlite,src/os.c,173,FP,API00 internal contract on id,,high
+API00-C,30,sqlite,src/os.c,176,FP,API00 internal contract on id,,high
+API00-C,31,sqlite,src/os.c,179,FP,API00 internal contract on id,,high
+API00-C,32,sqlite,src/os.c,179,FP,pp out-param internal contract,,high
+API00-C,33,sqlite,src/os.c,193,FP,API00 internal contract on id,,high
+API00-C,34,sqlite,src/os.c,193,FP,pp out-param internal contract,,high
+API00-C,35,sqlite,src/os.c,197,FP,API00 internal contract on id,,high
+API00-C,36,sqlite,src/os.c,197,FP,p passthrough internal contract,,high
+API00-C,37,sqlite,src/os.c,202,FP,pp out-param in no-op stub assigned *pp=0; internal contract,,high
+DCL13-C,38,sqlite,src/os.c,202,FP,no-op stub signature fixed to match the real sqlite3OsFetch prototype declared in sqliteInt.h,,high
+DCL13-C,39,sqlite,src/os.c,206,FP,no-op stub signature fixed to match real sqlite3OsUnfetch prototype,,high
+DCL13-C,40,sqlite,src/os.c,206,FP,no-op stub signature fixed to match real sqlite3OsUnfetch prototype,,high
+API00-C,41,sqlite,src/os.c,215,FP,API00 internal contract on pVfs,,high
+API00-C,42,sqlite,src/os.c,215,FP,zPath validated by assert at line 228; internal contract,,high
+API00-C,43,sqlite,src/os.c,215,FP,pFile internal contract; written by xOpen,,high
+API00-C,44,sqlite,src/os.c,215,FP,pFlagsOut out-param internal contract,,high
+EXP34-C,45,sqlite,src/os.c,229,FP,pVfs->xOpen deref internal invariant; pVfs always valid registered VFS,,high
+EXP34-C,46,sqlite,src/os.c,230,FP,pFile->pMethods read inside assert; guarded,,high
+API00-C,47,sqlite,src/os.c,233,FP,API00 internal contract on pVfs,,high
+API00-C,48,sqlite,src/os.c,233,FP,zPath internal contract,,high
+API00-C,49,sqlite,src/os.c,238,FP,API00 internal contract on pVfs,,high
+API00-C,50,sqlite,src/os.c,238,FP,zPath internal contract,,high
+API00-C,51,sqlite,src/os.c,238,FP,pResOut out-param internal contract,,high
+API00-C,52,sqlite,src/os.c,247,FP,API00 internal contract on pVfs,,high
+API00-C,53,sqlite,src/os.c,247,FP,zPath internal contract,,high
+API00-C,54,sqlite,src/os.c,247,FP,zPathOut out-param internal contract,,high
+EXP34-C,55,sqlite,src/os.c,254,FP,zPathOut[0]=0 write; caller guarantees buffer of nPathOut bytes; internal contract,,high
+API00-C,56,sqlite,src/os.c,258,FP,API00 internal contract on pVfs,,high
+API00-C,57,sqlite,src/os.c,258,FP,zPath validated by assert at line 259,,high
+API00-C,58,sqlite,src/os.c,263,FP,API00 internal contract on pVfs,,high
+API00-C,59,sqlite,src/os.c,263,FP,zBufOut out-param internal contract,,high
+API00-C,60,sqlite,src/os.c,269,FP,API00 internal contract on pVfs,,high
+API00-C,61,sqlite,src/os.c,273,FP,API00 internal contract on pVfs,,high
+INT31-C,62,sqlite,src/os.c,275,FP,nByte bounded; memset of caller-sized buffer; signed-to-size_t intended and nByte non-negative by contract,,high
+INT31-C,63,sqlite,src/os.c,277,FP,nByte clamped to sizeof(unsigned int) by ALWAYS guard at line 276 before memcpy,,high
+API00-C,64,sqlite,src/os.c,287,FP,API00 internal contract on pVfs,,high
+API00-C,65,sqlite,src/os.c,290,FP,pTimeOut out-param internal contract,,high
+API00-C,66,sqlite,src/os.c,308,FP,API00 internal contract on pVfs,,high
+API00-C,67,sqlite,src/os.c,308,FP,ppFile out-param internal contract,,high
+DCL30-C,68,sqlite,src/os.c,324,FP,pFile is heap from sqlite3MallocZero (line 317) not automatic storage; *ppFile=pFile is correct ownership transfer,,high
+API00-C,69,sqlite,src/os.c,333,FP,API00 internal contract; pFile asserted non-null at line 334,,high
+MSC04-C,70,sqlite,src/os.c,345,TP,genuine indirect recursion cycle sqlite3OsInit->sqlite3_os_init->sqlite3_vfs_register->sqlite3_initialize->sqlite3OsInit,,high
+CON03-C,71,sqlite,src/os.c,355,FP,SQLITE_WSD is a write-set-distinguish storage-class macro not a shared variable needing volatile/atomic,,high
+DCL00-C,72,sqlite,src/os.c,355,FP,vfsList is modified (reassigned in vfsUnlink line 391); the SQLITE_WSD token is a macro not a const-candidate var,,high
+MSC04-C,73,sqlite,src/os.c,362,TP,genuine indirect recursion cycle sqlite3_vfs_find->sqlite3_initialize->sqlite3MemdbInit->sqlite3_vfs_find,,med
+DCL30-C,74,sqlite,src/os.c,380,FP,pVfs points into the registered VFS linked list (global/heap nodes) not a local; returns a list-node pointer not automatic storage,,high
+DCL13-C,75,sqlite,src/os.c,386,TP,vfsUnlink only reads pVfs and pVfs->pNext never writes through it; static helper not typedef-fixed so const-qualifiable,,med
+MSC04-C,76,sqlite,src/os.c,408,TP,genuine indirect recursion cycle sqlite3_vfs_register->sqlite3_initialize->sqlite3OsInit->sqlite3_os_init->sqlite3_vfs_register,,high

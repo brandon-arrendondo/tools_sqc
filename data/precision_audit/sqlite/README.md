@@ -1669,3 +1669,66 @@ sqlite3expert ARR38 overflow). Notably this is the **first sqc-CAUGHT semantic T
 core, consistent with the bifurcation. It also re-underscores the integrity gate's value: the bug was one
 reviewer keystroke away from being filed as a false positive. Remaining ~91 in-scope files are core/glue filler
 (resolve.c, treeview.c, mem2.c, dbstat.c, vacuum.c, …).
+
+## File-at-a-time — Batch 13 (2026-06-14, run #40, MEDIUM-effort core + ext/misc filler, 18 files)
+
+A broad medium-effort sweep of the next 18 smaller files (≤104 findings each): core (treeview, mem2, dbstat,
+resolve, pcache, pcache1, memdb, os, bitvec, mem5) + ext/misc shims/decoders (vfslog, sha1, unionvtab, vtablog,
+vfstrace, vfsstat, tmstmpvfs, closure). Hardened-core framework, one reviewer per file, with elevated FN
+attention on the untrusted-input-adjacent ones (sha1, unionvtab, closure, memdb, dbstat, bitvec). Integrity gate
+kept. **1542 findings -> 59 TP / 1483 FP, 1 sqc-CAUGHT semantic TP + 2 FNs.**
+
+| File | findings | TP | FP | FN | File | findings | TP | FP | FN |
+|------|---:|--:|--:|--:|------|---:|--:|--:|--:|
+| vfslog.c | 104 | 2 | 102 | 0 | bitvec.c | 77 | 15 | 62 | 0 |
+| treeview.c | 98 | 9 | 89 | 0 | os.c | 77 | 8 | 69 | 0 |
+| mem2.c | 98 | 2 | 96 | 0 | closure.c | 76 | 3 | 73 | 0 |
+| dbstat.c | 97 | 2 | 95 | **1** | tmstmpvfs.c | 76 | 1 | 75 | 0 |
+| resolve.c | 93 | 3 | 90 | 0 | vfsstat.c | 73 | 0 | 73 | 0 |
+| sha1.c | 93 | 1 | 92 | 0 | mem5.c | 71 | 2 | 69 | 0 |
+| unionvtab.c | 88 | 8 | 80 | 0 | pcache.c | 86 | 2 | 84 | 0 |
+| vtablog.c | 87 | 0 | 87 | 0 | pcache1.c | 82 | 0 | 82 | 0 |
+| vfstrace.c | 86 | 1 | 85 | **1** | memdb.c | 80 | 0 | 80 | 0 |
+
+The 59 TP are the usual declaration/macro/recursion classes (bitvec's `SETBIT`/`CLEARBIT`/`TESTBIT` multi-eval
+macros + sub-bitmap recursion drive its 15; treeview's deeply mutual AST-printer recursion drives 9; the
+`get2byte`/`get4byte` macros, VFS-helper DCL13, and `sqlite3_initialize`/`vfs_register` recursion cycles
+account for most of the rest) plus a factual `ERR07/ERR34` on unionvtab's `atoi("maxopen")`. Several files
+that touch untrusted bytes were verified clean: **sha1.c** (the 64-byte block-fill / 64-bit length math is the
+standard, exactly-bounded SHA1 design), **memdb.c** (sqlite3_deserialize backing VFS — every xRead/xWrite/
+xTruncate offset+size is i64 and guarded against `p->sz`/`mxMemdbSize`), **unionvtab.c** (64-bit malloc sizing,
+guarded bound math).
+
+### One sqc-caught semantic TP (real bug #16) + two FNs
+
+**closure.c:568 — sqc CAUGHT a use-after-free (MEM30-C, idx 34/35, confirmed bug #16).** In `closureConnect`,
+when `sqlite3_declare_vtab` fails (line 565) the code runs `closureFree(pNew)` (566) then falls through
+unconditionally to `*ppVtab = &pNew->base;` (568) — forming/storing a pointer derived from the just-freed
+`pNew`. Benign in practice (the vtab contract has the caller ignore `*ppVtab` when xConnect returns an error),
+but a genuine MEM30 defect — the assignment should be guarded by `rc==SQLITE_OK`. sqc flagged it correctly. (Its
+sibling MSC04 recursion finding on `closureAvlDestroy` is also a TP.)
+
+**FN — dbstat.c:449 (ARR30-C, low confidence): corrupt-DB heap overread.** `statDecodePage` reads the
+cell-pointer array `get2byte(&aData[nHdr+i*2])` for `i < p->nCell`, where `p->nCell = get2byte(&aHdr[3])`
+(≤65535) is **never bounded against the page size before the loop** — only the post-read `iOff` value is
+checked (line 450). The page buffer is `pgsz + DBSTAT_PAGE_PADDING_BYTES(256)`, so a crafted corrupt page on a
+small-page DB with a large `nCell` reads far past the buffer via `SELECT * FROM dbstat`. sqc emitted only an
+`INT32-C` (arithmetic-overflow, FP) at line 449, not the OOB read — a recall gap. Recorded **low confidence**:
+dbstat is heavily dbsqlfuzz-tested and the 256-byte padding was added deliberately (commit d091245d31), so
+either there is a mitigation/bound not obvious at this commit or it needs runtime ASAN confirmation; HEAD-status
+deferred.
+
+**FN — vfstrace.c:897 (EXP34-C, low confidence): OOM null-deref.** `vfstraceOpen` does `pNew =
+sqlite3_malloc(sizeof(*pNew))` (895) then `memset(pNew, 0, …)` (897) with no NULL check → null-pointer write on
+OOM. sqc fired `EXP33` (uninitialized — wrong rule, FP) at the line, missing the actual null-deref. Low
+confidence: vfstrace is a developer-registered diagnostic VFS shim, OOM-only, not on a production data path.
+
+Two benign items were noted but **not** recorded (non-memory-safety logic typos): `vtablog.c:96`
+`vtablog_trim_whitespace` reads `z[strlen(z)]` (off-by-one, in-bounds, just fails to trim), and
+`unionvtab.c:758` `union_isidchar` uses `c<'Z'` (drops 'Z' from identifier chars).
+
+sqlite coverage **129 -> 147/220 (66.8%)** — two-thirds audited; **17 FNs** (+2); confirmed real bugs now **16**
+(the closure UAF). Consistent with the bifurcation: the hardened/VFS-shim code is all decl/macro/recursion, and
+the genuine memory-safety items (closure UAF, dbstat corrupt-page overread, the elevated-attention decoders)
+again concentrate in the less-fuzzed / structure-decoding paths. Remaining ~73 in-scope files are smaller
+core/glue + ext/misc filler.

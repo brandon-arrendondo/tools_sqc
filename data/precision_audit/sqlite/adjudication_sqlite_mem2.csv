@@ -1,0 +1,99 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+EXP33-C,0,sqlite,src/mem2.c,135,FP,mem is a file-scope static struct (line 82) so mem.nAlloc[] is zero-initialized at startup not uninitialized,,high
+EXP05-C,1,sqlite,src/mem2.c,158,FP,deliberate back-up cast of opaque allocation pointer to MemBlockHdr in debug allocator design not a const-violation defect,,high
+EXP05-C,2,sqlite,src/mem2.c,162,FP,pAllocation is the app-visible buffer cast to int* for guard read intended design not a defect,,high
+EXP05-C,3,sqlite,src/mem2.c,163,FP,pAllocation cast to u8* for byte-guard scan intended design not a defect,,high
+ARR37-C,4,sqlite,src/mem2.c,164,FP,pInt[nReserve/sizeof(int)] indexes the REARGUARD word inside the deliberately over-allocated block bounded by ROUND8(iSize),,high
+INT32-C,5,sqlite,src/mem2.c,169,FP,nReserve=ROUND8(iSize) is small positive size never INT_MIN loop decrements toward iSize,,high
+DCL30-C,6,sqlite,src/mem2.c,170,FP,p is computed by p=(MemBlockHdr*)pAllocation;p-- pointing into the caller heap block not automatic storage,,high
+EXP34-C,7,sqlite,src/mem2.c,182,FP,pHdr is result of sqlite3MemsysGetHeader which never returns null (asserts guards) guarded by if(!p)return earlier,,high
+DCL03-C,8,sqlite,src/mem2.c,190,TP,assert((sizeof(struct MemBlockHdr)&7)==0) is a pure compile-time constant expression suited to static_assert,,med
+INT07-C,9,sqlite,src/mem2.c,204,FP,mem here is the static struct member access not a char numeric operation analyzer misparse,,high
+INT14-C,10,sqlite,src/mem2.c,222,FP,nByte is ROUND8 size param; bitwise|1 then arithmetic in deliberate PRNG seed readability note not a defect,,high
+INT32-C,11,sqlite,src/mem2.c,224,FP,x is unsigned int; -(int)(x&1) yields 0 or -1 mask in intended Galois LFSR PRNG no real overflow,,high
+INT14-C,12,sqlite,src/mem2.c,225,FP,y is unsigned PRNG state; bitwise/arithmetic mix is intentional LCG no defect,,high
+INT32-C,13,sqlite,src/mem2.c,225,FP,y is unsigned int LCG y*1103515245+12345 wraps by design (modular RNG) not signed overflow,,high
+INT32-C,14,sqlite,src/mem2.c,225,FP,y is unsigned int multiply wraps modularly by design,,high
+INT32-C,15,sqlite,src/mem2.c,229,FP,nByte>=4 guarded loop nByte-=4 stays non-negative bounded allocation size not INT_MIN,,high
+INT32-C,16,sqlite,src/mem2.c,231,FP,nByte-- in while(nByte-->0) bounded by 0 cannot reach INT_MIN,,high
+INT32-C,17,sqlite,src/mem2.c,232,FP,same unsigned mask term -(int)(x&1) in PRNG yields 0/-1 no overflow,,high
+INT32-C,18,sqlite,src/mem2.c,233,FP,unsigned LCG addition wraps by design,,high
+INT32-C,19,sqlite,src/mem2.c,233,FP,unsigned LCG multiplication wraps by design,,high
+STR34-C,20,sqlite,src/mem2.c,235,FP,*(pBuf++)=r&0xff writes low byte deliberate fill not a sign-extension read defect,,high
+EXP33-C,21,sqlite,src/mem2.c,250,FP,mem is file-scope static struct zero-initialized at load not uninitialized,,high
+ARR39-C,22,sqlite,src/mem2.c,253,FP,totalSize is a plain int byte count sum (sizeof/backtrace/title) not pointer arithmetic no double scaling,,high
+ARR39-C,23,sqlite,src/mem2.c,253,FP,same scalar size summation misread as scaled pointer arithmetic,,high
+EXP33-C,24,sqlite,src/mem2.c,253,FP,pHdr only dereferenced inside if(p) after being assigned &pBt[mem.nBacktrace] not uninitialized,,high
+EXP34-C,25,sqlite,src/mem2.c,253,FP,pHdr derived from successful malloc(p) inside if(p) branch non-null,,high
+INT30-C,26,sqlite,src/mem2.c,253,FP,totalSize math fits int; sizes are small bounded debug allocations no realistic wrap,,high
+INT30-C,27,sqlite,src/mem2.c,253,FP,same bounded size addition no wrap,,high
+INT07-C,28,sqlite,src/mem2.c,254,FP,mem static struct member misparsed as char numeric op,,high
+INT07-C,29,sqlite,src/mem2.c,254,FP,mem static struct member misparsed as char numeric op,,high
+INT30-C,30,sqlite,src/mem2.c,254,FP,mem.nBacktrace bounded 0..20 (set in sqlite3MemdebugBacktrace) times sizeof(void*) no wrap,,high
+ERR00-C,31,sqlite,src/mem2.c,255,FP,return checked: if(p){...} guards all use of malloc result,,high
+ERR33-C,32,sqlite,src/mem2.c,255,FP,malloc result p checked via if(p) before any dereference,,high
+INT31-C,33,sqlite,src/mem2.c,255,FP,totalSize positive bounded size conversion to size_t safe (small debug allocations),,high
+MEM02-C,34,sqlite,src/mem2.c,255,FP,C does not require/recommend casting malloc result; assignment to void* p is correct C,,high
+MEM04-C,35,sqlite,src/mem2.c,255,FP,nByte/totalSize is a real requested allocation size not a zero-guard concern in debug allocator,,high
+MEM06-C,36,sqlite,src/mem2.c,255,FP,debug allocator general malloc not handling sensitive secrets; mlock advisory not a defect,,high
+MEM31-C,37,sqlite,src/mem2.c,255,FP,z aliases p which is returned (as pInt) and tracked in mem linked list not leaked,,high
+EXP33-C,38,sqlite,src/mem2.c,274,FP,aAddr filled by backtrace() before memcpy reads it; backtrace populates the array,,high
+INT07-C,39,sqlite,src/mem2.c,274,FP,mem static struct member misparsed as char numeric op,,high
+INT32-C,40,sqlite,src/mem2.c,274,FP,backtrace() returns small positive frame count minus 1 not signed overflow,,high
+ARR38-C,41,sqlite,src/mem2.c,275,FP,memcpy size pHdr->nBacktrace*sizeof(void*) bounded by nBacktrace<=mem.nBacktrace<=20 into aAddr[40],,high
+INT30-C,42,sqlite,src/mem2.c,275,FP,pHdr->nBacktrace bounded small (<=20) times sizeof(void*) no wrap,,high
+INT32-C,43,sqlite,src/mem2.c,275,FP,same bounded backtrace count no overflow,,high
+INT32-C,44,sqlite,src/mem2.c,278,FP,pHdr->nBacktrace>=1 here (set from backtrace()-1 with +1 frame) -1 safe small value,,high
+ARR37-C,45,sqlite,src/mem2.c,289,FP,pInt[nReserve/sizeof(int)] writes REARGUARD within deliberately over-allocated block,,high
+INT31-C,46,sqlite,src/mem2.c,291,FP,nReserve=ROUND8(nByte) positive bounded size to size_t in memset safe,,high
+INT32-C,47,sqlite,src/mem2.c,291,FP,((char*)pInt)+nByte is pointer offset within allocated block not signed int overflow,,high
+INT32-C,48,sqlite,src/mem2.c,291,FP,nReserve-nByte is the rounding pad (0..7) computed from ROUND8 always non-negative small,,high
+MEM31-C,49,sqlite,src/mem2.c,295,FP,z aliases p returned to caller and linked into mem list not a leak,,high
+EXP33-C,50,sqlite,src/mem2.c,306,FP,mem file-scope static zero-initialized not uninitialized,,high
+EXP34-C,51,sqlite,src/mem2.c,309,FP,pHdr from sqlite3MemsysGetHeader (non-null asserts guards) inside if(p &&...) guard,,high
+ARR39-C,52,sqlite,src/mem2.c,328,FP,randomFill size arg is scalar byte sum not pointer arithmetic no double scaling,,high
+ARR39-C,53,sqlite,src/mem2.c,328,FP,same scalar size summation misread,,high
+INT30-C,54,sqlite,src/mem2.c,328,FP,"size fields (nBacktraceSlots small, iSize bounded) sum fits int no realistic wrap",,high
+INT30-C,55,sqlite,src/mem2.c,328,FP,same bounded summation no wrap,,high
+INT30-C,56,sqlite,src/mem2.c,328,FP,nBacktraceSlots<=20 times sizeof(void*) no wrap,,high
+MEM03-C,57,sqlite,src/mem2.c,330,FP,randomFill already overwrites freed block with random bytes before free; debug allocator design,,high
+EXP33-C,58,sqlite,src/mem2.c,346,FP,mem file-scope static zero-initialized not uninitialized,,high
+INT14-C,59,sqlite,src/mem2.c,347,FP,nByte readability note in PRNG bitwise|1 then arithmetic intentional not a defect,,high
+EXP34-C,60,sqlite,src/mem2.c,351,FP,pOldHdr from sqlite3MemsysGetHeader non-null (asserts guards) before any deref,,high
+INT32-C,61,sqlite,src/mem2.c,351,FP,"memcpy size is min(nByte,iSize) both bounded sizes ternary not overflow",,high
+INT32-C,62,sqlite,src/mem2.c,353,FP,nByte-iSize computed only inside if(nByte>iSize) so non-negative,,high
+DCL30-C,63,sqlite,src/mem2.c,357,FP,pNew is sqlite3MemMalloc heap result not automatic storage,,high
+MSC04-C,64,sqlite,src/mem2.c,364,TP,sqlite3MemSetDefault calls sqlite3_config which (main.c:508) can call sqlite3MemSetDefault genuine indirect recursion edge,,med
+EXP34-C,65,sqlite,src/mem2.c,385,FP,pHdr from sqlite3MemsysGetHeader non-null inside if(p &&...) guard,,high
+EXP34-C,66,sqlite,src/mem2.c,404,FP,pHdr from sqlite3MemsysGetHeader non-null inside if(p &&...) guard,,high
+EXP34-C,67,sqlite,src/mem2.c,426,FP,pHdr from sqlite3MemsysGetHeader non-null inside if(p &&...) guard,,high
+API00-C,68,sqlite,src/mem2.c,439,FP,depth is clamped to 0..20 (lines 440-441) before any arithmetic internal debug API not a trust boundary,,high
+INT14-C,69,sqlite,src/mem2.c,442,FP,depth=(depth+1)&0xfe rounding to even is intentional after clamp readability note not a defect,,high
+API00-C,70,sqlite,src/mem2.c,446,FP,xBacktrace just stored into mem.xBacktrace; internal config API caller invariant not a trust boundary,,high
+API00-C,71,sqlite,src/mem2.c,453,FP,zTitle passed to sqlite3Strlen30 which handles input; internal debug API not a trust boundary,,high
+STR34-C,72,sqlite,src/mem2.c,454,FP,zTitle handled by sqlite3Strlen30/memcpy as bytes no signed-char numeric promotion defect,,high
+EXP33-C,73,sqlite,src/mem2.c,455,FP,mem file-scope static zero-initialized not uninitialized,,high
+INT30-C,74,sqlite,src/mem2.c,456,FP,sizeof(mem.zTitle)-1 is constant 99 (array size 100) never underflows,,high
+EXP05-C,75,sqlite,src/mem2.c,457,FP,n is unsigned int local clamped; no const pointer qualification being cast away here misfire,,high
+ARR30-C,76,sqlite,src/mem2.c,458,FP,n clamped to <sizeof(mem.zTitle)=100 by line 456 so mem.zTitle[n]=0 is in bounds,,high
+EXP33-C,77,sqlite,src/mem2.c,465,FP,mem file-scope static zero-initialized not uninitialized,,high
+FLP30-C,78,sqlite,src/mem2.c,465,FP,pHdr is a MemBlockHdr* loop pointer (list traversal) not a floating-point loop counter analyzer misparse,,high
+INT32-C,79,sqlite,src/mem2.c,468,FP,pHdr->nBacktrace small non-negative backtrace count -1 in xBacktrace call safe,,high
+API00-C,80,sqlite,src/mem2.c,476,FP,zFilename passed to fopen; internal debug-only dump API not a trust boundary,,high
+ERR00-C,81,sqlite,src/mem2.c,481,FP,fopen return checked: if(out==0){...return;} immediately after,,high
+FIO03-C,82,sqlite,src/mem2.c,481,FP,debug memory dump log file not a security-sensitive exclusive-creation concern,,high
+FIO06-C,83,sqlite,src/mem2.c,481,FP,debug dump log file permissions not a security concern for this diagnostic-only path,,high
+WIN03-C,84,sqlite,src/mem2.c,481,FP,Windows handle inheritance irrelevant for debug-only memory dump log,,high
+PRE32-C,85,sqlite,src/mem2.c,483,FP,fprintf args are a multi-line string literal continuation no # preprocessor directive token analyzer misfire,,high
+EXP33-C,86,sqlite,src/mem2.c,487,FP,mem file-scope static zero-initialized not uninitialized,,high
+FLP30-C,87,sqlite,src/mem2.c,487,FP,pHdr is MemBlockHdr* list-traversal pointer not a floating-point loop counter misparse,,high
+INT30-C,88,sqlite,src/mem2.c,489,FP,nBacktraceSlots<=20 times sizeof(void*) no wrap,,high
+INT00-C,89,sqlite,src/mem2.c,490,FP,%lld matches i64 iSize correctly portable format not a data-model violation in practice,,high
+PRE32-C,90,sqlite,src/mem2.c,490,FP,fprintf args span multiple lines no # preprocessor directive token analyzer misfire,,high
+ERR33-C,91,sqlite,src/mem2.c,493,FP,fflush before backtrace_symbols_fd best-effort in debug dump; error not actionable here,,high
+PRE32-C,92,sqlite,src/mem2.c,503,FP,fprintf multi-line args no preprocessor directive token misfire,,high
+PRE32-C,93,sqlite,src/mem2.c,508,FP,fprintf multi-line args no preprocessor directive token misfire,,high
+ERR00-C,94,sqlite,src/mem2.c,512,FP,fclose return ignored in debug-only dump path; not error-handling-critical diagnostic code,,high
+ERR33-C,95,sqlite,src/mem2.c,512,FP,fclose return ignored in debug-only dump; diagnostic path acceptable,,high
+EXP33-C,96,sqlite,src/mem2.c,522,FP,mem file-scope static struct zero-initialized not uninitialized,,high
+INT32-C,97,sqlite,src/mem2.c,522,FP,nTotal sums bounded nAlloc[] counters of debug allocations no realistic int overflow,,high
