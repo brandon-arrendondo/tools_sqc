@@ -12,10 +12,17 @@ real-world recall results.
 
 ## Headline result
 
-**22 / 22 false-negative bugs are real and ALL persist in mainline** — none were
-fixed in the 133 commits since the pin. 13 high-severity, 9 medium/low. These are
-the bugs sqc *missed* (the recall gap, tasks 172–174) and are the strongest
-upstream-PR set because they are independently confirmed and still live.
+**22 / 22 false-negative bugs initially re-confirmed real and present in mainline.**
+A subsequent per-defect deep-dive (drafting PRs, `upstream_prs/`) revised two:
+- `lib/options.c:263` (`tls_opts_set` "double-free") is a **false finding** —
+  `mosquitto_FREE` nulls the pointer, so no double-free exists; PR #2683 fully
+  fixed the original leak. **Not a bug.**
+- `src/websockets.c:380` underflow is **real but not attacker-reachable**
+  (libwebsockets rejects non-`/` URIs before the callback) — defensive-only.
+
+Net **upstream-actionable: 9 file-a-PR defects + 1 defensive guard** (see
+`upstream_prs/00-INDEX.md`). The rest are the recall gap (tasks 172–174); they
+are bugs sqc *missed*, not sqc TPs.
 
 ## Tier 1 — high-severity, high-confidence (PR-ready), 13
 
