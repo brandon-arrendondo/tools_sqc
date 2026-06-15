@@ -66,3 +66,32 @@ strdup-leak cascade is one coherent PR.)
   nulls `auth_method`, then it's passed to `log__printf("%s", auth_method)` →
   NULL-to-`%s` UB; README confirms present in mainline). Most other TPs are
   DCL13-C const-correctness / EXP20-C idioms, not PR material.
+
+## Issue-tracker prior-art check (eclipse-mosquitto/mosquitto, 2026-06-15)
+
+Searched the upstream tracker ("memory leak" 52, "double free" 7, "leak" in
+title 33; read candidate bodies) to see which Tier-1 defects are already known.
+**Result: ~7 of the 11 distinct Tier-1 defects appear genuinely unreported; 3–4
+fall in known-leaky areas but our specific defect looks distinct.**
+
+| Tier-1 defect | Prior art | Assessment |
+|---------------|-----------|-----------|
+| `handle_auth.c:63/64` MQTT5 auth_method/data leak | none | **UNREPORTED** — file clean PR (high impact: leak per AUTH packet) |
+| `srv_mosq.c` ares reply leak | none | **UNREPORTED** |
+| `http_client.c:59/62` http_request leak | none | **UNREPORTED** |
+| `handle_connect.c:945` BIO_new NULL deref | none (it's a crash, not a leak; #237 unrelated) | **UNREPORTED** |
+| `websockets.c:380` size_t underflow → OOB read | none | **UNREPORTED** (security-relevant) |
+| `websockets.c:761` lws_create_context leak | none | **UNREPORTED** |
+| `persist_write.c:399` double fclose | none | **UNREPORTED** |
+| `options.c:263` tls_opts_set double-free | **#2683** (closed PR, 2022) fixed the *multi-call* leak; **#1116** (closed) connect-time TLS leak | PARTIALLY KNOWN — our **error-path double-free is a distinct latent defect** the 2022 free-before-set introduced; verify before filing |
+| `options.c:163/179/203/449` tls_set/psk strdup leaks | #1116 (closed) covers tls_set leak family generally | function family known-leaky; our specific strdup-failure paths likely distinct |
+| `net.c:852/967` socks realloc fd leak | **#3412** (closed) "leaks on port-bind/startup failure" (ASan, recent) strongly overlaps; #31 (ancient) | PARTIALLY KNOWN — #3412 closed but our mainline pin still leaks; check whether #3412's fix covers the realloc path before filing |
+| `bridge.c:144` bridge__new realloc leak | **#3296** (open) bridge leak, but trigger is *no-host-at-target* (reconnect path), not OOM realloc | RELATED area, different root cause — our OOM-path defect likely unreported |
+| `net_mosq.c:951` tls__set_verify_hostname SSL+socket leak | #592/#1116 (closed, ancient TLS-error-path family) | family touched long ago; this specific verify-hostname path likely unreported |
+
+**Caveats:** #2683 and #3412 are *closed* but our mainline pin (`d3dd4463`) still
+exhibits the bug — meaning the closed fix did not cover our exact code path
+(confirmed for #2683: multi-call leak ≠ error-path double-free). Before filing
+the `options.c` and `net.c` PRs, diff against the linked fix commits. The 7
+UNREPORTED defects are the cleanest first PRs — start with `handle_auth.c` (high
+impact, isolated) and `websockets.c:380` (security: OOB read).
