@@ -58,39 +58,50 @@ pending a closer read of `bridge.c:930`.
 
 ## Net disposition for task 170 (cross-validated + adversarially verified)
 
-- **Hard-disable / gate (19 rules):** EXP33, API02, EXP43, STR34, MSC37, FIO47,
+The group-A list below is **zero-TP + adversarially-confirmed FP** on the audited
+oracles. These are general C safety rules (uninitialized memory, format strings,
+sizeof-of-pointer, etc.) that DO apply to these codebases — their problem is
+precision, not applicability.
+
+- **High-FP / low-signal (19 rules):** EXP33, API02, EXP43, STR34, MSC37, FIO47,
   ARR01, DCL31, PRE32, STR30, FLP03, ARR36, FLP34, ARR39, FIO42, FIO50, EXP07,
   WIN04, EXP30 — zero TP on both projects, confirmed FP under adversarial review.
 - **Raise-evidence / keep (8 rules):** EXP20, CON03, MEM31, INT00, MEM12, ENV01,
   EXP37 (real TPs on mosquitto) **+ INT33** (adversarial pass surfaced one TP).
 
-### APPLIED (2026-06-16, task 170)
-The 19 group-A rules are now `enabled = false` in **`conf/realworld/sqlite-rules.toml`**
-and **`conf/realworld/mosquitto-rules.toml`** — the two adversarially-audited oracles.
+### Disposition is RULE HARDENING, not config disable (corrected 2026-06-16)
 
-**libcrc (third exhaustive oracle) cross-check — and the EXP33 carve-out.**
-All three real-world audits are exhaustive per-finding (sqlite, mosquitto, and
-libcrc each label every enabled-rule finding TP/FP — the "cap 10/rule" sampling
-above was only the second-pass adversarial *re-*verification of the disable
-candidates, not the primary audit). Replaying group A against libcrc's full
-adjudication:
-- **EXP33-C has a real TP on libcrc (1 TP / 9 FP)** — it caught a genuine
-  uninitialized read. So EXP33 is *not* pure noise globally; it is a
-  **harden-don't-disable** rule (tracked by tasks 118 + 146). It is therefore
-  **kept enabled in `libcrc-rules.toml`** with an explanatory comment. Its
-  sqlite+mosquitto disable still stands — it is confirmed zero-TP + adversarial
-  FP on *those two* projects, and configs are per-project.
-- API02 (1 FP), FIO47 (46 FP), PRE32 (14 FP) fired as pure FP on libcrc; the
-  other 14 group-A rules did not fire. So `libcrc-rules.toml` disables the
-  **18 group-A rules except EXP33** (the FIO47/PRE32/API02 disables remove 61 FP).
+**An earlier pass disabled the 19 group-A rules in the `conf/realworld/*.toml`
+files. That was reverted.** Those configs exist only to drop rules *categorically
+inapplicable* to a project (e.g. Windows-only rules on a POSIX target, advisory
+style the project rejects) — not to suppress false positives. Per-finding FPs
+among enabled rules are recorded in the `ground_truth` oracle (`data/benchmarks.db`)
+so that **precision is measured, not hidden**: the benchmark's job is to show
+recall and precision improving over time, and silencing a noisy-but-applicable
+rule in the config would make that benchmark lie. None of the 19 group-A rules is
+platform/domain-inapplicable (EXP33 = uninitialized memory applies to all C; even
+WIN04 sees in-scope `src/os_win.c` on sqlite), so none belongs in the config
+disable set.
 
-This is exactly the anti-overfitting principle in action: a group-A rule with a
-TP on another real codebase gets hardened, not blanket-disabled. curl/hostap
-remain untouched (unaudited). Group-B (8 rules) left enabled everywhere. The default rule
-manifests and the Juliet benchmark config are untouched — these rules retain their
-Juliet recall; the disposition is real-world-mode only.
+**The libcrc third oracle proves why disabling is wrong even for "zero-TP" rules.**
+All three real-world audits are exhaustive per-finding (the "cap 10/rule" sampling
+above was only the second-pass adversarial *re-*verification, not the primary
+audit). Group A was zero-TP across sqlite + mosquitto, yet **EXP33-C has a real TP
+on libcrc (1 TP / 9 FP)** — a genuine uninitialized read, buried in macro-opacity
+noise. On an *unaudited* codebase we have no basis to call any applicable rule pure
+noise; the missed bug may be the needle in exactly that haystack. So the
+generalizable fixes are (1) lower false negatives and (2) harden rules so the TP
+isn't drowned — both measured by the benchmark, neither achieved by config disable.
 
-**Open follow-up (raise-evidence work, separate task):**
+**Where the group-A noise actually gets fixed (existing backlog):**
+- EXP33 / EXP34 macro-opacity FP (the libcrc 9-FP root cause) → **task 180**
+  (utlist/uthash external function-like macro opacity); also tasks 118, 146.
+- Free-state precision (MEM30/MEM12) → **task 181**. EXP34 caller-contract FP →
+  **task 175**.
+- False-negative direction (taint untrusted-length → unguarded access, re-point
+  ARR30) → **task 172**.
+
+**Group-B raise-evidence (task 182):**
 - EXP20-C: ~half its mosquitto credits were the `!strcmp`/`!strncmp` idiom (FP) —
   needs an evidence gate, not a disable.
 - INT33-C: re-read `src/bridge.c:930` `(high - low)` divisor; confirm the missed
