@@ -14,7 +14,8 @@ suggested fix diff.
 | # | File | Defect | Severity | Reachability | Prior art |
 |---|------|--------|----------|--------------|-----------|
 | 01 | `lib/handle_auth.c` | MQTT5 `auth_method`/`auth_data` leak per AUTH packet | Medium | **Normal-path** (valgrind) | none |
-| 02 | `lib/srv_mosq.c` | c-ares `reply` list never `ares_free_data`'d (WITH_SRV) | Low–Med | **Normal-path** (valgrind) | none |
+| 02 | `lib/srv_mosq.c` | c-ares `reply` list never `ares_free_data`'d (WITH_SRV) | Low–Med | **Normal-path (valgrind captured ✓)** | none |
+| 12 | `lib/libmosquitto.c` | c-ares channel `mosq->achan` never `ares_destroy`'d — 74 KB/SRV client (WITH_SRV) | Medium | **Normal-path (valgrind captured ✓)** | none |
 | 11 | `src/persist_write.c` + `libcommon/file_common.c` | double `fclose` of same `FILE*` on write error | Med–High | Error-path (/dev/full repro) | none |
 | 10 | `src/websockets.c` | `p`/`user` leak on `lws_create_context` failure | Low | Config-reachable | none |
 | 03 | `lib/http_client.c` | `http_request`(/`key`) leak on handshake-setup failure | Low | Injection-only | none |
@@ -44,6 +45,13 @@ OOM-robustness batch (03/04/06/07/08) which can reference each other as
 
 `upstream_candidates.md` reported "22/22 FNs real and present." Deep per-defect
 analysis revises this: **#05 (`tls_opts_set:263`) is not a real bug**, and #09 is
-real-but-unreachable. So the upstream-actionable set is **9 file-a-PR defects + 1
-defensive guard**, not the full original count. The handle_auth NULL-to-`%s` TP
-(`src/handle_auth.c:101/105`) remains a separate genuine finding.
+real-but-unreachable. Validation also **discovered a new finding not in the
+original 22**: **#12** (`achan` c-ares channel never destroyed, 74 KB/SRV
+client), surfaced by valgrind while capturing #02's before/after. So the
+upstream-actionable set is **10 file-a-PR defects + 1 defensive guard**. The
+handle_auth NULL-to-`%s` TP (`src/handle_auth.c:101/105`) remains a separate
+genuine finding.
+
+**Real valgrind captures so far:** #02 and #12 (live SRV record + WITH_SRV debug
+build). Before: `definitely lost: 74,320 bytes in 2 blocks`; #02 fix alone →
+74,264; #12 fix alone → 73; both → 0 SRV-related leaks.

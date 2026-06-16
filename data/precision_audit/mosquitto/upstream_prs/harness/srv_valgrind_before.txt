@@ -1,0 +1,33 @@
+==705452== 73 (56 direct, 17 indirect) bytes in 1 blocks are definitely lost in loss record 3 of 5
+==705452==    at 0x48417B4: malloc (vg_replace_malloc.c:381)
+==705452==    by 0x4B16B40: ??? (in /usr/lib/x86_64-linux-gnu/libcares.so.2.5.1)
+==705452==    by 0x4B1E616: ares_parse_srv_reply (in /usr/lib/x86_64-linux-gnu/libcares.so.2.5.1)
+==705452==    by 0x48683D0: srv_callback (srv_mosq.c:46)
+==705452==    by 0x4B2129F: ??? (in /usr/lib/x86_64-linux-gnu/libcares.so.2.5.1)
+==705452==    by 0x4B1F43F: ??? (in /usr/lib/x86_64-linux-gnu/libcares.so.2.5.1)
+==705452==    by 0x4B20BE6: ??? (in /usr/lib/x86_64-linux-gnu/libcares.so.2.5.1)
+==705452==    by 0x4B20CD1: ??? (in /usr/lib/x86_64-linux-gnu/libcares.so.2.5.1)
+==705452==    by 0x485F0F6: mosquitto_loop (loop.c:178)
+==705452==    by 0x1092C9: main (in /tmp/moz-build/srv_leak_repro)
+==705452== 
+==705452== 128 bytes in 1 blocks are indirectly lost in loss record 4 of 5
+==705452==    at 0x48416C4: malloc (vg_replace_malloc.c:380)
+==705452==    by 0x4B1B640: ares_init_options (in /usr/lib/x86_64-linux-gnu/libcares.so.2.5.1)
+==705452==    by 0x4868493: mosquitto_connect_srv (srv_mosq.c:75)
+==705452==    by 0x10926E: main (in /tmp/moz-build/srv_leak_repro)
+==705452== 
+==705452== 74,395 (74,264 direct, 131 indirect) bytes in 1 blocks are definitely lost in loss record 5 of 5
+==705452==    at 0x48417B4: malloc (vg_replace_malloc.c:381)
+==705452==    by 0x4B1A8FD: ares_init_options (in /usr/lib/x86_64-linux-gnu/libcares.so.2.5.1)
+==705452==    by 0x4868493: mosquitto_connect_srv (srv_mosq.c:75)
+==705452==    by 0x10926E: main (in /tmp/moz-build/srv_leak_repro)
+==705452== 
+==705452== LEAK SUMMARY:
+==705452==    definitely lost: 74,320 bytes in 2 blocks
+==705452==    indirectly lost: 148 bytes in 3 blocks
+==705452==      possibly lost: 0 bytes in 0 blocks
+==705452==    still reachable: 0 bytes in 0 blocks
+==705452==         suppressed: 0 bytes in 0 blocks
+==705452== 
+==705452== For lists of detected and suppressed errors, rerun with: -s
+==705452== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)

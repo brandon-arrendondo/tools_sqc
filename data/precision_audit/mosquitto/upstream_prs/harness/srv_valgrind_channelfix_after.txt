@@ -1,0 +1,21 @@
+==705962== 73 (56 direct, 17 indirect) bytes in 1 blocks are definitely lost in loss record 2 of 2
+==705962==    at 0x48417B4: malloc (vg_replace_malloc.c:381)
+==705962==    by 0x4B16B40: ??? (in /usr/lib/x86_64-linux-gnu/libcares.so.2.5.1)
+==705962==    by 0x4B1E616: ares_parse_srv_reply (in /usr/lib/x86_64-linux-gnu/libcares.so.2.5.1)
+==705962==    by 0x48683E7: srv_callback (srv_mosq.c:46)
+==705962==    by 0x4B2129F: ??? (in /usr/lib/x86_64-linux-gnu/libcares.so.2.5.1)
+==705962==    by 0x4B1F43F: ??? (in /usr/lib/x86_64-linux-gnu/libcares.so.2.5.1)
+==705962==    by 0x4B20BE6: ??? (in /usr/lib/x86_64-linux-gnu/libcares.so.2.5.1)
+==705962==    by 0x4B20CD1: ??? (in /usr/lib/x86_64-linux-gnu/libcares.so.2.5.1)
+==705962==    by 0x485F10D: mosquitto_loop (loop.c:178)
+==705962==    by 0x1092C9: main (in /tmp/moz-build/srv_leak_repro)
+==705962== 
+==705962== LEAK SUMMARY:
+==705962==    definitely lost: 56 bytes in 1 blocks
+==705962==    indirectly lost: 17 bytes in 1 blocks
+==705962==      possibly lost: 0 bytes in 0 blocks
+==705962==    still reachable: 0 bytes in 0 blocks
+==705962==         suppressed: 0 bytes in 0 blocks
+==705962== 
+==705962== For lists of detected and suppressed errors, rerun with: -s
+==705962== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)

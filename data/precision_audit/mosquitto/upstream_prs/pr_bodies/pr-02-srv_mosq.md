@@ -38,19 +38,38 @@ lookup leaks the reply list.
 
 ## Validation (valgrind)
 
-Expected **before** the fix — a "definitely lost" record rooted in the c-ares
-parse inside the SRV callback:
+Captured with a `WITH_SRV` debug build (c-ares 1.18.1) and a live SRV record,
+using `harness/srv_leak_repro.c` (a minimal client calling
+`mosquitto_connect_srv()` then pumping the loop):
 
 ```
-==NNNN== N bytes in M blocks are definitely lost ...
-==NNNN==    by 0x...: ares_parse_srv_reply (...)
-==NNNN==    by 0x...: srv_callback (srv_mosq.c:46)
+LD_LIBRARY_PATH=.../lib valgrind --leak-check=full --show-leak-kinds=all ./srv_leak_repro <domain>
 ```
 
-**After** the fix: record gone.
+**Before the fix** — a "definitely lost" record rooted exactly in the SRV callback:
 
-> Note: requires a c-ares build and a resolvable SRV record (or a stubbed
-> resolver). Captured run to be attached from a WITH_SRV build environment.
+```
+73 (56 direct, 17 indirect) bytes in 1 blocks are definitely lost in loss record 3 of 5
+   by 0x...: ares_parse_srv_reply (libcares.so.2.5.1)
+   by 0x...: srv_callback (srv_mosq.c:46)
+...
+LEAK SUMMARY:
+   definitely lost: 74,320 bytes in 2 blocks
+```
+
+**After the fix** — the `srv_callback`/`ares_parse_srv_reply` record is gone:
+
+```
+LEAK SUMMARY:
+   definitely lost: 74,264 bytes in 1 blocks   # only the unrelated channel block remains
+```
+
+(Full logs: `harness/srv_valgrind_before.txt` / `srv_valgrind_after.txt`.)
+
+> The remaining 74,264-byte "definitely lost" block is a **separate** issue —
+> the c-ares channel `mosq->achan` (`ares_init`, `srv_mosq.c:75`) is never
+> released with `ares_destroy()` anywhere in the tree. Reported separately; this
+> PR fixes only the per-reply leak.
 
 ## Fix
 
