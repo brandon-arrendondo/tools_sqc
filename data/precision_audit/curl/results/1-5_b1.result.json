@@ -1,0 +1,174 @@
+{
+ "labels": [
+  {"rule":"MSC37-C","file":"lib/curl_get_line.c","line":35,"verdict":"FP","confidence":"high","reason":"Infinite loop always returns from inside; no fallthrough to end of function."},
+  {"rule":"ERR33-C","file":"lib/curl_get_line.c","line":42,"verdict":"FP","confidence":"high","reason":"fgets return checked via 'b ? strlen(b) : 0' and feof handling."},
+  {"rule":"ERR00-C","file":"lib/curl_get_line.c","line":42,"verdict":"FP","confidence":"high","reason":"NULL return handled; eof tracked separately. Idiomatic line reader."},
+  {"rule":"FIO20-C","file":"lib/curl_get_line.c","line":42,"verdict":"FP","confidence":"high","reason":"Truncation handled: loops to append until newline or EOF."},
+  {"rule":"EXP34-C","file":"lib/curl_get_line.c","line":56,"verdict":"FP","confidence":"high","reason":"b[rlen-1] guarded by 'rlen &&'; b is dyn buffer ptr."},
+
+  {"rule":"PRE00-C","file":"lib/curl_sasl.h","line":131,"verdict":"FP","confidence":"high","reason":"sasl_mech_equal is standard predicate macro; multiple-eval advisory only."},
+  {"rule":"PRE12-C","file":"lib/curl_sasl.h","line":131,"verdict":"FP","confidence":"high","reason":"wordlen multiple-eval on side-effect-free arg; idiomatic macro."},
+  {"rule":"API02-C","file":"lib/curl_sasl.h","line":136,"verdict":"FP","confidence":"high","reason":"maxlen already bounds ptr; advisory size-param noise."},
+  {"rule":"API05-C","file":"lib/curl_sasl.h","line":136,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/curl_sasl.h","line":141,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+
+  {"rule":"API05-C","file":"lib/curlx/strparse.h","line":46,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/curlx/strparse.h","line":53,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/curlx/strparse.h","line":57,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/curlx/strparse.h","line":62,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/curlx/strparse.h","line":67,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+
+  {"rule":"API01-C","file":"lib/doh.h","line":85,"verdict":"FP","confidence":"med","reason":"Fixed DNS req buffer in internal struct; bounds-checked encoder, not overflowable string."},
+  {"rule":"API02-C","file":"lib/doh.h","line":162,"verdict":"FP","confidence":"high","reason":"olen already bounds output; advisory size-param noise."},
+  {"rule":"API05-C","file":"lib/doh.h","line":162,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/doh.h","line":164,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/doh.h","line":167,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+
+  {"rule":"API02-C","file":"lib/escape.h","line":35,"verdict":"FP","confidence":"high","reason":"length param already bounds string; advisory size-param noise."},
+  {"rule":"API05-C","file":"lib/escape.h","line":35,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/escape.h","line":36,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/escape.h","line":39,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/escape.h","line":40,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+
+  {"rule":"API00-C","file":"lib/hostip6.c","line":65,"verdict":"FP","confidence":"high","reason":"Internal resolver; data always valid handle from callers. Not exported NULL-deref risk."},
+  {"rule":"API00-C","file":"lib/hostip6.c","line":65,"verdict":"FP","confidence":"high","reason":"hostname always supplied by internal callers; not user-facing entrypoint."},
+  {"rule":"EXP20-C","file":"lib/hostip6.c","line":95,"verdict":"FP","confidence":"high","reason":"inet_pton documented to return exactly 1 on success; '==1' is correct idiom."},
+  {"rule":"EXP20-C","file":"lib/hostip6.c","line":96,"verdict":"FP","confidence":"high","reason":"inet_pton documented to return exactly 1 on success; '==1' is correct idiom."},
+  {"rule":"DCL30-C","file":"lib/hostip6.c","line":117,"verdict":"FP","confidence":"high","reason":"res is a pointer to heap addrinfo from Curl_getaddrinfo_ex, not local auto storage."},
+
+  {"rule":"API02-C","file":"lib/http1.h","line":50,"verdict":"FP","confidence":"high","reason":"Parser API; advisory size-param noise, callee bounds internally."},
+  {"rule":"API05-C","file":"lib/http1.h","line":51,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/http1.h","line":52,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/http1.h","line":53,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"DCL13-C","file":"lib/http1.h","line":54,"verdict":"FP","confidence":"high","reason":"pnread is out-param written by callee; cannot be const."},
+
+  {"rule":"ARR02-C","file":"lib/select.h","line":83,"verdict":"FP","confidence":"high","reason":"ufds[] is array param decaying to pointer; nfds gives count. Valid prototype."},
+  {"rule":"PRE00-C","file":"lib/select.h","line":105,"verdict":"FP","confidence":"high","reason":"VERIFY_SOCK control-flow macro (do/while with return); needs multiple eval intentionally."},
+  {"rule":"PRE12-C","file":"lib/select.h","line":105,"verdict":"FP","confidence":"high","reason":"x evaluated twice on side-effect-free socket arg; control macro, not inlinable."},
+  {"rule":"PRE02-C","file":"lib/select.h","line":171,"verdict":"FP","confidence":"high","reason":"Replacement is single function call expression; parens unnecessary, advisory."},
+  {"rule":"DCL13-C","file":"lib/select.h","line":192,"verdict":"FP","confidence":"high","reason":"pwant_read is out-param written by Curl_pollset_check; cannot be const."},
+
+  {"rule":"API02-C","file":"lib/setup-os400.h","line":61,"verdict":"FP","confidence":"high","reason":"OS400 getnameinfo shim; signature fixed by platform API. Advisory noise."},
+  {"rule":"API02-C","file":"lib/setup-os400.h","line":61,"verdict":"FP","confidence":"high","reason":"OS400 getnameinfo shim; signature fixed by platform API. Advisory noise."},
+  {"rule":"API02-C","file":"lib/setup-os400.h","line":125,"verdict":"FP","confidence":"high","reason":"recvfrom shim; buflen already present. Signature fixed by socket API."},
+  {"rule":"API02-C","file":"lib/setup-os400.h","line":127,"verdict":"FP","confidence":"high","reason":"getpeername shim; addrlen is in/out len. Signature fixed by socket API."},
+  {"rule":"API02-C","file":"lib/setup-os400.h","line":128,"verdict":"FP","confidence":"high","reason":"getsockname shim; addrlen is in/out len. Signature fixed by socket API."},
+
+  {"rule":"PRE00-C","file":"lib/vquic/vquic_int.h","line":80,"verdict":"FP","confidence":"high","reason":"H3_STREAM_CTX accessor macro; idiomatic single-arg lookup."},
+  {"rule":"PRE01-C","file":"lib/vquic/vquic_int.h","line":80,"verdict":"FP","confidence":"high","reason":"data used as member-access base in macro; parenthesization not needed there."},
+  {"rule":"PRE12-C","file":"lib/vquic/vquic_int.h","line":80,"verdict":"FP","confidence":"high","reason":"Accessor macro evaluates data twice on side-effect-free arg; idiomatic."},
+  {"rule":"API05-C","file":"lib/vquic/vquic_int.h","line":95,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/vquic/vquic_int.h","line":121,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+
+  {"rule":"API05-C","file":"src/tool_writeout_json.h","line":30,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API02-C","file":"src/tool_writeout_json.h","line":32,"verdict":"FP","confidence":"high","reason":"mappings[] is NUL-sentinel-terminated table; no count param needed."},
+  {"rule":"ARR02-C","file":"src/tool_writeout_json.h","line":32,"verdict":"FP","confidence":"high","reason":"mappings[] array param decays to pointer; sentinel-terminated. Valid prototype."},
+  {"rule":"API02-C","file":"src/tool_writeout_json.h","line":35,"verdict":"FP","confidence":"high","reason":"FILE* and per_transfer struct ptrs; not array buffers. Advisory noise."},
+  {"rule":"API02-C","file":"src/tool_writeout_json.h","line":36,"verdict":"FP","confidence":"high","reason":"in is NUL-terminated C string; no count param needed."},
+
+  {"rule":"DCL15-C","file":"lib/easyoptions.c","line":32,"verdict":"FP","confidence":"high","reason":"Curl_easyopts is intentionally exported (used across translation units/tests)."},
+  {"rule":"DCL19-C","file":"lib/easyoptions.c","line":32,"verdict":"FP","confidence":"high","reason":"Generated global option table; must be file-scope and exported."},
+  {"rule":"ARR02-C","file":"lib/easyoptions.c","line":32,"verdict":"FP","confidence":"high","reason":"Sentinel-terminated initializer table; implicit bounds idiomatic and valid."},
+  {"rule":"INT10-C","file":"lib/easyoptions.c","line":388,"verdict":"FP","confidence":"high","reason":"CURLOPT_LASTENTRY is positive enum constant; modulo never sees negative operand."},
+
+  {"rule":"DCL38-C","file":"lib/hostip.h","line":68,"verdict":"TP","confidence":"low","reason":"hostname[1] struct-hack; CERT DCL38 prefers []. Intentional portability idiom though."},
+  {"rule":"STR31-C","file":"lib/hostip.h","line":68,"verdict":"FP","confidence":"high","reason":"hostname[1] is flexible struct-hack member allocated larger; not undersized buffer."},
+  {"rule":"API05-C","file":"lib/hostip.h","line":144,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/hostip.h","line":162,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+
+  {"rule":"API02-C","file":"lib/http_proxy.h","line":38,"verdict":"FP","confidence":"high","reason":"pport is int out-param, not array; advisory noise."},
+  {"rule":"API02-C","file":"lib/http_proxy.h","line":50,"verdict":"FP","confidence":"high","reason":"pres1 is int out-param, not array; advisory noise."},
+  {"rule":"PRE00-C","file":"lib/http_proxy.h","line":61,"verdict":"FP","confidence":"high","reason":"IS_HTTPS_PROXY predicate macro; idiomatic comparison, side-effect-free arg."},
+  {"rule":"PRE12-C","file":"lib/http_proxy.h","line":61,"verdict":"FP","confidence":"high","reason":"t evaluated twice on enum value; idiomatic predicate macro."},
+
+  {"rule":"API00-C","file":"lib/psl.c","line":42,"verdict":"FP","confidence":"med","reason":"Internal API; easy always valid handle. Sibling fns also deref unchecked."},
+  {"rule":"EXP33-C","file":"lib/psl.c","line":70,"verdict":"FP","confidence":"high","reason":"psl assigned via psl_latest() at line 69 before use; #ifdef branch sqc can't connect."},
+  {"rule":"DCL30-C","file":"lib/psl.c","line":94,"verdict":"FP","confidence":"high","reason":"psl is const pointer aliasing pslcache->psl (heap/static), not local auto address."},
+  {"rule":"API00-C","file":"lib/psl.c","line":97,"verdict":"FP","confidence":"high","reason":"Thin wrapper to Curl_share_unlock; does not itself deref easy in unsafe way."},
+
+  {"rule":"API05-C","file":"lib/rand.h","line":30,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/rand.h","line":43,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/rand.h","line":49,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/rand.h","line":55,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+
+  {"rule":"API05-C","file":"lib/urlapi-int.h","line":28,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/urlapi-int.h","line":28,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API02-C","file":"lib/urlapi-int.h","line":33,"verdict":"FP","confidence":"high","reason":"urllen already bounds url; advisory size-param noise."},
+  {"rule":"API05-C","file":"lib/urlapi-int.h","line":33,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+
+  {"rule":"API05-C","file":"lib/vquic/vquic.h","line":34,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API02-C","file":"lib/vquic/vquic.h","line":37,"verdict":"FP","confidence":"high","reason":"qlogfdp is int* out-param, not array; advisory noise."},
+  {"rule":"API05-C","file":"lib/vquic/vquic.h","line":38,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/vquic/vquic.h","line":40,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+
+  {"rule":"API05-C","file":"lib/vtls/gtls.h","line":76,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/vtls/gtls.h","line":113,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/vtls/gtls.h","line":116,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/vtls/gtls.h","line":117,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+
+  {"rule":"API05-C","file":"lib/vtls/openssl.h","line":92,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/vtls/openssl.h","line":140,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/vtls/openssl.h","line":143,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/vtls/openssl.h","line":144,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+
+  {"rule":"API05-C","file":"lib/vtls/wolfssl.h","line":52,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/vtls/wolfssl.h","line":81,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/vtls/wolfssl.h","line":84,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/vtls/wolfssl.h","line":85,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+
+  {"rule":"API02-C","file":"src/tool_doswin.h","line":33,"verdict":"FP","confidence":"high","reason":"sanitized is char** out-param allocated by callee; not input array."},
+  {"rule":"API02-C","file":"src/tool_doswin.h","line":37,"verdict":"FP","confidence":"high","reason":"DJGPP crt0 glob hook; signature fixed by toolchain. Advisory noise."},
+  {"rule":"DCL37-C","file":"src/tool_doswin.h","line":37,"verdict":"FP","confidence":"high","reason":"__crt0_glob_function name mandated by DJGPP runtime; platform shim."},
+  {"rule":"DCL37-C","file":"src/tool_doswin.h","line":37,"verdict":"FP","confidence":"high","reason":"__crt0_glob_function reserved name mandated by DJGPP runtime; cannot rename."},
+
+  {"rule":"ARR02-C","file":"src/tool_helpers.c","line":80,"verdict":"FP","confidence":"high","reason":"reqname[] initializer table; implicit bounds idiomatic and valid C."},
+  {"rule":"ARR30-C","file":"src/tool_helpers.c","line":96,"verdict":"FP","confidence":"med","reason":"req is HttpReq enum bounded to table size; internal callers only, not attacker index."},
+  {"rule":"ARR02-C","file":"src/tool_helpers.c","line":104,"verdict":"FP","confidence":"high","reason":"dflt[] initializer table; implicit bounds idiomatic and valid C."},
+  {"rule":"EXP15-C","file":"src/tool_helpers.c","line":113,"verdict":"FP","confidence":"med","reason":"Intentional empty 'if(!method);' guarding else-if chain; deliberate no-op."},
+
+  {"rule":"ERR33-C","file":"src/toolx/tool_time.c","line":53,"verdict":"FP","confidence":"high","reason":"localtime return checked at line 54 ('if(tm)'); only in no-localtime_r fallback."},
+  {"rule":"CON33-C","file":"src/toolx/tool_time.c","line":53,"verdict":"TP","confidence":"low","reason":"localtime() async/thread-unsafe; CERT CON33 fires though it's a guarded last-resort fallback."},
+  {"rule":"CON34-C","file":"src/toolx/tool_time.c","line":53,"verdict":"FP","confidence":"high","reason":"Duplicate of CON33-C at same localtime site; count once."},
+  {"rule":"MEM33-C","file":"src/toolx/tool_time.c","line":55,"verdict":"FP","confidence":"high","reason":"struct tm has no flexible array member; '*store=*tm' is valid struct assignment."},
+
+  {"rule":"API00-C","file":"lib/bufref.c","line":72,"verdict":"FP","confidence":"high","reason":"dtor function pointer stored, called later only if non-NULL; no deref here."},
+  {"rule":"API05-C","file":"lib/bufref.c","line":72,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/bufref.c","line":120,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+
+  {"rule":"API02-C","file":"lib/cf-socket.h","line":60,"verdict":"FP","confidence":"high","reason":"dev is char** out-param allocated by callee; not sized input array."},
+  {"rule":"API02-C","file":"lib/cf-socket.h","line":60,"verdict":"FP","confidence":"high","reason":"iface is char** out-param allocated by callee; not sized input array."},
+  {"rule":"API02-C","file":"lib/cf-socket.h","line":60,"verdict":"FP","confidence":"high","reason":"host is char** out-param allocated by callee; not sized input array."},
+
+  {"rule":"DCL37-C","file":"lib/config-os400.h","line":140,"verdict":"FP","confidence":"high","reason":"__cplusplus__strings__ is platform/compiler-defined macro guard; cannot rename."},
+  {"rule":"DCL37-C","file":"lib/config-os400.h","line":209,"verdict":"FP","confidence":"high","reason":"_LARGE_FILES mandated by OS400 feature-test convention; platform shim."},
+  {"rule":"DCL37-C","file":"lib/config-os400.h","line":286,"verdict":"FP","confidence":"high","reason":"__ptr128 is compiler-reserved keyword/macro; platform shim, cannot rename."},
+
+  {"rule":"DCL37-C","file":"lib/config-win32.h","line":189,"verdict":"FP","confidence":"high","reason":"_SSIZE_T_DEFINED is Windows CRT feature-guard convention; cannot rename."},
+  {"rule":"DCL37-C","file":"lib/config-win32.h","line":192,"verdict":"FP","confidence":"high","reason":"_SSIZE_T_DEFINED is Windows CRT feature-guard convention; cannot rename."},
+  {"rule":"DCL37-C","file":"lib/config-win32.h","line":255,"verdict":"FP","confidence":"high","reason":"_FILE_OFFSET_BITS standard glibc/CRT feature-test macro; cannot rename."},
+
+  {"rule":"API05-C","file":"lib/curl_hmac.h","line":66,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/curl_hmac.h","line":67,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/curl_hmac.h","line":68,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+
+  {"rule":"STR31-C","file":"lib/curl_sha512_256.h","line":34,"verdict":"FP","confidence":"high","reason":"Curl_HMAC_SHA512_256[1] is const struct array (extern decl idiom), not char buffer."},
+  {"rule":"API05-C","file":"lib/curl_sha512_256.h","line":38,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+  {"rule":"API05-C","file":"lib/curl_sha512_256.h","line":38,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params."},
+
+  {"rule":"ARR01-C","file":"lib/curl_sspi.c","line":107,"verdict":"FP","confidence":"high","reason":"identity is genuine struct pointer; sizeof(*identity) is the struct size, correct for memset."},
+  {"rule":"EXP43-C","file":"lib/curl_sspi.c","line":142,"verdict":"FP","confidence":"high","reason":"dup_domain freshly malloc'd, domain points into separate buffer; regions disjoint."},
+  {"rule":"DCL13-C","file":"lib/curl_sspi.c","line":198,"verdict":"FP","confidence":"high","reason":"Function frees identity->members via safefree (nulls them); *identity is modified."}
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "lib/curl_get_line.c",
+  "lib/hostip6.c",
+  "lib/psl.c",
+  "lib/bufref.c",
+  "src/toolx/tool_time.c",
+  "lib/curl_sspi.c",
+  "lib/easyoptions.c",
+  "src/tool_helpers.c"
+ ],
+ "summary": {"tp":2,"fp":120,"fn":0}
+}

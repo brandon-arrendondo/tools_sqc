@@ -1,0 +1,19 @@
+file,line,rule,upstream_present,desc
+lib/vtls/vtls_spack.c,277,MEM31-C,True,"In Curl_ssl_session_unpack, a duplicate ALPN/TICKET/QUICTP tag in crafted input overwrites s->alpn/s->sdata/s->quic_tp without freeing the prior allocation, leaking on the untrusted-decode path"
+src/tool_cb_wrt.c,72,MEM31-C,True,On curlx_dyn_addf failure returns FALSE without curlx_dyn_free(&fbuffer); dynbuf allocation leaked on error path
+lib/vauth/krb5_sspi.c,204,EXP33-C,True,On first call chlg==NULL so krb5->context allocated but InitializeSecurityContext writes &context; memcmp compares fresh context vs zeroed krb5->context (calloc'd) - benign but relies on calloc init
+src/tool_formparse.c,444,MEM31-C,True,"read_field_headers folded branch: if curlx_dyn_add/addn fails, 'err=-1; break' jumps out leaking the 'amend' dynbuf (curlx_dyn_free(&amend) at 452 skipped)"
+src/tool_doswin.c,869,FIO42-C,True,"win32_stdin_read_thread: socket_r created (832) but its sclose at 869 is guarded by '&& tdata'; once CreateThread succeeds tdata is NULL, so if connect/shutdown/SetStdHandle fail afterward socket_r leaks"
+lib/vtls/vtls_scache.c,454,MEM31-C,False,"cf_ssl_scache_peer_init: on strdup-failure goto out calls cf_ssl_scache_clear_peer(peer) which frees all members - correct, NO leak. Verified clean."
+src/tool_cb_hdr.c,279,ERR33-C,True,save_etag fwrite/fputc return unchecked while the same function checks ftruncate/fseek and returns CURL_WRITEFUNC_ERROR; inconsistent write-error handling could silently truncate etag file
+lib/mqtt.c,310,ERR33-C,True,Return of Curl_rand_alnum assigned to 'result' but immediately overwritten by add_client_id's rc; a RNG failure is silently ignored (client id left non-random).
+lib/imap.c,2296,MEM12-C,True,"imap_setup_connection: if calloc of imap succeeds but Curl_meta_set fails (OOM), imap is leaked (never registered, never freed)"
+lib/conncache.c,564,EXP34-C,True,Curl_cpool_conn_now_idle guards if(!data) but then dereferences data->multi->maxconnects without checking data->multi for NULL (inconsistent defensive check; relies on multi-context invariant)
+src/tool_urlglob.c,694,MEM31-C,True,"glob_match_url: 'if(result) return result' inside while loop and the dyn_addn(&dyn,"""",0) failure return at line 698 leak dynbuf 'dyn' (never dyn_free'd; *output unset on error)"
+lib/vtls/mbedtls.c,499,ARR30-C,True,ca_info_blob->data[ca_info_blob->len-1] read with no zero-length guard; len==0 reads data[-1] (OOB). Blob is user CURLOPT_CAINFO_BLOB.
+lib/vtls/mbedtls.c,611,ARR30-C,True,ssl_cert_blob->data[ssl_cert_blob->len-1] read with no zero-length guard; len==0 reads data[-1] (OOB) for cert_blob.
+lib/vtls/x509asn1.c,982,INT30-C,True,"do_pubkey ecPublicKey: (pubkey->end - pubkey->beg - 2)*4 underflows if pubkey span < 2 bytes, huge size_t logged/pushed."
+src/var.c,309,MEM31-C,True,varexpand: 'return PARAM_EXPAND_ERROR' on null-byte detection skips curlx_dyn_free(&buf); leaks buf when funcp populated it (line 296)
+lib/curl_ntlm_core.c,586,INT30-C,True,"len (unsigned int) = HMAC_MD5_LENGTH + NTLMv2_BLOB_LEN where BLOB_LEN includes ntlm->target_info_len (parsed from server type-2 msg). If target_info_len near UINT_MAX, len wraps small -> calloc small -> memcpy(ptr+44,target_info,target_info_len) heap overflow. Bounded only by upstream type-2 parser; defense-in-depth missing here."
+src/tool_setopt.c,438,EXP34-C,False,"c_escape() can return NULL on OOM but escaped is passed straight to easysrc_addf(""%s"") without a NULL check in TOOLMIME_DATA/FILE/encoder/filename/name/type cases (lines 438,449,479,486,493,500), unlike libcurl_generate_slist which guards. NULL passed to printf %s = deref/UB."
+src/tool_dirhie.c,119,MEM31-C,True,"On curlx_dyn_addn failure the function returns without curlx_dyn_free(&dirbuf), leaking the already-allocated dynbuf when failure occurs after a prior successful append"

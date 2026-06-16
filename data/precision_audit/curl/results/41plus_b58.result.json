@@ -1,0 +1,782 @@
+{
+"labels": [
+{
+"rule": "API05-C",
+"file": "lib/connect.c",
+"line": 73,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Advisory conformant-array syntax; curl never uses C99 array params"
+},
+{
+"rule": "EXP20-C",
+"file": "lib/connect.c",
+"line": 76,
+"verdict": "FP",
+"confidence": "high",
+"reason": "!memcmp boolean idiom in alpn dispatch"
+},
+{
+"rule": "EXP34-C",
+"file": "lib/connect.c",
+"line": 76,
+"verdict": "FP",
+"confidence": "med",
+"reason": "name from setopt; len-guarded, not NULL in practice"
+},
+{
+"rule": "EXP20-C",
+"file": "lib/connect.c",
+"line": 78,
+"verdict": "FP",
+"confidence": "high",
+"reason": "!memcmp boolean idiom"
+},
+{
+"rule": "EXP20-C",
+"file": "lib/connect.c",
+"line": 80,
+"verdict": "FP",
+"confidence": "high",
+"reason": "!memcmp boolean idiom"
+},
+{
+"rule": "EXP20-C",
+"file": "lib/connect.c",
+"line": 84,
+"verdict": "FP",
+"confidence": "high",
+"reason": "!memcmp boolean idiom"
+},
+{
+"rule": "API00-C",
+"file": "lib/connect.c",
+"line": 139,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Thin wrapper, passes data through to impl"
+},
+{
+"rule": "ARR00-C",
+"file": "lib/connect.c",
+"line": 150,
+"verdict": "FP",
+"confidence": "high",
+"reason": "sockindex is FIRSTSOCKET/SECONDARY (0/1), bounded by design"
+},
+{
+"rule": "ARR30-C",
+"file": "lib/connect.c",
+"line": 150,
+"verdict": "FP",
+"confidence": "high",
+"reason": "sockindex internal 0/1 invariant, not attacker-controlled"
+},
+{
+"rule": "ARR00-C",
+"file": "lib/connect.c",
+"line": 168,
+"verdict": "FP",
+"confidence": "high",
+"reason": "sockindex bounded 0/1 internal"
+},
+{
+"rule": "ARR00-C",
+"file": "lib/connect.c",
+"line": 174,
+"verdict": "FP",
+"confidence": "high",
+"reason": "sockindex bounded 0/1 internal"
+},
+{
+"rule": "API00-C",
+"file": "lib/connect.c",
+"line": 178,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Internal fn; derefs conn (caller-asserted), data passed through"
+},
+{
+"rule": "API00-C",
+"file": "lib/connect.c",
+"line": 194,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Internal fn; data->conn invariant per siblings"
+},
+{
+"rule": "DCL13-C",
+"file": "lib/connect.c",
+"line": 194,
+"verdict": "FP",
+"confidence": "high",
+"reason": "data non-const by curl convention; vtable-style signature"
+},
+{
+"rule": "ARR00-C",
+"file": "lib/connect.c",
+"line": 196,
+"verdict": "FP",
+"confidence": "high",
+"reason": "sockindex bounded 0/1 internal"
+},
+{
+"rule": "ARR30-C",
+"file": "lib/connect.c",
+"line": 196,
+"verdict": "FP",
+"confidence": "high",
+"reason": "sockindex bounded 0/1 internal"
+},
+{
+"rule": "DCL13-C",
+"file": "lib/connect.c",
+"line": 200,
+"verdict": "FP",
+"confidence": "high",
+"reason": "data non-const by convention"
+},
+{
+"rule": "ARR00-C",
+"file": "lib/connect.c",
+"line": 203,
+"verdict": "FP",
+"confidence": "high",
+"reason": "sockindex bounded 0/1 internal"
+},
+{
+"rule": "ARR30-C",
+"file": "lib/connect.c",
+"line": 203,
+"verdict": "FP",
+"confidence": "high",
+"reason": "sockindex bounded 0/1 internal"
+},
+{
+"rule": "API00-C",
+"file": "lib/connect.c",
+"line": 211,
+"verdict": "FP",
+"confidence": "high",
+"reason": "addr is out-param written before read; sa derefed, public sig"
+},
+{
+"rule": "DCL13-C",
+"file": "lib/connect.c",
+"line": 211,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Public API signature fixed; cannot const sa"
+},
+{
+"rule": "API00-C",
+"file": "lib/connect.c",
+"line": 268,
+"verdict": "FP",
+"confidence": "high",
+"reason": "DEBUGASSERT(data); connp checked before deref"
+},
+{
+"rule": "DCL15-C",
+"file": "lib/connect.c",
+"line": 301,
+"verdict": "FP",
+"confidence": "high",
+"reason": "'reason' is a parameter name, not a function; misparse"
+},
+{
+"rule": "MSC37-C",
+"file": "lib/connect.c",
+"line": 301,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Misparse of macro-conditional param 'reason' as function"
+},
+{
+"rule": "EXP15-C",
+"file": "lib/connect.c",
+"line": 316,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Intentional no-op with explanatory comment, has else branch"
+},
+{
+"rule": "CON03-C",
+"file": "lib/connect.c",
+"line": 470,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Exported global cfilter vtable; init-once const-like, not shared mutable"
+},
+{
+"rule": "DCL15-C",
+"file": "lib/connect.c",
+"line": 470,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Curl_cft_setup exported, used in other TUs"
+},
+{
+"rule": "DCL19-C",
+"file": "lib/connect.c",
+"line": 470,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Exported vtable needs file scope external linkage"
+},
+{
+"rule": "DCL13-C",
+"file": "lib/connect.c",
+"line": 489,
+"verdict": "FP",
+"confidence": "high",
+"reason": "data non-const by convention; (void)data used"
+},
+{
+"rule": "DCL31-C",
+"file": "lib/connect.c",
+"line": 498,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curlx_calloc declared in curlx headers"
+},
+{
+"rule": "EXP33-C",
+"file": "lib/connect.c",
+"line": 498,
+"verdict": "FP",
+"confidence": "high",
+"reason": "ctx assigned from calloc then NULL-checked; not uninitialized"
+},
+{
+"rule": "DCL31-C",
+"file": "lib/connect.c",
+"line": 515,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curlx_free declared in curlx headers"
+},
+{
+"rule": "MSC37-C",
+"file": "lib/connect.c",
+"line": 520,
+"verdict": "FP",
+"confidence": "high",
+"reason": "All paths return result via out: label"
+},
+{
+"rule": "EXP33-C",
+"file": "lib/connect.c",
+"line": 533,
+"verdict": "FP",
+"confidence": "high",
+"reason": "cf set by &cf out-param in cf_setup_create (*pcf always assigned)"
+},
+{
+"rule": "API00-C",
+"file": "lib/connect.c",
+"line": 538,
+"verdict": "FP",
+"confidence": "high",
+"reason": "cf_at passed through; data DEBUGASSERTed, internal"
+},
+{
+"rule": "API00-C",
+"file": "lib/connect.c",
+"line": 538,
+"verdict": "FP",
+"confidence": "high",
+"reason": "DEBUGASSERT(data); internal fn"
+},
+{
+"rule": "MSC37-C",
+"file": "lib/connect.c",
+"line": 538,
+"verdict": "FP",
+"confidence": "high",
+"reason": "All paths return result via out:"
+},
+{
+"rule": "EXP33-C",
+"file": "lib/connect.c",
+"line": 550,
+"verdict": "FP",
+"confidence": "high",
+"reason": "cf set by &cf out-param before use"
+},
+{
+"rule": "API00-C",
+"file": "lib/connect.c",
+"line": 555,
+"verdict": "FP",
+"confidence": "high",
+"reason": "DEBUGASSERT(data); internal fn"
+},
+{
+"rule": "API00-C",
+"file": "lib/connect.c",
+"line": 555,
+"verdict": "FP",
+"confidence": "high",
+"reason": "conn->scheme DEBUGASSERTed; internal invariant"
+},
+{
+"rule": "API00-C",
+"file": "lib/connect.c",
+"line": 555,
+"verdict": "FP",
+"confidence": "high",
+"reason": "DEBUGASSERT(dns); internal invariant"
+},
+{
+"rule": "ARR00-C",
+"file": "lib/connect.c",
+"line": 567,
+"verdict": "FP",
+"confidence": "high",
+"reason": "sockindex bounded 0/1 internal"
+},
+{
+"rule": "ARR00-C",
+"file": "lib/connect.c",
+"line": 568,
+"verdict": "FP",
+"confidence": "high",
+"reason": "sockindex bounded 0/1 internal"
+},
+{
+"rule": "ARR00-C",
+"file": "lib/connect.c",
+"line": 571,
+"verdict": "FP",
+"confidence": "high",
+"reason": "sockindex bounded 0/1 internal"
+},
+{
+"rule": "ARR00-C",
+"file": "lib/connect.c",
+"line": 581,
+"verdict": "FP",
+"confidence": "high",
+"reason": "sockindex bounded 0/1 internal"
+},
+{
+"rule": "ARR00-C",
+"file": "lib/connect.c",
+"line": 588,
+"verdict": "FP",
+"confidence": "high",
+"reason": "sockindex bounded 0/1 internal"
+},
+{
+"rule": "ARR00-C",
+"file": "lib/connect.c",
+"line": 591,
+"verdict": "FP",
+"confidence": "high",
+"reason": "sockindex bounded 0/1 internal"
+},
+{
+"rule": "API00-C",
+"file": "lib/connect.c",
+"line": 595,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Internal fn; conn->bits checked, idiomatic"
+},
+{
+"rule": "DCL00-C",
+"file": "lib/curl_fnmatch.c",
+"line": 77,
+"verdict": "FP",
+"confidence": "med",
+"reason": "c reassigned each loop iteration; advisory const only"
+},
+{
+"rule": "ARR30-C",
+"file": "lib/curl_fnmatch.c",
+"line": 83,
+"verdict": "FP",
+"confidence": "high",
+"reason": "i guarded by i>=sizeof(keyword) check at line 78"
+},
+{
+"rule": "ARR30-C",
+"file": "lib/curl_fnmatch.c",
+"line": 100,
+"verdict": "FP",
+"confidence": "high",
+"reason": "CURLFNM_DIGIT=258 < charset size 271"
+},
+{
+"rule": "ARR30-C",
+"file": "lib/curl_fnmatch.c",
+"line": 102,
+"verdict": "FP",
+"confidence": "high",
+"reason": "CURLFNM_ALNUM=257 < 271"
+},
+{
+"rule": "ARR30-C",
+"file": "lib/curl_fnmatch.c",
+"line": 104,
+"verdict": "FP",
+"confidence": "high",
+"reason": "CURLFNM_ALPHA=260 < 271"
+},
+{
+"rule": "ARR30-C",
+"file": "lib/curl_fnmatch.c",
+"line": 106,
+"verdict": "FP",
+"confidence": "high",
+"reason": "CURLFNM_XDIGIT=259 < 271"
+},
+{
+"rule": "ARR30-C",
+"file": "lib/curl_fnmatch.c",
+"line": 108,
+"verdict": "FP",
+"confidence": "high",
+"reason": "CURLFNM_PRINT=261 < 271"
+},
+{
+"rule": "ARR30-C",
+"file": "lib/curl_fnmatch.c",
+"line": 110,
+"verdict": "FP",
+"confidence": "high",
+"reason": "CURLFNM_GRAPH=264 < 271"
+},
+{
+"rule": "ARR30-C",
+"file": "lib/curl_fnmatch.c",
+"line": 112,
+"verdict": "FP",
+"confidence": "high",
+"reason": "CURLFNM_SPACE=265 < 271"
+},
+{
+"rule": "ARR30-C",
+"file": "lib/curl_fnmatch.c",
+"line": 114,
+"verdict": "FP",
+"confidence": "high",
+"reason": "CURLFNM_BLANK=262 < 271"
+},
+{
+"rule": "ARR30-C",
+"file": "lib/curl_fnmatch.c",
+"line": 116,
+"verdict": "FP",
+"confidence": "high",
+"reason": "CURLFNM_UPPER=266 < 271"
+},
+{
+"rule": "ARR30-C",
+"file": "lib/curl_fnmatch.c",
+"line": 118,
+"verdict": "FP",
+"confidence": "high",
+"reason": "CURLFNM_LOWER=263 < 271"
+},
+{
+"rule": "DCL00-C",
+"file": "lib/curl_fnmatch.c",
+"line": 140,
+"verdict": "FP",
+"confidence": "med",
+"reason": "c is unsigned char loaded from pointer; advisory const only"
+},
+{
+"rule": "ARR30-C",
+"file": "lib/curl_fnmatch.c",
+"line": 142,
+"verdict": "FP",
+"confidence": "high",
+"reason": "c is unsigned char (0-255) < charset 271"
+},
+{
+"rule": "STR00-C",
+"file": "lib/curl_fnmatch.c",
+"line": 142,
+"verdict": "FP",
+"confidence": "high",
+"reason": "c declared unsigned char, not plain char; misparse"
+},
+{
+"rule": "INT07-C",
+"file": "lib/curl_fnmatch.c",
+"line": 142,
+"verdict": "FP",
+"confidence": "high",
+"reason": "c is unsigned char, not plain char"
+},
+{
+"rule": "INT07-C",
+"file": "lib/curl_fnmatch.c",
+"line": 150,
+"verdict": "FP",
+"confidence": "high",
+"reason": "c is unsigned char"
+},
+{
+"rule": "STR00-C",
+"file": "lib/curl_fnmatch.c",
+"line": 152,
+"verdict": "FP",
+"confidence": "high",
+"reason": "c is unsigned char, in-range index"
+},
+{
+"rule": "INT07-C",
+"file": "lib/curl_fnmatch.c",
+"line": 152,
+"verdict": "FP",
+"confidence": "high",
+"reason": "c is unsigned char"
+},
+{
+"rule": "DCL30-C",
+"file": "lib/curl_fnmatch.c",
+"line": 153,
+"verdict": "FP",
+"confidence": "high",
+"reason": "p points into caller's pattern buffer; advancing caller cursor, not local addr"
+},
+{
+"rule": "MSC37-C",
+"file": "lib/curl_fnmatch.c",
+"line": 159,
+"verdict": "FP",
+"confidence": "high",
+"reason": "for(;;) all paths return or goto fail->return"
+},
+{
+"rule": "INT07-C",
+"file": "lib/curl_fnmatch.c",
+"line": 168,
+"verdict": "FP",
+"confidence": "high",
+"reason": "c is unsigned char (line 163)"
+},
+{
+"rule": "STR00-C",
+"file": "lib/curl_fnmatch.c",
+"line": 178,
+"verdict": "FP",
+"confidence": "high",
+"reason": "c is unsigned char, valid index"
+},
+{
+"rule": "INT07-C",
+"file": "lib/curl_fnmatch.c",
+"line": 178,
+"verdict": "FP",
+"confidence": "high",
+"reason": "c is unsigned char"
+},
+{
+"rule": "EXP30-C",
+"file": "lib/curl_fnmatch.c",
+"line": 184,
+"verdict": "FP",
+"confidence": "high",
+"reason": "&& provides sequence point; pp++ completes before parsekeyword call"
+},
+{
+"rule": "STR00-C",
+"file": "lib/curl_fnmatch.c",
+"line": 187,
+"verdict": "FP",
+"confidence": "high",
+"reason": "c is unsigned char"
+},
+{
+"rule": "INT07-C",
+"file": "lib/curl_fnmatch.c",
+"line": 187,
+"verdict": "FP",
+"confidence": "high",
+"reason": "c is unsigned char"
+},
+{
+"rule": "ARR30-C",
+"file": "lib/curl_fnmatch.c",
+"line": 194,
+"verdict": "FP",
+"confidence": "high",
+"reason": "CURLFNM_NEGATE=256 < 271"
+},
+{
+"rule": "STR00-C",
+"file": "lib/curl_fnmatch.c",
+"line": 195,
+"verdict": "FP",
+"confidence": "high",
+"reason": "c is unsigned char"
+},
+{
+"rule": "INT07-C",
+"file": "lib/curl_fnmatch.c",
+"line": 195,
+"verdict": "FP",
+"confidence": "high",
+"reason": "c is unsigned char"
+},
+{
+"rule": "ARR30-C",
+"file": "lib/curl_fnmatch.c",
+"line": 199,
+"verdict": "FP",
+"confidence": "high",
+"reason": "CURLFNM_NEGATE=256 < 271"
+},
+{
+"rule": "STR00-C",
+"file": "lib/curl_fnmatch.c",
+"line": 202,
+"verdict": "FP",
+"confidence": "high",
+"reason": "c is unsigned char"
+},
+{
+"rule": "INT07-C",
+"file": "lib/curl_fnmatch.c",
+"line": 202,
+"verdict": "FP",
+"confidence": "high",
+"reason": "c is unsigned char"
+},
+{
+"rule": "ARR30-C",
+"file": "lib/curl_fnmatch.c",
+"line": 210,
+"verdict": "FP",
+"confidence": "high",
+"reason": "'\\\\'=92 constant index < 256"
+},
+{
+"rule": "STR00-C",
+"file": "lib/curl_fnmatch.c",
+"line": 221,
+"verdict": "FP",
+"confidence": "high",
+"reason": "c is unsigned char"
+},
+{
+"rule": "INT07-C",
+"file": "lib/curl_fnmatch.c",
+"line": 221,
+"verdict": "FP",
+"confidence": "high",
+"reason": "c is unsigned char"
+},
+{
+"rule": "STR00-C",
+"file": "lib/curl_fnmatch.c",
+"line": 228,
+"verdict": "FP",
+"confidence": "high",
+"reason": "c is unsigned char"
+},
+{
+"rule": "INT07-C",
+"file": "lib/curl_fnmatch.c",
+"line": 228,
+"verdict": "FP",
+"confidence": "high",
+"reason": "c is unsigned char"
+},
+{
+"rule": "STR00-C",
+"file": "lib/curl_fnmatch.c",
+"line": 242,
+"verdict": "FP",
+"confidence": "high",
+"reason": "c is unsigned char"
+},
+{
+"rule": "INT07-C",
+"file": "lib/curl_fnmatch.c",
+"line": 242,
+"verdict": "FP",
+"confidence": "high",
+"reason": "c is unsigned char"
+},
+{
+"rule": "MEM05-C",
+"file": "lib/curl_fnmatch.c",
+"line": 251,
+"verdict": "FP",
+"confidence": "med",
+"reason": "Recursion bounded by maxstars (starts 2, decremented)"
+},
+{
+"rule": "MSC37-C",
+"file": "lib/curl_fnmatch.c",
+"line": 251,
+"verdict": "FP",
+"confidence": "high",
+"reason": "for(;;) loop always returns on every case path"
+},
+{
+"rule": "CON43-C",
+"file": "lib/curl_fnmatch.c",
+"line": 261,
+"verdict": "FP",
+"confidence": "high",
+"reason": "p is local pattern cursor, single-threaded; not shared"
+},
+{
+"rule": "EXP34-C",
+"file": "lib/curl_fnmatch.c",
+"line": 261,
+"verdict": "FP",
+"confidence": "high",
+"reason": "p=pattern NULL-checked in Curl_fnmatch line 353"
+},
+{
+"rule": "EXP34-C",
+"file": "lib/curl_fnmatch.c",
+"line": 278,
+"verdict": "FP",
+"confidence": "high",
+"reason": "s=string NULL-checked in Curl_fnmatch line 353"
+},
+{
+"rule": "DCL13-C",
+"file": "lib/curl_fnmatch.c",
+"line": 349,
+"verdict": "FP",
+"confidence": "high",
+"reason": "ptr signature fixed by curl_fnmatch_callback typedef"
+},
+{
+"rule": "DCL13-C",
+"file": "lib/curl_fnmatch.c",
+"line": 365,
+"verdict": "FP",
+"confidence": "high",
+"reason": "ptr signature fixed by callback typedef"
+},
+{
+"rule": "DCL30-C",
+"file": "lib/curl_fnmatch.c",
+"line": 98,
+"verdict": "FP",
+"confidence": "high",
+"reason": "*pattern = p assigns caller pointer to position within caller pattern buffer, not local-address escape"
+}
+],
+"fns": [],
+"files_clean_for_fn": [
+"lib/connect.c",
+"lib/curl_fnmatch.c"
+],
+"summary": {
+"tp": 0,
+"fp": 96,
+"fn": 0
+}
+}

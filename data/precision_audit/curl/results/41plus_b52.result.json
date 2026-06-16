@@ -1,0 +1,933 @@
+{
+ "labels": [
+  {
+   "rule": "DCL31-C",
+   "file": "src/var.c",
+   "line": 43,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curlx_free is declared via curl alloc-wrapper header; sqc can't resolve macro"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/var.c",
+   "line": 44,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curlx_free declared in header; macro-wrapper opacity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/var.c",
+   "line": 48,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; style advisory"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/var.c",
+   "line": 52,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strncmp boolean test in list match"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/var.c",
+   "line": 53,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returns heap list node pointer, not automatic-storage local"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "src/var.c",
+   "line": 60,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "ENDOFFUNC multi-eval but args side-effect-free constants"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "src/var.c",
+   "line": 60,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "macro multi-eval; called only with side-effect-free args"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "src/var.c",
+   "line": 61,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "FUNCMATCH multi-eval; args are constants, no side effects"
+  },
+  {
+   "rule": "PRE01-C",
+   "file": "src/var.c",
+   "line": 61,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "len used in strncmp arg and index; constant args, no precedence bug"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "src/var.c",
+   "line": 61,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "macro multi-eval; constant-len call sites"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/var.c",
+   "line": 75,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "style advisory; curl convention"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/var.c",
+   "line": 77,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "style advisory; curl convention"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/var.c",
+   "line": 86,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "while(*f) bounded by NUL terminator of function string"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/var.c",
+   "line": 94,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ptr[len] after strncmp match; within string, macro-opacity"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/var.c",
+   "line": 99,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "c NULL only when clen==0; guarded by if(clen)"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/var.c",
+   "line": 113,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro FUNCMATCH bounded access; opacity"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/var.c",
+   "line": 123,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro FUNCMATCH bounded access; opacity"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/var.c",
+   "line": 127,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "enc initialized at declaration from curl_easy_escape"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/var.c",
+   "line": 141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro FUNCMATCH bounded access; opacity"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/var.c",
+   "line": 147,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* to uint8_t* cast; no const removed (c is non-const)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/var.c",
+   "line": 154,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "elen filled by base64_encode; read only after success check"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/var.c",
+   "line": 161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro FUNCMATCH bounded access; opacity"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/var.c",
+   "line": 189,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curlx_free macro-wrapper; declared in header"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/var.c",
+   "line": 200,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curlx_free macro-wrapper; declared in header"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/var.c",
+   "line": 200,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "c reassigned to fresh memdup0 after each loop free; not double-free"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/var.c",
+   "line": 216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "envp and line both point into same string from strstr"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/var.c",
+   "line": 216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "envp[-1] accessed only when envp>line; index valid"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/var.c",
+   "line": 216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "envp NULL-checked via short-circuit (envp>line)"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/var.c",
+   "line": 220,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same-string pointer subtraction envp-line"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/var.c",
+   "line": 228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misparse: line=&envp[2] is pointer assignment, no char widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/var.c",
+   "line": 228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misparse of pointer arithmetic; no sign extension"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/var.c",
+   "line": 231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "name[] holds variable name, not getenv result"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/var.c",
+   "line": 231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "name[] filled by memcpy before read at line 271"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/var.c",
+   "line": 256,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same-string pointer subtraction"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/var.c",
+   "line": 268,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nlen<sizeof(name) enforced at line 253 before name[nlen]"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/var.c",
+   "line": 295,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "clp/funcp are char* pointers; subtraction not char widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/var.c",
+   "line": 295,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer subtraction misparse"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/var.c",
+   "line": 321,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misparse: line=&clp[2] pointer assignment"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/var.c",
+   "line": 321,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic misparse"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/var.c",
+   "line": 342,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "style advisory; curl convention"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/var.c",
+   "line": 344,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "style advisory; curl convention"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/var.c",
+   "line": 354,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curlx_calloc macro-wrapper; declared in header"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/var.c",
+   "line": 367,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curlx_free macro-wrapper; declared in header"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/var.c",
+   "line": 383,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf[] holds copied var name (bounded nlen<MAX_VAR_LEN), not getenv result"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/var.c",
+   "line": 394,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "line and name both within input string"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/var.c",
+   "line": 404,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is separate stack array; name in input; no overlap"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/var.c",
+   "line": 404,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "explicit buf[nlen]=0 null-terminates next line"
+  },
+  {
+   "rule": "ENV34-C",
+   "file": "src/var.c",
+   "line": 408,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "getenv result consumed immediately and copied via memdup0 in addvariable"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/var.c",
+   "line": 408,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl CLI single-thread; duplicate of getenv concern"
+  },
+  {
+   "rule": "EXP15-C",
+   "file": "src/var.c",
+   "line": 434,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "intentional empty if(content); part of else-if chain"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/var.c",
+   "line": 442,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strcmp(line,\"-\") test"
+  },
+  {
+   "rule": "FIO42-C",
+   "file": "src/var.c",
+   "line": 446,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "file closed at line 460-461 (curlx_fclose when not stdin)"
+  },
+  {
+   "rule": "FIO42-C",
+   "file": "src/var.c",
+   "line": 446,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "FILE* closed via curlx_fclose; not an fd"
+  },
+  {
+   "rule": "ENV30-C",
+   "file": "src/var.c",
+   "line": 455,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "content here is NULL/file-filled, not getenv (mutually-exclusive branch)"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/var.c",
+   "line": 476,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "clen-1 only when startoffset<clen so clen>0; bounded by strlen"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/var.c",
+   "line": 477,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "offsets bounded by strlen; no practical wrap"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/var.c",
+   "line": 489,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curlx_free macro-wrapper; declared in header"
+  },
+  {
+   "rule": "ENV30-C",
+   "file": "src/var.c",
+   "line": 489,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "content freed here is contalloc heap, not getenv pointer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 84,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal auth fn; callers pass valid data; chlg used after len-check"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 84,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal auth fn; service guaranteed non-NULL by callers"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 157,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Windows SSPI AcquireCredentialsHandle signature; distinct params"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 242,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal helper; chlg traversed safely with while(*chlg)"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 250,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "value[] is digest-pair parse buffer, not getenv result"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 251,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "content[] is digest-pair parse buffer, not getenv result"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 263,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "domain assigned from convert_UTF8_to_tchar before use"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 267,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dup_domain assigned from tcsdup before use"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 312,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "strlen(chlg) used; internal caller guarantees non-NULL"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 315,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misparse: strlen(chlg) not a char-to-int assignment"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 325,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "value[] digest-pair buffer, not getenv"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 326,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "content[] digest-pair buffer, not getenv"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 384,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "style advisory; curl convention"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 385,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "style advisory; curl convention"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 386,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "style advisory; curl convention"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 387,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "style advisory; curl convention"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 389,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "style advisory; curl convention"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 436,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Curl_safefree nulls ptr; if() reads NULL, not freed memory"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 447,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "chlg_buf is SecBuffer[5]; index 2 valid; sqc misread size as 2"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 448,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "chlg_buf[5]; index 2 valid"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 449,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "chlg_buf[5]; index 3 valid"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 450,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "chlg_buf[5]; index 3 valid"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 451,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "chlg_buf[5]; index 3 valid"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 452,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "chlg_buf[5]; index 4 valid"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 453,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "chlg_buf[5]; index 4 valid"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 454,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "chlg_buf[5]; index 4 valid"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 456,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "http_context non-NULL & valid in this branch; not freed"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 459,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "chlg_buf[5]; index 4 valid"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 459,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "chlg_buf[4].cbBuffer set at 454 / by MakeSignature before read"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 462,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "http_context valid here; deleted then safefreed (nulled)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 463,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Curl_safefree nulls; subsequent if() guards reuse"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 467,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reads NULL after safefree; guard, not freed-memory access"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 477,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Curl_safefree nulls user; not double-free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 478,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Curl_safefree nulls passwd; not double-free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 488,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "input_token read (memdup'd in decode), not freed"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 505,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "digest->user just assigned via strdup; read not UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 515,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "digest->passwd just assigned via strdup; read not UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 518,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Curl_safefree nulls; safe re-free"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 524,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Windows SSPI AcquireCredentialsHandle signature; distinct params"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 541,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "input_token valid (memdup'd); read into buffer"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 542,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "input_token_len is size_t value, not freed pointer"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 546,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "chlg_buf[5]; index 2 valid"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 547,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "chlg_buf[5]; index 2 valid"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 548,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "chlg_buf[5]; index 2 valid"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 570,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "http_context just calloc'd at 569; not freed"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 575,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "output_token freed at 574 before return; http_context owned by digest"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 583,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "http_context valid here (just created); InitializeSecurityContext arg"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 598,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Curl_safefree nulls; single free"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 601,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "output_token freed at 596; http_context safefreed at 598"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 606,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "output_token freed at 596 before return"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 618,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "output_token freed at 616 before this return"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 622,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "resp is heap memdup0, not local address; valid to return via outptr"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 622,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misparse: *outptr=resp is pointer assignment"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 624,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "output_token freed at 616; resp ownership transferred to caller"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 646,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "http_context valid in cleanup; deleted then safefreed"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vauth/digest_sspi.c",
+   "line": 647,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "http_context passed to DeleteSecurityContext before free; valid"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/var.c",
+   "line": 309,
+   "rule": "MEM31-C",
+   "desc": "varexpand: 'return PARAM_EXPAND_ERROR' on null-byte detection skips curlx_dyn_free(&buf); leaks buf when funcp populated it (line 296)",
+   "upstream_present": true
+  }
+ ],
+ "files_clean_for_fn": [
+  "lib/vauth/digest_sspi.c"
+ ],
+ "summary": {
+  "tp": 0,
+  "fp": 114,
+  "fn": 1
+ }
+}

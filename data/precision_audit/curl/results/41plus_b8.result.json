@@ -1,0 +1,1669 @@
+{
+ "labels": [
+  {
+   "rule": "PRE01-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 151,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "BIGNUM decl macro; param use safe, no precedence issue"
+  },
+  {
+   "rule": "PRE01-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 154,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "BIGNUM decl macro; param use safe, no precedence issue"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 212,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* buffer byte write/read; no real sign-extension bug"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 212,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* buffer byte write/read; no real sign-extension bug"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 213,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "out-param filled before read or branch-local assign"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 241,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pubkey_show macro evaluates args once each; benign"
+  },
+  {
+   "rule": "PRE05-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 241,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "stringification macro idiomatic; works as intended"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 241,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "simple macro wrapper; no multi-eval hazard"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 244,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory style only"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 246,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* buffer byte write/read; no real sign-extension bug"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 257,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL/curlx header function or macro; declared via include"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 259,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL/curlx header function or macro; declared via include"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 280,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "namebuf[sizeof-1] index correct; no double scaling"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 286,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl config getter or guarded alloc; pointer non-NULL by design"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 323,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 324,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 358,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 359,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 558,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 565,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "INT31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 670,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "size_t bounded by int blen before narrowing"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 683,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returns BIO_METHOD* from BIO_meth_new, not local"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 709,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed buffer not used with getenv result"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 780,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory style only"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 784,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* buffer byte write/read; no real sign-extension bug"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 791,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* buffer byte write/read; no real sign-extension bug"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 792,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* buffer byte write/read; no real sign-extension bug"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 793,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* buffer byte write/read; no real sign-extension bug"
+  },
+  {
+   "rule": "ARR38-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 817,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "memcpy guarded by num>klen; within buffer"
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 882,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "password is const char* pointer, not a buffer to clear"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 949,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL/curlx header function or macro; declared via include"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 978,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL/curlx header function or macro; declared via include"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1007,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL/curlx header function or macro; declared via include"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1026,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL/curlx header function or macro; declared via include"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1050,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "all execution paths return explicitly"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1062,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "callee takes const char*; literal not modified"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1107,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "all execution paths return explicitly"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1117,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "callee takes const char*; literal not modified"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1193,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "all execution paths return explicitly"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1204,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "callee takes const char*; literal not modified"
+  },
+  {
+   "rule": "INT07-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1236,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "params is a struct, not char; misparse"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1263,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "all execution paths return explicitly"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1273,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "callee takes const char*; literal not modified"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1408,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strcmp/!memcmp or ==1 with correct API convention"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1429,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free-then-NULL or reassign; no real UAF/double-free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1430,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free-then-NULL or reassign; no real UAF/double-free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1430,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "alloc stored in octx/owned by SSL or freed at cleanup label"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1466,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* buffer byte write/read; no real sign-extension bug"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1562,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strcmp/!memcmp or ==1 with correct API convention"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1567,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strcmp/!memcmp or ==1 with correct API convention"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "alloc stored in octx/owned by SSL or freed at cleanup label"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1618,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strcmp/!memcmp or ==1 with correct API convention"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1624,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "alloc stored in octx/owned by SSL or freed at cleanup label"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1643,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl config getter or guarded alloc; pointer non-NULL by design"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1657,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "all execution paths return explicitly"
+  },
+  {
+   "rule": "EXP00-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1665,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "flag OR combine across #if; precedence fine"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1689,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "all execution paths return explicitly"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1693,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buffer written through pointer by helper; not const"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1699,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free-then-NULL or reassign; no real UAF/double-free"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1751,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1783,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free-then-NULL or reassign; no real UAF/double-free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1785,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free-then-NULL or reassign; no real UAF/double-free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1786,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free-then-NULL or reassign; no real UAF/double-free"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1801,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed buffer not used with getenv result"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1801,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed-size array, not a VLA"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1818,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pure getter args; no unsequenced side effects"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1818,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "no real cast-away-const; sizeof/void* free idiom"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1952,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strcmp/!memcmp or ==1 with correct API convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1992,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 1992,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2025,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free-then-NULL or reassign; no real UAF/double-free"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2061,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2062,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2160,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strcmp/!memcmp or ==1 with correct API convention"
+  },
+  {
+   "rule": "EXP15-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2172,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "empty if-body intentional (else-if chain follows)"
+  },
+  {
+   "rule": "EXP15-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2233,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "empty if-body intentional (else-if chain follows)"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2240,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strcmp/!memcmp or ==1 with correct API convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2257,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2371,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strcmp/!memcmp or ==1 with correct API convention"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2515,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory style only"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2515,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2516,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory style only"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2582,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "idiomatic byte/version bit extraction"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2601,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "idiomatic byte/version bit extraction"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2658,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl config getter or guarded alloc; pointer non-NULL by design"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2703,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory style only"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2706,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory style only"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2707,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory style only"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2729,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL/curlx header function or macro; declared via include"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2760,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl config getter or guarded alloc; pointer non-NULL by design"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2766,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL/curlx header function or macro; declared via include"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf freed; second ptr is aliasing cursor, no leak"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2849,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free-then-NULL or reassign; no real UAF/double-free"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "out-param filled before read or branch-local assign"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2906,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "out-param array filled by callee before read"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2920,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "out-param filled before read or branch-local assign"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2935,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl config getter or guarded alloc; pointer non-NULL by design"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2947,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strcmp/!memcmp or ==1 with correct API convention"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 2971,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strcmp/!memcmp or ==1 with correct API convention"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3001,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "implicit-bounds array with initializer; idiomatic"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3034,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "char* to config struct via getter; alignment fine in practice"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3038,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl config getter or guarded alloc; pointer non-NULL by design"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3043,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl config getter or guarded alloc; pointer non-NULL by design"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3145,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "char* to config struct via getter; alignment fine in practice"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3148,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl config getter or guarded alloc; pointer non-NULL by design"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3155,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl config getter or guarded alloc; pointer non-NULL by design"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3204,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hash key string, not a credential"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3214,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory style only"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3214,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3214,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory style only"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "void* p assigned to typed ptr; no const removal"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3218,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strcmp/!memcmp or ==1 with correct API convention"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3224,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL/curlx header function or macro; declared via include"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3225,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL/curlx header function or macro; declared via include"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3249,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl config getter or guarded alloc; pointer non-NULL by design"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3251,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl config getter or guarded alloc; pointer non-NULL by design"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3296,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL/curlx header function or macro; declared via include"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3303,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL/curlx header function or macro; declared via include"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3313,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl config getter or guarded alloc; pointer non-NULL by design"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL/curlx header function or macro; declared via include"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3323,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL/curlx header function or macro; declared via include"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3330,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl config getter or guarded alloc; pointer non-NULL by design"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3334,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "orchestrator using DEBUGASSERT getters; siblings same"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3334,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "orchestrator using DEBUGASSERT getters; siblings same"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3339,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "char* to config struct via getter; alignment fine in practice"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3348,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl config getter or guarded alloc; pointer non-NULL by design"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3351,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl config getter or guarded alloc; pointer non-NULL by design"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3379,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3381,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3383,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "char* to config struct via getter; alignment fine in practice"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3391,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl config getter or guarded alloc; pointer non-NULL by design"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3426,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl config getter or guarded alloc; pointer non-NULL by design"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3459,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "out-param filled before read or branch-local assign"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3477,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3478,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3480,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3510,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "out-param filled before read or branch-local assign"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3531,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free-then-NULL or reassign; no real UAF/double-free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3618,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "alloc stored in octx/owned by SSL or freed at cleanup label"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3618,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free-then-NULL or reassign; no real UAF/double-free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3619,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free-then-NULL or reassign; no real UAF/double-free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3624,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free-then-NULL or reassign; no real UAF/double-free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3628,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free-then-NULL or reassign; no real UAF/double-free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3631,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free-then-NULL or reassign; no real UAF/double-free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3634,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free-then-NULL or reassign; no real UAF/double-free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3636,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "alloc stored in octx/owned by SSL or freed at cleanup label"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3648,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "alloc stored in octx/owned by SSL or freed at cleanup label"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3654,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3661,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl config getter or guarded alloc; pointer non-NULL by design"
+  },
+  {
+   "rule": "CON43-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3666,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "single-threaded config switch; no double-fetch"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3721,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "char* to config struct via getter; alignment fine in practice"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3755,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL/curlx header function or macro; declared via include"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3840,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL/curlx header function or macro; declared via include"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3947,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "callee takes const char*; literal not modified"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 3973,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL/curlx header function or macro; declared via include"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4018,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4036,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pure getter args; no unsequenced side effects"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4066,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "alloc stored in octx/owned by SSL or freed at cleanup label"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4069,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "alloc stored in octx/owned by SSL or freed at cleanup label"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4153,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "no real cast-away-const; sizeof/void* free idiom"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4166,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "char* to config struct via getter; alignment fine in practice"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4226,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buffer written through pointer by helper; not const"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4298,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buffer written through pointer by helper; not const"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4418,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL/curlx header function or macro; declared via include"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4440,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL/curlx header function or macro; declared via include"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4442,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf freed; second ptr is aliasing cursor, no leak"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4450,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL/curlx header function or macro; declared via include"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4468,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buffer written through pointer by helper; not const"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4469,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buffer written through pointer by helper; not const"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4473,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "out-param filled before read or branch-local assign"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4477,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "out-param filled before read or branch-local assign"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4498,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buffer written through pointer by helper; not const"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4529,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buffer written through pointer by helper; not const"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4530,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl config getter or guarded alloc; pointer non-NULL by design"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4545,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "alloc stored in octx/owned by SSL or freed at cleanup label"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4563,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL/curlx header function or macro; declared via include"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4623,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buffer written through pointer by helper; not const"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4648,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "out-param filled before read or branch-local assign"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4674,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4675,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4676,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory style only"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4676,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4678,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory style only"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4704,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4717,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl config getter or guarded alloc; pointer non-NULL by design"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4757,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "char* to config struct via getter; alignment fine in practice"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4839,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "#ifdef in if-condition not memset macro invocation"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4888,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "all execution paths return explicitly"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 4927,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "out-param filled before read or branch-local assign"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 5043,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 5051,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "all execution paths return explicitly"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 5051,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 5053,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory style only"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 5111,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "out-param filled before read or branch-local assign"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 5148,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory style only"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 5269,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed buffer not used with getenv result"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 5273,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "out-param array filled by callee before read"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 5273,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sockindex internally FIRST/SECONDARY socket; bounded by contract"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 5281,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strcmp/!memcmp or ==1 with correct API convention"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 5340,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "all execution paths return explicitly"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 5340,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory style only"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 5353,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* buffer byte write/read; no real sign-extension bug"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 5374,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory style only"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 5390,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory style only"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 5392,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory style only"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 5412,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "all execution paths return explicitly"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/openssl.c",
+   "line": 5421,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vtable/typedef-fixed or modified param; const not addable - categorical FP"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "lib/vtls/openssl.c"
+ ],
+ "summary": {
+  "tp": 0,
+  "fp": 207,
+  "fn": 0
+ }
+}

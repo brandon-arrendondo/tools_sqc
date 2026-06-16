@@ -1,0 +1,909 @@
+{
+"labels": [
+{
+"rule": "CON03-C",
+"file": "lib/easy.c",
+"line": 86,
+"verdict": "FP",
+"confidence": "high",
+"reason": "s_lock is curl_simple_lock, init macro; lock primitive itself, not a racy shared scalar"
+},
+{
+"rule": "CON03-C",
+"file": "lib/easy.c",
+"line": 106,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Curl_cmalloc allocator callback set once before threads; documented single-init contract"
+},
+{
+"rule": "DCL15-C",
+"file": "lib/easy.c",
+"line": 106,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Curl_cmalloc is exported global used across translation units; cannot be static"
+},
+{
+"rule": "DCL19-C",
+"file": "lib/easy.c",
+"line": 106,
+"verdict": "FP",
+"confidence": "high",
+"reason": "intentional exported global allocator callback; minimal-scope advice inapplicable"
+},
+{
+"rule": "CON03-C",
+"file": "lib/easy.c",
+"line": 107,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Curl_cfree allocator callback set before threads; intentional global"
+},
+{
+"rule": "DCL15-C",
+"file": "lib/easy.c",
+"line": 107,
+"verdict": "FP",
+"confidence": "high",
+"reason": "exported global with external linkage by design"
+},
+{
+"rule": "DCL19-C",
+"file": "lib/easy.c",
+"line": 107,
+"verdict": "FP",
+"confidence": "high",
+"reason": "intentional exported global allocator callback"
+},
+{
+"rule": "CON03-C",
+"file": "lib/easy.c",
+"line": 108,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Curl_crealloc allocator callback set before threads; intentional global"
+},
+{
+"rule": "DCL15-C",
+"file": "lib/easy.c",
+"line": 108,
+"verdict": "FP",
+"confidence": "high",
+"reason": "exported global with external linkage by design"
+},
+{
+"rule": "DCL19-C",
+"file": "lib/easy.c",
+"line": 108,
+"verdict": "FP",
+"confidence": "high",
+"reason": "intentional exported global allocator callback"
+},
+{
+"rule": "CON03-C",
+"file": "lib/easy.c",
+"line": 109,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Curl_cstrdup allocator callback set before threads; intentional global"
+},
+{
+"rule": "DCL15-C",
+"file": "lib/easy.c",
+"line": 109,
+"verdict": "FP",
+"confidence": "high",
+"reason": "exported global with external linkage by design"
+},
+{
+"rule": "DCL19-C",
+"file": "lib/easy.c",
+"line": 109,
+"verdict": "FP",
+"confidence": "high",
+"reason": "intentional exported global allocator callback"
+},
+{
+"rule": "CON03-C",
+"file": "lib/easy.c",
+"line": 110,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Curl_ccalloc allocator callback set before threads; intentional global"
+},
+{
+"rule": "DCL15-C",
+"file": "lib/easy.c",
+"line": 110,
+"verdict": "FP",
+"confidence": "high",
+"reason": "exported global with external linkage by design"
+},
+{
+"rule": "DCL19-C",
+"file": "lib/easy.c",
+"line": 110,
+"verdict": "FP",
+"confidence": "high",
+"reason": "intentional exported global allocator callback"
+},
+{
+"rule": "CON34-C",
+"file": "lib/easy.c",
+"line": 181,
+"verdict": "FP",
+"confidence": "med",
+"reason": "getenv in DEBUGBUILD-only path under global_init lock; result not stored across threads"
+},
+{
+"rule": "MSC07-C",
+"file": "lib/easy.c",
+"line": 188,
+"verdict": "FP",
+"confidence": "high",
+"reason": "line 188 is the 'fail:' label after return; goto targets it, not unreachable"
+},
+{
+"rule": "DCL15-C",
+"file": "lib/easy.c",
+"line": 197,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curl_global_init is public exported API"
+},
+{
+"rule": "DCL15-C",
+"file": "lib/easy.c",
+"line": 213,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curl_global_init_mem is public exported API"
+},
+{
+"rule": "EXP33-C",
+"file": "lib/easy.c",
+"line": 225,
+"verdict": "FP",
+"confidence": "high",
+"reason": "'initialized' is file-scope static, zero-initialized by C standard"
+},
+{
+"rule": "CON07-C",
+"file": "lib/easy.c",
+"line": 255,
+"verdict": "FP",
+"confidence": "med",
+"reason": "curl_global_cleanup guarded by global_init_lock when threadsafe; documented non-reentrant API"
+},
+{
+"rule": "DCL15-C",
+"file": "lib/easy.c",
+"line": 255,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curl_global_cleanup is public exported API"
+},
+{
+"rule": "EXP33-C",
+"file": "lib/easy.c",
+"line": 259,
+"verdict": "FP",
+"confidence": "high",
+"reason": "'initialized' is file-scope static, zero-initialized"
+},
+{
+"rule": "EXP33-C",
+"file": "lib/easy.c",
+"line": 273,
+"verdict": "FP",
+"confidence": "high",
+"reason": "'easy_init_flags' file-scope static, zero-initialized; only reached after init"
+},
+{
+"rule": "EXP33-C",
+"file": "lib/easy.c",
+"line": 281,
+"verdict": "FP",
+"confidence": "high",
+"reason": "'leakpointer' file-scope static, zero-initialized"
+},
+{
+"rule": "DCL15-C",
+"file": "lib/easy.c",
+"line": 292,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curl_global_trace is public exported API"
+},
+{
+"rule": "MSC37-C",
+"file": "lib/easy.c",
+"line": 292,
+"verdict": "FP",
+"confidence": "high",
+"reason": "both #ifdef arms return; sqc misses preprocessor branches"
+},
+{
+"rule": "API00-C",
+"file": "lib/easy.c",
+"line": 312,
+"verdict": "FP",
+"confidence": "high",
+"reason": "thin wrapper forwarding name to Curl_init_sslset_nolock which validates; never derefs here"
+},
+{
+"rule": "API00-C",
+"file": "lib/easy.c",
+"line": 312,
+"verdict": "FP",
+"confidence": "high",
+"reason": "avail forwarded to nolock impl, not dereferenced in wrapper"
+},
+{
+"rule": "DCL15-C",
+"file": "lib/easy.c",
+"line": 312,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curl_global_sslset is public exported API"
+},
+{
+"rule": "EXP33-C",
+"file": "lib/easy.c",
+"line": 338,
+"verdict": "FP",
+"confidence": "high",
+"reason": "'initialized' file-scope static, zero-initialized"
+},
+{
+"rule": "FIO42-C",
+"file": "lib/easy.c",
+"line": 350,
+"verdict": "FP",
+"confidence": "high",
+"reason": "'result' is CURLcode from Curl_open, not a file descriptor; total misfire"
+},
+{
+"rule": "DCL30-C",
+"file": "lib/easy.c",
+"line": 356,
+"verdict": "FP",
+"confidence": "high",
+"reason": "'data' is heap struct from Curl_open(&data), not automatic storage"
+},
+{
+"rule": "DCL13-C",
+"file": "lib/easy.c",
+"line": 381,
+"verdict": "FP",
+"confidence": "high",
+"reason": "events_timer signature fixed by CURLMOPT_TIMERFUNCTION typedef; const impossible"
+},
+{
+"rule": "DCL13-C",
+"file": "lib/easy.c",
+"line": 435,
+"verdict": "FP",
+"confidence": "high",
+"reason": "events_socket signature fixed by CURLMOPT_SOCKETFUNCTION typedef"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 474,
+"verdict": "FP",
+"confidence": "high",
+"reason": "m freed only in REMOVE branch which breaks immediately; line 474 reached only when not freed"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 488,
+"verdict": "FP",
+"confidence": "high",
+"reason": "m freshly allocated via curlx_malloc and NULL-checked at 486; not freed"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 489,
+"verdict": "FP",
+"confidence": "high",
+"reason": "m freshly allocated and NULL-checked; member writes are valid init"
+},
+{
+"rule": "DCL13-C",
+"file": "lib/easy.c",
+"line": 524,
+"verdict": "FP",
+"confidence": "med",
+"reason": "populate_fds writes through fds[] (f->fd=...), so fds is modified; const wrong anyway"
+},
+{
+"rule": "DCL13-C",
+"file": "lib/easy.c",
+"line": 524,
+"verdict": "FP",
+"confidence": "high",
+"reason": "ev->list traversal reads via m, but ev not const-able; param is non-modified yet idiomatic"
+},
+{
+"rule": "ARR37-C",
+"file": "lib/easy.c",
+"line": 538,
+"verdict": "FP",
+"confidence": "high",
+"reason": "f points into fds[] array; f++ is legitimate array iteration"
+},
+{
+"rule": "DCL13-C",
+"file": "lib/easy.c",
+"line": 548,
+"verdict": "FP",
+"confidence": "med",
+"reason": "poll_fds reads ev->ms and ev->list-derived fields; const-able but advisory FP per convention"
+},
+{
+"rule": "EXP33-C",
+"file": "lib/easy.c",
+"line": 603,
+"verdict": "FP",
+"confidence": "high",
+"reason": "pollrc set by poll_fds via &pollrc at line 597 before read"
+},
+{
+"rule": "ARR00-C",
+"file": "lib/easy.c",
+"line": 617,
+"verdict": "FP",
+"confidence": "high",
+"reason": "fds[] filled by populate_fds at 592 before loop reads"
+},
+{
+"rule": "ARR00-C",
+"file": "lib/easy.c",
+"line": 623,
+"verdict": "FP",
+"confidence": "high",
+"reason": "fds[] filled by populate_fds before read"
+},
+{
+"rule": "ARR00-C",
+"file": "lib/easy.c",
+"line": 624,
+"verdict": "FP",
+"confidence": "high",
+"reason": "fds[] filled by populate_fds before read"
+},
+{
+"rule": "CON03-C",
+"file": "lib/easy.c",
+"line": 670,
+"verdict": "FP",
+"confidence": "high",
+"reason": "static evs in DEBUGBUILD single-threaded blocking transfer; not cross-thread shared"
+},
+{
+"rule": "API00-C",
+"file": "lib/easy.c",
+"line": 837,
+"verdict": "FP",
+"confidence": "high",
+"reason": "GOOD_EASY_HANDLE(data) macro validates ptr before any use"
+},
+{
+"rule": "API00-C",
+"file": "lib/easy.c",
+"line": 853,
+"verdict": "FP",
+"confidence": "high",
+"reason": "GOOD_EASY_HANDLE(data) validates easy before deref"
+},
+{
+"rule": "DCL13-C",
+"file": "lib/easy.c",
+"line": 872,
+"verdict": "FP",
+"confidence": "med",
+"reason": "dupset reads src fields but src->set copied; const-able but advisory FP"
+},
+{
+"rule": "ARR38-C",
+"file": "lib/easy.c",
+"line": 886,
+"verdict": "FP",
+"confidence": "high",
+"reason": "memset(dst->set.str, 0, STRING_LAST*sizeof(char*)) sizes the array exactly"
+},
+{
+"rule": "ARR38-C",
+"file": "lib/easy.c",
+"line": 887,
+"verdict": "FP",
+"confidence": "high",
+"reason": "memset(dst->set.blobs, 0, BLOB_LAST*sizeof) sizes the array exactly"
+},
+{
+"rule": "INT18-C",
+"file": "lib/easy.c",
+"line": 906,
+"verdict": "FP",
+"confidence": "high",
+"reason": "postfieldsize is curl_off_t (signed), == -1 is valid signed sentinel comparison"
+},
+{
+"rule": "DCL31-C",
+"file": "lib/easy.c",
+"line": 907,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curlx_strdup declared in included curlx/strdup.h; macro/header sqc misses"
+},
+{
+"rule": "ARR01-C",
+"file": "lib/easy.c",
+"line": 921,
+"verdict": "FP",
+"confidence": "high",
+"reason": "sizeof(*dst->set.mimepostp) sizes the pointee struct correctly for malloc"
+},
+{
+"rule": "DCL13-C",
+"file": "lib/easy.c",
+"line": 938,
+"verdict": "FP",
+"confidence": "high",
+"reason": "dupeasy_meta_freeentry signature fixed by Curl_hash freeentry typedef"
+},
+{
+"rule": "API00-C",
+"file": "lib/easy.c",
+"line": 952,
+"verdict": "FP",
+"confidence": "high",
+"reason": "GOOD_EASY_HANDLE(data) validates d before use"
+},
+{
+"rule": "DCL31-C",
+"file": "lib/easy.c",
+"line": 959,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curlx_calloc declared via curlx headers; macro/header sqc misses"
+},
+{
+"rule": "EXP34-C",
+"file": "lib/easy.c",
+"line": 968,
+"verdict": "FP",
+"confidence": "high",
+"reason": "data validated by GOOD_EASY_HANDLE earlier; non-NULL after guard"
+},
+{
+"rule": "MSC07-C",
+"file": "lib/easy.c",
+"line": 1063,
+"verdict": "FP",
+"confidence": "high",
+"reason": "line 1063 is 'fail:' label, a goto target, not unreachable"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1069,
+"verdict": "FP",
+"confidence": "high",
+"reason": "fail-path frees distinct members then frees outcurl once; no UAF"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1069,
+"verdict": "FP",
+"confidence": "high",
+"reason": "sequential cleanup of distinct struct members, not freed pointer reuse"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1070,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Curl_altsvc_cleanup(&outcurl->asi) distinct member; not UAF"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1071,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Curl_hsts_cleanup(&outcurl->hsts) distinct member; not UAF"
+},
+{
+"rule": "DCL31-C",
+"file": "lib/easy.c",
+"line": 1073,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curlx_free declared via curlx headers; macro/header sqc misses"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1073,
+"verdict": "FP",
+"confidence": "high",
+"reason": "outcurl freed exactly once at end of fail path; no double-free"
+},
+{
+"rule": "EXP34-C",
+"file": "lib/easy.c",
+"line": 1089,
+"verdict": "FP",
+"confidence": "high",
+"reason": "data validated by GOOD_EASY_HANDLE at 1086 (curl_easy_reset)"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1100,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Curl_freeset(data) frees members not data; data is live, reinit follows. Not UAF"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1100,
+"verdict": "FP",
+"confidence": "high",
+"reason": "data never freed in curl_easy_reset; analyzer misattributes member-free to handle"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1100,
+"verdict": "FP",
+"confidence": "high",
+"reason": "data is live handle being reset; no free of data occurred"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1101,
+"verdict": "FP",
+"confidence": "high",
+"reason": "memset reinitializes data->set; data not freed"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1104,
+"verdict": "FP",
+"confidence": "high",
+"reason": "data live; Curl_initinfo reinit, no free occurred"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1104,
+"verdict": "FP",
+"confidence": "high",
+"reason": "data not freed; analyzer misattribution"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1104,
+"verdict": "FP",
+"confidence": "high",
+"reason": "data live handle; no UAF"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1107,
+"verdict": "FP",
+"confidence": "high",
+"reason": "data not freed in reset; member ops only"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1109,
+"verdict": "FP",
+"confidence": "high",
+"reason": "data->progress.hide write on live handle; no free"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1110,
+"verdict": "FP",
+"confidence": "high",
+"reason": "data->state write on live handle; no free"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1111,
+"verdict": "FP",
+"confidence": "high",
+"reason": "data->state write on live handle; no free"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1114,
+"verdict": "FP",
+"confidence": "high",
+"reason": "memset authhost on live handle; data not freed"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1114,
+"verdict": "FP",
+"confidence": "high",
+"reason": "data live; no free occurred"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1114,
+"verdict": "FP",
+"confidence": "high",
+"reason": "data live handle member access; no UAF"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1114,
+"verdict": "FP",
+"confidence": "high",
+"reason": "duplicate misfire; data not freed"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1115,
+"verdict": "FP",
+"confidence": "high",
+"reason": "memset authproxy on live handle; no free"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1115,
+"verdict": "FP",
+"confidence": "high",
+"reason": "data live; no free occurred"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1115,
+"verdict": "FP",
+"confidence": "high",
+"reason": "data live member access; no UAF"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1115,
+"verdict": "FP",
+"confidence": "high",
+"reason": "duplicate misfire; data not freed"
+},
+{
+"rule": "DCL15-C",
+"file": "lib/easy.c",
+"line": 1136,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curl_easy_pause is public exported API"
+},
+{
+"rule": "EXP34-C",
+"file": "lib/easy.c",
+"line": 1145,
+"verdict": "FP",
+"confidence": "high",
+"reason": "GOOD_EASY_HANDLE(data) check in same condition guards deref"
+},
+{
+"rule": "API05-C",
+"file": "lib/easy.c",
+"line": 1224,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curl never uses C99 array-param syntax; advisory style FP by convention"
+},
+{
+"rule": "EXP34-C",
+"file": "lib/easy.c",
+"line": 1239,
+"verdict": "FP",
+"confidence": "high",
+"reason": "data validated by GOOD_EASY_HANDLE at 1230"
+},
+{
+"rule": "DCL00-C",
+"file": "lib/easy.c",
+"line": 1252,
+"verdict": "FP",
+"confidence": "med",
+"reason": "c is connectdata* out-param assigned via &c in easy_connection; not const-able"
+},
+{
+"rule": "API00-C",
+"file": "lib/easy.c",
+"line": 1272,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Curl_senddata internal; data validated by easy_connection's !data check"
+},
+{
+"rule": "API05-C",
+"file": "lib/easy.c",
+"line": 1272,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curl convention: no C99 array-param syntax"
+},
+{
+"rule": "DCL00-C",
+"file": "lib/easy.c",
+"line": 1276,
+"verdict": "FP",
+"confidence": "med",
+"reason": "c is out-param assigned via &c in easy_connection; not const"
+},
+{
+"rule": "API05-C",
+"file": "lib/easy.c",
+"line": 1302,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curl convention: no C99 array-param syntax"
+},
+{
+"rule": "API00-C",
+"file": "lib/easy.c",
+"line": 1334,
+"verdict": "FP",
+"confidence": "high",
+"reason": "sdata forwarded to Curl_ssl_session_import; not dereferenced in wrapper"
+},
+{
+"rule": "DCL15-C",
+"file": "lib/easy.c",
+"line": 1334,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curl_easy_ssls_import is public exported API"
+},
+{
+"rule": "MSC37-C",
+"file": "lib/easy.c",
+"line": 1334,
+"verdict": "FP",
+"confidence": "high",
+"reason": "both #if/#else arms return; sqc misses preprocessor branches"
+},
+{
+"rule": "API05-C",
+"file": "lib/easy.c",
+"line": 1334,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curl convention: no C99 array-param syntax"
+},
+{
+"rule": "API05-C",
+"file": "lib/easy.c",
+"line": 1335,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curl convention: no C99 array-param syntax"
+},
+{
+"rule": "API05-C",
+"file": "lib/easy.c",
+"line": 1336,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curl convention: no C99 array-param syntax"
+},
+{
+"rule": "DCL15-C",
+"file": "lib/easy.c",
+"line": 1355,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curl_easy_ssls_export is public exported API"
+},
+{
+"rule": "MSC37-C",
+"file": "lib/easy.c",
+"line": 1355,
+"verdict": "FP",
+"confidence": "high",
+"reason": "both #if/#else arms return; sqc misses preprocessor branches"
+},
+{
+"rule": "EXP34-C",
+"file": "lib/easy.c",
+"line": 1376,
+"verdict": "FP",
+"confidence": "med",
+"reason": "Curl_meta_set: data is internally-supplied non-NULL handle; DEBUGASSERT guards meta_data"
+},
+{
+"rule": "DCL31-C",
+"file": "lib/easy.c",
+"line": 1378,
+"verdict": "FP",
+"confidence": "high",
+"reason": "meta_dtor is a parameter (function pointer), not an undeclared function"
+},
+{
+"rule": "API00-C",
+"file": "lib/easy.c",
+"line": 1384,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Curl_meta_remove internal helper; data always a valid handle from callers"
+},
+{
+"rule": "API00-C",
+"file": "lib/easy.c",
+"line": 1384,
+"verdict": "FP",
+"confidence": "high",
+"reason": "key internal helper arg; forwarded to Curl_hash_delete which handles it"
+},
+{
+"rule": "API00-C",
+"file": "lib/easy.c",
+"line": 1389,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Curl_meta_get internal helper; data valid handle from callers"
+},
+{
+"rule": "API00-C",
+"file": "lib/easy.c",
+"line": 1389,
+"verdict": "FP",
+"confidence": "high",
+"reason": "key forwarded to Curl_hash_pick; internal helper"
+},
+{
+"rule": "API00-C",
+"file": "lib/easy.c",
+"line": 1394,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Curl_meta_reset internal helper; data valid handle from callers"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/easy.c",
+"line": 1118,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curl_easy_reset reinitializes data; Curl_http_auth_cleanup_digest cleans members, data not freed"
+}
+],
+"fns": [],
+"files_clean_for_fn": [
+"lib/easy.c"
+],
+"summary": {
+"tp": 0,
+"fp": 112,
+"fn": 0
+}
+}

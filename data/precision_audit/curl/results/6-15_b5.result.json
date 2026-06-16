@@ -1,0 +1,88 @@
+{
+  "labels": [
+    {"rule": "ERR02-C", "file": "lib/curlx/warnless.h", "line": 44, "verdict": "FP", "confidence": "high", "reason": "ssize_t return on type-conversion helper; advisory style, not an error/data mix bug"},
+    {"rule": "ERR02-C", "file": "lib/curlx/warnless.h", "line": 48, "verdict": "FP", "confidence": "high", "reason": "ssize_t param on conversion helper; advisory style only"},
+    {"rule": "API02-C", "file": "lib/curlx/warnless.h", "line": 64, "verdict": "FP", "confidence": "high", "reason": "size_t* is a scalar out-param, not an array needing capacity"},
+    {"rule": "ERR02-C", "file": "lib/curlx/warnless.h", "line": 64, "verdict": "FP", "confidence": "high", "reason": "ssize_t input to conversion helper; advisory style"},
+    {"rule": "API02-C", "file": "lib/curlx/warnless.h", "line": 68, "verdict": "FP", "confidence": "high", "reason": "size_t* scalar out-param, not an array"},
+    {"rule": "API02-C", "file": "lib/curlx/warnless.h", "line": 72, "verdict": "FP", "confidence": "high", "reason": "size_t* scalar out-param, not an array"},
+
+    {"rule": "DCL15-C", "file": "lib/getenv.c", "line": 26, "verdict": "FP", "confidence": "high", "reason": "curl_getenv is public exported API (curl.h); cannot be static"},
+    {"rule": "MEM30-C", "file": "lib/getenv.c", "line": 26, "verdict": "FP", "confidence": "high", "reason": "realloc size rc is never 0 in loop; on NULL old buf freed once then return"},
+    {"rule": "MSC37-C", "file": "lib/getenv.c", "line": 26, "verdict": "FP", "confidence": "high", "reason": "Every branch returns; infinite for-loop only exits via return statements"},
+    {"rule": "ENV34-C", "file": "lib/getenv.c", "line": 66, "verdict": "FP", "confidence": "high", "reason": "getenv result immediately strdup'd, not stored long-term"},
+    {"rule": "ERR33-C", "file": "lib/getenv.c", "line": 66, "verdict": "FP", "confidence": "high", "reason": "NULL handled: (env && env[0]) ? strdup : NULL"},
+    {"rule": "CON34-C", "file": "lib/getenv.c", "line": 66, "verdict": "FP", "confidence": "med", "reason": "getenv result copied immediately; advisory thread note, not a defect here"},
+
+    {"rule": "DCL13-C", "file": "lib/gopher.c", "line": 40, "verdict": "FP", "confidence": "high", "reason": "gopher_connect signature fixed by Curl_handler vtable typedef; const impossible"},
+    {"rule": "DCL13-C", "file": "lib/gopher.c", "line": 40, "verdict": "FP", "confidence": "high", "reason": "done is bool* output param of fixed vtable callback signature"},
+    {"rule": "DCL15-C", "file": "lib/gopher.c", "line": 219, "verdict": "FP", "confidence": "high", "reason": "Curl_scheme_gopher referenced externally in scheme table; needs external linkage"},
+    {"rule": "DCL19-C", "file": "lib/gopher.c", "line": 219, "verdict": "FP", "confidence": "high", "reason": "Externally-referenced scheme descriptor; file scope is required"},
+    {"rule": "DCL15-C", "file": "lib/gopher.c", "line": 232, "verdict": "FP", "confidence": "high", "reason": "Curl_scheme_gophers referenced externally; needs external linkage"},
+    {"rule": "DCL19-C", "file": "lib/gopher.c", "line": 232, "verdict": "FP", "confidence": "high", "reason": "Externally-referenced scheme descriptor; file scope required"},
+
+    {"rule": "PRE00-C", "file": "lib/pingpong.h", "line": 73, "verdict": "FP", "confidence": "med", "reason": "do-while assignment macro; pp used only as assignment target, no side-effect callers"},
+    {"rule": "PRE01-C", "file": "lib/pingpong.h", "line": 73, "verdict": "FP", "confidence": "med", "reason": "s is a complete RHS identifier; parenthesizing changes nothing, no precedence risk"},
+    {"rule": "PRE01-C", "file": "lib/pingpong.h", "line": 73, "verdict": "FP", "confidence": "med", "reason": "e is a complete RHS identifier; no precedence risk"},
+    {"rule": "PRE12-C", "file": "lib/pingpong.h", "line": 73, "verdict": "FP", "confidence": "med", "reason": "pp assignment-target only; callers pass plain &pp addresses, no double-eval defect"},
+    {"rule": "API02-C", "file": "lib/pingpong.h", "line": 130, "verdict": "FP", "confidence": "high", "reason": "size_t* is scalar out-param for response size, not an array"},
+    {"rule": "API05-C", "file": "lib/pingpong.h", "line": 133, "verdict": "FP", "confidence": "high", "reason": "Advisory conformant-array style; curl never uses C99 array-param syntax"},
+
+    {"rule": "DCL37-C", "file": "lib/setup-win32.h", "line": 92, "verdict": "FP", "confidence": "high", "reason": "Defining Windows SDK _WIN32_WINNT_* under #ifndef shim; required platform macro"},
+    {"rule": "DCL37-C", "file": "lib/setup-win32.h", "line": 95, "verdict": "FP", "confidence": "high", "reason": "Windows SDK macro shim guarded by #ifndef; intentional"},
+    {"rule": "DCL37-C", "file": "lib/setup-win32.h", "line": 98, "verdict": "FP", "confidence": "high", "reason": "Windows SDK macro shim; intentional platform compatibility define"},
+    {"rule": "DCL37-C", "file": "lib/setup-win32.h", "line": 101, "verdict": "FP", "confidence": "high", "reason": "Windows SDK macro shim; intentional"},
+    {"rule": "DCL37-C", "file": "lib/setup-win32.h", "line": 104, "verdict": "FP", "confidence": "high", "reason": "Windows SDK macro shim; intentional"},
+    {"rule": "DCL37-C", "file": "lib/setup-win32.h", "line": 107, "verdict": "FP", "confidence": "high", "reason": "Windows SDK macro shim; intentional"},
+
+    {"rule": "API02-C", "file": "lib/strcase.h", "line": 35, "verdict": "FP", "confidence": "high", "reason": "n size param already present; rule misreads dest as unsized array"},
+    {"rule": "API05-C", "file": "lib/strcase.h", "line": 35, "verdict": "FP", "confidence": "high", "reason": "Advisory conformant-array style; not curl convention"},
+    {"rule": "API05-C", "file": "lib/strcase.h", "line": 35, "verdict": "FP", "confidence": "high", "reason": "Advisory conformant-array style on src param"},
+    {"rule": "API02-C", "file": "lib/strcase.h", "line": 36, "verdict": "FP", "confidence": "high", "reason": "n size param present; advisory misfire"},
+    {"rule": "API05-C", "file": "lib/strcase.h", "line": 36, "verdict": "FP", "confidence": "high", "reason": "Advisory conformant-array style"},
+    {"rule": "API05-C", "file": "lib/strcase.h", "line": 36, "verdict": "FP", "confidence": "high", "reason": "Advisory conformant-array style on src param"},
+
+    {"rule": "API00-C", "file": "lib/vauth/krb5_gssapi.c", "line": 76, "verdict": "FP", "confidence": "high", "reason": "Internal auth API; data always valid from caller; siblings unchecked too"},
+    {"rule": "API00-C", "file": "lib/vauth/krb5_gssapi.c", "line": 76, "verdict": "FP", "confidence": "high", "reason": "krb5 supplied by internal SASL machinery; never NULL"},
+    {"rule": "API00-C", "file": "lib/vauth/krb5_gssapi.c", "line": 179, "verdict": "FP", "confidence": "high", "reason": "krb5 internal in/out struct always valid from caller"},
+    {"rule": "DCL13-C", "file": "lib/vauth/krb5_gssapi.c", "line": 182, "verdict": "FP", "confidence": "med", "reason": "krb5->context passed to gss_unwrap; struct logically in/out, curl avoids const here"},
+    {"rule": "DCL00-C", "file": "lib/vauth/krb5_gssapi.c", "line": 196, "verdict": "FP", "confidence": "high", "reason": "max_size IS modified later (lines 246/260-262); cannot be const"},
+    {"rule": "API00-C", "file": "lib/vauth/krb5_gssapi.c", "line": 305, "verdict": "FP", "confidence": "high", "reason": "cleanup called internally with valid krb5; gss_release_* handles members"},
+
+    {"rule": "API00-C", "file": "src/tool_dirhie.c", "line": 87, "verdict": "FP", "confidence": "high", "reason": "outfile always a valid path from caller; strlen would crash but contract guarantees non-NULL"},
+    {"rule": "STR34-C", "file": "src/tool_dirhie.c", "line": 90, "verdict": "FP", "confidence": "high", "reason": "outfile is char* passed to strlen; no char-to-int sign extension occurs"},
+    {"rule": "STR34-C", "file": "src/tool_dirhie.c", "line": 97, "verdict": "FP", "confidence": "high", "reason": "outfile is pointer arg to strspn; no signed-char promotion"},
+    {"rule": "STR34-C", "file": "src/tool_dirhie.c", "line": 98, "verdict": "FP", "confidence": "high", "reason": "*outfile used as loop truthiness/index; no widening sign-extension defect"},
+    {"rule": "STR34-C", "file": "src/tool_dirhie.c", "line": 98, "verdict": "FP", "confidence": "high", "reason": "outfile pointer arithmetic; not a signed-char conversion"},
+    {"rule": "DCL18-C", "file": "src/tool_dirhie.c", "line": 123, "verdict": "FP", "confidence": "high", "reason": "0000750 is intentional octal file mode for mkdir; correct usage"},
+
+    {"rule": "ARR02-C", "file": "src/tool_easysrc.c", "line": 44, "verdict": "FP", "confidence": "high", "reason": "Advisory; NULL-terminated string array, implicit bounds idiomatic"},
+    {"rule": "ARR02-C", "file": "src/tool_easysrc.c", "line": 60, "verdict": "FP", "confidence": "high", "reason": "Advisory; NULL-terminated string array"},
+    {"rule": "ARR02-C", "file": "src/tool_easysrc.c", "line": 67, "verdict": "FP", "confidence": "high", "reason": "Advisory; NULL-terminated string array"},
+    {"rule": "DCL30-C", "file": "src/tool_easysrc.c", "line": 100, "verdict": "FP", "confidence": "high", "reason": "*plist = list stores heap slist into out-param, not address of local"},
+    {"rule": "FIO42-C", "file": "src/tool_easysrc.c", "line": 179, "verdict": "FP", "confidence": "high", "reason": "out fclosed at line 228 when fopened; stdout intentionally not closed"},
+    {"rule": "FIO42-C", "file": "src/tool_easysrc.c", "line": 179, "verdict": "FP", "confidence": "high", "reason": "Duplicate of fopen finding; out is closed when opened"},
+
+    {"rule": "ARR02-C", "file": "src/tool_xattr.c", "line": 34, "verdict": "FP", "confidence": "high", "reason": "Advisory; NULL-terminated mapping table, implicit bounds idiomatic"},
+    {"rule": "DCL30-C", "file": "src/tool_xattr.c", "line": 70, "verdict": "FP", "confidence": "high", "reason": "nurl is heap buffer from curl_url_get; returning it is correct (documented free)"},
+    {"rule": "CON34-C", "file": "src/tool_xattr.c", "line": 84, "verdict": "FP", "confidence": "med", "reason": "DEBUGBUILD-only test hook getenv; advisory thread note, not a defect"},
+    {"rule": "ERR02-C", "file": "src/tool_xattr.c", "line": 95, "verdict": "FP", "confidence": "high", "reason": "ssize_t from extattr_set_fd checked rc<0; advisory style only"},
+    {"rule": "API00-C", "file": "src/tool_xattr.c", "line": 108, "verdict": "FP", "confidence": "high", "reason": "curl handle valid from tool_operate; getinfo NULL-checks internally"},
+    {"rule": "INT32-C", "file": "src/tool_xattr.c", "line": 119, "verdict": "FP", "confidence": "high", "reason": "i indexes 3-element mappings[] bounded by NULL terminator; cannot near INT_MAX"}
+  ],
+  "fns": [
+    {"file": "src/tool_dirhie.c", "line": 119, "rule": "MEM31-C", "desc": "On curlx_dyn_addn failure the function returns without curlx_dyn_free(&dirbuf), leaking the already-allocated dynbuf when failure occurs after a prior successful append", "upstream_present": true}
+  ],
+  "files_clean_for_fn": [
+    "lib/curlx/warnless.h",
+    "lib/getenv.c",
+    "lib/gopher.c",
+    "lib/pingpong.h",
+    "lib/setup-win32.h",
+    "lib/strcase.h",
+    "lib/vauth/krb5_gssapi.c",
+    "src/tool_easysrc.c",
+    "src/tool_xattr.c"
+  ],
+  "summary": {"tp": 0, "fp": 50, "fn": 1}
+}

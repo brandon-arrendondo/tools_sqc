@@ -1,0 +1,39 @@
+{
+  "labels": [
+    {"rule": "API02-C", "file": "lib/curl_gethostname.h", "line": 31, "verdict": "FP", "confidence": "high", "reason": "Advisory style; signature already has namelen size arg; curl never uses C99 array-param syntax"},
+    {"rule": "API05-C", "file": "lib/curl_ldap.h", "line": 31, "verdict": "FP", "confidence": "high", "reason": "Conformant-array-syntax advisory; curl never uses C99 array params (brief #1)"},
+    {"rule": "API05-C", "file": "lib/curl_memrchr.c", "line": 37, "verdict": "FP", "confidence": "high", "reason": "memrchr clone with void* signature; conformant-array syntax inapplicable; advisory FP"},
+    {"rule": "API05-C", "file": "lib/curl_memrchr.h", "line": 35, "verdict": "FP", "confidence": "high", "reason": "Declaration matching memrchr clone; advisory conformant-array syntax FP"},
+    {"rule": "DCL13-C", "file": "lib/curlx/basename.c", "line": 54, "verdict": "FP", "confidence": "high", "reason": "POSIX basename drop-in; non-const mandated by macro fallback and contract; const breaks it"},
+    {"rule": "API02-C", "file": "lib/curlx/basename.h", "line": 29, "verdict": "FP", "confidence": "high", "reason": "basename returns pointer into path; size arg meaningless; advisory FP"},
+    {"rule": "API02-C", "file": "lib/curlx/dynbuf.h", "line": 60, "verdict": "FP", "confidence": "high", "reason": "dyn_take returns owned buffer with plen out-param; capacity arg inapplicable; advisory FP"},
+    {"rule": "MSC37-C", "file": "lib/curlx/nonblock.c", "line": 45, "verdict": "FP", "confidence": "high", "reason": "Every #if branch returns; final #else is #error, so no end-fallthrough exists"},
+    {"rule": "PRE06-C", "file": "lib/curlx/snprintf.h", "line": 1, "verdict": "TP", "confidence": "low", "reason": "Header genuinely lacks include guard; only defines SNPRINTF macro; minor but factually correct"},
+    {"rule": "API05-C", "file": "lib/curlx/strerr.h", "line": 27, "verdict": "FP", "confidence": "high", "reason": "char *buf,size_t buflen strerror signature; conformant-array advisory FP"},
+    {"rule": "EXP37-C", "file": "lib/getinfo.h", "line": 26, "verdict": "FP", "confidence": "high", "reason": "Legitimate internal variadic declaration (getinfo); declaring variadic in header is normal C"},
+    {"rule": "API05-C", "file": "lib/http_aws_sigv4.h", "line": 35, "verdict": "FP", "confidence": "high", "reason": "const char*q,size_t len signature; conformant-array advisory FP"},
+    {"rule": "API05-C", "file": "lib/httpsrr.h", "line": 61, "verdict": "FP", "confidence": "high", "reason": "const uint8_t*val,size_t vlen signature; conformant-array advisory FP"},
+    {"rule": "API05-C", "file": "lib/strerror.h", "line": 29, "verdict": "FP", "confidence": "high", "reason": "char *buf,size_t buflen sspi_strerror signature; conformant-array advisory FP"},
+    {"rule": "API05-C", "file": "lib/vquic/curl_quiche.h", "line": 36, "verdict": "FP", "confidence": "high", "reason": "char *p,size_t len version signature; conformant-array advisory FP"},
+    {"rule": "API05-C", "file": "lib/vssh/ssh.h", "line": 256, "verdict": "FP", "confidence": "high", "reason": "char *buffer,size_t buflen version signature; conformant-array advisory FP"},
+    {"rule": "API05-C", "file": "lib/vtls/vtls_int.h", "line": 76, "verdict": "FP", "confidence": "high", "reason": "const unsigned char*proto,size_t proto_len; conformant-array advisory FP"},
+    {"rule": "API05-C", "file": "lib/vtls/vtls_spack.h", "line": 38, "verdict": "FP", "confidence": "high", "reason": "const void*bufv,size_t buflen unpack signature; conformant-array advisory FP"},
+    {"rule": "API05-C", "file": "lib/ws.h", "line": 38, "verdict": "FP", "confidence": "high", "reason": "const char*mem,size_t nread ws_accept signature; conformant-array advisory FP"},
+    {"rule": "EXP36-C", "file": "src/slist_wc.c", "line": 36, "verdict": "FP", "confidence": "high", "reason": "char* is data arg, not cast to slist; append returns properly-aligned malloc'd struct; no alignment issue"},
+    {"rule": "DCL13-C", "file": "src/tool_cb_see.c", "line": 37, "verdict": "FP", "confidence": "high", "reason": "CURLOPT_SEEKFUNCTION callback; fixed function-pointer signature; const cannot be added"},
+    {"rule": "API00-C", "file": "src/tool_filetime.c", "line": 86, "verdict": "FP", "confidence": "high", "reason": "Internal helper passing filename to OS CreateFile/utime; callers supply valid name; no deref-without-check"},
+    {"rule": "API05-C", "file": "src/tool_help.h", "line": 48, "verdict": "FP", "confidence": "high", "reason": "const unsigned char*buf,size_t len helpscan signature; conformant-array advisory FP"},
+    {"rule": "API02-C", "file": "src/tool_ipfs.h", "line": 30, "verdict": "FP", "confidence": "high", "reason": "char **url out-param for owned string; capacity arg inapplicable; advisory FP"},
+    {"rule": "API02-C", "file": "src/tool_util.h", "line": 38, "verdict": "FP", "confidence": "high", "reason": "char **pathp out-param for owned path string; capacity arg inapplicable; advisory FP"}
+  ],
+  "fns": [],
+  "files_clean_for_fn": [
+    "lib/curl_memrchr.c",
+    "lib/curlx/basename.c",
+    "lib/curlx/nonblock.c",
+    "src/slist_wc.c",
+    "src/tool_cb_see.c",
+    "src/tool_filetime.c"
+  ],
+  "summary": {"tp": 1, "fp": 24, "fn": 0}
+}

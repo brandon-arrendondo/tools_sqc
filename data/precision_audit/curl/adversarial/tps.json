@@ -1,0 +1,1122 @@
+[
+ {
+  "rule": "DCL38-C",
+  "file": "lib/hostip.h",
+  "line": "68",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "hostname[1] struct-hack; CERT DCL38 prefers []. Intentional portability idiom though."
+ },
+ {
+  "rule": "CON33-C",
+  "file": "src/toolx/tool_time.c",
+  "line": "53",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "localtime() async/thread-unsafe; CERT CON33 fires though it's a guarded last-resort fallback."
+ },
+ {
+  "rule": "PRE06-C",
+  "file": "lib/curlx/snprintf.h",
+  "line": "1",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "Header genuinely lacks include guard; only defines SNPRINTF macro; minor but factually correct"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/socks_sspi.c",
+  "line": "59",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static helper, cf only read (cf->conn); const addable, not vtable-bound"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/cf-h1-proxy.c",
+  "line": "73",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static helper reads ts->tunnel_state only; const addable"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/cf-h1-proxy.c",
+  "line": "78",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static helper reads ts only; const addable"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/cf-h1-proxy.c",
+  "line": "83",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "tunnel_reinit (void)cf; cf unused, const addable (matches brief sample)"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/cf-h1-proxy.c",
+  "line": "84",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "tunnel_reinit (void)data; data unused, const addable"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/cf-h1-proxy.c",
+  "line": "196",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "tunnel_want_send reads ts only; const addable"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/asyn-thrdd.c",
+  "line": "116",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static addr_ctx_unlink only reads data; const-able, but curl does not follow convention"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/cf-https-connect.c",
+  "line": "71",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static cf_hc_baller_is_active only reads b; const-able, not a vtable signature"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/cf-https-connect.c",
+  "line": "76",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static cf_hc_baller_has_started only reads b->cf; const-able"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/cf-https-connect.c",
+  "line": "90",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static cf_hc_baller_data_pending does not modify b; const-able"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/cf-https-connect.c",
+  "line": "96",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static cf_hc_baller_needs_flush does not modify b; const-able"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/cf-https-connect.c",
+  "line": "102",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static cf_hc_baller_cntrl does not modify b; const-able"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/cf-https-connect.c",
+  "line": "460",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static cf_get_max_baller_time only reads cf->ctx; const-able, not a vtable member"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/cf-https-connect.c",
+  "line": "638",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static cf_https_alpns_contain only reads list; const-able"
+ },
+ {
+  "rule": "DCL37-C",
+  "file": "lib/amigaos.c",
+  "line": "66",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "file-scope identifier starting with double underscore is technically reserved per DCL37"
+ },
+ {
+  "rule": "CON34-C",
+  "file": "lib/amigaos.c",
+  "line": "152",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "gethostbyname uses static storage; non-threadsafe (curl reopens lib but result static)"
+ },
+ {
+  "rule": "CON34-C",
+  "file": "lib/amigaos.c",
+  "line": "162",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "non-threaded path gethostbyname static storage; flagged correctly though guarded by build mode"
+ },
+ {
+  "rule": "ERR33-C",
+  "file": "src/tool_cb_wrt.c",
+  "line": "338",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "fwrite return rc only compared if(bytes==rc) for byte accounting, not checked for short write error path"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/pingpong.c",
+  "line": "351",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "pp only read in Curl_pp_pollset; could be const (brief-cited TP)"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/pingpong.c",
+  "line": "359",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "data unused ((void)data); could be const"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/pingpong.c",
+  "line": "360",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "pp only read in Curl_pp_needs_flush; could be const"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/uint-hash.c",
+  "line": "95",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "Static helper; he only read (he->next), never written through"
+ },
+ {
+  "rule": "PRE01-C",
+  "file": "lib/uint-hash.c",
+  "line": "110",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "Bare h in h->table unparenthesized (inconsistent with (h)->slots)"
+ },
+ {
+  "rule": "PRE00-C",
+  "file": "lib/urldata.h",
+  "line": "218",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "GOOD_EASY_HANDLE evaluates x multiple times; inline fn would be safer (advisory)"
+ },
+ {
+  "rule": "PRE12-C",
+  "file": "lib/urldata.h",
+  "line": "218",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "macro evaluates x multiple times; unsafe-macro pattern, side-effect arg would double-eval"
+ },
+ {
+  "rule": "PRE00-C",
+  "file": "lib/urldata.h",
+  "line": "222",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "non-DEBUG GOOD_EASY_HANDLE also evaluates x twice"
+ },
+ {
+  "rule": "PRE12-C",
+  "file": "lib/urldata.h",
+  "line": "222",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "macro evaluates x twice; genuine multiple evaluation"
+ },
+ {
+  "rule": "PRE00-C",
+  "file": "lib/urldata.h",
+  "line": "581",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "CUR_IP_QUAD_HAS_PORTS evaluates x->transport three times"
+ },
+ {
+  "rule": "PRE12-C",
+  "file": "lib/urldata.h",
+  "line": "581",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "x evaluated 3x; multiple evaluation present"
+ },
+ {
+  "rule": "PRE00-C",
+  "file": "lib/urldata.h",
+  "line": "648",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "CONN_SOCK_IDX_VALID evaluates i twice"
+ },
+ {
+  "rule": "PRE12-C",
+  "file": "lib/urldata.h",
+  "line": "648",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "i evaluated twice; multiple evaluation present"
+ },
+ {
+  "rule": "PRE00-C",
+  "file": "lib/urldata.h",
+  "line": "732",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "CURL_CONN_HOST_DISPNAME evaluates c many times"
+ },
+ {
+  "rule": "PRE12-C",
+  "file": "lib/urldata.h",
+  "line": "732",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "c evaluated multiple times across ternary chain"
+ },
+ {
+  "rule": "PRE00-C",
+  "file": "lib/urldata.h",
+  "line": "738",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "non-proxy CURL_CONN_HOST_DISPNAME evaluates c twice"
+ },
+ {
+  "rule": "PRE12-C",
+  "file": "lib/urldata.h",
+  "line": "738",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "c evaluated twice; multiple evaluation present"
+ },
+ {
+  "rule": "PRE00-C",
+  "file": "lib/urldata.h",
+  "line": "1594",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "IS_MIME_POST evaluates a twice (a->set.mimepostp)"
+ },
+ {
+  "rule": "PRE12-C",
+  "file": "lib/urldata.h",
+  "line": "1594",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "a evaluated twice; multiple evaluation present"
+ },
+ {
+  "rule": "PRE00-C",
+  "file": "lib/hash.c",
+  "line": "158",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "CURL_HASH_SLOT multiply-evaluates x in rvalue context"
+ },
+ {
+  "rule": "PRE12-C",
+  "file": "lib/hash.c",
+  "line": "158",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "x evaluated multiple times in macro body"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/multi_ev.c",
+  "line": "132",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "static helper, data only read (data->mid); const-qualifiable"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/multi_ev.c",
+  "line": "137",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "static helper, e only read (e->conn); const-qualifiable"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/multi_ev.c",
+  "line": "138",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "static helper, conn only compared not modified; const-qualifiable"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/multi_ev.c",
+  "line": "144",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "static helper, data only read (data->mid)"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/multi_ev.c",
+  "line": "152",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "conn pointer itself not modified, only stored; const param valid"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/multi_ev.c",
+  "line": "164",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "static helper, data only read"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/multi_ev.c",
+  "line": "173",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "static helper, conn only compared not modified"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/progress.c",
+  "line": "171",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "data only read; const-qualifiable (returns const ptr into data)"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/progress.c",
+  "line": "503",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "static helper, d only read (speed/total_size/cur_size); const-qualifiable"
+ },
+ {
+  "rule": "PRE10-C",
+  "file": "lib/md5.c",
+  "line": "285",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "multistatement MD5_STEP not do/while-wrapped; safe only because callers append nothing, but technically risky"
+ },
+ {
+  "rule": "PRE00-C",
+  "file": "lib/vtls/cipher_suite.c",
+  "line": "134",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "CS_ZIP_IDX multi-evals a..h; used only with compile-time constant idx names, so harmless in practice"
+ },
+ {
+  "rule": "MSC04-C",
+  "file": "lib/formdata.c",
+  "line": "290",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "free_chain is factual direct recursion"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/headers.c",
+  "line": "35",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static helper, never writes hs, not a fn-ptr"
+ },
+ {
+  "rule": "API00-C",
+  "file": "lib/headers.c",
+  "line": "121",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "derefs easy at L133 with no NULL check; sibling curl_easy_header checks it"
+ },
+ {
+  "rule": "DCL38-C",
+  "file": "lib/bufq.h",
+  "line": "38",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "uint8_t data[1] used as flexible array; DCL38 prefers []; intentional struct-hack"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/curl_sasl.c",
+  "line": "232",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "Curl_bufref_ptr may return NULL on empty success msg; *serverdata derefs NULL"
+ },
+ {
+  "rule": "PRE00-C",
+  "file": "lib/multi.c",
+  "line": "82",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "GOOD_MULTI_HANDLE macro evaluates x multiple times; genuine multi-eval macro"
+ },
+ {
+  "rule": "PRE12-C",
+  "file": "lib/multi.c",
+  "line": "82",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "same macro, x evaluated twice; inline fn would be safer"
+ },
+ {
+  "rule": "PRE00-C",
+  "file": "lib/multi.c",
+  "line": "86",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "non-debug GOOD_MULTI_HANDLE also evaluates x twice"
+ },
+ {
+  "rule": "PRE12-C",
+  "file": "lib/multi.c",
+  "line": "86",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "multi-eval of x in macro"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/cfilters.c",
+  "line": "594",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "conn only read (cfilter[idx]!=NULL); exported non-vtable fn could take const"
+ },
+ {
+  "rule": "PRE01-C",
+  "file": "lib/mime.c",
+  "line": "94",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "macro param stat_data unparenthesized (low impact, member-access use)"
+ },
+ {
+  "rule": "MSC04-C",
+  "file": "lib/mime.c",
+  "line": "689",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "genuine recursion (mime is recursive by design); advisory"
+ },
+ {
+  "rule": "MSC04-C",
+  "file": "lib/mime.c",
+  "line": "754",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "genuine recursion (mime is recursive by design); advisory"
+ },
+ {
+  "rule": "MSC04-C",
+  "file": "lib/mime.c",
+  "line": "814",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "genuine recursion (mime is recursive by design); advisory"
+ },
+ {
+  "rule": "MSC04-C",
+  "file": "lib/mime.c",
+  "line": "898",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "genuine recursion (mime is recursive by design); advisory"
+ },
+ {
+  "rule": "MSC04-C",
+  "file": "lib/mime.c",
+  "line": "1098",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "genuine recursion (mime is recursive by design); advisory"
+ },
+ {
+  "rule": "MSC04-C",
+  "file": "lib/mime.c",
+  "line": "1540",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "genuine recursion (mime is recursive by design); advisory"
+ },
+ {
+  "rule": "MSC04-C",
+  "file": "lib/mime.c",
+  "line": "1566",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "genuine recursion (mime is recursive by design); advisory"
+ },
+ {
+  "rule": "MSC04-C",
+  "file": "lib/mime.c",
+  "line": "1815",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "genuine recursion (mime is recursive by design); advisory"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/http2.c",
+  "line": "481",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static non-vtable helper reads ctx only; const ctx* applies; never writes"
+ },
+ {
+  "rule": "EXP20-C",
+  "file": "lib/vquic/curl_ngtcp2.c",
+  "line": "293",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "hash_count==1 tests for exactly-one-stream transition (first add); intentional, but brittle idiom"
+ },
+ {
+  "rule": "ERR33-C",
+  "file": "lib/http.c",
+  "line": "3511",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "time(NULL) return unchecked; degenerate -1 harmless but technically a violation"
+ },
+ {
+  "rule": "MSC04-C",
+  "file": "lib/http.c",
+  "line": "4971",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "Curl_http_resp_free directly recurses on resp->prev chain"
+ },
+ {
+  "rule": "ERR33-C",
+  "file": "src/tool_doswin.c",
+  "line": "685",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "atexit() return unchecked; can fail, cleanup silently not registered"
+ },
+ {
+  "rule": "WIN01-C",
+  "file": "src/tool_doswin.c",
+  "line": "874",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "TerminateThread genuinely flagged hazardous API; curl uses as last resort"
+ },
+ {
+  "rule": "PRE00-C",
+  "file": "lib/rtsp.c",
+  "line": "73",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "RTP_PKT_LENGTH evaluates (p) multiple times; idiomatic curl macro but rule applies"
+ },
+ {
+  "rule": "PRE12-C",
+  "file": "lib/rtsp.c",
+  "line": "73",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "Macro evaluates param p (p[2],p[3]) multiple times; could be inline function"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/vtls/vtls_scache.c",
+  "line": "499",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static helper reads only s->valid_until; could be const, not a callback signature"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/vtls/vtls_scache.c",
+  "line": "599",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "conn_config only read (clientcert/username/password); could be const in this static helper"
+ },
+ {
+  "rule": "MSC37-C",
+  "file": "lib/vtls/wolfssl.c",
+  "line": "2046",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "Curl_wssl_version falls off end without return if neither preprocessor branch active"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/ftp.c",
+  "line": "207",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static helper never writes through ftp; const addable"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/ftp.c",
+  "line": "345",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static non-vtable helper only reads ftpc->transfertype"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/ftp.c",
+  "line": "803",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "pathlen() static helper only reads ftpc->dirs"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/ftp.c",
+  "line": "810",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "pathpiece() static helper only reads ftpc fields"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/ftp.c",
+  "line": "4366",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "type_url_check never writes ftp struct fields"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/cookie.c",
+  "line": "1234",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "conn only read (conn->scheme->protocol); could be const struct connectdata*"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/vquic/vquic.c",
+  "line": "657",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "scid only read (scid[i]); could be const unsigned char*; minor"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/imap.c",
+  "line": "592",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static helper, conn only read (user/passwd), never written; could be const"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/imap.c",
+  "line": "737",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static helper, imap only read; could be const-qualified"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/imap.c",
+  "line": "810",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static helper, imap only read; could be const-qualified"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/imap.c",
+  "line": "853",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static helper, imap only read; could be const-qualified"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/imap.c",
+  "line": "962",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static helper, imap only read; could be const-qualified"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/imap.c",
+  "line": "1198",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static helper is_custom_fetch_listing, imap read-only; could be const"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/imap.c",
+  "line": "1731",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "imap_parse_url_options reads conn->options only, writes imapc; conn could be const"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/imap.c",
+  "line": "2113",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "imap_dophase_done reads imap->transfer only; could be const-qualified"
+ },
+ {
+  "rule": "DCL38-C",
+  "file": "lib/conncache.c",
+  "line": "66",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "Struct-hack char dest[1]; CERT prefers flexible array member []"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/conncache.c",
+  "line": "99",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static helper reads bundle->conns only; could be const (not fn-ptr-bound)"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/conncache.c",
+  "line": "148",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static cpool_find_bundle reads conn->destination only; conn could be const"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/conncache.c",
+  "line": "155",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static cpool_remove_bundle reads bundle->dest/dest_len only; could be const"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/conncache.c",
+  "line": "292",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static cpool_add_bundle reads conn->destination only; conn could be const"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/cf-h2-proxy.c",
+  "line": "209",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static helper drain_tunnel reads cf only; const valid but curl idiom"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/cf-h2-proxy.c",
+  "line": "211",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static helper, tunnel read-only; const addable but curl idiom"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/cf-h2-proxy.c",
+  "line": "261",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static helper reads ctx->h2 only; const addable but curl idiom"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "src/tool_paramhlp.c",
+  "line": "69",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "static memcrlf reads orig only; const char* would be correct"
+ },
+ {
+  "rule": "MEM03-C",
+  "file": "src/tool_paramhlp.c",
+  "line": "567",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "passwd holds prompted password, not zeroed before scope exit; minor hygiene"
+ },
+ {
+  "rule": "ERR33-C",
+  "file": "lib/altsvc.c",
+  "line": "436",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "getenv result used in if(timestr) guard immediately; technically checked. Borderline; debug-only."
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/hsts.c",
+  "line": "275",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "hsts_push static helper reads sts only; never written, not fn-pointer-bound; const valid"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/hsts.c",
+  "line": "307",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "hsts_out static helper reads sts only; const-qualifiable, not fn-pointer-bound"
+ },
+ {
+  "rule": "ERR33-C",
+  "file": "lib/openldap.c",
+  "line": "639",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "unchecked getenv passed to str parser may NULL-deref; debug-build gated"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "src/tool_writeout.c",
+  "line": "81",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "urlpart static helper never writes through per; const-able but curl ignores convention"
+ },
+ {
+  "rule": "ERR33-C",
+  "file": "src/tool_writeout.c",
+  "line": "544",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "time(NULL) return unchecked; consequence cosmetic (timestamp formatting)"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "src/tool_writeout.c",
+  "line": "638",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "output_header static helper never writes through per; const-able"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "src/tool_writeout.c",
+  "line": "715",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "ourWriteOut only reads config->writeout; const-able but curl ignores convention"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "src/tool_setopt.c",
+  "line": "364",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "slist only iterated/read in static helper, not vtable-bound; could be const-pointer"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "src/tool_setopt.c",
+  "line": "525",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "toolmime only read (->subparts) in static helper; const-pointer candidate"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/cf-ip-happy.c",
+  "line": "147",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "iter only read in cf_ai_iter_has_more static helper; const-pointer candidate"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/cf-ip-happy.c",
+  "line": "293",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "cf parameter cast to void (unused) in cf_ip_ballers_clear; could be const"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "src/tool_progress.c",
+  "line": "152",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "start only read via *start; could be const, not a fn-pointer signature"
+ },
+ {
+  "rule": "PRE00-C",
+  "file": "lib/mprintf.c",
+  "line": "147",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "is_arg_used/mark_arg_used do evaluate y multiple times (real PRE advisory)"
+ },
+ {
+  "rule": "PRE12-C",
+  "file": "lib/mprintf.c",
+  "line": "147",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "macro evaluates y multiple times; CERT advisory factually holds (args side-effect-free though)"
+ },
+ {
+  "rule": "PRE00-C",
+  "file": "lib/mprintf.c",
+  "line": "148",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "is_arg_used/mark_arg_used do evaluate y multiple times (real PRE advisory)"
+ },
+ {
+  "rule": "PRE12-C",
+  "file": "lib/mprintf.c",
+  "line": "148",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "macro evaluates y multiple times; CERT advisory factually holds (args side-effect-free though)"
+ },
+ {
+  "rule": "PRE00-C",
+  "file": "lib/curl_fopen.c",
+  "line": "46",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "IS_SEP evaluates x twice; advisory but technically true for function-like macro."
+ },
+ {
+  "rule": "PRE12-C",
+  "file": "lib/curl_fopen.c",
+  "line": "46",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "IS_SEP macro evaluates parameter x multiple times."
+ },
+ {
+  "rule": "DCL38-C",
+  "file": "lib/hash.h",
+  "line": "50",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "char key[1] is the legacy struct-hack; modern C99 prefers []. Real but intentional."
+ },
+ {
+  "rule": "MSC37-C",
+  "file": "lib/setup-vms.h",
+  "line": "84",
+  "verdict": "TP",
+  "confidence": "high",
+  "reason": "vms_translate_path falls off end without returning unix_path on success branch. Real (VMS-only)."
+ },
+ {
+  "rule": "PRE00-C",
+  "file": "lib/curl_ntlm_core.h",
+  "line": "33",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "SHORTPAIR(x) does evaluate x twice; function-like macro multiple-evaluation is a genuine style hazard."
+ },
+ {
+  "rule": "PRE12-C",
+  "file": "lib/curl_ntlm_core.h",
+  "line": "33",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "x evaluated multiple times; advisory but technically correct for SHORTPAIR."
+ },
+ {
+  "rule": "PRE00-C",
+  "file": "lib/curl_ntlm_core.h",
+  "line": "34",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "LONGQUARTET(x) evaluates x four times; multiple-evaluation style hazard."
+ },
+ {
+  "rule": "PRE12-C",
+  "file": "lib/curl_ntlm_core.h",
+  "line": "34",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "x evaluated four times; advisory multiple-evaluation correct."
+ },
+ {
+  "rule": "PRE00-C",
+  "file": "lib/transfer.h",
+  "line": "26",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "Curl_headersep(x) evaluates x twice; function-like macro multiple-evaluation style hazard."
+ },
+ {
+  "rule": "PRE12-C",
+  "file": "lib/transfer.h",
+  "line": "26",
+  "verdict": "TP",
+  "confidence": "med",
+  "reason": "x evaluated twice; advisory multiple-evaluation correct."
+ },
+ {
+  "rule": "CON34-C",
+  "file": "lib/hostip4.c",
+  "line": "265",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "gethostbyname() fallback genuinely uses shared static storage; non-threadsafe path"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/ratelimit.c",
+  "line": "178",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "Curl_rlimit_per_step only reads r->rate_per_step; could be const, not vtable"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/ratelimit.c",
+  "line": "183",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "Curl_rlimit_active only reads r fields; could be const"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/ratelimit.c",
+  "line": "188",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "Curl_rlimit_is_blocked only reads r->blocked; could be const"
+ },
+ {
+  "rule": "DCL13-C",
+  "file": "lib/sigpipe.h",
+  "line": "47",
+  "verdict": "TP",
+  "confidence": "low",
+  "reason": "sigpipe_ignore only reads data->set.no_signal; could be const Curl_easy*"
+ }
+]

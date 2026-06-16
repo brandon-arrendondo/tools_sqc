@@ -1,0 +1,922 @@
+{
+"labels": [
+{
+"rule": "INT14-C",
+"file": "lib/noproxy.c",
+"line": 61,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Idiomatic netmask: shift+arith on bits; readability advisory only"
+},
+{
+"rule": "MSC37-C",
+"file": "lib/noproxy.c",
+"line": 77,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Both #ifdef arms return; all paths return a value"
+},
+{
+"rule": "INT14-C",
+"file": "lib/noproxy.c",
+"line": 90,
+"verdict": "FP",
+"confidence": "high",
+"reason": "bits/8 and bits&7 are standard byte/bit split; advisory"
+},
+{
+"rule": "INT14-C",
+"file": "lib/noproxy.c",
+"line": 100,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Idiomatic mask construction; readability advisory only"
+},
+{
+"rule": "INT34-C",
+"file": "lib/noproxy.c",
+"line": 100,
+"verdict": "FP",
+"confidence": "high",
+"reason": "rest=bits&7 so 8-rest in 1..8, well within int width"
+},
+{
+"rule": "API05-C",
+"file": "lib/noproxy.c",
+"line": 118,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Conformant-array style; curl never uses C99 array-param syntax"
+},
+{
+"rule": "API05-C",
+"file": "lib/noproxy.c",
+"line": 119,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Conformant-array style advisory; project convention"
+},
+{
+"rule": "INT30-C",
+"file": "lib/noproxy.c",
+"line": 124,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Caller guards if(tokenlen); tokenlen>=1 here"
+},
+{
+"rule": "INT30-C",
+"file": "lib/noproxy.c",
+"line": 125,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Decrement guarded by tokenlen>=1 (trailing-dot check)"
+},
+{
+"rule": "INT30-C",
+"file": "lib/noproxy.c",
+"line": 130,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Decrement inside if(tokenlen && *token=='.') guard"
+},
+{
+"rule": "API05-C",
+"file": "lib/noproxy.c",
+"line": 148,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Conformant-array style advisory; project convention"
+},
+{
+"rule": "API05-C",
+"file": "lib/noproxy.c",
+"line": 149,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Conformant-array style advisory; project convention"
+},
+{
+"rule": "STR34-C",
+"file": "lib/noproxy.c",
+"line": 165,
+"verdict": "FP",
+"confidence": "high",
+"reason": "&slash[1] assigned to char*; no char sign-extension occurs"
+},
+{
+"rule": "STR34-C",
+"file": "lib/noproxy.c",
+"line": 170,
+"verdict": "FP",
+"confidence": "high",
+"reason": "*slash=0 writes constant; not a sign-extending read"
+},
+{
+"rule": "EXP20-C",
+"file": "lib/noproxy.c",
+"line": 201,
+"verdict": "FP",
+"confidence": "high",
+"reason": "!strcmp boolean idiom; standard curl convention"
+},
+{
+"rule": "EXP20-C",
+"file": "lib/noproxy.c",
+"line": 208,
+"verdict": "FP",
+"confidence": "high",
+"reason": "inet_pton documented to return 1 on success; ==1 correct"
+},
+{
+"rule": "EXP33-C",
+"file": "lib/noproxy.c",
+"line": 208,
+"verdict": "FP",
+"confidence": "high",
+"reason": "address is inet_pton output buffer; written not read"
+},
+{
+"rule": "WIN04-C",
+"file": "lib/noproxy.c",
+"line": 211,
+"verdict": "FP",
+"confidence": "high",
+"reason": "EncodePointer suggestion nonsensical; no function pointer stored"
+},
+{
+"rule": "ARR30-C",
+"file": "lib/noproxy.c",
+"line": 220,
+"verdict": "FP",
+"confidence": "high",
+"reason": "while(*p) bounded by NUL terminator of no_proxy string"
+},
+{
+"rule": "API00-C",
+"file": "lib/pingpong.c",
+"line": 44,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Internal helper; data always valid from callers"
+},
+{
+"rule": "API00-C",
+"file": "lib/pingpong.c",
+"line": 70,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Internal state machine; data always valid"
+},
+{
+"rule": "API00-C",
+"file": "lib/pingpong.c",
+"line": 129,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Internal init; pnow always passed valid"
+},
+{
+"rule": "API00-C",
+"file": "lib/pingpong.c",
+"line": 150,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Internal send; data always valid"
+},
+{
+"rule": "INT30-C",
+"file": "lib/pingpong.c",
+"line": 197,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Guarded by bytes_written!=write_len; bytes_written<=write_len"
+},
+{
+"rule": "API00-C",
+"file": "lib/pingpong.c",
+"line": 218,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Thin varargs wrapper; data passed through"
+},
+{
+"rule": "API05-C",
+"file": "lib/pingpong.c",
+"line": 234,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Conformant-array style advisory; project convention"
+},
+{
+"rule": "API00-C",
+"file": "lib/pingpong.c",
+"line": 246,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Internal response reader; data always valid"
+},
+{
+"rule": "API05-C",
+"file": "lib/pingpong.c",
+"line": 249,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Conformant-array style advisory; project convention"
+},
+{
+"rule": "INT30-C",
+"file": "lib/pingpong.c",
+"line": 290,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Header byte counter; bounded by response size, not wraparound"
+},
+{
+"rule": "INT30-C",
+"file": "lib/pingpong.c",
+"line": 292,
+"verdict": "FP",
+"confidence": "high",
+"reason": "nread_resp counter accumulating bounded read sizes"
+},
+{
+"rule": "STR34-C",
+"file": "lib/pingpong.c",
+"line": 301,
+"verdict": "FP",
+"confidence": "high",
+"reason": "nl-line is pointer subtraction (ptrdiff), not char conversion"
+},
+{
+"rule": "STR34-C",
+"file": "lib/pingpong.c",
+"line": 301,
+"verdict": "FP",
+"confidence": "high",
+"reason": "line is const char* pointer; no char sign extension"
+},
+{
+"rule": "API00-C",
+"file": "lib/pingpong.c",
+"line": 350,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Internal pollset; data always valid"
+},
+{
+"rule": "DCL13-C",
+"file": "lib/pingpong.c",
+"line": 351,
+"verdict": "TP",
+"confidence": "low",
+"reason": "pp only read in Curl_pp_pollset; could be const (brief-cited TP)"
+},
+{
+"rule": "DCL13-C",
+"file": "lib/pingpong.c",
+"line": 359,
+"verdict": "TP",
+"confidence": "low",
+"reason": "data unused ((void)data); could be const"
+},
+{
+"rule": "DCL13-C",
+"file": "lib/pingpong.c",
+"line": 360,
+"verdict": "TP",
+"confidence": "low",
+"reason": "pp only read in Curl_pp_needs_flush; could be const"
+},
+{
+"rule": "INT30-C",
+"file": "lib/pingpong.c",
+"line": 388,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Guarded by written!=sendleft; written<sendleft (partial send)"
+},
+{
+"rule": "ARR01-C",
+"file": "lib/pingpong.c",
+"line": 403,
+"verdict": "FP",
+"confidence": "high",
+"reason": "memset(pp,0,sizeof(*pp)) is correct struct-size idiom"
+},
+{
+"rule": "INT33-C",
+"file": "lib/uint-hash.c",
+"line": 35,
+"verdict": "FP",
+"confidence": "med",
+"reason": "slots nonzero by API contract; init/callers DEBUGASSERT slots"
+},
+{
+"rule": "API00-C",
+"file": "lib/uint-hash.c",
+"line": 44,
+"verdict": "FP",
+"confidence": "high",
+"reason": "dtor stored not derefed; NULL dtor is valid (checked later)"
+},
+{
+"rule": "DCL13-C",
+"file": "lib/uint-hash.c",
+"line": 46,
+"verdict": "FP",
+"confidence": "med",
+"reason": "dtor is function-pointer typedef, stored into h; const inapplicable"
+},
+{
+"rule": "DCL13-C",
+"file": "lib/uint-hash.c",
+"line": 60,
+"verdict": "FP",
+"confidence": "med",
+"reason": "value (void*) stored into e->value as non-const; can't const"
+},
+{
+"rule": "DCL31-C",
+"file": "lib/uint-hash.c",
+"line": 65,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curlx_malloc declared via curlx header macros; not implicit"
+},
+{
+"rule": "EXP33-C",
+"file": "lib/uint-hash.c",
+"line": 65,
+"verdict": "FP",
+"confidence": "high",
+"reason": "e assigned from curlx_malloc then guarded by if(e); initialized"
+},
+{
+"rule": "DCL30-C",
+"file": "lib/uint-hash.c",
+"line": 71,
+"verdict": "FP",
+"confidence": "high",
+"reason": "return e points to malloc'd heap, not automatic storage"
+},
+{
+"rule": "DCL31-C",
+"file": "lib/uint-hash.c",
+"line": 90,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curlx_free declared via curlx header; not implicit"
+},
+{
+"rule": "DCL13-C",
+"file": "lib/uint-hash.c",
+"line": 95,
+"verdict": "TP",
+"confidence": "low",
+"reason": "Static helper; he only read (he->next), never written through"
+},
+{
+"rule": "PRE00-C",
+"file": "lib/uint-hash.c",
+"line": 110,
+"verdict": "FP",
+"confidence": "med",
+"reason": "Macro args always simple pointer/scalar vars; no side effects"
+},
+{
+"rule": "PRE01-C",
+"file": "lib/uint-hash.c",
+"line": 110,
+"verdict": "TP",
+"confidence": "low",
+"reason": "Bare h in h->table unparenthesized (inconsistent with (h)->slots)"
+},
+{
+"rule": "PRE12-C",
+"file": "lib/uint-hash.c",
+"line": 110,
+"verdict": "FP",
+"confidence": "med",
+"reason": "Multiple-eval harmless: args are simple vars without side effects"
+},
+{
+"rule": "DCL31-C",
+"file": "lib/uint-hash.c",
+"line": 121,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curlx_calloc declared via curlx header; not implicit"
+},
+{
+"rule": "EXP33-C",
+"file": "lib/uint-hash.c",
+"line": 121,
+"verdict": "FP",
+"confidence": "high",
+"reason": "sizeof(*he) does not evaluate/deref he"
+},
+{
+"rule": "ARR30-C",
+"file": "lib/uint-hash.c",
+"line": 173,
+"verdict": "FP",
+"confidence": "high",
+"reason": "index id%slots, slots is table size; in-bounds by construction"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/uint-hash.c",
+"line": 215,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Only h->table freed; h->size is separate live struct member"
+},
+{
+"rule": "DCL13-C",
+"file": "lib/uint-hash.c",
+"line": 219,
+"verdict": "FP",
+"confidence": "low",
+"reason": "Public hash-API family consistency; const breaks uniformity"
+},
+{
+"rule": "DCL13-C",
+"file": "lib/uint-hash.c",
+"line": 225,
+"verdict": "FP",
+"confidence": "low",
+"reason": "visit may mutate via callback; public API family signature"
+},
+{
+"rule": "DCL13-C",
+"file": "lib/uint-hash.c",
+"line": 226,
+"verdict": "FP",
+"confidence": "med",
+"reason": "cb is function-pointer typedef; const inapplicable"
+},
+{
+"rule": "DCL37-C",
+"file": "src/tool_main.c",
+"line": 69,
+"verdict": "FP",
+"confidence": "high",
+"reason": "_CRT_glob is MinGW runtime-mandated name; cannot rename"
+},
+{
+"rule": "DCL37-C",
+"file": "src/tool_main.c",
+"line": 69,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Reserved-id on platform-mandated MinGW _CRT_glob"
+},
+{
+"rule": "DCL36-C",
+"file": "src/tool_main.c",
+"line": 70,
+"verdict": "FP",
+"confidence": "high",
+"reason": "extern decl then definition; both external linkage, not static"
+},
+{
+"rule": "DCL37-C",
+"file": "src/tool_main.c",
+"line": 70,
+"verdict": "FP",
+"confidence": "high",
+"reason": "_CRT_glob platform-mandated; cannot rename"
+},
+{
+"rule": "DCL37-C",
+"file": "src/tool_main.c",
+"line": 70,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Reserved-id on MinGW-mandated _CRT_glob"
+},
+{
+"rule": "FIO23-C",
+"file": "src/tool_main.c",
+"line": 94,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Early error return from main; OS flushes stdout at exit"
+},
+{
+"rule": "ENV30-C",
+"file": "src/tool_main.c",
+"line": 111,
+"verdict": "FP",
+"confidence": "high",
+"reason": "env is curl_getenv heap copy, not getenv static buffer; free OK"
+},
+{
+"rule": "ENV30-C",
+"file": "src/tool_main.c",
+"line": 122,
+"verdict": "FP",
+"confidence": "high",
+"reason": "str_number advances const char** cursor, doesn't modify content"
+},
+{
+"rule": "MEM30-C",
+"file": "src/tool_main.c",
+"line": 122,
+"verdict": "FP",
+"confidence": "high",
+"reason": "env freed at L125, after str_number; no use-after-free"
+},
+{
+"rule": "MEM30-C",
+"file": "src/tool_main.c",
+"line": 122,
+"verdict": "FP",
+"confidence": "high",
+"reason": "p points into env which is freed later, not before"
+},
+{
+"rule": "ENV30-C",
+"file": "src/tool_main.c",
+"line": 124,
+"verdict": "FP",
+"confidence": "high",
+"reason": "env is curl_getenv heap copy; curl_free correct"
+},
+{
+"rule": "MEM30-C",
+"file": "src/tool_main.c",
+"line": 124,
+"verdict": "FP",
+"confidence": "high",
+"reason": "env reassigned by second curl_getenv at L118; distinct allocations"
+},
+{
+"rule": "MEM31-C",
+"file": "src/tool_main.c",
+"line": 124,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Distinct CURL_MEMLIMIT alloc; first env block already returned/freed"
+},
+{
+"rule": "API02-C",
+"file": "src/tool_main.c",
+"line": 141,
+"verdict": "FP",
+"confidence": "high",
+"reason": "wmain/main signature fixed by C standard/Windows; cannot add size"
+},
+{
+"rule": "ARR02-C",
+"file": "src/tool_main.c",
+"line": 141,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Standard main argv[] signature; bounds cannot be specified"
+},
+{
+"rule": "SIG00-C",
+"file": "src/tool_main.c",
+"line": 178,
+"verdict": "FP",
+"confidence": "med",
+"reason": "signal(SIGPIPE,SIG_IGN): no handler, no race; portable idiom"
+},
+{
+"rule": "SIG02-C",
+"file": "src/tool_main.c",
+"line": 178,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Ignoring SIGPIPE, not using signals for data handling"
+},
+{
+"rule": "SIG34-C",
+"file": "src/tool_main.c",
+"line": 178,
+"verdict": "FP",
+"confidence": "high",
+"reason": "main() is not a signal handler; not called from a handler"
+},
+{
+"rule": "ERR33-C",
+"file": "src/tool_main.c",
+"line": 197,
+"verdict": "FP",
+"confidence": "low",
+"reason": "fflush(NULL) at Windows process exit; nothing actionable"
+},
+{
+"rule": "PRE08-C",
+"file": "src/tool_operhlp.c",
+"line": 26,
+"verdict": "FP",
+"confidence": "high",
+"reason": "8.3 filename-collision advisory; irrelevant on modern systems"
+},
+{
+"rule": "EXP20-C",
+"file": "src/tool_operhlp.c",
+"line": 63,
+"verdict": "FP",
+"confidence": "high",
+"reason": "!strcmp boolean idiom; standard curl convention"
+},
+{
+"rule": "EXP20-C",
+"file": "src/tool_operhlp.c",
+"line": 63,
+"verdict": "FP",
+"confidence": "high",
+"reason": "!strcmp boolean idiom; standard curl convention"
+},
+{
+"rule": "EXP34-C",
+"file": "src/tool_operhlp.c",
+"line": 107,
+"verdict": "FP",
+"confidence": "high",
+"reason": "path non-NULL (url_get succeeded); curl_free is NULL-safe anyway"
+},
+{
+"rule": "EXP30-C",
+"file": "src/tool_operhlp.c",
+"line": 112,
+"verdict": "FP",
+"confidence": "high",
+"reason": "|| introduces sequence point; ++ptr ordered before deref"
+},
+{
+"rule": "EXP34-C",
+"file": "src/tool_operhlp.c",
+"line": 136,
+"verdict": "FP",
+"confidence": "high",
+"reason": "path non-NULL here (url_get for PATH succeeded earlier)"
+},
+{
+"rule": "EXP34-C",
+"file": "src/tool_operhlp.c",
+"line": 139,
+"verdict": "FP",
+"confidence": "high",
+"reason": "path non-NULL here (url_get for PATH succeeded earlier)"
+},
+{
+"rule": "DCL31-C",
+"file": "src/tool_operhlp.c",
+"line": 146,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curlx_free declared via curlx header; not implicit"
+},
+{
+"rule": "DCL31-C",
+"file": "src/tool_operhlp.c",
+"line": 156,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curlx_free declared via curlx header; not implicit"
+},
+{
+"rule": "STR34-C",
+"file": "src/tool_operhlp.c",
+"line": 157,
+"verdict": "FP",
+"confidence": "high",
+"reason": "*inurlp=newurl assigns char*; not a char sign-extension"
+},
+{
+"rule": "EXP34-C",
+"file": "src/tool_operhlp.c",
+"line": 167,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curl_free is NULL-safe; path may be NULL legitimately"
+},
+{
+"rule": "STR34-C",
+"file": "src/tool_operhlp.c",
+"line": 186,
+"verdict": "FP",
+"confidence": "high",
+"reason": "*filename=strdup(...) assigns char*; not char sign-extension"
+},
+{
+"rule": "STR34-C",
+"file": "src/tool_operhlp.c",
+"line": 204,
+"verdict": "FP",
+"confidence": "high",
+"reason": "*pc=0 writes constant 0; not a sign-extending read"
+},
+{
+"rule": "STR34-C",
+"file": "src/tool_operhlp.c",
+"line": 210,
+"verdict": "FP",
+"confidence": "high",
+"reason": "*filename=strdup(...) assigns char*; not char sign-extension"
+},
+{
+"rule": "DCL31-C",
+"file": "src/tool_operhlp.c",
+"line": 210,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curlx_strdup declared via curlx header; not implicit"
+},
+{
+"rule": "STR34-C",
+"file": "src/tool_operhlp.c",
+"line": 214,
+"verdict": "FP",
+"confidence": "high",
+"reason": "*filename=strdup(...) assigns char*; not char sign-extension"
+},
+{
+"rule": "DCL31-C",
+"file": "src/tool_operhlp.c",
+"line": 214,
+"verdict": "FP",
+"confidence": "high",
+"reason": "curlx_strdup declared via curlx header; not implicit"
+},
+{
+"rule": "EXP34-C",
+"file": "src/tool_operhlp.c",
+"line": 218,
+"verdict": "FP",
+"confidence": "high",
+"reason": "*filename NULL-checked at line 219 before this Windows-only use"
+},
+{
+"rule": "STR34-C",
+"file": "src/tool_operhlp.c",
+"line": 229,
+"verdict": "FP",
+"confidence": "high",
+"reason": "*filename=sanitized assigns char*; not char sign-extension"
+},
+{
+"rule": "API00-C",
+"file": "lib/asyn-base.c",
+"line": 70,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Internal pollset; data always valid from caller"
+},
+{
+"rule": "EXP33-C",
+"file": "lib/asyn-base.c",
+"line": 86,
+"verdict": "FP",
+"confidence": "high",
+"reason": "sockets[] is ares_getsock output buffer; filled before read"
+},
+{
+"rule": "ARR00-C",
+"file": "lib/asyn-base.c",
+"line": 96,
+"verdict": "FP",
+"confidence": "high",
+"reason": "sockets filled by ares_getsock at L86 before loop reads"
+},
+{
+"rule": "ENV01-C",
+"file": "lib/asyn-base.c",
+"line": 122,
+"verdict": "FP",
+"confidence": "high",
+"reason": "socks[] is c-ares socket array; no environment variable involved"
+},
+{
+"rule": "ENV01-C",
+"file": "lib/asyn-base.c",
+"line": 123,
+"verdict": "FP",
+"confidence": "high",
+"reason": "pfd[] is pollfd array; no environment variable involved"
+},
+{
+"rule": "ARR00-C",
+"file": "lib/asyn-base.c",
+"line": 133,
+"verdict": "FP",
+"confidence": "high",
+"reason": "pfd[i].events/revents set to 0 in same loop iter before read"
+},
+{
+"rule": "ARR00-C",
+"file": "lib/asyn-base.c",
+"line": 136,
+"verdict": "FP",
+"confidence": "high",
+"reason": "socks filled by ares_getsock at L130 before loop reads"
+},
+{
+"rule": "ARR00-C",
+"file": "lib/asyn-base.c",
+"line": 140,
+"verdict": "FP",
+"confidence": "high",
+"reason": "socks filled by ares_getsock at L130 before loop reads"
+},
+{
+"rule": "EXP33-C",
+"file": "lib/asyn-base.c",
+"line": 143,
+"verdict": "FP",
+"confidence": "high",
+"reason": "pfd[i].events initialized at L133 in same iteration"
+},
+{
+"rule": "API00-C",
+"file": "lib/asyn-base.c",
+"line": 181,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Internal cleanup; data always valid from callers"
+},
+{
+"rule": "MSC04-C",
+"file": "lib/asyn-base.c",
+"line": 181,
+"verdict": "FP",
+"confidence": "med",
+"reason": "Cleanup cycle is bounded/guarded by handle state; not unbounded recursion"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/asyn-base.c",
+"line": 192,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Only hostname member freed; state.async container not freed"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/asyn-base.c",
+"line": 192,
+"verdict": "FP",
+"confidence": "high",
+"reason": "data->state not freed; only nested hostname pointer freed"
+},
+{
+"rule": "API00-C",
+"file": "lib/asyn-base.c",
+"line": 195,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Internal destroy; data always valid from callers"
+},
+{
+"rule": "MSC04-C",
+"file": "lib/asyn-base.c",
+"line": 195,
+"verdict": "FP",
+"confidence": "med",
+"reason": "Cleanup cycle bounded by handle state; not unbounded recursion"
+},
+{
+"rule": "MEM31-C",
+"file": "lib/asyn-base.c",
+"line": 204,
+"verdict": "FP",
+"confidence": "high",
+"reason": "doh_cleanup in different function path; data not freed by it"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/asyn-base.c",
+"line": 206,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Only hostname member freed; state.async container live"
+},
+{
+"rule": "MEM30-C",
+"file": "lib/asyn-base.c",
+"line": 206,
+"verdict": "FP",
+"confidence": "high",
+"reason": "Curl_safefree of struct member in destructor; frees-and-nulls once"
+}
+],
+"fns": [],
+"files_clean_for_fn": [
+"lib/noproxy.c",
+"lib/pingpong.c",
+"lib/uint-hash.c",
+"src/tool_main.c",
+"src/tool_operhlp.c",
+"lib/asyn-base.c"
+],
+"summary": {
+"tp": 5,
+"fp": 108,
+"fn": 0
+}
+}

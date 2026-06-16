@@ -1,0 +1,949 @@
+{
+ "labels": [
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 133,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libssh2 kbd_callback signature fixed by external typedef; const impossible"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 247,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "LIBSSH2_FREE_FUNC macro defines void fn; sqc cannot expand macro"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 254,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sshkeycallback matches curl_sshkeycallback typedef; const impossible"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 258,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "callback signature fixed by typedef"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 368,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "keybit OR of libssh2 enum constants; advisory"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 373,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "host filled by libssh2_knownhost_checkp; non-NULL when keycheck<=MISMATCH"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 429,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "remotekey is const char* key buffer arg, not signed-char read"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 432,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "keybit OR of libssh2 enum flags; advisory"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 541,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "md5buffer written by snprintf in loop before being read"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 541,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "md5buffer filled by curl_msnprintf before read"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 607,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sshc written via state machine; not const"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 634,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p assigned (kh_name_end+2) before use"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 643,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "port filled by curlx_str_number out-param before read"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 644,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "advisory readability; no real defect"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 670,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "store non-NULL on all found=TRUE paths"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 719,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sshc mutated by sftp_quote (acceptfail etc); not const"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 798,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strncmp command dispatch"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 799,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strncmp command dispatch"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 800,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strncmp command dispatch"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 801,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strncmp command dispatch"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 802,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strncmp command dispatch"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 821,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strncmp command dispatch"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 822,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strncmp command dispatch"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 838,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strncmp command dispatch"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 845,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strncmp command dispatch"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 861,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strncmp command dispatch"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 868,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strncmp command dispatch"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strncmp command dispatch"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 889,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sshp mutated (quote_attrs memset); not const"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 915,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attrs filled by libssh2_sftp_stat_ex; read only when rc==0"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1017,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "scratch[4*1024] is constant-size array, not VLA"
+  },
+  {
+   "rule": "ENV30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1109,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl_getenv returns malloc copy; curlx_free correct"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1181,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !!strncmp dispatch"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1203,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strncmp dispatch"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1215,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strncmp dispatch"
+  },
+  {
+   "rule": "DCL18-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1219,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "07777 intentional octal permission mask"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1227,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strncmp dispatch"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1239,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strncmp dispatch"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1240,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strncmp dispatch"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1257,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strncmp dispatch"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1268,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label reachable via goto, not unreachable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1276,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sshp mutated (quote_attrs); not const"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1288,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attrs filled by stat_ex before use"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1288,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "advisory readability"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1315,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "from filled by Curl_ssh_range out-param"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1420,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "distinct fn calls in failf args; no shared side effects"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1548,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "unknown[] aliased via err_msg (char*); cannot const"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1555,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssh_session read by last_error; not freed here"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1581,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strlen calls in args; no shared mutable state"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1799,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sshp written (readdir_filename out); not const"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1815,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free-then-strdup reassign of homedir; not UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1817,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free-then-strdup reassign; not UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1818,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data->state field reassigned after free; not UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1818,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data->state field reassigned after free; not UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1819,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strdup reassign; not UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1819,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strdup reassign; not UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1898,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "quote_item advanced to ->next after safefree of paths, not item"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1898,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "quote_item advanced to ->next after safefree of paths, not item"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1900,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "quote_item is fresh ->next pointer, not freed"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1904,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nextstate is enum field, not freed memory"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1905,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nextstate enum read; not UAF"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 1958,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strlen calls in symlink args; no shared side effects"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 2007,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strlen calls in rename args; no shared side effects"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 2114,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "statvfs filled by libssh2_sftp_statvfs; read when rc==0"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 2140,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sshp param of state fn; mutated elsewhere/typedef"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 2171,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sshp param; not const"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 2233,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sshp param; not const"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 2278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sshp param; not const"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 2350,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sshp param; not const"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 2378,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sshp param; not const"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 2437,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssh_session read by last_error after freeing ssh_channel"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 2508,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssh_session read after freeing ssh_channel; session live"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 2534,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssh_session read; freed only after this line"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 2779,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*slash_pos guarded by if(slash_pos) at line above"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 2818,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dyn_ptr/dyn_len calls; no shared side effects"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 2967,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssh_session read by last_error after freeing channel"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3030,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "waitfor & KEEP_RECV bit test; advisory"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3032,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "waitfor & KEEP_SEND bit test; advisory"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3051,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data param of ssh_block2waitfor signature; (void)data"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3061,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "dir & block-direction bit test; advisory"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3074,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "void* abstract cast in libssh2 callback; idiomatic"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3131,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "dir & INBOUND bit test; advisory"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3133,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "dir & OUTBOUND bit test; advisory"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3144,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3144,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dtor key param signature fixed; not const"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3144,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "advisory array-param syntax"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3150,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dyn_free of distinct member readdir in dtor; not UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3151,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dyn_free of distinct member readdir_link; not UAF"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3155,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "advisory array-param syntax"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3155,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dtor signature fixed; not const"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3155,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "advisory array-param syntax"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sshc_cleanup frees members not sshc; single free here"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3174,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sshc assigned by curlx_calloc immediately above"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3181,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sshp assigned by curlx_calloc immediately above"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3183,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sshp NULL on this path; sshc owned by meta-store dtor"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3188,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sshp ownership transferred to meta-store dtor"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3190,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "success path; objects owned by meta-store dtors"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3197,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "advisory array-param syntax"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3198,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "advisory array-param syntax"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3198,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls callback signature fixed by libssh2 typedef"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3201,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "void* abstract cast in libssh2 callback"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3225,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "advisory array-param syntax"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3226,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "advisory array-param syntax"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3226,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls send callback signature fixed by typedef"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3229,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "void* abstract cast in libssh2 callback"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3387,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "scp_recv is forward-declared static fn, taking address"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3388,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "scp_send is static fn pointer; address-of"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3391,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sftp_recv is static fn; address-of"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3392,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sftp_send is static fn; address-of"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3489,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "char* to SSHPROTO* alignment via meta-store; idiomatic"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3508,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "alignment via meta-store; idiomatic"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3540,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "advisory array-param syntax on send buffer"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3572,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "advisory array-param syntax on recv buffer"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3660,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "alignment via meta-store; idiomatic"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3698,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "advisory array-param syntax"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3729,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "advisory array-param syntax"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vssh/libssh2.c",
+   "line": 3797,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "advisory array-param syntax on Curl_ssh_version buffer"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "lib/vssh/libssh2.c"
+ ],
+ "summary": {
+  "tp": 0,
+  "fp": 117,
+  "fn": 0
+ }
+}

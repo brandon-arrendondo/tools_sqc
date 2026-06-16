@@ -1,0 +1,854 @@
+{
+ "labels": [
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 77,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cr_data_pending is vtable data_pending callback; signature fixed by typedef"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 94,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "read_cb is rustls reader callback; signature fixed by typedef"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 121,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "write_cb is rustls writer callback; signature fixed by typedef"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 144,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "tls_recv_more passes cf to non-const callees; const not applicable"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 188,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 188,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cr_recv vtable recv callback; plainbuf is written output buffer"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 301,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory; convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 379,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cr_verify_none rustls verify callback; signature fixed"
+  },
+  {
+   "rule": "FIO42-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 389,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f closed via curlx_fclose on all paths; wrapper unrecognized"
+  },
+  {
+   "rule": "ARR38-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 396,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fread(buf,1,sizeof) reads bytes; element-size 1 is correct"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 396,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fread return rr is checked (!rr && !feof)"
+  },
+  {
+   "rule": "FIO17-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 396,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "binary read into uint8_t buf; no C-string null terminator needed"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 411,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 412,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 445,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ciphers set to non-NULL or empty string before deref"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 445,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "end set by Curl_cipher_suite_walk_str before read in ptr=end"
+  },
+  {
+   "rule": "INT36-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 461,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "(int)(end-ptr) is ptrdiff cast for printf, not ptr-to-int"
+  },
+  {
+   "rule": "INT36-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 471,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "(int)(end-ptr) ptrdiff cast for printf width"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 505,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 506,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 509,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "clabel fixed buffer for keylog label; no getenv involved"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 654,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "alpn fixed array; no getenv involved"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 658,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "alpn[i] written before read; same count passed to rustls"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 683,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curlx_dyn_uptr/len are pure getters; no unsequenced side effects"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 721,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "roots_builder freed at cleanup label on all gotos"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 731,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "roots_builder freed at cleanup label"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 739,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "roots_builder freed at cleanup label"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 745,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "roots_builder freed at cleanup label"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 753,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "roots_builder freed at cleanup label"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 762,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "roots_builder freed at cleanup label"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 871,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curlx_dyn_uptr/len pure getters; no unsequenced side effects"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 1010,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "get_config returns ssl_config_data*; no char* alignment cast in source"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 1014,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "conn_config from cf accessor always valid; curl idiom"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 1030,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "config_builder non-NULL after successful init_config_builder"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 1037,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ssl_config from cf accessor always valid; curl idiom"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 1038,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "config_builder non-NULL after init returns OK"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 1046,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "config_builder non-NULL after init returns OK"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 1060,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "config_builder non-NULL after init returns OK"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 1069,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "config_builder non-NULL after init returns OK"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 1077,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "config_builder non-NULL after init returns OK"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 1090,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'rr' is rustls_result int, not pointer; rconn ownership transfers to backend"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 1097,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error path; rconn not allocated, config freed; rr is not a pointer"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 1103,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "success path; rconn stored in backend->conn freed by cr_close"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 1123,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "for(;;) never falls through; all paths return, end unreachable"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 1230,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* from const unsigned char*; both alignment 1, no real issue"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 1231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* from const unsigned char*; both alignment 1"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 1287,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cr_get_internals vtable get_internals callback; signature fixed"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 1335,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is output buffer written by cr_recv before read"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 1359,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cr_close vtable callback; data param fixed by typedef"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 1359,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cr_close vtable callback; data param fixed by typedef"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 1377,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 1383,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cr_random vtable random callback; signature fixed by typedef"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/vtls/rustls.c",
+   "line": 1383,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/bufq.c",
+   "line": 45,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "chunk_reset callers pass validated non-NULL chunk"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/bufq.c",
+   "line": 50,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "lib/bufq.c",
+   "line": 57,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no const cast; memcpy size arg misparsed"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/bufq.c",
+   "line": 64,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/bufq.c",
+   "line": 85,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "chunk_slurpn calls reader fn-ptr; const not applicable"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/bufq.c",
+   "line": 86,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/bufq.c",
+   "line": 98,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reader is a function-pointer parameter, not undeclared function"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "lib/bufq.c",
+   "line": 100,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DEBUGASSERT(*pnread<=n): size_t values, not array pointers"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/bufq.c",
+   "line": 107,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "lib/bufq.c",
+   "line": 110,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pbuf=&chunk->x.data[..] is pointer assignment, not struct copy"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/bufq.c",
+   "line": 115,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "lib/bufq.c",
+   "line": 119,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pbuf pointer assignment, not flexible-array struct copy"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/bufq.c",
+   "line": 119,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "offset bounded by callers and DEBUGASSERT; internal helper"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/bufq.c",
+   "line": 142,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curlx_free declared via curlx headers/macros"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "lib/bufq.c",
+   "line": 151,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*pool) is struct size; pool points to single struct, idiom"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "lib/bufq.c",
+   "line": 166,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pchunk=chunk from pool->spare (persistent), not local automatic"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/bufq.c",
+   "line": 176,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curlx_calloc declared via curlx headers/macros"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "lib/bufq.c",
+   "line": 182,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pchunk=chunk from curlx_calloc heap, not local automatic"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/bufq.c",
+   "line": 190,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curlx_free declared via curlx headers/macros"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/bufq.c",
+   "line": 206,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "bufcp_take pool modified (spare list mutated); const wrong here"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "lib/bufq.c",
+   "line": 211,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*q) is struct size; q points to single struct, idiom"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "lib/bufq.c",
+   "line": 294,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "member access (>=) and opts bitmask (&); readability advisory"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/bufq.c",
+   "line": 309,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curlx_calloc declared via curlx headers/macros"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/bufq.c",
+   "line": 336,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curlx_free declared via curlx headers/macros"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "lib/bufq.c",
+   "line": 364,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "return chunk from q->tail/get_spare (heap), not local automatic"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/bufq.c",
+   "line": 367,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal Curl_bufq_write; len is size_t loop bound, DEBUGASSERT guards"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/bufq.c",
+   "line": 368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/bufq.c",
+   "line": 395,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/bufq.c",
+   "line": 401,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal Curl_bufq_read; len loop-bounded, callers trusted"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/bufq.c",
+   "line": 401,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/bufq.c",
+   "line": 417,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "thin wrapper to Curl_bufq_read; no deref of buf itself"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/bufq.c",
+   "line": 417,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/bufq.c",
+   "line": 424,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/bufq.c",
+   "line": 438,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "offset bounded by callers; internal helper"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/bufq.c",
+   "line": 438,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "offset bounded by callers; internal helper"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/bufq.c",
+   "line": 438,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Curl_bufq_peek_at traverses q->head list (reads); but accessor; idiom-FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/bufq.c",
+   "line": 439,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "lib/bufq.c",
+   "line": 441,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "c is reassigned c=c->next in loop; not const-eligible"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/bufq.c",
+   "line": 461,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal Curl_bufq_skip; amount is size_t loop counter"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/bufq.c",
+   "line": 472,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "writer is fn-ptr called in loop; not derefed unchecked"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/bufq.c",
+   "line": 472,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "writer fn-ptr param invoked; const not applicable"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/bufq.c",
+   "line": 473,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/bufq.c",
+   "line": 483,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "writer is function-pointer parameter, not undeclared function"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/bufq.c",
+   "line": 504,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len is size_t loop bound; internal function"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/bufq.c",
+   "line": 504,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len is size_t loop bound; internal function"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/bufq.c",
+   "line": 505,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/bufq.c",
+   "line": 506,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/bufq.c",
+   "line": 553,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reader fn-ptr called via chunk_slurpn; not derefed unchecked"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/bufq.c",
+   "line": 554,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/bufq.c",
+   "line": 580,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/bufq.c",
+   "line": 615,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "thin wrapper to bufq_slurpn; reader fn-ptr not derefed"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/bufq.c",
+   "line": 616,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conformant array syntax advisory"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "lib/vtls/rustls.c",
+  "lib/bufq.c"
+ ],
+ "summary": {
+  "tp": 0,
+  "fp": 105,
+  "fn": 0
+ }
+}

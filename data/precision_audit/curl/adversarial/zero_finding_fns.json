@@ -1,0 +1,26 @@
+{
+  "fns": [],
+  "files_read_clean": [
+    "lib/curl_range.c",
+    "lib/curlx/warnless.c",
+    "lib/dllmain.c",
+    "lib/fileinfo.c",
+    "lib/macos.c",
+    "lib/easy_lock.h",
+    "lib/sigpipe.h"
+  ],
+  "notes": {
+    "curl_range.c": "Pure range-string parser; all curlx_str_* failures handled, no allocation/fd/OOB. Clean.",
+    "warnless.c": "Integer narrowing helpers guarded by masks + DEBUGASSERTs; no memory/fd. Clean.",
+    "dllmain.c": "Windows DllMain stub (OPENSSL_thread_stop on thread detach). No allocation/leak. Clean.",
+    "fileinfo.c": "alloc via curlx_calloc (caller checks NULL); cleanup is NULL-guarded, frees dynbuf + struct. Clean.",
+    "macos.c": "SCDynamicStoreCopyProxies result NULL-checked before CFRelease. Clean.",
+    "easy_lock.h": "Spinlock/SRWLOCK/pthread wrappers; atomic ops only, no allocation. Clean.",
+    "sigpipe.h": "SIGPIPE save/restore via sigaction; correct paired ignore/restore discipline, no resource. Clean.",
+    "header_scan": "Only easy_lock.h and sigpipe.h among lib/src headers contain inline function bodies (grep for static inline/CURL_INLINE); all other zero-finding .h files are pure declarations/macros."
+  },
+  "summary": {
+    "files_read": 7,
+    "fns": 0
+  }
+}

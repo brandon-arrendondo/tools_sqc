@@ -1,0 +1,1253 @@
+{
+ "labels": [
+  {
+   "rule": "MEM30-C",
+   "file": "lib/http2.c",
+   "line": 167,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "h2_stream_ctx_free frees members then stream once; not double-free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/http2.c",
+   "line": 167,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "single free of stream after member frees; no double-free"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "lib/http2.c",
+   "line": 197,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ctx) on real struct pointer (memset size); correct usage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 202,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "lib/http2.c",
+   "line": 263,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "H2_STREAM_CTX evals data via ternary guard; idiomatic curl accessor macro"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "lib/http2.c",
+   "line": 263,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "accessor macro single logical use; idiomatic, not multiple-eval bug"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/http2.c",
+   "line": 272,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stream assigned by curlx_calloc then NULL-checked before deref"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "lib/http2.c",
+   "line": 288,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stream points to heap (calloc) or hash entry, not stack local"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 292,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 358,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 359,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 360,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 369,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "lib/http2.c",
+   "line": 380,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stream points to heap (calloc) or hash entry, not stack local"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/http2.c",
+   "line": 384,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stream stored in hash via uint32_hash_set; freed by hash dtor, not leaked"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "lib/http2.c",
+   "line": 393,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stream points to heap (calloc) or hash entry, not stack local"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/http2.c",
+   "line": 423,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* hash/ctx value, properly aligned heap object; spurious alignment warn"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/http2.c",
+   "line": 466,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "o set by nghttp2_option_new(&o), rc-checked before use"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 481,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "static non-vtable helper reads ctx only; const ctx* applies; never writes"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 573,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 598,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 609,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 610,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 611,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 657,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 673,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/http2.c",
+   "line": 685,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strcmp/!strncmp/zero-test boolean usage"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/http2.c",
+   "line": 694,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strcmp/!strncmp/zero-test boolean usage"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/http2.c",
+   "line": 707,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* hash/ctx value, properly aligned heap object; spurious alignment warn"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "lib/http2.c",
+   "line": 713,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stream points to heap (calloc) or hash entry, not stack local"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/http2.c",
+   "line": 763,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "url non-NULL: set by curl_url_get only when uc==0 reaches here"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "lib/http2.c",
+   "line": 774,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "push_promise: all paths set rv and reach fail: return rv"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/http2.c",
+   "line": 790,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* hash/ctx value, properly aligned heap object; spurious alignment warn"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/http2.c",
+   "line": 856,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "newstream set by http2_data_setup success + DEBUGASSERT(newstream)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 889,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 906,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/http2.c",
+   "line": 939,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* hash/ctx value, properly aligned heap object; spurious alignment warn"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "lib/http2.c",
+   "line": 950,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nghttp2 getters are pure reads as args; no shared mutation/UB"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/http2.c",
+   "line": 961,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rv assigned by nghttp2_submit_rst_stream before is_fatal(rv)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/http2.c",
+   "line": 1049,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "thin export/callback; deref via setup or NULL-safe free, project idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 1049,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/http2.c",
+   "line": 1102,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "index len clamped to buffer size before write; in-bounds"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 1120,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/http2.c",
+   "line": 1133,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "index len clamped to buffer size before write; in-bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/http2.c",
+   "line": 1161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "index len clamped to buffer size before write; in-bounds"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 1224,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/http2.c",
+   "line": 1238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "index len clamped to buffer size before write; in-bounds"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 1257,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 1257,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 1349,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 1374,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 1393,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 1394,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 1396,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/http2.c",
+   "line": 1427,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strcmp/!strncmp/zero-test boolean usage"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/http2.c",
+   "line": 1435,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strcmp/!strncmp/zero-test boolean usage"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "lib/http2.c",
+   "line": 1474,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "push_headers persists in stream, freed by free_push_headers/ctx dtor"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "lib/http2.c",
+   "line": 1481,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "push_headers persists in stream, freed by free_push_headers/ctx dtor"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "lib/http2.c",
+   "line": 1493,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "push_headers persists in stream, freed by free_push_headers/ctx dtor"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "lib/http2.c",
+   "line": 1496,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "push_headers persists in stream, freed by free_push_headers/ctx dtor"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "lib/http2.c",
+   "line": 1508,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "push_headers persists in stream, freed by free_push_headers/ctx dtor"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "lib/http2.c",
+   "line": 1515,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "push_headers persists in stream, freed by free_push_headers/ctx dtor"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "lib/http2.c",
+   "line": 1524,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nghttp2 getters are pure reads as args; no shared mutation/UB"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "lib/http2.c",
+   "line": 1528,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "push_headers persists in stream, freed by free_push_headers/ctx dtor"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "lib/http2.c",
+   "line": 1536,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "push_headers persists in stream, freed by free_push_headers/ctx dtor"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "lib/http2.c",
+   "line": 1551,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nghttp2 getters are pure reads as args; no shared mutation/UB"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "lib/http2.c",
+   "line": 1555,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "push_headers persists in stream, freed by free_push_headers/ctx dtor"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "lib/http2.c",
+   "line": 1564,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "push_headers persists in stream, freed by free_push_headers/ctx dtor"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 1569,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 1570,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 1571,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 1572,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 1619,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 1620,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 1622,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/http2.c",
+   "line": 1635,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "thin export/callback; deref via setup or NULL-safe free, project idiom"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/http2.c",
+   "line": 1647,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "binlen set by curlx_sztouz(rc,&binlen) before use; macro artifact"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "lib/http2.c",
+   "line": 1726,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nghttp2 getters are pure reads as args; no shared mutation/UB"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "lib/http2.c",
+   "line": 1728,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nghttp2 getters are pure reads as args; no shared mutation/UB"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/http2.c",
+   "line": 1790,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* hash/ctx value, properly aligned heap object; spurious alignment warn"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 1829,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 1829,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 1943,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/http2.c",
+   "line": 1946,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* hash/ctx value, properly aligned heap object; spurious alignment warn"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/http2.c",
+   "line": 1961,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "save filled by CF_DATA_SAVE macro (sqc can't expand) before restore"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "lib/http2.c",
+   "line": 1998,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nghttp2 getters are pure reads as args; no shared mutation/UB"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 2015,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/http2.c",
+   "line": 2022,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stream guaranteed non-NULL by callers (data_setup success/DEBUGASSERT)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 2060,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/http2.c",
+   "line": 2083,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stream guarded: !stream branch calls h2_submit; else uses non-NULL"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/http2.c",
+   "line": 2109,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strcmp/!strncmp/zero-test boolean usage"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/http2.c",
+   "line": 2173,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stream from http2_data_setup success path; non-NULL"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "lib/http2.c",
+   "line": 2187,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stream points to heap (calloc) or hash entry, not stack local"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 2193,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/http2.c",
+   "line": 2197,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* hash/ctx value, properly aligned heap object; spurious alignment warn"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/http2.c",
+   "line": 2201,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "save filled by CF_DATA_SAVE macro (sqc can't expand) before restore"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "lib/http2.c",
+   "line": 2260,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nghttp2 getters are pure reads as args; no shared mutation/UB"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "lib/http2.c",
+   "line": 2272,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nghttp2 getters are pure reads as args; no shared mutation/UB"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/http2.c",
+   "line": 2286,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* hash/ctx value, properly aligned heap object; spurious alignment warn"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/http2.c",
+   "line": 2290,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "save filled by CF_DATA_SAVE macro (sqc can't expand) before restore"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "lib/http2.c",
+   "line": 2304,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nghttp2 getters are pure reads as args; no shared mutation/UB"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "lib/http2.c",
+   "line": 2315,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nghttp2 getters are pure reads as args; no shared mutation/UB"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/http2.c",
+   "line": 2340,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* hash/ctx value, properly aligned heap object; spurious alignment warn"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/http2.c",
+   "line": 2343,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "save filled by CF_DATA_SAVE macro (sqc can't expand) before restore"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/http2.c",
+   "line": 2380,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rc is int return code; actual alloc cbs freed at out: callbacks_del"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/http2.c",
+   "line": 2383,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rc is int return code; actual alloc cbs freed at out: callbacks_del"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/http2.c",
+   "line": 2404,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rc is int code not pointer; cbs freed at out: label, no leak"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/http2.c",
+   "line": 2404,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cbs from callbacks_new rc-checked non-zero->goto out before use"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/http2.c",
+   "line": 2407,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rc is int code not pointer; cbs freed at out: label, no leak"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/http2.c",
+   "line": 2421,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "binlen set by curlx_sztouz(rclen,&binlen) before use"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/http2.c",
+   "line": 2424,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rc is int code not pointer; cbs freed at out: label, no leak"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/http2.c",
+   "line": 2431,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stream from http2_data_setup success + DEBUGASSERT(stream)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/http2.c",
+   "line": 2440,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rc is int code not pointer; cbs freed at out: label, no leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/http2.c",
+   "line": 2463,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rc is int code not pointer; cbs freed at out: label, no leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/http2.c",
+   "line": 2473,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rc is int code not pointer; cbs freed at out: label, no leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/http2.c",
+   "line": 2484,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rc is int code not pointer; cbs freed at out: label, no leak"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/http2.c",
+   "line": 2510,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "save filled by CF_DATA_SAVE macro (sqc can't expand) before restore"
+  },
+  {
+   "rule": "FIO42-C",
+   "file": "lib/http2.c",
+   "line": 2513,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "result is CURLcode enum, not an fd; no open()/close() involved"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/http2.c",
+   "line": 2548,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "save filled by CF_DATA_SAVE macro (sqc can't expand) before restore"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 2557,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/http2.c",
+   "line": 2581,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "save filled by CF_DATA_SAVE macro (sqc can't expand) before restore"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/http2.c",
+   "line": 2623,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* hash/ctx value, properly aligned heap object; spurious alignment warn"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 2653,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/http2.c",
+   "line": 2660,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "save filled by CF_DATA_SAVE macro (sqc can't expand) before restore"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 2686,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/http2.c",
+   "line": 2705,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "save filled by CF_DATA_SAVE macro (sqc can't expand) before restore"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/http2.c",
+   "line": 2719,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "save filled by CF_DATA_SAVE macro (sqc can't expand) before restore"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/http2.c",
+   "line": 2737,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "save filled by CF_DATA_SAVE macro (sqc can't expand) before restore"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "lib/http2.c",
+   "line": 2738,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic !strcmp/!strncmp/zero-test boolean usage"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/http2.c",
+   "line": 2749,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* hash/ctx value, properly aligned heap object; spurious alignment warn"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/http2.c",
+   "line": 2754,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* hash/ctx value, properly aligned heap object; spurious alignment warn"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/http2.c",
+   "line": 2802,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx=cf->ctx assigned at decl; macro/branch artifact, not uninit"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 2822,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/http2.c",
+   "line": 2830,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx=cf->ctx assigned at decl; not uninitialized"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/http2.c",
+   "line": 2866,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "thin export/callback; deref via setup or NULL-safe free, project idiom"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/http2.c",
+   "line": 2878,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cf from http2_cfilter_add success path; non-NULL when reached"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/http2.c",
+   "line": 2885,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "thin export/callback; deref via setup or NULL-safe free, project idiom"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/http2.c",
+   "line": 2905,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "thin export/callback; deref via setup or NULL-safe free, project idiom"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/http2.c",
+   "line": 2905,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "thin export/callback; deref via setup or NULL-safe free, project idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 2907,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/http2.c",
+   "line": 2920,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cf from http2_cfilter_add success; non-NULL"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/http2.c",
+   "line": 2933,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx=cf->ctx with cf non-NULL after add success; guarded"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "lib/http2.c",
+   "line": 2963,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char* hash/ctx value, properly aligned heap object; spurious alignment warn"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 2969,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 2969,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/http2.c",
+   "line": 2975,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "thin export/callback; deref via setup or NULL-safe free, project idiom"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 2975,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 2981,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 2981,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/http2.c",
+   "line": 2987,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "thin export/callback; deref via setup or NULL-safe free, project idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 2987,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/http2.c",
+   "line": 2987,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl never uses C99 array-param syntax; advisory by convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 2987,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 2997,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/http2.c",
+   "line": 3004,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "param mutated or fixed callback/vtable/exported signature; const N/A"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "lib/http2.c"
+ ],
+ "summary": {
+  "tp": 1,
+  "fp": 154,
+  "fn": 0
+ }
+}

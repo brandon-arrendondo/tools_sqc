@@ -1,0 +1,9 @@
+{
+  "overturned": [],
+  "summary": {
+    "examined": 176,
+    "held_as_fp": 176,
+    "overturned": 0,
+    "note": "Adversarially re-tested the FP rationales across all high-risk untrusted-input decode paths: DOH/DNS response decode (doh.c bounds at lines 617/641/785, compression-pointer loop re-checked index>=dohlen at top), NTLM type-2 decode (ntlm.c offset+len overflow check at 269-271 with prior offset>type2len guard; type2 guarded by type2len>=32 + memcmp), SOCKS4/5 response parsing (socks.c rlen<8 / rlen<resp_len early returns before resp[] indexing; blen-=nread bounded by recv contract), HTTP chunked (http_chunks.c blen-=12 only in else branch where blen>=MINLEN), RTSP/altsvc/urlapi free-then-reassign (reassigned before next use on every path), HTTP/2 frame-trace buffers (scratch[len]/buffer[len] clamped to size-1 by msnprintf return + explicit min), MQTT CONNECT encode (outgoing, length-checked >0xffff), fnmatch keyword index (i>=sizeof guard precedes write), curl_fnmatch charset constants < array size. Also spot-checked struct-member-free destructor clusters (ftp.c/http.c/telnet.c), mbedtls config-getter non-NULL, smb.c sizeof byte arithmetic. Every cited guard is on ALL reaching paths; no freed pointer is read before reassignment; no attacker-controlled index reaches an access unbounded. No finding overturned."
+  }
+}

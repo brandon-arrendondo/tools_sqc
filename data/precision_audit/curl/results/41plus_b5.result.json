@@ -1,0 +1,1973 @@
+{
+ "labels": [
+  {
+   "rule": "PRE00-C",
+   "file": "lib/telnet.c",
+   "line": 61,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal macro always called with simple identifier (tn); no multi-eval bug"
+  },
+  {
+   "rule": "PRE01-C",
+   "file": "lib/telnet.c",
+   "line": 61,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal macro arg is always plain identifier; precedence not an issue"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "lib/telnet.c",
+   "line": 61,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic internal accessor macro; style advisory only"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "lib/telnet.c",
+   "line": 62,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal macro always called with simple identifier (tn); no multi-eval bug"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "lib/telnet.c",
+   "line": 62,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic internal accessor macro; style advisory only"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "lib/telnet.c",
+   "line": 67,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal macro always called with simple identifier (tn); no multi-eval bug"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "lib/telnet.c",
+   "line": 67,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic internal accessor macro; style advisory only"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "lib/telnet.c",
+   "line": 73,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal macro always called with simple identifier (tn); no multi-eval bug"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "lib/telnet.c",
+   "line": 74,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal macro always called with simple identifier (tn); no multi-eval bug"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "lib/telnet.c",
+   "line": 74,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic internal accessor macro; style advisory only"
+  },
+  {
+   "rule": "API01-C",
+   "file": "lib/telnet.c",
+   "line": 126,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "subbuffer access bounds-checked via CURL_SB_ACCUM; idiomatic struct layout"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/telnet.c",
+   "line": 169,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Curl never uses C99 array-param syntax; convention FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/telnet.c",
+   "line": 169,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Signature fixed by Curl_hash_elem_dtor typedef; const cannot be added"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/telnet.c",
+   "line": 169,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Curl never uses C99 array-param syntax; convention FP"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/telnet.c",
+   "line": 175,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Sequential free of distinct struct members in dtor; no UAF"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 195,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Index is small CURL_TELOPT_* constant (<40) into [256] array; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 196,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Index is small CURL_TELOPT_* constant (<40) into [256] array; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 203,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Index is small CURL_TELOPT_* constant (<40) into [256] array; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 204,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Index is small CURL_TELOPT_* constant (<40) into [256] array; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 212,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Index is small CURL_TELOPT_* constant (<40) into [256] array; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 225,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Index is small CURL_TELOPT_* constant (<40) into [256] array; in bounds"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 253,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 253,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 253,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 255,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 255,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 255,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 264,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 264,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 264,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 267,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 267,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 267,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 276,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 276,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 276,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 281,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 281,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 281,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 288,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 288,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 288,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 294,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 294,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 294,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 299,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 299,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 299,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 304,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 304,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 304,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 310,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 310,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 310,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 312,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 312,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 312,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 326,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 326,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 326,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 328,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 328,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 328,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 337,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 337,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 337,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 340,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 340,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 340,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 349,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 349,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 349,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 354,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 354,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 354,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 361,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 361,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 361,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 367,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 367,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 367,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 372,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 372,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 372,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 377,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 377,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 377,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 383,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 383,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 383,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 385,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 385,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 385,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 413,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 413,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 415,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 415,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 416,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 416,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 429,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 429,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 432,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 432,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 436,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 436,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 437,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 437,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 443,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 443,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 445,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 445,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 448,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 448,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 449,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 449,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 459,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 459,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 459,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 465,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 465,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 465,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 470,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 470,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 470,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 472,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 472,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 472,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 476,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 476,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 476,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 477,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 477,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 477,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 484,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 484,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 484,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 486,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 486,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 486,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 489,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 489,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 489,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 490,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 490,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 490,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/telnet.c",
+   "line": 499,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Curl never uses C99 array-param syntax; convention FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/telnet.c",
+   "line": 613,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Curl never uses C99 array-param syntax; convention FP"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "lib/telnet.c",
+   "line": 647,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pfd is struct pollfd[1], not a char string array; misfire"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 648,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pfd fields .fd/.events set before Curl_poll reads them"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "lib/telnet.c",
+   "line": 694,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "uc points to 2-byte short; byte-indexed endian access is valid"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "lib/telnet.c",
+   "line": 695,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "uc points to 2-byte short; byte-indexed endian access is valid"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "lib/telnet.c",
+   "line": 696,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "uc points to 2-byte short; byte-indexed endian access is valid"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "lib/telnet.c",
+   "line": 697,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "uc points to 2-byte short; byte-indexed endian access is valid"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/telnet.c",
+   "line": 711,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "err assigned from SOCKERRNO and used only inside same if-block"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 728,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 728,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 730,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 730,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 731,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 731,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 733,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 733,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 737,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 737,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 739,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 739,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 752,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 752,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 755,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 755,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 759,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 759,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 760,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 760,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 766,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 766,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 768,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 768,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 769,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 769,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 775,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 775,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 776,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 776,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 786,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 786,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 786,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 792,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 792,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 792,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 797,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 797,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 797,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 799,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 799,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 799,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 803,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 803,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 803,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 804,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 804,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 804,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 811,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 811,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 811,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 813,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 813,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 813,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 816,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 816,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 816,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 817,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 817,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "lib/telnet.c",
+   "line": 817,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'option' param is declared int, not char; value bounded 0-255"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/telnet.c",
+   "line": 827,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic plain-char read in nonascii scan; no real conversion bug"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/telnet.c",
+   "line": 827,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic plain-char read in nonascii scan; no real conversion bug"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 857,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Index is small CURL_TELOPT_* constant (<40) into [256] array; in bounds"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 860,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "head is for-loop init var, guarded non-NULL by loop condition"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/telnet.c",
+   "line": 863,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "arg assigned and used only inside if(sep) block"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 875,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Index is small CURL_TELOPT_* constant (<40) into [256] array; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 885,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Index is small CURL_TELOPT_* constant (<40) into [256] array; in bounds"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/telnet.c",
+   "line": 895,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "beg assigned before every use"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 900,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Index is small CURL_TELOPT_* constant (<40) into [256] array; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 921,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Index is small CURL_TELOPT_* constant (<40) into [256] array; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 935,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Index is small CURL_TELOPT_* constant (<40) into [256] array; in bounds"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 936,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Index is small CURL_TELOPT_* constant (<40) into [256] array; in bounds"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/telnet.c",
+   "line": 1006,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "err assigned from SOCKERRNO inside same if-block before use"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/telnet.c",
+   "line": 1034,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "v assigned in for-init; loop guard ensures defined"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/telnet.c",
+   "line": 1034,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "for(v=...;v;...) guard ensures v non-NULL before deref"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "lib/telnet.c",
+   "line": 1042,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl_msnprintf return value is used (len += ...), not ignored"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 1042,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "temp filled by msnprintf before any read; bounded by size check"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 1042,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len bounded by len+tmplen<sizeof(temp)-6 guard at line 1039"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/telnet.c",
+   "line": 1045,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vlen is pointer subtraction (s - v->data), not char conversion"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "lib/telnet.c",
+   "line": 1046,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curl_msnprintf return value is used (len += ...), not ignored"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/telnet.c",
+   "line": 1046,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "temp filled by msnprintf before any read; bounded by size check"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 1046,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len bounded by len+tmplen<sizeof(temp)-6 guard at line 1039"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/telnet.c",
+   "line": 1052,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len bounded by prior size-check guard; within temp[2048]"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/telnet.c",
+   "line": 1068,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Curl never uses C99 array-param syntax; convention FP"
+  },
+  {
+   "rule": "PRE02-C",
+   "file": "lib/telnet.c",
+   "line": 1078,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Local helper macro used as full statement; advisory only"
+  },
+  {
+   "rule": "PRE10-C",
+   "file": "lib/telnet.c",
+   "line": 1078,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Macro must return from enclosing fn; cannot be do-while wrapped"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/telnet.c",
+   "line": 1208,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "result assigned at line 1207 immediately before the if(result) test"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "lib/telnet.c",
+   "line": 1250,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buffer[4*1024] is a constant-size array, not a VLA"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/telnet.c",
+   "line": 1407,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buffer filled by Curl_xfer_recv before telrcv reads it"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "lib/telnet.c",
+   "line": 1597,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Curl_scheme_telnet is extern, referenced in scheme table; must not be static"
+  },
+  {
+   "rule": "DCL19-C",
+   "file": "lib/telnet.c",
+   "line": 1597,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Exported scheme object; cannot have file-only scope"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "lib/telnet.c"
+ ],
+ "summary": {
+  "tp": 0,
+  "fp": 245,
+  "fn": 0
+ }
+}

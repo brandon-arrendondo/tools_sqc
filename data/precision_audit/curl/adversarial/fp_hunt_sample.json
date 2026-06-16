@@ -1,0 +1,1586 @@
+[
+ {
+  "rule": "INT30-C",
+  "file": "lib/http_chunks.c",
+  "line": "561",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "else branch only when blen>=MINLEN(1024); blen-=12 cannot underflow",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/http_chunks.c",
+  "line": "662",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "reader non-NULL after Curl_creader_create success (if(!result))",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/vauth/ntlm.c",
+  "line": "266",
+  "verdict": "FP",
+  "confidence": "med",
+  "reason": "type2 non-NULL: caller memcmp'd it with type2len>=32 before this",
+  "severity": "High"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/vauth/ntlm.c",
+  "line": "280",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "free-then-reassign (curlx_free then memdup), not use-after-free",
+  "severity": "Critical"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/vauth/ntlm.c",
+  "line": "364",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "type2len<32 short-circuits memcmp; type2 non-NULL when reached",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/vauth/ntlm.c",
+  "line": "782",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "ptr_ntresp = &ntresp[0] or checked ntlmv2resp; non-NULL",
+  "severity": "High"
+ },
+ {
+  "rule": "INT30-C",
+  "file": "lib/vauth/ntlm.c",
+  "line": "783",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "size+=ntresplen guarded by overflow check at line 776",
+  "severity": "High"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/http2.c",
+  "line": "167",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "h2_stream_ctx_free frees members then stream once; not double-free",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM31-C",
+  "file": "lib/http2.c",
+  "line": "167",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "single free of stream after member frees; no double-free",
+  "severity": "High"
+ },
+ {
+  "rule": "MEM31-C",
+  "file": "lib/http2.c",
+  "line": "384",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "stream stored in hash via uint32_hash_set; freed by hash dtor, not leaked",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/http2.c",
+  "line": "763",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "url non-NULL: set by curl_url_get only when uc==0 reaches here",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/http2.c",
+  "line": "856",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "newstream set by http2_data_setup success + DEBUGASSERT(newstream)",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/http2.c",
+  "line": "1102",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "index len clamped to buffer size before write; in-bounds",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/http2.c",
+  "line": "1133",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "index len clamped to buffer size before write; in-bounds",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/http2.c",
+  "line": "1161",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "index len clamped to buffer size before write; in-bounds",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/http2.c",
+  "line": "1238",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "index len clamped to buffer size before write; in-bounds",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/http2.c",
+  "line": "2022",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "stream guaranteed non-NULL by callers (data_setup success/DEBUGASSERT)",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/hostip.c",
+  "line": "133",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "dns guarded by DEBUGASSERT; internal callers pass non-NULL",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/hostip.c",
+  "line": "143",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "out[1] only compiled under CURLRES_IPV6 where array size is 2",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/hostip.c",
+  "line": "169",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "out[1] read only under CURLRES_IPV6 (size 2)",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/hostip.c",
+  "line": "169",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "out[1] read only under CURLRES_IPV6 (size 2)",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/hostip.c",
+  "line": "177",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "out[1] freed only under CURLRES_IPV6 (size 2)",
+  "severity": "High"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/hostip.c",
+  "line": "188",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "reading hinfo to pass to cleanup/free, not access after free",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/hostip.c",
+  "line": "189",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "hinfo freed after cleanup; no use-after-free, sequential frees",
+  "severity": "Critical"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/hostip.c",
+  "line": "209",
+  "verdict": "FP",
+  "confidence": "med",
+  "reason": "ai non-NULL by internal contract; callers iterate a non-NULL list",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/hostip.c",
+  "line": "300",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "internal helper; data always valid",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/hostip.c",
+  "line": "310",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "internal helper; data always valid",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/http.c",
+  "line": "284",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "pointer guarded (len&&, calloc-assigned, DEBUGASSERT) before deref",
+  "severity": "High"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/http.c",
+  "line": "591",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "free of distinct struct member or free+reassign; not UAF (struct-poison FP)",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/http.c",
+  "line": "593",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "free of distinct struct member or free+reassign; not UAF (struct-poison FP)",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/http.c",
+  "line": "593",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "free of distinct struct member or free+reassign; not UAF (struct-poison FP)",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/http.c",
+  "line": "593",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "free of distinct struct member or free+reassign; not UAF (struct-poison FP)",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/http.c",
+  "line": "594",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "free of distinct struct member or free+reassign; not UAF (struct-poison FP)",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/http.c",
+  "line": "594",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "free of distinct struct member or free+reassign; not UAF (struct-poison FP)",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM31-C",
+  "file": "lib/http.c",
+  "line": "607",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "data->req.newurl/h are lifecycle members freed elsewhere; not a leak",
+  "severity": "High"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/http.c",
+  "line": "613",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "free of distinct struct member or free+reassign; not UAF (struct-poison FP)",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/http.c",
+  "line": "613",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "free of distinct struct member or free+reassign; not UAF (struct-poison FP)",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/rtsp.c",
+  "line": "403",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "free-then-reassign: curlx_free then aptr.rtsp_transport=maprintf; not UAF",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/rtsp.c",
+  "line": "403",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "data->state is struct member never freed; free-reassign pattern",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/rtsp.c",
+  "line": "404",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "reassignment of freed member, not a read of freed memory",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/rtsp.c",
+  "line": "404",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "data->state struct not freed",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/rtsp.c",
+  "line": "406",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "data->set.str read, unrelated to freed aptr.rtsp_transport",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/rtsp.c",
+  "line": "407",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "reads reassigned (maprintf result) rtsp_transport, not freed memory",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/rtsp.c",
+  "line": "407",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "aptr re-populated before this null-check",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/rtsp.c",
+  "line": "407",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "data->state not freed",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/rtsp.c",
+  "line": "417",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "reads reassigned rtsp_transport (maprintf), not freed",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/rtsp.c",
+  "line": "417",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "aptr live after reassignment",
+  "severity": "Critical"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/ldap.c",
+  "line": "418",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "ludp non-NULL after rc==0 guard (parse_low returns err if calloc fails)",
+  "severity": "High"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/ldap.c",
+  "line": "468",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/ldap.c",
+  "line": "501",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/ldap.c",
+  "line": "508",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/ldap.c",
+  "line": "510",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/ldap.c",
+  "line": "511",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM31-C",
+  "file": "lib/ldap.c",
+  "line": "511",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "per-error-branch cleanup then goto quit; branches mutually exclusive, no double free",
+  "severity": "High"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/ldap.c",
+  "line": "512",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/ldap.c",
+  "line": "521",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/ldap.c",
+  "line": "522",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF",
+  "severity": "Critical"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/ftp.c",
+  "line": "187",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "pointer guarded non-null on this path / callee NULL-safe",
+  "severity": "High"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/ftp.c",
+  "line": "221",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "struct-member free or free-then-reassign propagated to whole struct; not UAF",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/ftp.c",
+  "line": "221",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "struct-member free or free-then-reassign propagated to whole struct; not UAF",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/ftp.c",
+  "line": "221",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "struct-member free or free-then-reassign propagated to whole struct; not UAF",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/ftp.c",
+  "line": "226",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "struct-member free or free-then-reassign propagated to whole struct; not UAF",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/ftp.c",
+  "line": "231",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "struct-member free or free-then-reassign propagated to whole struct; not UAF",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/ftp.c",
+  "line": "242",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "struct-member free or free-then-reassign propagated to whole struct; not UAF",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/ftp.c",
+  "line": "249",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "struct-member free or free-then-reassign propagated to whole struct; not UAF",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/ftp.c",
+  "line": "250",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "struct-member free or free-then-reassign propagated to whole struct; not UAF",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/ftp.c",
+  "line": "268",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "struct-member free or free-then-reassign propagated to whole struct; not UAF",
+  "severity": "Critical"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/doh.c",
+  "line": "130",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "while(*hostp) bounded by NUL and label-length checks",
+  "severity": "High"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/doh.c",
+  "line": "264",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "Normal free in destructor; not use-after-free",
+  "severity": "Critical"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/doh.c",
+  "line": "327",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "doh non-null after Curl_open success guard",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/doh.c",
+  "line": "406",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "doh allocated and checked before this point",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/doh.c",
+  "line": "417",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "doh allocated and checked before this point",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/doh.c",
+  "line": "571",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "index validated by caller (dohlen>=index+rdlength), guarded store",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/doh.c",
+  "line": "583",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "index bounds-checked by caller before doh_rdata",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/doh.c",
+  "line": "595",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "index bounds-checked by caller; len validated",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR39-C",
+  "file": "lib/doh.c",
+  "line": "956",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "(char*)ai+sizeof correct byte arithmetic; no double scaling",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR39-C",
+  "file": "lib/doh.c",
+  "line": "957",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "(char*)ai->ai_addr+ss_size correct byte arithmetic",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/smb.c",
+  "line": "411",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "Curl_urldecode returns CURLE_OK only with non-NULL path; result checked at 407",
+  "severity": "High"
+ },
+ {
+  "rule": "INT30-C",
+  "file": "lib/smb.c",
+  "line": "527",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "got+=bytes_read bounded; recv len=MAX_MESSAGE_SIZE-got, cannot exceed buffer/wrap",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR39-C",
+  "file": "lib/smb.c",
+  "line": "639",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "integer size comparison (MAX_MESSAGE_SIZE - sizeof(header)) < msg_len; no pointer scaling",
+  "severity": "High"
+ },
+ {
+  "rule": "INT32-C",
+  "file": "lib/smb.c",
+  "line": "686",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "sizeof(msg)-sizeof(msg.bytes) is positive compile-time constant; cannot overflow",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR39-C",
+  "file": "lib/smb.c",
+  "line": "697",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "p += sizeof(lm) advances char* by byte count of lm[24]; correct, not double scaling",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR39-C",
+  "file": "lib/smb.c",
+  "line": "699",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "p += sizeof(nt) advances char* by byte count; correct pointer arithmetic",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR39-C",
+  "file": "lib/smb.c",
+  "line": "700",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "p += msnprintf return (bytes written) on char*; not sizeof scaling",
+  "severity": "High"
+ },
+ {
+  "rule": "INT32-C",
+  "file": "lib/smb.c",
+  "line": "727",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "sizeof(msg)-sizeof(msg.bytes) compile-time positive constant",
+  "severity": "High"
+ },
+ {
+  "rule": "INT32-C",
+  "file": "lib/smb.c",
+  "line": "755",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "sizeof(msg)-sizeof(msg.bytes) compile-time positive constant",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR39-C",
+  "file": "lib/smb.c",
+  "line": "841",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "sizeof(*msg)-sizeof(msg->h)+upload_size is size_t length arg, not pointer scaling",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/mqtt.c",
+  "line": "201",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "'start' is internally computed offset into correctly sized calloc buffer.",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/mqtt.c",
+  "line": "219",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "'start' internally computed offset into sized buffer.",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/mqtt.c",
+  "line": "231",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "'start' internally computed; buffer sized to fit client id.",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/mqtt.c",
+  "line": "250",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "Wrong buffer attribution: conflated with packet[2] at line814; here sized packetlen.",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/mqtt.c",
+  "line": "252",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "Misattributed buffer size 2; packet is calloc(packetlen).",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/mqtt.c",
+  "line": "253",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "Misattributed buffer size 2; packet sized to fit header.",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/mqtt.c",
+  "line": "254",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "Misattributed buffer size 2.",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/mqtt.c",
+  "line": "255",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "Misattributed buffer size 2.",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/mqtt.c",
+  "line": "257",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "Misattributed buffer size 2.",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/mqtt.c",
+  "line": "259",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "Misattributed buffer size 2.",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/cookie.c",
+  "line": "229",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "len guarded (len &&) before cookie_path[0] deref; caller passes valid",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/cookie.c",
+  "line": "790",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "domain guarded non-NULL at 786 (domain && ...) before strlen",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/cookie.c",
+  "line": "1491",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "out is stdout or Curl_fopen result checked (error goto) before fputs",
+  "severity": "High"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/cookie.c",
+  "line": "1528",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "1520 free is followed by goto error skipping 1528; no double free",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM31-C",
+  "file": "lib/cookie.c",
+  "line": "1528",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "distinct paths; 1520 goto error bypasses 1528 normal free",
+  "severity": "High"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/cookie.c",
+  "line": "1552",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "unlink(tempstore) before free; tempstore not yet freed; no UAF",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/cookie.c",
+  "line": "1553",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "single free of tempstore in error block; no double free",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM31-C",
+  "file": "lib/cookie.c",
+  "line": "1553",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "single free in error path; success path frees at 1545; mutually exclusive",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/imap.c",
+  "line": "224",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "while(*str) NUL-terminated string scan; idiomatic, bounded by terminator",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/imap.c",
+  "line": "1186",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "while(ISDIGIT(*params)) bounded by NUL check; idiomatic string scan",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/imap.c",
+  "line": "1357",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "line is recvbuf ptr, guarded by len>=18 before &line[2]; non-NULL",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/imap.c",
+  "line": "1738",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "while(ptr && *ptr) option-string scan bounded by NUL; idiomatic",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/imap.c",
+  "line": "1822",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "while(*ptr==';') param loop advances ptr internally; NUL-bounded",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/imap.c",
+  "line": "1861",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "value from Curl_urldecode success path, guarded valuelen>0; non-NULL",
+  "severity": "High"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/imap.c",
+  "line": "1894",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "free at 1886 is in else-branch that returns; 1894 free is mutually exclusive",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/telnet.c",
+  "line": "175",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "Sequential free of distinct struct members in dtor; no UAF",
+  "severity": "Critical"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/telnet.c",
+  "line": "195",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "Index is small CURL_TELOPT_* constant (<40) into [256] array; in bounds",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/telnet.c",
+  "line": "196",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "Index is small CURL_TELOPT_* constant (<40) into [256] array; in bounds",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/telnet.c",
+  "line": "203",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "Index is small CURL_TELOPT_* constant (<40) into [256] array; in bounds",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/telnet.c",
+  "line": "204",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "Index is small CURL_TELOPT_* constant (<40) into [256] array; in bounds",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/telnet.c",
+  "line": "212",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "Index is small CURL_TELOPT_* constant (<40) into [256] array; in bounds",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/telnet.c",
+  "line": "225",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "Index is small CURL_TELOPT_* constant (<40) into [256] array; in bounds",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/telnet.c",
+  "line": "253",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/telnet.c",
+  "line": "255",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/telnet.c",
+  "line": "264",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "option is int 0-255 (unsigned char from telrcv) indexing [256] arrays; in bounds",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/vtls/x509asn1.c",
+  "line": "1240",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "certptr set by base64_encode on !result; error path goto done",
+  "severity": "High"
+ },
+ {
+  "rule": "INT30-C",
+  "file": "lib/vtls/mbedtls.c",
+  "line": "297",
+  "verdict": "FP",
+  "confidence": "med",
+  "reason": "supported_len is mbedtls cipher count, tiny bounded; no wrap",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/vtls/mbedtls.c",
+  "line": "454",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "conn_config from cf_get_primary_config returns non-NULL",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/vtls/mbedtls.c",
+  "line": "479",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "conn_config non-NULL in this backend path",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/vtls/mbedtls.c",
+  "line": "579",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "ssl_config from cf_get_config non-NULL",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/vtls/mbedtls.c",
+  "line": "663",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "ssl_config non-NULL",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/vtls/mbedtls.c",
+  "line": "701",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "else-branch implies key_blob non-NULL (guarded by if at 663)",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/vtls/mbedtls.c",
+  "line": "745",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "ssl_config non-NULL",
+  "severity": "High"
+ },
+ {
+  "rule": "INT32-C",
+  "file": "lib/vtls/mbedtls.c",
+  "line": "852",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "ret is mbedtls negative errcode, never INT_MIN; display only",
+  "severity": "High"
+ },
+ {
+  "rule": "INT32-C",
+  "file": "lib/vtls/mbedtls.c",
+  "line": "903",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "-ret on mbedtls errcode; never INT_MIN",
+  "severity": "High"
+ },
+ {
+  "rule": "INT32-C",
+  "file": "lib/vtls/mbedtls.c",
+  "line": "908",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "-ret on mbedtls errcode; never INT_MIN",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR39-C",
+  "file": "lib/altsvc.c",
+  "line": "96",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "(char*)as + sizeof(struct) is byte offset, char* not scaled. No double scaling.",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR39-C",
+  "file": "lib/altsvc.c",
+  "line": "100",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "char* pointer arithmetic; sizeof gives byte offset, correct flexible-tail layout.",
+  "severity": "High"
+ },
+ {
+  "rule": "MEM31-C",
+  "file": "lib/altsvc.c",
+  "line": "174",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "'as' appended to asi->list, owned and freed by Curl_altsvc_cleanup. Not leaked.",
+  "severity": "High"
+ },
+ {
+  "rule": "MEM31-C",
+  "file": "lib/altsvc.c",
+  "line": "186",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "On null 'as' nothing allocated; on success appended to list. No leak.",
+  "severity": "High"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/altsvc.c",
+  "line": "206",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "free(asi->filename) then strdup-reassign; classic free-then-realloc, not UAF.",
+  "severity": "Critical"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/altsvc.c",
+  "line": "377",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "out non-NULL inside if(!result) guard after Curl_fopen succeeded.",
+  "severity": "High"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/altsvc.c",
+  "line": "648",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "free at 645 only in expired branch followed by continue; match block on un-freed 'as'.",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/altsvc.c",
+  "line": "648",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "Free is in disjoint continue branch; no UAF on this 'as'.",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/altsvc.c",
+  "line": "649",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "hostcompare(as->src.host) reached only when not freed (expired branch continues).",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/altsvc.c",
+  "line": "649",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "Disjoint free branch; not UAF.",
+  "severity": "Critical"
+ },
+ {
+  "rule": "INT31-C",
+  "file": "lib/curl_ntlm_core.c",
+  "line": "173",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "value masked &0xFF before cast to char; intentional byte truncation",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/curl_ntlm_core.c",
+  "line": "363",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "len=CURLMIN(...,14)<=14; &pw[len] valid (at most one-past for memset 0 size)",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/curl_fnmatch.c",
+  "line": "83",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "i guarded by i>=sizeof(keyword) check at line 78",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/curl_fnmatch.c",
+  "line": "100",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "CURLFNM_DIGIT=258 < charset size 271",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/curl_fnmatch.c",
+  "line": "102",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "CURLFNM_ALNUM=257 < 271",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/curl_fnmatch.c",
+  "line": "104",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "CURLFNM_ALPHA=260 < 271",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/curl_fnmatch.c",
+  "line": "106",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "CURLFNM_XDIGIT=259 < 271",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/curl_fnmatch.c",
+  "line": "108",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "CURLFNM_PRINT=261 < 271",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/curl_fnmatch.c",
+  "line": "110",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "CURLFNM_GRAPH=264 < 271",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/curl_fnmatch.c",
+  "line": "112",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "CURLFNM_SPACE=265 < 271",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/curl_fnmatch.c",
+  "line": "114",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "CURLFNM_BLANK=262 < 271",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/curl_fnmatch.c",
+  "line": "116",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "CURLFNM_UPPER=266 < 271",
+  "severity": "High"
+ },
+ {
+  "rule": "INT30-C",
+  "file": "lib/socks.c",
+  "line": "145",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "pnread tracks network bytes read, bounded far below SIZE_MAX",
+  "severity": "High"
+ },
+ {
+  "rule": "INT30-C",
+  "file": "lib/socks.c",
+  "line": "152",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "blen -= nread; guarded blen!=nread and nread<=blen by recv contract",
+  "severity": "High"
+ },
+ {
+  "rule": "INT30-C",
+  "file": "lib/socks.c",
+  "line": "153",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "pnread accumulates bounded read counts; no wrap",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/socks.c",
+  "line": "415",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "Guarded: peek-fail or rlen<8 returns early; resp valid, indices in range",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/socks.c",
+  "line": "650",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "Guarded by peek/rlen<2; resp[0] in range",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/socks.c",
+  "line": "756",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "Guarded by peek/rlen<2; resp[1] in range",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/socks.c",
+  "line": "882",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "while(hp && ...) is NULL-safe; loop body only on non-NULL",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/socks.c",
+  "line": "982",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "Guarded by peek/rlen<resp_len(8); resp indices in range",
+  "severity": "High"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/socks.c",
+  "line": "1307",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "cf_free frees cf->ctx only, not cf; cf->connected access valid",
+  "severity": "Critical"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/socks.c",
+  "line": "1346",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "cf_free frees cf->ctx only; cf itself not freed, do_close valid",
+  "severity": "Critical"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/urlapi.c",
+  "line": "107",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "ptr from dyn_ptr (non-NULL) or guarded by prior length/null check",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/urlapi.c",
+  "line": "151",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "ptr from dyn_ptr (non-NULL) or guarded by prior length/null check",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/urlapi.c",
+  "line": "225",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "ptr from dyn_ptr (non-NULL) or guarded by prior length/null check",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/urlapi.c",
+  "line": "343",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "ptr from dyn_ptr (non-NULL) or guarded by prior length/null check",
+  "severity": "High"
+ },
+ {
+  "rule": "MEM30-C",
+  "file": "lib/urlapi.c",
+  "line": "382",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "free-then-reassign or Curl_safefree-null or distinct member; no UAF/DF",
+  "severity": "Critical"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/urlapi.c",
+  "line": "394",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "ptr from dyn_ptr (non-NULL) or guarded by prior length/null check",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/urlapi.c",
+  "line": "452",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "ptr from dyn_ptr (non-NULL) or guarded by prior length/null check",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/urlapi.c",
+  "line": "491",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "ptr from dyn_ptr (non-NULL) or guarded by prior length/null check",
+  "severity": "High"
+ },
+ {
+  "rule": "ARR30-C",
+  "file": "lib/urlapi.c",
+  "line": "494",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "while(*p) on NUL-terminated string; bounded by terminator",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/urlapi.c",
+  "line": "582",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "ptr from dyn_ptr (non-NULL) or guarded by prior length/null check",
+  "severity": "High"
+ },
+ {
+  "rule": "EXP34-C",
+  "file": "lib/dict.c",
+  "line": "161",
+  "verdict": "FP",
+  "confidence": "high",
+  "reason": "path set by Curl_urldecode which returns early on error; path non-NULL on success.",
+  "severity": "High"
+ }
+]

@@ -1,0 +1,805 @@
+{
+ "labels": [
+  {
+   "rule": "PRE01-C",
+   "file": "lib/ldap.c",
+   "line": 127,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "LDAP_TRACE macro param used only in printf-style varargs; parenthesizing inapplicable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/ldap.c",
+   "line": 206,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data passed to curl APIs that mutate via struct; const not addable, vtable-shaped"
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "lib/ldap.c",
+   "line": 256,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "passwd is borrowed conn->passwd pointer, not a local buffer to scrub here"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/ldap.c",
+   "line": 418,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ludp non-NULL after rc==0 guard (parse_low returns err if calloc fails)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/ldap.c",
+   "line": 447,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "name assigned by curlx_convert before use; sqc #ifdef branch confusion"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 468,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 501,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 508,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 510,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 511,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/ldap.c",
+   "line": 511,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "per-error-branch cleanup then goto quit; branches mutually exclusive, no double free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 512,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 521,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 522,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/ldap.c",
+   "line": 522,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "per-error-branch cleanup then goto quit; branches mutually exclusive, no double free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 523,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 531,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 533,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 533,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 534,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 534,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 534,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 534,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 535,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 535,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 538,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 539,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/ldap.c",
+   "line": 539,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "per-error-branch cleanup then goto quit; branches mutually exclusive, no double free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 540,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/ldap.c",
+   "line": 548,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "val_b64 set by base64_encode and guarded by val_b64_sz>0"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 552,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 553,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/ldap.c",
+   "line": 553,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "per-error-branch cleanup then goto quit; branches mutually exclusive, no double free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 554,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 564,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 564,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 564,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 564,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 565,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 565,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 567,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 568,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/ldap.c",
+   "line": 568,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "per-error-branch cleanup then goto quit; branches mutually exclusive, no double free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 569,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 579,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 580,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/ldap.c",
+   "line": 580,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "per-error-branch cleanup then goto quit; branches mutually exclusive, no double free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 581,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 590,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 594,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/ldap.c",
+   "line": 594,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "per-error-branch cleanup then goto quit; branches mutually exclusive, no double free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 595,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error-branch frees followed by goto quit; mutually exclusive paths, not double-free/UAF"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "lib/ldap.c",
+   "line": 630,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "do_trace is DEBUG_LDAP-only one-shot init; not a real threading concern"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "lib/ldap.c",
+   "line": 634,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "env passed to curlx_str_number which handles parsing; DEBUG_LDAP only"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "lib/ldap.c",
+   "line": 634,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "getenv in DEBUG_LDAP trace init; not security/thread sensitive"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "lib/ldap.c",
+   "line": 635,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "e is modified by curlx_str_number(&env,&e,...) via pointer"
+  },
+  {
+   "rule": "ENV30-C",
+   "file": "lib/ldap.c",
+   "line": 636,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curlx_str_number advances pointer, does not modify string contents"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "lib/ldap.c",
+   "line": 673,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "num_entries(p) called only when *p true; p non-NULL"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/ldap.c",
+   "line": 695,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data passed to curl APIs that mutate via struct; const not addable, vtable-shaped"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "lib/ldap.c",
+   "line": 732,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char *dn=p / *filter=p where p is char* (non-const); no const cast"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/ldap.c",
+   "line": 770,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*q++=0 write of literal / char-pointer idiom; no sign-extension bug"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/ldap.c",
+   "line": 773,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*q++=0 write of literal / char-pointer idiom; no sign-extension bug"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 782,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ludp/lud_attrs never freed in this fn; reads precede frees in free_urldesc loop"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 798,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "unescaped freshly allocated by Curl_urldecode then either freed or ownership-transferred"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 798,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "unescaped freshly allocated by Curl_urldecode then either freed or ownership-transferred"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 806,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ludp/lud_attrs never freed in this fn; reads precede frees in free_urldesc loop"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 806,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ludp/lud_attrs never freed in this fn; reads precede frees in free_urldesc loop"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 809,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "unescaped freed once per loop iter (Win32); reassigned each iteration, no double free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/ldap.c",
+   "line": 809,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "per-error-branch cleanup then goto quit; branches mutually exclusive, no double free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 811,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ludp/lud_attrs never freed in this fn; reads precede frees in free_urldesc loop"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 816,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ludp/lud_attrs never freed in this fn; reads precede frees in free_urldesc loop"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 819,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ludp/lud_attrs never freed in this fn; reads precede frees in free_urldesc loop"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/ldap.c",
+   "line": 832,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*q++=0 write of literal / char-pointer idiom; no sign-extension bug"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 836,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ludp/lud_attrs never freed in this fn; reads precede frees in free_urldesc loop"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 841,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ludp/lud_attrs never freed in this fn; reads precede frees in free_urldesc loop"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/ldap.c",
+   "line": 851,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*q++=0 write of literal / char-pointer idiom; no sign-extension bug"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "lib/ldap.c",
+   "line": 854,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char *dn=p / *filter=p where p is char* (non-const); no const cast"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/ldap.c",
+   "line": 855,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "unescaped assigned by Curl_urldecode before use; early-return on failure"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 861,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "unescaped freshly allocated by Curl_urldecode then either freed or ownership-transferred"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 861,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "unescaped freshly allocated by Curl_urldecode then either freed or ownership-transferred"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 870,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "unescaped freshly allocated by Curl_urldecode then either freed or ownership-transferred"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 873,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "unescaped freed once per loop iter (Win32); reassigned each iteration, no double free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "lib/ldap.c",
+   "line": 873,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "per-error-branch cleanup then goto quit; branches mutually exclusive, no double free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 875,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ludp/lud_attrs never freed in this fn; reads precede frees in free_urldesc loop"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "lib/ldap.c",
+   "line": 896,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "lud_attrs stored in caller-owned ludp, freed by ldap_free_urldesc_low"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "lib/ldap.c",
+   "line": 915,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ludp is calloc heap allocation, not stack address"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 927,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ludp/lud_attrs never freed in this fn; reads precede frees in free_urldesc loop"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 929,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ludp/lud_attrs never freed in this fn; reads precede frees in free_urldesc loop"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 930,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ludp/lud_attrs never freed in this fn; reads precede frees in free_urldesc loop"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/ldap.c",
+   "line": 939,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "advisory C99 array-param style; curl never uses it"
+  },
+  {
+   "rule": "FLP03-C",
+   "file": "lib/ldap.c",
+   "line": 956,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "integer division on api.ldapai_vendor_version (int), no floating point"
+  },
+  {
+   "rule": "FLP03-C",
+   "file": "lib/ldap.c",
+   "line": 958,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "integer division on api.ldapai_vendor_version (int), no floating point"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 966,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "api fields freed once in mutually-exclusive __OS400__/else branches"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 968,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "api fields freed once in mutually-exclusive __OS400__/else branches"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/ldap.c",
+   "line": 968,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "api fields freed once in mutually-exclusive __OS400__/else branches"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "lib/ldap.c",
+   "line": 1008,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Curl_scheme_ldap/ldaps referenced externally by scheme table; needs external linkage"
+  },
+  {
+   "rule": "DCL19-C",
+   "file": "lib/ldap.c",
+   "line": 1008,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const scheme struct with required external linkage; cannot be function-local"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "lib/ldap.c",
+   "line": 1024,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Curl_scheme_ldap/ldaps referenced externally by scheme table; needs external linkage"
+  },
+  {
+   "rule": "DCL19-C",
+   "file": "lib/ldap.c",
+   "line": 1024,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const scheme struct with required external linkage; cannot be function-local"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "lib/ldap.c"
+ ],
+ "summary": {
+  "tp": 0,
+  "fp": 99,
+  "fn": 0
+ }
+}

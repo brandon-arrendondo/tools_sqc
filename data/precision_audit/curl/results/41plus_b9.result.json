@@ -1,0 +1,1517 @@
+{
+ "labels": [
+  {
+   "rule": "DCL15-C",
+   "file": "lib/mprintf.c",
+   "line": 36,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "public curl_* API declared in include/curl/mprintf.h; needs external linkage"
+  },
+  {
+   "rule": "DCL19-C",
+   "file": "lib/mprintf.c",
+   "line": 36,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "public exported API or file-scope const digit table; minimal scope inapplicable"
+  },
+  {
+   "rule": "STR04-C",
+   "file": "lib/mprintf.c",
+   "line": 36,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "digit lookup table indexed by value, not a basic-charset string; idiomatic"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "lib/mprintf.c",
+   "line": 39,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "public curl_* API declared in include/curl/mprintf.h; needs external linkage"
+  },
+  {
+   "rule": "DCL19-C",
+   "file": "lib/mprintf.c",
+   "line": 39,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "public exported API or file-scope const digit table; minimal scope inapplicable"
+  },
+  {
+   "rule": "STR04-C",
+   "file": "lib/mprintf.c",
+   "line": 39,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "digit lookup table indexed by value, not a basic-charset string; idiomatic"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "lib/mprintf.c",
+   "line": 41,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OUTCHAR evaluates x once; no multiple-evaluation"
+  },
+  {
+   "rule": "EXP07-C",
+   "file": "lib/mprintf.c",
+   "line": 76,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "these ARE the enum constant definitions (1<<N), not assuming a value elsewhere"
+  },
+  {
+   "rule": "EXP07-C",
+   "file": "lib/mprintf.c",
+   "line": 77,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "these ARE the enum constant definitions (1<<N), not assuming a value elsewhere"
+  },
+  {
+   "rule": "EXP07-C",
+   "file": "lib/mprintf.c",
+   "line": 78,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "these ARE the enum constant definitions (1<<N), not assuming a value elsewhere"
+  },
+  {
+   "rule": "EXP07-C",
+   "file": "lib/mprintf.c",
+   "line": 79,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "these ARE the enum constant definitions (1<<N), not assuming a value elsewhere"
+  },
+  {
+   "rule": "EXP07-C",
+   "file": "lib/mprintf.c",
+   "line": 80,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "these ARE the enum constant definitions (1<<N), not assuming a value elsewhere"
+  },
+  {
+   "rule": "EXP07-C",
+   "file": "lib/mprintf.c",
+   "line": 81,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "these ARE the enum constant definitions (1<<N), not assuming a value elsewhere"
+  },
+  {
+   "rule": "EXP07-C",
+   "file": "lib/mprintf.c",
+   "line": 82,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "these ARE the enum constant definitions (1<<N), not assuming a value elsewhere"
+  },
+  {
+   "rule": "EXP07-C",
+   "file": "lib/mprintf.c",
+   "line": 84,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "these ARE the enum constant definitions (1<<N), not assuming a value elsewhere"
+  },
+  {
+   "rule": "EXP07-C",
+   "file": "lib/mprintf.c",
+   "line": 85,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "these ARE the enum constant definitions (1<<N), not assuming a value elsewhere"
+  },
+  {
+   "rule": "EXP07-C",
+   "file": "lib/mprintf.c",
+   "line": 86,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "these ARE the enum constant definitions (1<<N), not assuming a value elsewhere"
+  },
+  {
+   "rule": "EXP07-C",
+   "file": "lib/mprintf.c",
+   "line": 87,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "these ARE the enum constant definitions (1<<N), not assuming a value elsewhere"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/mprintf.c",
+   "line": 141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "num set by curlx_str_number; ||-shortcircuit returns before reading on failure"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 143,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "lib/mprintf.c",
+   "line": 147,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "is_arg_used/mark_arg_used do evaluate y multiple times (real PRE advisory)"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "lib/mprintf.c",
+   "line": 147,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "macro evaluates y multiple times; CERT advisory factually holds (args side-effect-free though)"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "lib/mprintf.c",
+   "line": 148,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "is_arg_used/mark_arg_used do evaluate y multiple times (real PRE advisory)"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "lib/mprintf.c",
+   "line": 148,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "macro evaluates y multiple times; CERT advisory factually holds (args side-effect-free though)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/mprintf.c",
+   "line": 172,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'out' IS written (out[ocount]=...); not unmodified"
+  },
+  {
+   "rule": "MSC39-C",
+   "file": "lib/mprintf.c",
+   "line": 175,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "va_list passed once to parsefmt, never reused by caller; standard pattern"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "lib/mprintf.c",
+   "line": 182,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed-size local array; no getenv involved"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "lib/mprintf.c",
+   "line": 182,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed-size array (MAX_PARAMETERS/8, BUFFSIZE), not a runtime VLA"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/mprintf.c",
+   "line": 191,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "loop bounded by NUL terminator of format string"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "lib/mprintf.c",
+   "line": 193,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "iptr assigned at line 505 before use at 506"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "lib/mprintf.c",
+   "line": 197,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'width' is modified later in function"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/mprintf.c",
+   "line": 235,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "loop bounded by NUL terminator of format string"
+  },
+  {
+   "rule": "CON43-C",
+   "file": "lib/mprintf.c",
+   "line": 236,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "single-threaded format parser; no concurrency/double-fetch"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 279,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 309,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "lib/mprintf.c",
+   "line": 329,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misparse around #if/#else in switch case 'z'; code is reachable"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 337,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "CON43-C",
+   "file": "lib/mprintf.c",
+   "line": 376,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "single-threaded format parser; no concurrency/double-fetch"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 391,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 393,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 399,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 401,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 408,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 410,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 417,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 419,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 426,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 428,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 462,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/mprintf.c",
+   "line": 467,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "usedinput index width/8<16=sizeof; width bounded <MAX_PARAMETERS before use"
+  },
+  {
+   "rule": "INT33-C",
+   "file": "lib/mprintf.c",
+   "line": 467,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro divisor is literal 8, not width/precision; never zero"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "lib/mprintf.c",
+   "line": 472,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operands are int counters (num/param/maxprec) or same array (w/work), not distinct arrays"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/mprintf.c",
+   "line": 477,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "usedinput index width/8<16=sizeof; width bounded <MAX_PARAMETERS before use"
+  },
+  {
+   "rule": "INT33-C",
+   "file": "lib/mprintf.c",
+   "line": 477,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro divisor is literal 8, not width/precision; never zero"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 480,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/mprintf.c",
+   "line": 485,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "usedinput index width/8<16=sizeof; width bounded <MAX_PARAMETERS before use"
+  },
+  {
+   "rule": "INT33-C",
+   "file": "lib/mprintf.c",
+   "line": 485,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro divisor is literal 8, not width/precision; never zero"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "lib/mprintf.c",
+   "line": 490,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operands are int counters (num/param/maxprec) or same array (w/work), not distinct arrays"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/mprintf.c",
+   "line": 494,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "usedinput index width/8<16=sizeof; width bounded <MAX_PARAMETERS before use"
+  },
+  {
+   "rule": "INT33-C",
+   "file": "lib/mprintf.c",
+   "line": 494,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro divisor is literal 8, not width/precision; never zero"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/mprintf.c",
+   "line": 509,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "usedinput index width/8<16=sizeof; width bounded <MAX_PARAMETERS before use"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "lib/mprintf.c",
+   "line": 542,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "usedinput index width/8<16=sizeof; width bounded <MAX_PARAMETERS before use"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "lib/mprintf.c",
+   "line": 604,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "cycle bounded by construction: out_double calls msnprintf with %d only, never re-enters"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/mprintf.c",
+   "line": 606,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "signature-constrained out_*/callback family; const cannot be applied uniformly"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "lib/mprintf.c",
+   "line": 610,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "formatbuf modified via *fptr++"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 617,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 618,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "lib/mprintf.c",
+   "line": 618,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fptr/w/fmt point into real local arrays (formatbuf/work/format); decay misparse"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 619,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 620,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "lib/mprintf.c",
+   "line": 620,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fptr/w/fmt point into real local arrays (formatbuf/work/format); decay misparse"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 621,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 622,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "lib/mprintf.c",
+   "line": 622,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fptr/w/fmt point into real local arrays (formatbuf/work/format); decay misparse"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 623,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 624,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "lib/mprintf.c",
+   "line": 624,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fptr/w/fmt point into real local arrays (formatbuf/work/format); decay misparse"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 626,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "INT36-C",
+   "file": "lib/mprintf.c",
+   "line": 633,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "(size_t)ptr intentional for %p hex formatting; idiomatic advisory"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "lib/mprintf.c",
+   "line": 634,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fptr/w/fmt point into real local arrays (formatbuf/work/format); decay misparse"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "lib/mprintf.c",
+   "line": 645,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operands are int counters (num/param/maxprec) or same array (w/work), not distinct arrays"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "lib/mprintf.c",
+   "line": 658,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fptr/w/fmt point into real local arrays (formatbuf/work/format); decay misparse"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 660,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 661,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "lib/mprintf.c",
+   "line": 661,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fptr/w/fmt point into real local arrays (formatbuf/work/format); decay misparse"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 663,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 664,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "lib/mprintf.c",
+   "line": 664,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fptr/w/fmt point into real local arrays (formatbuf/work/format); decay misparse"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 664,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 665,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 666,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "lib/mprintf.c",
+   "line": 666,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fptr/w/fmt point into real local arrays (formatbuf/work/format); decay misparse"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 666,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 668,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "lib/mprintf.c",
+   "line": 668,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fptr/w/fmt point into real local arrays (formatbuf/work/format); decay misparse"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 670,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/mprintf.c",
+   "line": 696,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'stream' is a function-pointer parameter, not an undeclared function"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/mprintf.c",
+   "line": 703,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "signature-constrained out_*/callback family; const cannot be applied uniformly"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/mprintf.c",
+   "line": 705,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "signature-constrained out_*/callback family; const cannot be applied uniformly"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/mprintf.c",
+   "line": 708,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "signature-constrained out_*/callback family; const cannot be applied uniformly"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/mprintf.c",
+   "line": 708,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "signature-constrained out_*/callback family; const cannot be applied uniformly"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 714,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 721,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 724,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 726,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 730,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 735,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 739,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 741,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "EXP15-C",
+   "file": "lib/mprintf.c",
+   "line": 744,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "intentional empty no-op branch with explanatory comment (unsigned needs no handling)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 744,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "lib/mprintf.c",
+   "line": 757,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'num' is uint64_t scalar, not a pointer"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 771,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "lib/mprintf.c",
+   "line": 771,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fptr/w/fmt point into real local arrays (formatbuf/work/format); decay misparse"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 777,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "lib/mprintf.c",
+   "line": 777,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fptr/w/fmt point into real local arrays (formatbuf/work/format); decay misparse"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 786,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "lib/mprintf.c",
+   "line": 786,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fptr/w/fmt point into real local arrays (formatbuf/work/format); decay misparse"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "lib/mprintf.c",
+   "line": 792,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operands are int counters (num/param/maxprec) or same array (w/work), not distinct arrays"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 793,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "lib/mprintf.c",
+   "line": 793,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fptr/w/fmt point into real local arrays (formatbuf/work/format); decay misparse"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 799,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 799,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 802,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 802,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 808,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 810,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 815,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 821,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 821,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "lib/mprintf.c",
+   "line": 826,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fptr/w/fmt point into real local arrays (formatbuf/work/format); decay misparse"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 830,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/mprintf.c",
+   "line": 839,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "signature-constrained out_*/callback family; const cannot be applied uniformly"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/mprintf.c",
+   "line": 841,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "signature-constrained out_*/callback family; const cannot be applied uniformly"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/mprintf.c",
+   "line": 843,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "signature-constrained out_*/callback family; const cannot be applied uniformly"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "lib/mprintf.c",
+   "line": 852,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nilstr is static const char[]=\"(nil)\", a real array; sizeof correct, not decayed param"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "lib/mprintf.c",
+   "line": 854,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nilstr is static const char[]=\"(nil)\", a real array; sizeof correct, not decayed param"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 872,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 875,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 881,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 885,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT36-C",
+   "file": "lib/mprintf.c",
+   "line": 900,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "(size_t)ptr intentional for %p hex formatting; idiomatic advisory"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 900,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "lib/mprintf.c",
+   "line": 913,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nilstr is static const char[]=\"(nil)\", a real array; sizeof correct, not decayed param"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 914,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "lib/mprintf.c",
+   "line": 919,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise & on local int 'flags' (copy of unsigned); idiomatic, no defect"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "lib/mprintf.c",
+   "line": 942,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "cycle bounded by construction: out_double calls msnprintf with %d only, never re-enters"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "lib/mprintf.c",
+   "line": 954,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed-size local array; no getenv involved"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "lib/mprintf.c",
+   "line": 955,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed-size local array; no getenv involved"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "lib/mprintf.c",
+   "line": 956,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed-size array (MAX_PARAMETERS/8, BUFFSIZE), not a runtime VLA"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/mprintf.c",
+   "line": 964,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'input' array filled by parsefmt out-param before formatf reads it"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/mprintf.c",
+   "line": 971,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'stream' is a function-pointer parameter, not an undeclared function"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/mprintf.c",
+   "line": 984,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'input' array filled by parsefmt out-param before formatf reads it"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "lib/mprintf.c",
+   "line": 1001,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'input' array filled by parsefmt out-param before formatf reads it"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "lib/mprintf.c",
+   "line": 1077,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "public curl_* API declared in include/curl/mprintf.h; needs external linkage"
+  },
+  {
+   "rule": "DCL19-C",
+   "file": "lib/mprintf.c",
+   "line": 1077,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "public exported API or file-scope const digit table; minimal scope inapplicable"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "lib/mprintf.c",
+   "line": 1077,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "cycle bounded by construction: out_double calls msnprintf with %d only, never re-enters"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/mprintf.c",
+   "line": 1077,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "C99 conformant array-param syntax; curl never uses it; advisory style"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/mprintf.c",
+   "line": 1077,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "signature-constrained out_*/callback family; const cannot be applied uniformly"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/mprintf.c",
+   "line": 1077,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "C99 conformant array-param syntax; curl never uses it; advisory style"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "lib/mprintf.c",
+   "line": 1102,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "public curl_* API declared in include/curl/mprintf.h; needs external linkage"
+  },
+  {
+   "rule": "DCL19-C",
+   "file": "lib/mprintf.c",
+   "line": 1102,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "public exported API or file-scope const digit table; minimal scope inapplicable"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "lib/mprintf.c",
+   "line": 1102,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "cycle bounded by construction: out_double calls msnprintf with %d only, never re-enters"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/mprintf.c",
+   "line": 1102,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "C99 conformant array-param syntax; curl never uses it; advisory style"
+  },
+  {
+   "rule": "API05-C",
+   "file": "lib/mprintf.c",
+   "line": 1102,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "C99 conformant array-param syntax; curl never uses it; advisory style"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/mprintf.c",
+   "line": 1125,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'dyn' passed to curlx_dyn_free which frees/modifies it"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "lib/mprintf.c",
+   "line": 1134,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "info.merr is a char struct field on stack, not the freed dynbuf pointer; misidentified"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "lib/mprintf.c",
+   "line": 1154,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curlx_strdup declared in curl header (external)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "lib/mprintf.c",
+   "line": 1164,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returns 's' = heap ptr from curl_mvaprintf, not address of a local"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 1170,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "lib/mprintf.c",
+   "line": 1175,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "public curl_* API declared in include/curl/mprintf.h; needs external linkage"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 1182,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "lib/mprintf.c",
+   "line": 1186,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "signature-constrained out_*/callback family; const cannot be applied uniformly"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "lib/mprintf.c",
+   "line": 1190,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rc IS checked: 'return rc == EOF'"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "lib/mprintf.c",
+   "line": 1194,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "public curl_* API declared in include/curl/mprintf.h; needs external linkage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/mprintf.c",
+   "line": 1204,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "thin wrapper forwarding to formatf; does not deref the param itself"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "lib/mprintf.c",
+   "line": 1204,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "public curl_* API declared in include/curl/mprintf.h; needs external linkage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/mprintf.c",
+   "line": 1214,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "thin wrapper forwarding to formatf; does not deref the param itself"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/mprintf.c",
+   "line": 1214,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "thin wrapper forwarding to formatf; does not deref the param itself"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "lib/mprintf.c",
+   "line": 1214,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "public curl_* API declared in include/curl/mprintf.h; needs external linkage"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 1216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 1216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 1216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "lib/mprintf.c",
+   "line": 1217,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ASCII char written/read in printf formatting; sign-extension benign, idiomatic"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/mprintf.c",
+   "line": 1221,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "thin wrapper forwarding to formatf; does not deref the param itself"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "lib/mprintf.c",
+   "line": 1221,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "public curl_* API declared in include/curl/mprintf.h; needs external linkage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "lib/mprintf.c",
+   "line": 1226,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "thin wrapper forwarding to formatf; does not deref the param itself"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "lib/mprintf.c",
+   "line": 1226,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "public curl_* API declared in include/curl/mprintf.h; needs external linkage"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "lib/mprintf.c"
+ ],
+ "summary": {
+  "tp": 4,
+  "fp": 184,
+  "fn": 0
+ }
+}

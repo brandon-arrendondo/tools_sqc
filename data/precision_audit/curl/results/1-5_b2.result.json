@@ -1,0 +1,208 @@
+{
+  "labels": [
+    {"rule":"API05-C","file":"lib/curlx/strcopy.c","line":38,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; curl never uses C99 array params, idiomatic char*/size_t."},
+    {"rule":"API05-C","file":"lib/curlx/strcopy.c","line":40,"verdict":"FP","confidence":"high","reason":"const char* source param; conformant-array advisory not applicable to curl style."},
+    {"rule":"ARR38-C","file":"lib/curlx/strcopy.c","line":45,"verdict":"FP","confidence":"high","reason":"memcpy guarded by if(slen<dsize) plus DEBUGASSERT; size validated."},
+
+    {"rule":"EXP20-C","file":"lib/easygetopt.c","line":34,"verdict":"FP","confidence":"high","reason":"!Curl_easyopts_check() inside DEBUGASSERT; idiomatic boolean test."},
+    {"rule":"ARR37-C","file":"lib/easygetopt.c","line":47,"verdict":"FP","confidence":"high","reason":"o points into Curl_easyopts[] array; o++ is in-bounds array iteration."},
+    {"rule":"API00-C","file":"lib/easygetopt.c","line":53,"verdict":"FP","confidence":"high","reason":"Thin wrapper to lookup() which guards if(name); internal API, no deref."},
+
+    {"rule":"DCL38-C","file":"lib/headers.h","line":36,"verdict":"FP","confidence":"med","reason":"char buffer[1] struct-hack over-allocated at malloc; intentional C89 idiom."},
+    {"rule":"STR31-C","file":"lib/headers.h","line":36,"verdict":"FP","confidence":"high","reason":"char[1] is over-allocated trailing struct-hack buffer, not fixed-size string."},
+    {"rule":"API05-C","file":"lib/headers.h","line":48,"verdict":"FP","confidence":"high","reason":"Conformant-array advisory on const char* header param; not curl convention."},
+
+    {"rule":"DCL38-C","file":"lib/hsts.h","line":39,"verdict":"FP","confidence":"med","reason":"char host[1] struct-hack over-allocated; intentional C89 flexible-member idiom."},
+    {"rule":"STR31-C","file":"lib/hsts.h","line":39,"verdict":"FP","confidence":"high","reason":"host[1] is over-allocated struct-hack buffer, not a fixed string buffer."},
+    {"rule":"API05-C","file":"lib/hsts.h","line":53,"verdict":"FP","confidence":"high","reason":"Conformant-array advisory on const char* hostname; not curl convention."},
+
+    {"rule":"API02-C","file":"lib/socks.h","line":35,"verdict":"FP","confidence":"high","reason":"buf already has blen size param; pnread is scalar out-param, not array."},
+    {"rule":"API05-C","file":"lib/socks.h","line":37,"verdict":"FP","confidence":"high","reason":"Conformant-array advisory on char* buf; not curl convention."},
+    {"rule":"DCL13-C","file":"lib/socks.h","line":39,"verdict":"FP","confidence":"high","reason":"pnread is *output* param (bytes read written through it); const wrong."},
+
+    {"rule":"API02-C","file":"lib/uint-table.h","line":69,"verdict":"FP","confidence":"high","reason":"pkey is scalar uint32_t out-param, not an array needing capacity."},
+    {"rule":"API02-C","file":"lib/uint-table.h","line":79,"verdict":"FP","confidence":"high","reason":"pkey scalar out-param; iterator API, no array capacity needed."},
+    {"rule":"API02-C","file":"lib/uint-table.h","line":93,"verdict":"FP","confidence":"high","reason":"pkey scalar out-param; iterator API, no array capacity needed."},
+
+    {"rule":"API00-C","file":"lib/vauth/cram.c","line":49,"verdict":"FP","confidence":"med","reason":"Internal auth helper; callers pass valid userp, not public NULL contract."},
+    {"rule":"API00-C","file":"lib/vauth/cram.c","line":49,"verdict":"FP","confidence":"med","reason":"Internal auth helper; passwdp always valid from caller, not public API."},
+    {"rule":"EXP30-C","file":"lib/vauth/cram.c","line":67,"verdict":"FP","confidence":"high","reason":"uptr() and len() both read chlg, neither mutates; no unsequenced side effects."},
+
+    {"rule":"API02-C","file":"src/tool_cb_hdr.h","line":52,"verdict":"FP","confidence":"high","reason":"FILE* stream is not an array; libcurl write-callback signature fixed."},
+    {"rule":"API05-C","file":"src/tool_cb_hdr.h","line":58,"verdict":"FP","confidence":"high","reason":"Conformant-array advisory on callback ptr; signature fixed by libcurl."},
+    {"rule":"API05-C","file":"src/tool_cb_hdr.h","line":58,"verdict":"FP","confidence":"high","reason":"Conformant-array advisory; not curl convention, fixed callback signature."},
+
+    {"rule":"API00-C","file":"src/tool_cb_soc.c","line":38,"verdict":"FP","confidence":"high","reason":"Opensocket callback; addr supplied by libcurl, signature fixed, always valid."},
+    {"rule":"DCL13-C","file":"src/tool_cb_soc.c","line":38,"verdict":"FP","confidence":"high","reason":"Callback signature fixed by CURLOPT_OPENSOCKETFUNCTION typedef; const cannot be added."},
+    {"rule":"DCL13-C","file":"src/tool_cb_soc.c","line":40,"verdict":"FP","confidence":"high","reason":"Callback signature fixed by libcurl typedef; addr param const not addable."},
+
+    {"rule":"API02-C","file":"src/tool_getparam.h","line":376,"verdict":"FP","confidence":"high","reason":"certname is char** out-param, not an array needing capacity."},
+    {"rule":"API02-C","file":"src/tool_getparam.h","line":376,"verdict":"FP","confidence":"high","reason":"passphrase is char** out-param, not an array needing capacity."},
+    {"rule":"ARR02-C","file":"src/tool_getparam.h","line":382,"verdict":"FP","confidence":"high","reason":"argv_item_t argv[] is standard main-style param; explicit bound inapplicable."},
+
+    {"rule":"DCL15-C","file":"src/tool_listhelp.c","line":36,"verdict":"FP","confidence":"high","reason":"helptext[] is extern, referenced from other TUs; cannot be static."},
+    {"rule":"DCL19-C","file":"src/tool_listhelp.c","line":36,"verdict":"FP","confidence":"high","reason":"Generated extern table consumed elsewhere; file scope required."},
+    {"rule":"ARR02-C","file":"src/tool_listhelp.c","line":36,"verdict":"FP","confidence":"high","reason":"Initializer-sized helptext[] table; implicit bound idiomatic and correct."},
+
+    {"rule":"API02-C","file":"src/tool_urlglob.h","line":74,"verdict":"FP","confidence":"high","reason":"urlnum/error scalars; no array param needs capacity argument."},
+    {"rule":"API02-C","file":"src/tool_urlglob.h","line":76,"verdict":"FP","confidence":"high","reason":"globbed is char** out-param, not array needing capacity."},
+    {"rule":"API02-C","file":"src/tool_urlglob.h","line":77,"verdict":"FP","confidence":"high","reason":"output is char** out-param, not array needing capacity."},
+
+    {"rule":"ERR33-C","file":"src/tool_util.c","line":57,"verdict":"FP","confidence":"med","reason":"time(NULL) fallback for wall clock; failure non-actionable, used only as timestamp."},
+    {"rule":"STR34-C","file":"src/tool_util.c","line":114,"verdict":"FP","confidence":"high","reason":"*lastdirchar = 0 is a write of literal 0, not a sign-extending char read."},
+    {"rule":"STR34-C","file":"src/tool_util.c","line":119,"verdict":"FP","confidence":"high","reason":"*pathp = filebuffer is char** pointer assignment, not signed-char read."},
+
+    {"rule":"API05-C","file":"lib/bufref.h","line":40,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+    {"rule":"API05-C","file":"lib/bufref.h","line":45,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+
+    {"rule":"API05-C","file":"lib/connect.h","line":34,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+    {"rule":"API02-C","file":"lib/connect.h","line":75,"verdict":"FP","confidence":"high","reason":"port is uint16_t* scalar out-param; sa already has salen; no array."},
+
+    {"rule":"API02-C","file":"lib/cshutdn.h","line":96,"verdict":"FP","confidence":"high","reason":"maxfd scalar out-param; fd_set args not arrays needing capacity."},
+    {"rule":"DCL13-C","file":"lib/cshutdn.h","line":98,"verdict":"FP","confidence":"high","reason":"read_fd_set is populated (FD_SET) by the function; const wrong."},
+
+    {"rule":"API02-C","file":"lib/curl_fopen.h","line":28,"verdict":"FP","confidence":"high","reason":"fh is FILE** out-param, not array needing capacity."},
+    {"rule":"API02-C","file":"lib/curl_fopen.h","line":28,"verdict":"FP","confidence":"high","reason":"tempname is char** out-param, not array needing capacity."},
+
+    {"rule":"API02-C","file":"lib/curl_get_line.h","line":29,"verdict":"FP","confidence":"high","reason":"buf is dynbuf*, input FILE*, eof bool*; none are sized arrays."},
+    {"rule":"DCL13-C","file":"lib/curl_get_line.h","line":29,"verdict":"FP","confidence":"high","reason":"FILE* input is consumed (read from) by getc; const FILE* not addable/wrong."},
+
+    {"rule":"API05-C","file":"lib/curl_md4.h","line":32,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+    {"rule":"API05-C","file":"lib/curl_md4.h","line":32,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+
+    {"rule":"API05-C","file":"lib/curl_md5.h","line":56,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+    {"rule":"API05-C","file":"lib/curl_md5.h","line":56,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+
+    {"rule":"API05-C","file":"lib/curl_sha256.h","line":40,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+    {"rule":"API05-C","file":"lib/curl_sha256.h","line":40,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+
+    {"rule":"API02-C","file":"lib/curlx/fopen.h","line":50,"verdict":"FP","confidence":"high","reason":"fh is FILE* handle, not array; freopen-style signature fixed."},
+    {"rule":"EXP37-C","file":"lib/curlx/fopen.h","line":52,"verdict":"FP","confidence":"high","reason":"Declaration matches system freopen prototype; correct headers included via setup."},
+
+    {"rule":"API05-C","file":"lib/curlx/inet_ntop.h","line":47,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+    {"rule":"API05-C","file":"lib/curlx/inet_ntop.h","line":47,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+
+    {"rule":"API05-C","file":"lib/curlx/strcopy.h","line":27,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; mirrors strcopy.c decl, not curl convention."},
+    {"rule":"API05-C","file":"lib/curlx/strcopy.h","line":29,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+
+    {"rule":"API05-C","file":"lib/curlx/strdup.h","line":31,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+    {"rule":"API05-C","file":"lib/curlx/strdup.h","line":32,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+
+    {"rule":"INT10-C","file":"lib/curlx/timediff.c","line":44,"verdict":"FP","confidence":"high","reason":"ms%1000 guarded by if(ms>0); operand positive, no negative-modulo UB."},
+    {"rule":"DCL13-C","file":"lib/curlx/timediff.c","line":82,"verdict":"FP","confidence":"med","reason":"struct timeval* read-only here but standard signature; curl style not project-wide const."},
+
+    {"rule":"DCL00-C","file":"lib/curlx/wait.c","line":60,"verdict":"FP","confidence":"high","reason":"r is reassigned by select() result on the POSIX path; not const-able."},
+    {"rule":"EXP43-C","file":"lib/curlx/wait.c","line":83,"verdict":"FP","confidence":"high","reason":"select(0,NULL,NULL,NULL,tv); all fd_set args NULL, no restrict aliasing."},
+
+    {"rule":"API02-C","file":"lib/easyif.h","line":29,"verdict":"FP","confidence":"high","reason":"buffer has its own size arg; n is scalar out-param, not array."},
+    {"rule":"API05-C","file":"lib/easyif.h","line":29,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory on const void* buffer; not curl convention."},
+
+    {"rule":"API05-C","file":"lib/ftplistparser.h","line":31,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+    {"rule":"API05-C","file":"lib/ftplistparser.h","line":32,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+
+    {"rule":"API02-C","file":"lib/http_chunks.h","line":127,"verdict":"FP","confidence":"high","reason":"pconsumed is scalar size_t* out-param, not array needing capacity."},
+    {"rule":"API05-C","file":"lib/http_chunks.h","line":128,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+
+    {"rule":"API02-C","file":"lib/idn.h","line":32,"verdict":"FP","confidence":"high","reason":"output is char** out-param (decoded string), not array needing capacity."},
+    {"rule":"API02-C","file":"lib/idn.h","line":33,"verdict":"FP","confidence":"high","reason":"output is char** out-param (encoded string), not array needing capacity."},
+
+    {"rule":"API05-C","file":"lib/if2ip.h","line":52,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+    {"rule":"API05-C","file":"lib/if2ip.h","line":53,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+
+    {"rule":"API05-C","file":"lib/mime.h","line":153,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+    {"rule":"API05-C","file":"lib/mime.h","line":154,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+
+    {"rule":"PRE00-C","file":"lib/multi_ntfy.h","line":50,"verdict":"FP","confidence":"med","reason":"CURLM_NTFY guard macro; args are side-effect-free lvalue pointers, multiple eval harmless."},
+    {"rule":"PRE12-C","file":"lib/multi_ntfy.h","line":50,"verdict":"FP","confidence":"med","reason":"Multiple eval of d, but d is always a plain pointer var; idiomatic null-guard macro."},
+
+    {"rule":"API02-C","file":"lib/netrc.h","line":51,"verdict":"FP","confidence":"high","reason":"loginp is char** out-param, not array needing capacity."},
+    {"rule":"API02-C","file":"lib/netrc.h","line":51,"verdict":"FP","confidence":"high","reason":"passwordp is char** out-param, not array needing capacity."},
+
+    {"rule":"API02-C","file":"lib/uint-bset.h","line":84,"verdict":"FP","confidence":"high","reason":"pfirst scalar uint32_t* out-param; bitset iterator, no array capacity."},
+    {"rule":"API02-C","file":"lib/uint-bset.h","line":97,"verdict":"FP","confidence":"high","reason":"pnext scalar uint32_t* out-param; bitset iterator, no array capacity."},
+
+    {"rule":"API02-C","file":"lib/uint-spbset.h","line":75,"verdict":"FP","confidence":"high","reason":"pfirst scalar out-param; sparse bitset iterator, no array capacity."},
+    {"rule":"API02-C","file":"lib/uint-spbset.h","line":88,"verdict":"FP","confidence":"high","reason":"pnext scalar out-param; sparse bitset iterator, no array capacity."},
+
+    {"rule":"API02-C","file":"lib/vauth/digest.h","line":34,"verdict":"FP","confidence":"high","reason":"value/content are char* output buffers in fixed digest-pair API; not capacity-arg style."},
+    {"rule":"API02-C","file":"lib/vauth/digest.h","line":34,"verdict":"FP","confidence":"high","reason":"content is char* output buffer; digest-pair parser API, no added size arg."},
+
+    {"rule":"API00-C","file":"lib/vauth/oauth2.c","line":86,"verdict":"FP","confidence":"med","reason":"Internal auth helper; user always valid from caller, not public NULL contract."},
+    {"rule":"API00-C","file":"lib/vauth/oauth2.c","line":86,"verdict":"FP","confidence":"med","reason":"Internal auth helper; bearer always valid from caller, not public NULL contract."},
+
+    {"rule":"API00-C","file":"lib/vauth/spnego_gssapi.c","line":72,"verdict":"FP","confidence":"high","reason":"data used only for infof logging; internal helper, callers pass valid handle."},
+    {"rule":"API05-C","file":"lib/vauth/spnego_gssapi.c","line":220,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory on char** outptr; not curl convention."},
+
+    {"rule":"PRE08-C","file":"lib/vquic/curl_ngtcp2.h","line":34,"verdict":"FP","confidence":"high","reason":"8-char header-name collision advisory; external ngtcp2 names, irrelevant on modern FS."},
+    {"rule":"API05-C","file":"lib/vquic/curl_ngtcp2.h","line":51,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+
+    {"rule":"API02-C","file":"lib/vssh/vssh.h","line":32,"verdict":"FP","confidence":"high","reason":"path is char** out-param, not array needing capacity."},
+    {"rule":"API02-C","file":"lib/vssh/vssh.h","line":36,"verdict":"FP","confidence":"high","reason":"path is char** out-param, not array needing capacity."},
+
+    {"rule":"API05-C","file":"lib/vtls/cipher_suite.h","line":31,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+    {"rule":"API05-C","file":"lib/vtls/cipher_suite.h","line":40,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+
+    {"rule":"API05-C","file":"lib/vtls/hostcheck.h","line":31,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+    {"rule":"API05-C","file":"lib/vtls/hostcheck.h","line":32,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+
+    {"rule":"API05-C","file":"lib/vtls/keylog.h","line":59,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+    {"rule":"API05-C","file":"lib/vtls/keylog.h","line":61,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+
+    {"rule":"ARR02-C","file":"src/curlinfo.c","line":46,"verdict":"FP","confidence":"high","reason":"disabled[] string-literal table sized by initializer; implicit bound idiomatic."},
+    {"rule":"FIO23-C","file":"src/curlinfo.c","line":270,"verdict":"FP","confidence":"high","reason":"Standalone codegen tool main(); process exit flushes stdout; non-actionable."},
+
+    {"rule":"API05-C","file":"src/tool_cb_dbg.h","line":33,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory on debug callback; signature fixed by libcurl."},
+    {"rule":"API05-C","file":"src/tool_cb_dbg.h","line":34,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory on debug callback; not curl convention."},
+
+    {"rule":"API05-C","file":"src/tool_cb_rea.h","line":32,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory on read callback; signature fixed by libcurl."},
+    {"rule":"API05-C","file":"src/tool_cb_rea.h","line":32,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory on read callback; not curl convention."},
+
+    {"rule":"API05-C","file":"src/tool_cb_wrt.h","line":32,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory on write callback; signature fixed by libcurl."},
+    {"rule":"API05-C","file":"src/tool_cb_wrt.h","line":32,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory on write callback; not curl convention."},
+
+    {"rule":"PRE00-C","file":"src/tool_cfgable.h","line":36,"verdict":"FP","confidence":"high","reason":"tool_safefree must null caller's lvalue; cannot be inline fn; args side-effect-free."},
+    {"rule":"PRE12-C","file":"src/tool_cfgable.h","line":36,"verdict":"FP","confidence":"high","reason":"Standard safe-free macro nulls caller var; double-use of ptr is required idiom."},
+
+    {"rule":"API05-C","file":"src/tool_formparse.h","line":60,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+    {"rule":"API05-C","file":"src/tool_formparse.h","line":61,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+
+    {"rule":"API05-C","file":"src/tool_getpass.h","line":35,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory on password buffer; not curl convention."},
+    {"rule":"API05-C","file":"src/tool_getpass.h","line":35,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+
+    {"rule":"DCL23-C","file":"src/tool_libinfo.h","line":53,"verdict":"FP","confidence":"high","reason":"feature_http2 named after protocol; trailing digit is meaningful, not confusing."},
+    {"rule":"DCL23-C","file":"src/tool_libinfo.h","line":54,"verdict":"FP","confidence":"high","reason":"feature_http3 named after protocol; trailing digit is meaningful, not confusing."},
+
+    {"rule":"PRE08-C","file":"src/tool_operate.h","line":28,"verdict":"FP","confidence":"high","reason":"8-char filename-collision advisory; irrelevant on modern filesystems."},
+    {"rule":"ARR02-C","file":"src/tool_operate.h","line":82,"verdict":"FP","confidence":"high","reason":"argv[] standard main-style param in struct; explicit bound inapplicable."},
+
+    {"rule":"API02-C","file":"src/tool_operhlp.h","line":33,"verdict":"FP","confidence":"high","reason":"inurlp is char** in/out-param, not array needing capacity."},
+    {"rule":"API02-C","file":"src/tool_operhlp.h","line":34,"verdict":"FP","confidence":"high","reason":"filename is char** out-param, not array needing capacity."},
+
+    {"rule":"API02-C","file":"src/tool_parsecfg.h","line":30,"verdict":"FP","confidence":"high","reason":"resolved is char** out-param, not array needing capacity."},
+    {"rule":"API02-C","file":"src/tool_parsecfg.h","line":32,"verdict":"FP","confidence":"high","reason":"fp FILE*, db dynbuf*, error bool*; none sized arrays."},
+
+    {"rule":"API05-C","file":"src/tool_progress.h","line":41,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+    {"rule":"API05-C","file":"src/tool_progress.h","line":42,"verdict":"FP","confidence":"high","reason":"Conformant-array-syntax advisory; not curl convention."},
+
+    {"rule":"DCL38-C","file":"src/var.h","line":32,"verdict":"FP","confidence":"med","reason":"char name[1] struct-hack over-allocated with struct; intentional C89 idiom."},
+    {"rule":"STR31-C","file":"src/var.h","line":32,"verdict":"FP","confidence":"high","reason":"name[1] over-allocated struct-hack buffer, not a fixed-size string."},
+
+    {"rule":"API00-C","file":"lib/curl_endian.c","line":79,"verdict":"FP","confidence":"high","reason":"buf is documented 2-byte buffer contract; internal byte-reader, callers pass valid."}
+  ],
+  "fns": [],
+  "files_clean_for_fn": [
+    "lib/curlx/strcopy.c",
+    "lib/easygetopt.c",
+    "lib/vauth/cram.c",
+    "src/tool_cb_soc.c",
+    "src/tool_util.c",
+    "lib/vauth/oauth2.c",
+    "lib/vauth/spnego_gssapi.c",
+    "lib/curlx/timediff.c",
+    "lib/curlx/wait.c",
+    "lib/curl_endian.c",
+    "src/curlinfo.c",
+    "src/tool_listhelp.c"
+  ],
+  "summary": {"tp": 0, "fp": 116, "fn": 0}
+}
