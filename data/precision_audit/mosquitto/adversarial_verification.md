@@ -63,3 +63,35 @@ pending a closer read of `bridge.c:930`.
   WIN04, EXP30 — zero TP on both projects, confirmed FP under adversarial review.
 - **Raise-evidence / keep (8 rules):** EXP20, CON03, MEM31, INT00, MEM12, ENV01,
   EXP37 (real TPs on mosquitto) **+ INT33** (adversarial pass surfaced one TP).
+
+### APPLIED (2026-06-16, task 170)
+The 19 group-A rules are now `enabled = false` in **`conf/realworld/sqlite-rules.toml`**
+and **`conf/realworld/mosquitto-rules.toml`** — the two adversarially-audited oracles.
+
+**libcrc (third exhaustive oracle) cross-check — and the EXP33 carve-out.**
+All three real-world audits are exhaustive per-finding (sqlite, mosquitto, and
+libcrc each label every enabled-rule finding TP/FP — the "cap 10/rule" sampling
+above was only the second-pass adversarial *re-*verification of the disable
+candidates, not the primary audit). Replaying group A against libcrc's full
+adjudication:
+- **EXP33-C has a real TP on libcrc (1 TP / 9 FP)** — it caught a genuine
+  uninitialized read. So EXP33 is *not* pure noise globally; it is a
+  **harden-don't-disable** rule (tracked by tasks 118 + 146). It is therefore
+  **kept enabled in `libcrc-rules.toml`** with an explanatory comment. Its
+  sqlite+mosquitto disable still stands — it is confirmed zero-TP + adversarial
+  FP on *those two* projects, and configs are per-project.
+- API02 (1 FP), FIO47 (46 FP), PRE32 (14 FP) fired as pure FP on libcrc; the
+  other 14 group-A rules did not fire. So `libcrc-rules.toml` disables the
+  **18 group-A rules except EXP33** (the FIO47/PRE32/API02 disables remove 61 FP).
+
+This is exactly the anti-overfitting principle in action: a group-A rule with a
+TP on another real codebase gets hardened, not blanket-disabled. curl/hostap
+remain untouched (unaudited). Group-B (8 rules) left enabled everywhere. The default rule
+manifests and the Juliet benchmark config are untouched — these rules retain their
+Juliet recall; the disposition is real-world-mode only.
+
+**Open follow-up (raise-evidence work, separate task):**
+- EXP20-C: ~half its mosquitto credits were the `!strcmp`/`!strncmp` idiom (FP) —
+  needs an evidence gate, not a disable.
+- INT33-C: re-read `src/bridge.c:930` `(high - low)` divisor; confirm the missed
+  div-by-zero TP and add a guarded-divisor check.
