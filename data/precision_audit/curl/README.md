@@ -114,12 +114,12 @@ sign-extension misparse), EXP34-C (447), EXP33-C (398, macro-opacity +
 out-param), DCL31-C (337, `curlx_*` macro wrappers).
 
 First-pass found 18 FN candidates; the **adversarial pass refuted 12 and
-downgraded 1** (see below). Net **5 confirmed FNs** (`fns_curl_final.csv`):
+downgraded 1**, and the **`audit-complete` validation reclassified 1 more**
+(`tool_cb_hdr.c:279` ERR33 was actually flagged by sqc → a TP, not a miss). Net
+**4 confirmed FNs + 1 cosmetic downgrade** (`fns_curl_final.csv`):
 - `lib/vtls/vtls_spack.c:277` (MEM31, med) — `Curl_ssl_session_unpack` leaks the
   first memdup0 copy on a duplicate ALPN/TICKET/QUICTP tag in crafted session
   data (untrusted-decode path, upstream).
-- `src/tool_cb_hdr.c:279` (ERR33, low) — `save_etag` leaves `fwrite`/`fputc`
-  unchecked while checking `ftruncate`/`fseek` in the same function (upstream).
 - `src/var.c:309` (MEM31, low) — `varexpand` null-byte path skips
   `curlx_dyn_free(&buf)` when `funcp` populated it (untrusted variable content, upstream).
 - `src/tool_doswin.c:869` (FIO42, low, Windows-only) — `win32_stdin_read_thread`
@@ -150,19 +150,26 @@ Three adversarial agents (`adversarial/`), each defaulting to refute:
    overturned** — curl's heavily-fuzzed parsers hold; no real bug was mislabeled
    FP. Confirms the FP labels are not hiding defects.
 
-### Final post-adversarial numbers
+### Final numbers (post-adversarial + audit-score reconciliation)
 
 | | findings | TP | FP | precision |
 |--|--|--|--|--|
 | First pass | 11200 | 140 | 11060 | 1.25% |
-| **Post-adversarial** | **11200** | **100** | **11100** | **0.89%** |
+| Post-adversarial | 11200 | 100 | 11100 | 0.89% |
+| **Final (audit-score run #46)** | **11200** | **101** | **11099** | **~0.9%** |
 
-100 confirmed TP — 60 DCL13-C const-param (low-conf), ~15 MSC04/DCL38/ERR33/
+101 confirmed TP — 66 DCL13-C const-param (low-conf), ~15 MSC04/DCL38/ERR33/
 MEM03 advisory, and a few genuine medium-confidence (EXP34-C `curl_sasl.c:232`
 bufref NULL deref, API00-C `headers.c:121` unchecked public-API deref, MSC37-C
-fall-off-end). Zero high-severity memory-safety TPs. **0.89% precision** is the
+fall-off-end). Zero high-severity memory-safety TPs. ~0.9% precision is the
 lowest of the four audited codebases — curl is the most mature/fuzzed, and its
 enabled-rule firings are almost entirely advisory.
+
+> The +1 TP vs the post-adversarial pass: the `audit-complete` validation caught
+> a labeling inconsistency — `src/tool_cb_hdr.c:279` ERR33-C was recorded as both
+> FP *and* FN, but sqc actually flagged it (unchecked `fwrite` in `save_etag`),
+> so it is a **TP**, not a miss. Corrected in the oracle; dropped from the FN list
+> (5 → 4 confirmed + 1 cosmetic downgrade). `audit-score`: recall 95.3% (101/106).
 
 **Zero-finding FN read (98 files) — done.** 5 `.c` files (590 lines:
 `curl_range.c`, `curlx/warnless.c`, `dllmain.c`, `fileinfo.c`, `macos.c`) +
@@ -170,19 +177,26 @@ enabled-rule firings are almost entirely advisory.
 ~91 headers are pure declarations. **0 FNs** — sqc's zero findings here are
 correct (`adversarial/zero_finding_fns.json`).
 
-## Audit COMPLETE — all 427 in-scope files
+## Audit COMPLETE — all 427 in-scope files (task 158 DONE)
 
 | | files | findings | TP | FP | precision | FN |
 |--|--|--|--|--|--|--|
-| 329 with-finding (adjudicated) | 329 | 11200 | 100 | 11100 | **0.89%** | |
+| 329 with-finding (adjudicated) | 329 | 11200 | 101 | 11099 | **~0.9%** | |
 | 98 zero-finding (FN-read) | 98 | 0 | — | — | | 0 |
-| **Total** | **427** | **11200** | **100** | **11100** | **0.89%** | **5** |
+| **Total** | **427** | **11200** | **101** | **11099** | **~0.9%** | **4 (+1 downgr.)** |
 
-**Operational remaining (DB writes — run when benchmark DB is free):**
-`realworld-import-labels adjudication_curl.csv` → `audit-complete` per file →
-`audit-coverage --set-total 427` → `realworld-score`. Apply the 14-file WIN_MAC
-exclusion to the curl benchmark scoring scope so the dashboard denominator
-matches this oracle (task 189 sibling).
+**DB ingest — DONE.** ground_truth oracle populated (10,119 distinct labels,
+commit `3e198f7586`); v0.4.35 scan ingested as run #46; all 427 files marked
+`audit-complete`; coverage total = 427; `audit-score` → precision ~0.9%, recall
+95.3%. The mosquitto full-audit labels (2,852) were also ingested (run #45). The
+oracle is commit-keyed and version-independent — any future sqc version scores
+against it via `realworld-score`.
+
+**See `STOCKTAKE.md`** for what curl shows about the roadmap (macro-expansion
+Phase 2c target list, API05-C triage, free-state precision).
+
+Still open: apply the 14-file WIN_MAC exclusion to the curl benchmark *scoring
+scope* so the live dashboard denominator matches this oracle (task 189 sibling).
 
 Top files: `lib/url.c` (447), `lib/http.c` (374), `lib/ftp.c` (262),
 `src/tool_getparam.c` (255), `lib/telnet.c` (245), `src/tool_operate.c` (216),

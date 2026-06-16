@@ -1,7 +1,6 @@
 file,line,rule,verdict,severity,upstream_present,reason
 lib/vtls/vtls_spack.c,277,MEM31-C,CONFIRMED_FN,med,True,"Duplicate ALPN/TICKET/QUICTP tag overwrites s->alpn/sdata/quic_tp (each memdup0-allocated); destroy frees only last copy, first leaks on untrusted decode."
 src/tool_doswin.c,869,FIO42-C,CONFIRMED_FN,low,True,socket_r created after tdata=NULL; cleanup sclose guarded by '&& tdata' so connect/shutdown/SetStdHandle failure leaks socket_r. Windows-only.
-src/tool_cb_hdr.c,279,ERR33-C,CONFIRMED_FN,low,True,"fwrite/fputc return values unchecked while ftruncate/fseek are checked; genuine ERR33 inconsistency, but only truncates etag file. Low impact."
 src/var.c,309,MEM31-C,CONFIRMED_FN,low,True,"When funcp set, varfunc populates buf; null-byte detection returns PARAM_EXPAND_ERROR before curlx_dyn_free(&buf) at 314. buf leaks. Tool-side, requires expanded value with embedded NUL."
 src/tool_setopt.c,438,EXP34-C,CONFIRMED_FN,low,True,c_escape returns NULL on OOM; TOOLMIME cases pass escaped to easysrc_addf %s without guard (libcurl_generate_slist guards). NULL-to-%s on OOM. CSV upstream_present False corrected to True (present in curl-main).
 lib/vtls/x509asn1.c,982,INT30-C,DOWNGRADE,low,True,"Unsigned wrap on span<2 yields garbage 'len', but it only feeds an infof log and an snprintf into an adequately sized local buffer. No memory access; cosmetic only."

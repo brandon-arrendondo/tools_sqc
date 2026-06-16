@@ -6236,7 +6236,7 @@ ARR36-C,curl,src/tool_cb_hdr.c,265,FP,eot-etag_h within same header buffer; vali
 STR34-C,curl,src/tool_cb_hdr.c,265,FP,pointer subtraction yields ptrdiff; no char sign-extension,curl_full_audit_0.4.35,high
 STR34-C,curl,src/tool_cb_hdr.c,265,FP,"pointer subtraction, not char widening",curl_full_audit_0.4.35,high
 ERR00-C,curl,src/tool_cb_hdr.c,279,FP,"etag write to user file; fflush follows, idiomatic best-effort",curl_full_audit_0.4.35,med
-ERR33-C,curl,src/tool_cb_hdr.c,279,FP,"fwrite return unchecked but fputc/fflush follow; minor, not actionable",curl_full_audit_0.4.35,med
+ERR33-C,curl,src/tool_cb_hdr.c,279,TP,[adv-fix] sqc correctly flagged unchecked fwrite at save_etag:279,curl_full_audit_0.4.35,med
 FIO18-C,curl,src/tool_cb_hdr.c,279,FP,"etag_length correctly derived from trimmed pointer span, not raw strlen",curl_full_audit_0.4.35,high
 API05-C,curl,src/tool_cb_hdr.c,294,FP,conformant-array style; convention,curl_full_audit_0.4.35,high
 API05-C,curl,src/tool_cb_hdr.c,294,FP,conformant-array style; convention,curl_full_audit_0.4.35,high
@@ -11201,7 +11201,6 @@ API00-C,curl,src/tool_xattr.c,108,FP,curl handle valid from tool_operate; getinf
 INT32-C,curl,src/tool_xattr.c,119,FP,i indexes 3-element mappings[] bounded by NULL terminator; cannot near INT_MAX,curl_full_audit_0.4.35,high
 MEM31-C,curl,lib/vtls/vtls_spack.c,277,FN,"Duplicate ALPN/TICKET/QUICTP tag overwrites s->alpn/sdata/quic_tp (each memdup0-allocated); destroy frees only last copy, first leaks on untrusted decode.",curl_full_audit_0.4.35,med
 FIO42-C,curl,src/tool_doswin.c,869,FN,socket_r created after tdata=NULL; cleanup sclose guarded by '&& tdata' so connect/shutdown/SetStdHandle failure leaks socket_r. Windows-only.,curl_full_audit_0.4.35,low
-ERR33-C,curl,src/tool_cb_hdr.c,279,FN,"fwrite/fputc return values unchecked while ftruncate/fseek are checked; genuine ERR33 inconsistency, but only truncates etag file. Low impact.",curl_full_audit_0.4.35,low
 MEM31-C,curl,src/var.c,309,FN,"When funcp set, varfunc populates buf; null-byte detection returns PARAM_EXPAND_ERROR before curlx_dyn_free(&buf) at 314. buf leaks. Tool-side, requires expanded value with embedded NUL.",curl_full_audit_0.4.35,low
 EXP34-C,curl,src/tool_setopt.c,438,FN,c_escape returns NULL on OOM; TOOLMIME cases pass escaped to easysrc_addf %s without guard (libcurl_generate_slist guards). NULL-to-%s on OOM. CSV upstream_present False corrected to True (present in curl-main).,curl_full_audit_0.4.35,low
 INT30-C,curl,lib/vtls/x509asn1.c,982,FN,"Unsigned wrap on span<2 yields garbage 'len', but it only feeds an infof log and an snprintf into an adequately sized local buffer. No memory access; cosmetic only.",curl_full_audit_0.4.35,low
