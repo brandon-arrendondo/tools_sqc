@@ -1,0 +1,1006 @@
+{
+  "ground_truth": [],
+  "labels": [
+    {
+      "rule": "EXP33-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 83,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "valid is output param to lua_tointegerx; written before any read"
+    },
+    {
+      "rule": "INT33-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 132,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "d==0 and d==-1 excluded by (lua_Unsigned)d+1u<=1u guard above"
+    },
+    {
+      "rule": "INT10-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 132,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "modulo safe: zero and -1 divisor both excluded by prior guard"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 135,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaL_checknumber reads independent stack slots; no ordering hazard"
+    },
+    {
+      "rule": "INT33-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 192,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "floating-point division; INT33-C covers integer division only"
+    },
+    {
+      "rule": "FLP03-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 206,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "PI is non-zero compile-time constant; advisory fp exception check"
+    },
+    {
+      "rule": "INT33-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 206,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "floating-point division by non-zero constant PI; INT33-C is for integers"
+    },
+    {
+      "rule": "FLP03-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 212,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "180.0 is a non-zero constant; FLP03-C advisory inapplicable"
+    },
+    {
+      "rule": "INT33-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 212,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "floating-point division by 180.0 constant; not integer division"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 221,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ep is output param to frexp; frexp writes *ep before return"
+    },
+    {
+      "rule": "EXP07-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 307,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "preprocessor width probe (ULONG_MAX>>31)>>31; not runtime assumption"
+    },
+    {
+      "rule": "EXP07-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 307,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same preprocessor constant probe; EXP07-C targets runtime expressions"
+    },
+    {
+      "rule": "EXP07-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 319,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "preprocessor probe for LUA_MAXUNSIGNED width; not runtime"
+    },
+    {
+      "rule": "EXP07-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 319,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same preprocessor probe second instance"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 345,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "intentional PRNG bit rotation; mixed bitwise/arithmetic is by design"
+    },
+    {
+      "rule": "INT34-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 345,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "callers always pass n in {7,45}; shift within 64-bit bounds"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 345,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "n is shift amount not bitwise operand; x is unsigned Rand64"
+    },
+    {
+      "rule": "INT34-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 345,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "64-n is 57 or 19 for valid callers; in-range for 64-bit shift"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 345,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same: n is shift count not the shifted operand (unsigned Rand64)"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 352,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "intentional xoshiro256** PRNG state manipulation; by design"
+    },
+    {
+      "rule": "EXP07-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 356,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "17 is the xoshiro256** algorithm shift constant; not an assumed value"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 431,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "i.h is l_uint32 (unsigned); n is shift amount not bitwise operand"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 431,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "intentional 32-bit PRNG rotation; mixed bitwise/arithmetic by design"
+    },
+    {
+      "rule": "INT34-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 431,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_assert(n>0 && n<32) at line 430 validates n; shift in bounds"
+    },
+    {
+      "rule": "INT34-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 431,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "32-n bounded by same assert; trim32 result is unsigned l_uint32"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 431,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "i.l is l_uint32 unsigned; n is shift count not the bitwise operand"
+    },
+    {
+      "rule": "INT34-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 431,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same assert bounds n; i.l<<n is unsigned shift in range"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 461,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rotl 32-bit: i.h is l_uint32; n is shift count not bitwise operand"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 461,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "intentional rotation; lua_assert(n>0 && n<32) at line 460"
+    },
+    {
+      "rule": "INT34-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 461,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "assert bounds n in (0,32); i.h<<n is unsigned shift in range"
+    },
+    {
+      "rule": "INT34-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 461,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "32-n bounded by assert; trim32(i.l) is unsigned"
+    },
+    {
+      "rule": "INT34-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 462,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "32-n bounded by lua_assert at line 460; trim32(i.h) is unsigned"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 462,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "i.l is l_uint32 unsigned; n is shift amount not bitwise operand"
+    },
+    {
+      "rule": "INT34-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 462,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "i.l<<n: unsigned l_uint32; assert bounds n; shift in range"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 468,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rotl1: n reassigned to 64-n; mixed bitwise/arithmetic by design"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 469,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "packI operands i.h/i.l are l_uint32 unsigned; n is shift count"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 470,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same packI call; l_uint32 operands unsigned; n is shift amount"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 507,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "const-qual advisory on local variable h; trivial style nit"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 507,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "FIGS is compile-time #define constant; not mixed runtime usage"
+    },
+    {
+      "rule": "INT34-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 507,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "FIGS<=32 in this branch; 32-FIGS>=0; shift always in bounds"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 530,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "const-qual advisory on local variable h; used once as multiplicand"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 530,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "intentional PRNG float conversion; bitwise/arithmetic by design"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 530,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "trim32 is bitwise mask; mixed arithmetic intentional in PRNG"
+    },
+    {
+      "rule": "EXP07-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 540,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "constant 31 is algorithmic shift for I2UInt 64->32+32 split"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 545,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "n is lua_Unsigned (unsigned); >>31 on unsigned is defined"
+    },
+    {
+      "rule": "EXP07-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 545,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "31 is the algorithmic split point for high/low halves of lua_Unsigned"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 570,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "state->s is written by nextrand; state IS modified indirectly"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 574,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Mersenne-number loop: intentional mixed bitwise/arithmetic"
+    },
+    {
+      "rule": "INT34-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 575,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sh starts at 1 doubles; lim all-ones before sh could overflow"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 575,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lim is lua_Unsigned (unsigned); sh is positive shift amount int"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 586,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "state from upvalue set by lua_newuserdatauv; guaranteed non-NULL"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 595,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "low/up assigned in all switch branches; default longjmps before use"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 636,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "state from upvalue lua_newuserdatauv; luaM raises on OOM; non-NULL"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 647,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sentinel-terminated luaL_Reg array; standard Lua API convention"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 659,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_newuserdatauv uses luaM_* which raises on OOM; never NULL"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 706,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sentinel-terminated mathlib[] array; standard Lua convention"
+    },
+    {
+      "rule": "API00-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 752,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaopen_* called by Lua runtime with valid state; L check absurd"
+    },
+    {
+      "rule": "DCL15-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 752,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "LUAMOD_API declares intentional external linkage for module opener"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 755,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_setfield takes const char*; string literal not modified"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 757,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_setfield takes const char*; string literal not modified"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 759,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_setfield takes const char*; string literal not modified"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/lmathlib.c",
+      "line": 761,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_setfield takes const char*; string literal not modified"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 113,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "returns dlopen handle value stored in local var; not address of local"
+    },
+    {
+      "rule": "ENV01-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 154,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buff[MAX_PATH+1] is for GetModuleFileNameA not getenv; misfire"
+    },
+    {
+      "rule": "MEM05-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 154,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "MAX_PATH+1 is compile-time constant; not a VLA"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 158,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buff is output buffer to GetModuleFileNameA; written before use"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 161,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lb==NULL check IS the if-condition; else only runs if non-NULL"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 161,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*lb='\\0' is char-to-char assignment; no sign extension"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 216,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "void* signature must match other implementations; const would break API"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 228,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same cross-platform API constraint for lsys_sym parameter"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 279,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Lua uses single-threaded state; threading advisory inapplicable"
+    },
+    {
+      "rule": "ENV34-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 281,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "path used immediately after getenv; no intervening env-modifying call"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 281,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single-threaded Lua state; getenv thread-safety advisory irrelevant"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 287,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "path < dftmark is pointer comparison; not char-to-int conversion"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 287,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same line second instance; pointer arithmetic misidentified"
+    },
+    {
+      "rule": "ENV30-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 291,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ct_diff2sz computes pointer difference; does not modify env string"
+    },
+    {
+      "rule": "ENV30-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 297,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ct_diff2sz takes ptrdiff_t result; does not modify env string"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 328,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "returns VALUE of plib (void*); not &plib; not a dangling pointer"
+    },
+    {
+      "rule": "API05-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 336,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "structural-C99 conformant array syntax not used in Lua; FP"
+    },
+    {
+      "rule": "API05-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 336,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "second API05-C same line; same rationale"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 336,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ptr matches lua_Alloc typedef; const would break function pointer type"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 387,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lsys_load is a function call not a static variable; misidentified"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 408,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "path is char* pointer argument to lookforfunc; no char-to-int"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 408,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "second instance same column; pointer not char sign extension"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 408,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "init is char* pointer; no conversion to larger integer type"
+    },
+    {
+      "rule": "FIO05-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 429,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fopen probe for existence only; content not read; advisory FP"
+    },
+    {
+      "rule": "WIN03-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 429,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "POSIX/generic section; Windows-specific handle inheritance advisory"
+    },
+    {
+      "rule": "ERR00-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 431,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fclose on read-probe handle; error irrelevant to probe purpose"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 441,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "end is boundary sentinel; const char* would be fine but advisory only"
+    },
+    {
+      "rule": "EXP40-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 443,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*name = *path is char-to-char assignment; no const pointer stripping"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 443,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*path dereference assigned to char; no larger-type conversion"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 443,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "second instance same line; same char-to-char analysis"
+    },
+    {
+      "rule": "MEM33-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 447,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*name = *LUA_PATH_SEP is char assignment; no flexible array struct"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 447,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*name = *LUA_PATH_SEP is char-to-char; no sign extension"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 453,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*sep = '\\0' is char assignment; no conversion to larger type"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 454,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*path=sep writes pointer value into caller variable; not dangling"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 454,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "char assignment *path=...; no conversion to larger integer type"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 454,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "second instance same position; same char-to-char analysis"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 455,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "returns name pointing into luaL_Buffer valid in caller frame"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 503,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaL_checkstring reads independent stack positions; no hazard"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 534,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single call luaL_loadfilex; result compared before checkload called"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 560,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "modname is luaL_gsub result; always returns non-NULL string"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 684,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sentinel-terminated pk_funcs[]; standard Lua API convention"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 697,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sentinel-terminated ll_funcs[]; standard Lua convention"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 704,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "searchers[] size computed by sizeof division correctly"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 720,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_setfield key is const char*; string literal not modified"
+    },
+    {
+      "rule": "API00-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 724,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaopen_package called by Lua runtime with valid state; L check absurd"
+    },
+    {
+      "rule": "DCL15-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 724,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "LUAMOD_API is intentional external linkage for package opener"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 730,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "setpath fieldname param is const char*; string literal not modified"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 731,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "setpath envname param is const char*; not modified"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 735,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_setfield key is const char*; string literal not modified"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 738,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_setfield key is const char*; string literal not modified"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/loadlib.c",
+      "line": 741,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_setfield key is const char*; string literal not modified"
+    },
+    {
+      "rule": "PRE05-C",
+      "file": "/home/brandon/toolchain/lua/luaconf.h",
+      "line": 425,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "l_floatatt uses ## intentionally; n is always literal token like MANT_DIG"
+    },
+    {
+      "rule": "PRE05-C",
+      "file": "/home/brandon/toolchain/lua/luaconf.h",
+      "line": 442,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same macro long-double branch; ## paste intentional and correct"
+    },
+    {
+      "rule": "PRE05-C",
+      "file": "/home/brandon/toolchain/lua/luaconf.h",
+      "line": 458,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same macro double branch; ## paste correct; no expansion needed"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "/home/brandon/toolchain/lua/luaconf.h",
+      "line": 466,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "op is always a function name token; parenthesizing advisory only"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/luaconf.h",
+      "line": 602,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "p appears exactly once in replacement; no multiple evaluation"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "/home/brandon/toolchain/lua/luaconf.h",
+      "line": 602,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "p in argument position of l_sprintf; parenthesizing advisory"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/luaconf.h",
+      "line": 602,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "p evaluated once in replacement text; PRE12-C misfire"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "/home/brandon/toolchain/lua/luaconf.h",
+      "line": 626,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "op in (lua_Number)op; always single function name token; advisory"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "/home/brandon/toolchain/lua/luaconf.h",
+      "line": 745,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "LUAI_MAXALIGN is struct field declarations not statements; do-while invalid"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "/home/brandon/toolchain/lua/luaconf.h",
+      "line": 748,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same macro C89 branch; declaration list not a statement sequence"
+    }
+  ],
+  "fns": [],
+  "files_reviewed": [
+    "/home/brandon/toolchain/lua/lmathlib.c",
+    "/home/brandon/toolchain/lua/loadlib.c",
+    "/home/brandon/toolchain/lua/luaconf.h"
+  ],
+  "files_clean": [
+    "/home/brandon/toolchain/lua/lmathlib.c",
+    "/home/brandon/toolchain/lua/loadlib.c",
+    "/home/brandon/toolchain/lua/luaconf.h"
+  ],
+  "summary": {
+    "ground_truth": 0,
+    "tp": 0,
+    "fp": 123,
+    "fn": 0
+  }
+}

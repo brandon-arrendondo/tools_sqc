@@ -1,0 +1,1372 @@
+{
+"lcode.c": [
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 35,
+"message": "Function-like macro 'hasjumps' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 35,
+"message": "Macro evaluates parameter 'e' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 43,
+"message": "Function 'luaK_semerror' does not validate pointer parameter 'ls' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'ls' at the start of the function, e.g., 'if (!ls) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 43,
+"message": "Function 'luaK_semerror' does not validate pointer parameter 'fmt' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fmt' at the start of the function, e.g., 'if (!fmt) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 43,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 23,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 46,
+"message": "Variable 'argp' is used uninitialized",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'argp' before use, e.g., at its declaration"
+},
+{
+"column": 37,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 75,
+"message": "Pointer parameter 'fs' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *fs'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 85,
+"message": "Function 'luaK_exp2const' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 85,
+"message": "Function 'luaK_exp2const' does not validate pointer parameter 'v' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'v' at the start of the function, e.g., 'if (!v) { return error_code; }'"
+},
+{
+"column": 52,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 117,
+"message": "Pointer parameter 'fs' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *fs'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 132,
+"message": "Function 'luaK_nil' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 132,
+"message": "Function 'luaK_nil' does not validate integer parameter 'n' for overflow before arithmetic operations",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add overflow validation for 'n' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+},
+{
+"column": 18,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 135,
+"message": "Potential null pointer dereference of variable 'previous'",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'previous' is not NULL before dereferencing"
+},
+{
+"column": 27,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 143,
+"message": "Pointer subtraction between pointers from different arrays: 'pl' and 'pfrom'",
+"rule_id": "ARR36-C",
+"severity": "High",
+"suggestion": "Ensure both pointers refer to the same array before subtraction"
+},
+{
+"column": 31,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 155,
+"message": "Pointer parameter 'fs' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *fs'"
+},
+{
+"column": 26,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 156,
+"message": "Array subscript uses function parameter 'pc' without bounds checking. Caller could pass invalid index.",
+"rule_id": "ARR00-C",
+"severity": "Medium",
+"suggestion": "Add bounds checking for 'pc' before using it as an array index"
+},
+{
+"column": 26,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 156,
+"message": "Potentially unsafe array access with unvalidated function parameter index 'pc'",
+"rule_id": "ARR30-C",
+"severity": "High",
+"suggestion": "Add bounds checking for function parameter before using as array index."
+},
+{
+"column": 13,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 160,
+"message": "Pointer arithmetic on non-array pointer 'pc'. Only perform arithmetic on array pointers",
+"rule_id": "ARR37-C",
+"severity": "High",
+"suggestion": "Use array indexing or ensure pointer refers to an array"
+},
+{
+"column": 32,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 168,
+"message": "Pointer parameter 'fs' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *fs'"
+},
+{
+"column": 23,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 169,
+"message": "Array subscript uses function parameter 'pc' without bounds checking. Caller could pass invalid index.",
+"rule_id": "ARR00-C",
+"severity": "Medium",
+"suggestion": "Add bounds checking for 'pc' before using it as an array index"
+},
+{
+"column": 23,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 169,
+"message": "Potentially unsafe array access with unvalidated function parameter index 'pc'",
+"rule_id": "ARR30-C",
+"severity": "High",
+"suggestion": "Add bounds checking for function parameter before using as array index."
+},
+{
+"column": 24,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 170,
+"message": "Pointer arithmetic on non-array pointer 'pc'. Only perform arithmetic on array pointers",
+"rule_id": "ARR37-C",
+"severity": "High",
+"suggestion": "Use array indexing or ensure pointer refers to an array"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 182,
+"message": "Function 'luaK_concat' does not validate pointer parameter 'l1' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'l1' at the start of the function, e.g., 'if (!l1) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 200,
+"message": "Function 'luaK_jump' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 208,
+"message": "Function 'luaK_ret' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 208,
+"message": "Function 'luaK_ret' does not validate integer parameter 'nret' for overflow before arithmetic operations",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add overflow validation for 'nret' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 234,
+"message": "Function 'luaK_getlabel' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 47,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 245,
+"message": "Pointer parameter 'fs' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *fs'"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 246,
+"message": "Variable 'pi' is initialized but never modified, consider const-qualifying it",
+"rule_id": "DCL00-C",
+"severity": "Medium",
+"suggestion": "Add 'const' qualifier: const pi = ..."
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 250,
+"message": "Function returns pointer to local variable 'pi' with automatic storage duration",
+"rule_id": "DCL30-C",
+"severity": "High",
+"suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+},
+{
+"column": 18,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 263,
+"message": "Potential null pointer dereference of variable 'i'",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'i' is not NULL before dereferencing"
+},
+{
+"column": 10,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 270,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 308,
+"message": "Function 'luaK_patchlist' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 314,
+"message": "Function 'luaK_patchtohere' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 384,
+"message": "Function 'luaK_code' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 399,
+"message": "Function 'luaK_codeABCk' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 32,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 402,
+"message": "Bitwise operator '&' used on signed operand 'k' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'k' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 407,
+"message": "Function 'luaK_codevABCk' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 33,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 410,
+"message": "Bitwise operator '&' used on signed operand 'k' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'k' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 418,
+"message": "Function 'luaK_codeABx' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 33,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 442,
+"message": "Bitwise operator '&' used on signed operand 'k' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'k' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 476,
+"message": "Function 'luaK_checkstack' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 476,
+"message": "Function 'luaK_checkstack' does not validate integer parameter 'n' for overflow before arithmetic operations",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add overflow validation for 'n' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 488,
+"message": "Function 'luaK_reserveregs' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 488,
+"message": "Function 'luaK_reserveregs' does not validate integer parameter 'n' for overflow before arithmetic operations",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add overflow validation for 'n' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+},
+{
+"column": 45,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 525,
+"message": "Pointer parameter 'e' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *e'"
+},
+{
+"column": 46,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 535,
+"message": "Pointer parameter 'e1' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *e1'"
+},
+{
+"column": 59,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 535,
+"message": "Pointer parameter 'e2' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *e2'"
+},
+{
+"column": 50,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 702,
+"message": "Variable 'fi' is used uninitialized",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'fi' before use, e.g., at its declaration"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 715,
+"message": "Function 'luaK_codecheckglobal' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 715,
+"message": "Function 'luaK_codecheckglobal' does not validate pointer parameter 'var' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'var' at the start of the function, e.g., 'if (!var) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 715,
+"message": "Function 'luaK_codecheckglobal' does not validate integer parameter 'k' for overflow before arithmetic operations",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add overflow validation for 'k' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 757,
+"message": "Function 'luaK_setreturns' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 757,
+"message": "Function 'luaK_setreturns' does not validate pointer parameter 'e' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'e' at the start of the function, e.g., 'if (!e) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 757,
+"message": "Function 'luaK_setreturns' does not validate integer parameter 'nresults' for overflow before arithmetic operations",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add overflow validation for 'nresults' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 792,
+"message": "Function 'luaK_setoneret' does not validate pointer parameter 'e' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'e' at the start of the function, e.g., 'if (!e) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 808,
+"message": "Function 'luaK_vapar2local' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 808,
+"message": "Function 'luaK_vapar2local' does not validate pointer parameter 'var' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'var' at the start of the function, e.g., 'if (!var) { return error_code; }'"
+},
+{
+"column": 34,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 808,
+"message": "Pointer parameter 'fs' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *fs'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 819,
+"message": "Function 'luaK_dischargevars' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 819,
+"message": "Function 'luaK_dischargevars' does not validate pointer parameter 'e' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'e' at the start of the function, e.g., 'if (!e) { return error_code; }'"
+},
+{
+"column": 48,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 846,
+"message": "Use-after-free: accessing freed pointer 'e->u.ind.t'",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not access freed memory."
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 851,
+"message": "Double-free: 'e->u.ind.t' freed multiple times",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Set pointer to NULL after freeing to prevent double-free."
+},
+{
+"column": 52,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 852,
+"message": "Use-after-free: accessing freed pointer 'e->u.ind.t'",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not access freed memory."
+},
+{
+"column": 52,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 858,
+"message": "Use-after-free: accessing freed pointer 'e->u.ind.t'",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not access freed memory."
+},
+{
+"column": 64,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 858,
+"message": "Use-after-free: accessing freed pointer 'e->u.ind.idx'",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not access freed memory."
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 863,
+"message": "Double-free: 'e->u.ind.idx' freed multiple times",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Set pointer to NULL after freeing to prevent double-free."
+},
+{
+"column": 51,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 864,
+"message": "Use-after-free: accessing freed pointer 'e->u.ind.t'",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not access freed memory."
+},
+{
+"column": 63,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 864,
+"message": "Use-after-free: accessing freed pointer 'e->u.ind.idx'",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not access freed memory."
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 999,
+"message": "Function 'luaK_exp2nextreg' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 999,
+"message": "Function 'luaK_exp2nextreg' does not validate pointer parameter 'e' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'e' at the start of the function, e.g., 'if (!e) { return error_code; }'"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1003,
+"message": "Use-after-free: passing freed pointer 'e' to function",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not pass freed memory to functions."
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1011,
+"message": "Function 'luaK_exp2anyreg' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1011,
+"message": "Function 'luaK_exp2anyreg' does not validate pointer parameter 'e' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'e' at the start of the function, e.g., 'if (!e) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1043,
+"message": "Function 'luaK_exp2val' does not validate pointer parameter 'e' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'e' at the start of the function, e.g., 'if (!e) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1105,
+"message": "Function 'luaK_storevar' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1105,
+"message": "Function 'luaK_storevar' does not validate pointer parameter 'var' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'var' at the start of the function, e.g., 'if (!var) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1105,
+"message": "Function 'luaK_storevar' does not validate pointer parameter 'ex' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'ex' at the start of the function, e.g., 'if (!ex) { return error_code; }'"
+},
+{
+"column": 44,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1105,
+"message": "Pointer parameter 'var' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *var'"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1109,
+"message": "Use-after-free: passing freed pointer 'ex' to function",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not pass freed memory to functions."
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1113,
+"message": "Variable 'e' is initialized but never modified, consider const-qualifying it",
+"rule_id": "DCL00-C",
+"severity": "Medium",
+"suggestion": "Add 'const' qualifier: const e = ..."
+},
+{
+"column": 15,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1113,
+"message": "Use-after-free: passing freed pointer 'ex' to function",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not pass freed memory to functions."
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1118,
+"message": "Use-after-free: passing freed pointer 'ex' to function",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not pass freed memory to functions."
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1122,
+"message": "Use-after-free: passing freed pointer 'ex' to function",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not pass freed memory to functions."
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1126,
+"message": "Use-after-free: passing freed pointer 'ex' to function",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not pass freed memory to functions."
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1134,
+"message": "Use-after-free: passing freed pointer 'ex' to function",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not pass freed memory to functions."
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1139,
+"message": "Double-free: 'ex' freed multiple times",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Set pointer to NULL after freeing to prevent double-free."
+},
+{
+"column": 53,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1146,
+"message": "Pointer parameter 'e' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *e'"
+},
+{
+"column": 35,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1148,
+"message": "Potential null pointer dereference of variable 'pc'",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'pc' is not NULL before dereferencing"
+},
+{
+"column": 10,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1171,
+"message": "Use-after-free: passing freed pointer 'e' to function",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not pass freed memory to functions."
+},
+{
+"column": 43,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1171,
+"message": "Use-after-free: accessing member of freed pointer 'e'",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not access members of freed memory."
+},
+{
+"column": 43,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1171,
+"message": "Use-after-free: accessing member of freed pointer 'e'",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not access members of freed memory."
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1178,
+"message": "Function 'luaK_goiftrue' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1178,
+"message": "Function 'luaK_goiftrue' does not validate pointer parameter 'e' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'e' at the start of the function, e.g., 'if (!e) { return error_code; }'"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1249,
+"message": "Use-after-free: accessing member of freed pointer 'e'",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not access members of freed memory."
+},
+{
+"column": 19,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1249,
+"message": "Use-after-free: passing freed pointer 'e' to function",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not pass freed memory to functions."
+},
+{
+"column": 47,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1249,
+"message": "Use-after-free: accessing member of freed pointer 'e'",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not access members of freed memory."
+},
+{
+"column": 47,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1249,
+"message": "Use-after-free: accessing member of freed pointer 'e'",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not access members of freed memory."
+},
+{
+"column": 16,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1256,
+"message": "Use-after-free: accessing member of freed pointer 'e'",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not access members of freed memory."
+},
+{
+"column": 29,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1256,
+"message": "Use-after-free: accessing member of freed pointer 'e'",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not access members of freed memory."
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1257,
+"message": "Use-after-free: passing freed pointer 'e' to function",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not pass freed memory to functions."
+},
+{
+"column": 20,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1257,
+"message": "Use-after-free: accessing member of freed pointer 'e'",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not access members of freed memory."
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1258,
+"message": "Use-after-free: passing freed pointer 'e' to function",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not pass freed memory to functions."
+},
+{
+"column": 20,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1258,
+"message": "Use-after-free: accessing member of freed pointer 'e'",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not access members of freed memory."
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1321,
+"message": "Function 'luaK_self' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1321,
+"message": "Function 'luaK_self' does not validate pointer parameter 'e' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'e' at the start of the function, e.g., 'if (!e) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1321,
+"message": "Function 'luaK_self' does not validate pointer parameter 'key' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+},
+{
+"column": 10,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1326,
+"message": "Use-after-free: accessing member of freed pointer 'e'",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not access members of freed memory."
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1357,
+"message": "Function 'luaK_indexed' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1357,
+"message": "Function 'luaK_indexed' does not validate pointer parameter 't' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 't' at the start of the function, e.g., 'if (!t) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1357,
+"message": "Function 'luaK_indexed' does not validate pointer parameter 'k' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'k' at the start of the function, e.g., 'if (!k) { return error_code; }'"
+},
+{
+"column": 36,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1419,
+"message": "Pointer parameter 'fs' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *fs'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1443,
+"message": "Function 'binopr2op' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static l_sinline binopr2op"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1443,
+"message": "Function 'binopr2op' is only used within this file. It should be declared static to minimize scope.",
+"rule_id": "DCL19-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage class to function 'binopr2op'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1454,
+"message": "Function 'unopr2op' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static l_sinline unopr2op"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1454,
+"message": "Function 'unopr2op' is only used within this file. It should be declared static to minimize scope.",
+"rule_id": "DCL19-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage class to function 'unopr2op'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1463,
+"message": "Function 'binopr2TM' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static l_sinline binopr2TM"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1463,
+"message": "Function 'binopr2TM' is only used within this file. It should be declared static to minimize scope.",
+"rule_id": "DCL19-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage class to function 'binopr2TM'"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1475,
+"message": "Variable 'r' is initialized but never modified, consider const-qualifying it",
+"rule_id": "DCL00-C",
+"severity": "Medium",
+"suggestion": "Add 'const' qualifier: const r = ..."
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1477,
+"message": "Use-after-free: accessing member of freed pointer 'e'",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not access members of freed memory."
+},
+{
+"column": 23,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1566,
+"message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+"rule_id": "MEM33-C",
+"severity": "High",
+"suggestion": "Use memcpy() to copy the structure and its flexible array member"
+},
+{
+"column": 10,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1643,
+"message": "Variable 'im' is used uninitialized",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'im' before use, e.g., at its declaration"
+},
+{
+"column": 10,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1679,
+"message": "Variable 'im' is used uninitialized",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'im' before use, e.g., at its declaration"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1698,
+"message": "Function 'luaK_prefix' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1698,
+"message": "Function 'luaK_prefix' does not validate pointer parameter 'e' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'e' at the start of the function, e.g., 'if (!e) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1719,
+"message": "Function 'luaK_infix' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1719,
+"message": "Function 'luaK_infix' does not validate pointer parameter 'v' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'v' at the start of the function, e.g., 'if (!v) { return error_code; }'"
+},
+{
+"column": 48,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1768,
+"message": "Pointer parameter 'e1' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *e1'"
+},
+{
+"column": 18,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1770,
+"message": "Potential null pointer dereference of variable 'ie2'",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'ie2' is not NULL before dereferencing"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1797,
+"message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+"rule_id": "MEM33-C",
+"severity": "High",
+"suggestion": "Use memcpy() to copy the structure and its flexible array member"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1803,
+"message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+"rule_id": "MEM33-C",
+"severity": "High",
+"suggestion": "Use memcpy() to copy the structure and its flexible array member"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1808,
+"message": "Macro invocation 'codeconcat' may create universal character names through concatenation",
+"rule_id": "PRE30-C",
+"severity": "High",
+"suggestion": "Use complete universal character names instead of concatenating fragments"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1869,
+"message": "Function 'luaK_fixline' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1875,
+"message": "Function 'luaK_settablesize' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 35,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1875,
+"message": "Pointer parameter 'fs' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *fs'"
+},
+{
+"column": 24,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1876,
+"message": "Array subscript uses function parameter 'pc' without bounds checking. Caller could pass invalid index.",
+"rule_id": "ARR00-C",
+"severity": "Medium",
+"suggestion": "Add bounds checking for 'pc' before using it as an array index"
+},
+{
+"column": 24,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1876,
+"message": "Potentially unsafe array access with unvalidated function parameter index 'pc'",
+"rule_id": "ARR30-C",
+"severity": "High",
+"suggestion": "Add bounds checking for function parameter before using as array index."
+},
+{
+"column": 18,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1878,
+"message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+"rule_id": "INT10-C",
+"severity": "Medium",
+"suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1882,
+"message": "Pointer arithmetic on non-array pointer 'inst'. Only perform arithmetic on array pointers",
+"rule_id": "ARR37-C",
+"severity": "High",
+"suggestion": "Use array indexing or ensure pointer refers to an array"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1893,
+"message": "Function 'luaK_setlist' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1893,
+"message": "Function 'luaK_setlist' does not validate integer parameter 'base' for overflow before arithmetic operations",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add overflow validation for 'base' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+},
+{
+"column": 37,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1912,
+"message": "Pointer parameter 'code' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *code'"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1914,
+"message": "Loop uses uninitialized variable 'count' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+"rule_id": "ARR00-C",
+"severity": "Medium",
+"suggestion": "Initialize 'count' to a valid value before using it in the loop"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1930,
+"message": "Function 'luaK_finish' does not validate pointer parameter 'fs' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fs' at the start of the function, e.g., 'if (!fs) { return error_code; }'"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1933,
+"message": "Bitwise operator '&' used on signed operand 'p' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'p' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1933,
+"message": "Variable 'p' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 38,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1937,
+"message": "Pointer arithmetic on non-array pointer 'pc'. Only perform arithmetic on array pointers",
+"rule_id": "ARR37-C",
+"severity": "High",
+"suggestion": "Use array indexing or ensure pointer refers to an array"
+},
+{
+"column": 4,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1938,
+"message": "Dereferencing pointer in switch statement may create double-fetch vulnerability",
+"rule_id": "CON43-C",
+"severity": "High",
+"suggestion": "Store dereferenced value in a local variable or use atomic operations"
+},
+{
+"column": 33,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1940,
+"message": "Bitwise operator '&' used on signed operand 'p' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'p' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 13,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1948,
+"message": "Bitwise operator '&' used on signed operand 'p' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'p' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 13,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1953,
+"message": "Bitwise operator '&' used on signed operand 'p' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'p' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 13,
+"file": "/home/brandon/toolchain/lua/lcode.c",
+"line": 1958,
+"message": "Bitwise operator '&' used on signed operand 'p' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'p' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+}
+]
+}

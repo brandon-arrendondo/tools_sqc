@@ -1,0 +1,2346 @@
+{
+  "ground_truth": [],
+  "labels": [
+    {
+      "rule": "INT34-C",
+      "file": "lvm.c",
+      "line": 68,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Structured multi-part right-shifts; each partial shift < type width; preprocessor-time arithmetic"
+    },
+    {
+      "rule": "INT34-C",
+      "file": "lvm.c",
+      "line": 68,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Structured multi-part right-shifts; each partial shift < type width"
+    },
+    {
+      "rule": "INT34-C",
+      "file": "lvm.c",
+      "line": 68,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Structured multi-part right-shifts; each partial shift < type width"
+    },
+    {
+      "rule": "INT34-C",
+      "file": "lvm.c",
+      "line": 68,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Structured multi-part right-shifts; each partial shift < type width"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "lvm.c",
+      "line": 99,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "getlstr macro initializes stlen as output parameter before use"
+    },
+    {
+      "rule": "API00-C",
+      "file": "lvm.c",
+      "line": 126,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal API; pointer guaranteed non-null by VM call protocol"
+    },
+    {
+      "rule": "API00-C",
+      "file": "lvm.c",
+      "line": 142,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal API; pointer guaranteed non-null by VM call protocol"
+    },
+    {
+      "rule": "API00-C",
+      "file": "lvm.c",
+      "line": 157,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal API; pointer guaranteed non-null by VM call protocol"
+    },
+    {
+      "rule": "API00-C",
+      "file": "lvm.c",
+      "line": 157,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal API; pointer guaranteed non-null by VM call protocol"
+    },
+    {
+      "rule": "MSC04-C",
+      "file": "lvm.c",
+      "line": 181,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Intentional indirect recursion via protected VM call boundary"
+    },
+    {
+      "rule": "MSC04-C",
+      "file": "lvm.c",
+      "line": 214,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Intentional indirect recursion via protected VM call boundary"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "lvm.c",
+      "line": 229,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "limit set by forlimit() output param; used only when forlimit returns false"
+    },
+    {
+      "rule": "INT33-C",
+      "file": "lvm.c",
+      "line": 231,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Divisor l_castS2U(step) != 0: step > 0 precondition at this branch"
+    },
+    {
+      "rule": "INT33-C",
+      "file": "lvm.c",
+      "line": 236,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Divisor non-zero: step<0 means -(step+1) >= 0, +1u makes it >= 1"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "lvm.c",
+      "line": 239,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Arguments are independent reads of separate stack slots; no ordering issue"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "lvm.c",
+      "line": 252,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "tonumber sets step before use; luaG_forerror is noreturn on failure"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "lvm.c",
+      "line": 254,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "tonumber sets init before use; luaG_forerror is noreturn on failure"
+    },
+    {
+      "rule": "API00-C",
+      "file": "lvm.c",
+      "line": 291,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal VM pointer guaranteed live by protocol; null check inappropriate"
+    },
+    {
+      "rule": "API00-C",
+      "file": "lvm.c",
+      "line": 291,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal VM pointer guaranteed live by protocol; null check inappropriate"
+    },
+    {
+      "rule": "API00-C",
+      "file": "lvm.c",
+      "line": 291,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal VM pointer guaranteed live by protocol; null check inappropriate"
+    },
+    {
+      "rule": "MSC04-C",
+      "file": "lvm.c",
+      "line": 291,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Intentional mutual recursion through protected Lua call boundary"
+    },
+    {
+      "rule": "API00-C",
+      "file": "lvm.c",
+      "line": 334,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal VM pointer guaranteed live by protocol; null check inappropriate"
+    },
+    {
+      "rule": "API00-C",
+      "file": "lvm.c",
+      "line": 334,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal VM pointer guaranteed live by protocol; null check inappropriate"
+    },
+    {
+      "rule": "API00-C",
+      "file": "lvm.c",
+      "line": 334,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal VM pointer guaranteed live by protocol; null check inappropriate"
+    },
+    {
+      "rule": "API00-C",
+      "file": "lvm.c",
+      "line": 334,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal VM pointer guaranteed live by protocol; null check inappropriate"
+    },
+    {
+      "rule": "MSC04-C",
+      "file": "lvm.c",
+      "line": 334,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Intentional mutual recursion through protected Lua call boundary"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "lvm.c",
+      "line": 340,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "const advisory; modifying const local is intentional style in VM macros"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 391,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "lvm.c",
+      "line": 397,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "const char* used with strcoll/strlen; no sign-extension to larger int type here"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "lvm.c",
+      "line": 397,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "const char* used with strcoll/strlen; no sign-extension to larger int type here"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "lvm.c",
+      "line": 401,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "const char* used with strcoll/strlen; no sign-extension to larger int type here"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "lvm.c",
+      "line": 402,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "const char* used with strcoll/strlen; no sign-extension to larger int type here"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "lvm.c",
+      "line": 403,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Variable initialized by macro output-param or guaranteed-path before use"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "lvm.c",
+      "line": 404,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Variable initialized by macro output-param or guaranteed-path before use"
+    },
+    {
+      "rule": "DCL15-C",
+      "file": "lvm.c",
+      "line": 426,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "l_sinline functions may need cross-TU visibility; static advisory inapplicable"
+    },
+    {
+      "rule": "DCL19-C",
+      "file": "lvm.c",
+      "line": 426,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "l_sinline function; file-scope visibility intentional"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 426,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "DCL15-C",
+      "file": "lvm.c",
+      "line": 443,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "l_sinline functions may need cross-TU visibility; static advisory inapplicable"
+    },
+    {
+      "rule": "DCL19-C",
+      "file": "lvm.c",
+      "line": 443,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "l_sinline function; file-scope visibility intentional"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 443,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "DCL15-C",
+      "file": "lvm.c",
+      "line": 460,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "l_sinline functions may need cross-TU visibility; static advisory inapplicable"
+    },
+    {
+      "rule": "DCL19-C",
+      "file": "lvm.c",
+      "line": 460,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "l_sinline function; file-scope visibility intentional"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 460,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "DCL15-C",
+      "file": "lvm.c",
+      "line": 477,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "l_sinline functions may need cross-TU visibility; static advisory inapplicable"
+    },
+    {
+      "rule": "DCL19-C",
+      "file": "lvm.c",
+      "line": 477,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "l_sinline function; file-scope visibility intentional"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 477,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "DCL15-C",
+      "file": "lvm.c",
+      "line": 493,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "l_sinline functions may need cross-TU visibility; static advisory inapplicable"
+    },
+    {
+      "rule": "DCL19-C",
+      "file": "lvm.c",
+      "line": 493,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "l_sinline function; file-scope visibility intentional"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 493,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "DCL15-C",
+      "file": "lvm.c",
+      "line": 515,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "l_sinline functions may need cross-TU visibility; static advisory inapplicable"
+    },
+    {
+      "rule": "DCL19-C",
+      "file": "lvm.c",
+      "line": 515,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "l_sinline function; file-scope visibility intentional"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 515,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "lvm.c",
+      "line": 540,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Arguments are independent TValue reads from separate stack slots; no sequencing issue"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "lvm.c",
+      "line": 562,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Arguments are independent TValue reads from separate stack slots; no sequencing issue"
+    },
+    {
+      "rule": "API00-C",
+      "file": "lvm.c",
+      "line": 582,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal VM pointer guaranteed live by protocol; null check inappropriate"
+    },
+    {
+      "rule": "MSC04-C",
+      "file": "lvm.c",
+      "line": 582,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Intentional mutual recursion through protected Lua call boundary"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "lvm.c",
+      "line": 604,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Arguments are independent TValue reads from separate stack slots; no sequencing issue"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "lvm.c",
+      "line": 622,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Arguments are independent TValue reads from separate stack slots; no sequencing issue"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "lvm.c",
+      "line": 624,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Arguments are independent TValue reads from separate stack slots; no sequencing issue"
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "lvm.c",
+      "line": 627,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Direct NULL check on metamethod result is idiomatic in Lua VM; no platform concern"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "lvm.c",
+      "line": 629,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Variable initialized by macro output-param or guaranteed-path before use"
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "lvm.c",
+      "line": 635,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Direct NULL check on metamethod result is idiomatic in Lua VM; no platform concern"
+    },
+    {
+      "rule": "API03-C",
+      "file": "lvm.c",
+      "line": 657,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "tostring macro param order is consistent with Lua VM conventions; not a public API"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "lvm.c",
+      "line": 657,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros use multi-eval intentionally; no side-effecting args in practice"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "lvm.c",
+      "line": 657,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM macro params (L, ci) are simple variables; multiple-eval is safe"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "lvm.c",
+      "line": 665,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros use multi-eval intentionally; no side-effecting args in practice"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "lvm.c",
+      "line": 665,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM macro params (L, ci) are simple variables; multiple-eval is safe"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "lvm.c",
+      "line": 668,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "const-param advisory; function signature part of public ABI"
+    },
+    {
+      "rule": "ARR38-C",
+      "file": "lvm.c",
+      "line": 674,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Buffer size tracked by tl; overflow checked before copy; buff sized to tl"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "lvm.c",
+      "line": 674,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Variable initialized by macro output-param or guaranteed-path before use"
+    },
+    {
+      "rule": "API00-C",
+      "file": "lvm.c",
+      "line": 684,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal VM pointer guaranteed live by protocol; null check inappropriate"
+    },
+    {
+      "rule": "MSC04-C",
+      "file": "lvm.c",
+      "line": 684,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Intentional mutual recursion through protected Lua call boundary"
+    },
+    {
+      "rule": "ENV01-C",
+      "file": "lvm.c",
+      "line": 712,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Stack buffer declaration, not getenv usage; rule misfire"
+    },
+    {
+      "rule": "API00-C",
+      "file": "lvm.c",
+      "line": 731,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal VM pointer guaranteed live by protocol; null check inappropriate"
+    },
+    {
+      "rule": "API00-C",
+      "file": "lvm.c",
+      "line": 731,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal VM pointer guaranteed live by protocol; null check inappropriate"
+    },
+    {
+      "rule": "MSC04-C",
+      "file": "lvm.c",
+      "line": 731,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Intentional mutual recursion through protected Lua call boundary"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "lvm.c",
+      "line": 735,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "const advisory; modifying const local is intentional style in VM macros"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "lvm.c",
+      "line": 737,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Variable initialized by macro output-param or guaranteed-path before use"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "lvm.c",
+      "line": 738,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Arguments are independent TValue reads from separate stack slots; no sequencing issue"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "lvm.c",
+      "line": 746,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Arguments are independent TValue reads from separate stack slots; no sequencing issue"
+    },
+    {
+      "rule": "DCL15-C",
+      "file": "lvm.c",
+      "line": 766,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "l_sinline functions may need cross-TU visibility; static advisory inapplicable"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "lvm.c",
+      "line": 767,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Mixed bitwise/arithmetic on same var is intentional floor-div algorithm"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "lvm.c",
+      "line": 773,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Mixed bitwise/arithmetic on same var is intentional floor-div algorithm"
+    },
+    {
+      "rule": "INT33-C",
+      "file": "lvm.c",
+      "line": 773,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Division guarded by special-case check (l_castS2U(n)+1u<=1u catches 0 and -1)"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "lvm.c",
+      "line": 774,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Bitwise op on signed integer for floor-div sign correction; deliberate C99 pattern"
+    },
+    {
+      "rule": "INT33-C",
+      "file": "lvm.c",
+      "line": 774,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Division guarded by special-case check (l_castS2U(n)+1u<=1u catches 0 and -1)"
+    },
+    {
+      "rule": "INT10-C",
+      "file": "lvm.c",
+      "line": 774,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Signed modulo is intentional; result corrected explicitly for floor semantics"
+    },
+    {
+      "rule": "DCL15-C",
+      "file": "lvm.c",
+      "line": 786,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "l_sinline functions may need cross-TU visibility; static advisory inapplicable"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "lvm.c",
+      "line": 787,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Mixed bitwise/arithmetic on same var is intentional floor-div algorithm"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "lvm.c",
+      "line": 793,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "const advisory; modifying const local is intentional style in VM macros"
+    },
+    {
+      "rule": "INT33-C",
+      "file": "lvm.c",
+      "line": 793,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Division guarded by special-case check (l_castS2U(n)+1u<=1u catches 0 and -1)"
+    },
+    {
+      "rule": "INT10-C",
+      "file": "lvm.c",
+      "line": 793,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Signed modulo is intentional; result corrected explicitly for floor semantics"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "lvm.c",
+      "line": 794,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Mixed bitwise/arithmetic on same var is intentional floor-div algorithm"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "lvm.c",
+      "line": 794,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Bitwise op on signed integer for floor-div sign correction; deliberate C99 pattern"
+    },
+    {
+      "rule": "API00-C",
+      "file": "lvm.c",
+      "line": 804,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal VM pointer guaranteed live by protocol; null check inappropriate"
+    },
+    {
+      "rule": "DCL15-C",
+      "file": "lvm.c",
+      "line": 804,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "l_sinline functions may need cross-TU visibility; static advisory inapplicable"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "lvm.c",
+      "line": 834,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "const-param advisory; function signature part of public ABI"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "lvm.c",
+      "line": 834,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "const-param advisory; function signature part of public ABI"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "lvm.c",
+      "line": 840,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaF_newLclosure uses luaM_* which longjmps on OOM; never returns NULL"
+    },
+    {
+      "rule": "API00-C",
+      "file": "lvm.c",
+      "line": 855,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal VM pointer guaranteed live by protocol; null check inappropriate"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 934,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 935,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 936,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 937,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "lvm.c",
+      "line": 944,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros use multi-eval intentionally; no side-effecting args in practice"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 944,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 944,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "lvm.c",
+      "line": 944,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros always used as complete statements; do-while not needed"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "lvm.c",
+      "line": 944,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM macro params (L, ci) are simple variables; multiple-eval is safe"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "lvm.c",
+      "line": 963,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros use multi-eval intentionally; no side-effecting args in practice"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 963,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "lvm.c",
+      "line": 963,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro body wrapped in braces or used as statement; operator precedence irrelevant"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "lvm.c",
+      "line": 963,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros always used as complete statements; do-while not needed"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "lvm.c",
+      "line": 974,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros always used as complete statements; do-while not needed"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "lvm.c",
+      "line": 983,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros always used as complete statements; do-while not needed"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "lvm.c",
+      "line": 992,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros use multi-eval intentionally; no side-effecting args in practice"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 992,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "lvm.c",
+      "line": 992,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro body wrapped in braces or used as statement; operator precedence irrelevant"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "lvm.c",
+      "line": 992,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros always used as complete statements; do-while not needed"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "lvm.c",
+      "line": 992,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM macro params (L, ci) are simple variables; multiple-eval is safe"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "lvm.c",
+      "line": 1004,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros always used as complete statements; do-while not needed"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "lvm.c",
+      "line": 1013,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros always used as complete statements; do-while not needed"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "lvm.c",
+      "line": 1022,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros use multi-eval intentionally; no side-effecting args in practice"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 1022,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "lvm.c",
+      "line": 1022,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros always used as complete statements; do-while not needed"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "lvm.c",
+      "line": 1036,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros use multi-eval intentionally; no side-effecting args in practice"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 1036,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "lvm.c",
+      "line": 1036,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro body wrapped in braces or used as statement; operator precedence irrelevant"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "lvm.c",
+      "line": 1036,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros always used as complete statements; do-while not needed"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 1051,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 1051,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 1051,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "lvm.c",
+      "line": 1051,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro body wrapped in braces or used as statement; operator precedence irrelevant"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "lvm.c",
+      "line": 1051,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros always used as complete statements; do-while not needed"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 1071,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 1071,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "lvm.c",
+      "line": 1071,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros always used as complete statements; do-while not needed"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "lvm.c",
+      "line": 1110,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros use multi-eval intentionally; no side-effecting args in practice"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "lvm.c",
+      "line": 1110,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM macro params (L, ci) are simple variables; multiple-eval is safe"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 1114,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 1116,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "lvm.c",
+      "line": 1119,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros always used as complete statements; do-while not needed"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 1127,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "lvm.c",
+      "line": 1127,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro body wrapped in braces or used as statement; operator precedence irrelevant"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "lvm.c",
+      "line": 1127,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros always used as complete statements; do-while not needed"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "lvm.c",
+      "line": 1131,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros always used as complete statements; do-while not needed"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "lvm.c",
+      "line": 1138,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros use multi-eval intentionally; no side-effecting args in practice"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "lvm.c",
+      "line": 1138,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro body wrapped in braces or used as statement; operator precedence irrelevant"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "lvm.c",
+      "line": 1138,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros always used as complete statements; do-while not needed"
+    },
+    {
+      "rule": "PRE11-C",
+      "file": "lvm.c",
+      "line": 1138,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Trailing semicolon in docondjump macro is intentional style"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 1144,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "lvm.c",
+      "line": 1151,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros use multi-eval intentionally; no side-effecting args in practice"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 1151,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 1151,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "lvm.c",
+      "line": 1151,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM macro params (L, ci) are simple variables; multiple-eval is safe"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "lvm.c",
+      "line": 1174,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros use multi-eval intentionally; no side-effecting args in practice"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "lvm.c",
+      "line": 1174,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros always used as complete statements; do-while not needed"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "lvm.c",
+      "line": 1174,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM macro params (L, ci) are simple variables; multiple-eval is safe"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "lvm.c",
+      "line": 1178,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros use multi-eval intentionally; no side-effecting args in practice"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 1178,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "lvm.c",
+      "line": 1178,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM dispatch macros always used as complete statements; do-while not needed"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "lvm.c",
+      "line": 1178,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "VM macro params (L, ci) are simple variables; multiple-eval is safe"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "lvm.c",
+      "line": 1194,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro params used only as function-call targets; precedence issue impossible"
+    },
+    {
+      "rule": "API00-C",
+      "file": "lvm.c",
+      "line": 1198,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal VM pointer guaranteed live by protocol; null check inappropriate"
+    },
+    {
+      "rule": "API00-C",
+      "file": "lvm.c",
+      "line": 1198,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal VM pointer guaranteed live by protocol; null check inappropriate"
+    },
+    {
+      "rule": "MSC04-C",
+      "file": "lvm.c",
+      "line": 1198,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Intentional mutual recursion through protected Lua call boundary"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1232,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1233,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1238,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1244,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "lvm.c",
+      "line": 1247,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Arguments are independent TValue reads from separate stack slots; no sequencing issue"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1250,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1256,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1263,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1268,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1274,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1279,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1287,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1293,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1300,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1311,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "lvm.c",
+      "line": 1317,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Arguments are independent TValue reads from separate stack slots; no sequencing issue"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1325,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "lvm.c",
+      "line": 1328,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "const advisory; modifying const local is intentional style in VM macros"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1338,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1349,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1362,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "lvm.c",
+      "line": 1368,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Arguments are independent TValue reads from separate stack slots; no sequencing issue"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1379,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1394,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1407,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "lvm.c",
+      "line": 1410,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "const advisory; modifying const local is intentional style in VM macros"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "lvm.c",
+      "line": 1413,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Mixed bitwise/arithmetic on same var is intentional floor-div algorithm"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "lvm.c",
+      "line": 1413,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Mixed bitwise/arithmetic on same var is intentional floor-div algorithm"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "lvm.c",
+      "line": 1413,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Mixed bitwise/arithmetic on same var is intentional floor-div algorithm"
+    },
+    {
+      "rule": "INT34-C",
+      "file": "lvm.c",
+      "line": 1413,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Shift amount constrained by bytecode encoding (b<=30); within type width"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "lvm.c",
+      "line": 1413,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Bitwise op on signed integer for floor-div sign correction; deliberate C99 pattern"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "lvm.c",
+      "line": 1421,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaH_new returns GC-managed object; free() would be wrong; GC handles reclaim"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "lvm.c",
+      "line": 1421,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaH_new returns GC-managed object; free() would be wrong; GC handles reclaim"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "lvm.c",
+      "line": 1421,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaH_new returns GC-managed object; free() would be wrong; GC handles reclaim"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1428,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1440,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1444,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1448,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1452,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1456,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1461,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1465,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1469,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1474,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1478,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1482,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1486,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "lvm.c",
+      "line": 1492,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Arguments are independent TValue reads from separate stack slots; no sequencing issue"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1496,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "lvm.c",
+      "line": 1502,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Arguments are independent TValue reads from separate stack slots; no sequencing issue"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1506,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1510,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1514,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1518,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1523,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1527,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1531,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1536,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1540,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1544,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1548,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1552,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1556,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "lvm.c",
+      "line": 1558,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "const advisory; modifying const local is intentional style in VM macros"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1566,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "lvm.c",
+      "line": 1568,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "const advisory; modifying const local is intentional style in VM macros"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1576,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "lvm.c",
+      "line": 1578,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "const advisory; modifying const local is intentional style in VM macros"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1586,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "lvm.c",
+      "line": 1592,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Arguments are independent TValue reads from separate stack slots; no sequencing issue"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "lvm.c",
+      "line": 1595,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Arguments are independent TValue reads from separate stack slots; no sequencing issue"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1601,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "lvm.c",
+      "line": 1606,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Arguments are independent TValue reads from separate stack slots; no sequencing issue"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1612,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1621,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1626,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1634,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1640,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1646,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1650,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1658,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1662,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1666,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1674,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "lvm.c",
+      "line": 1681,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Arguments are independent TValue reads from separate stack slots; no sequencing issue"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1687,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1691,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1695,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1699,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1703,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1709,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1720,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "lvm.c",
+      "line": 1733,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaH_new returns GC-managed object; free() would be wrong; GC handles reclaim"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "lvm.c",
+      "line": 1733,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaH_new returns GC-managed object; free() would be wrong; GC handles reclaim"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1737,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "lvm.c",
+      "line": 1760,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaH_new returns GC-managed object; free() would be wrong; GC handles reclaim"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "lvm.c",
+      "line": 1760,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaH_new returns GC-managed object; free() would be wrong; GC handles reclaim"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1763,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "lvm.c",
+      "line": 1783,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaH_new returns GC-managed object; free() would be wrong; GC handles reclaim"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "lvm.c",
+      "line": 1783,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaH_new returns GC-managed object; free() would be wrong; GC handles reclaim"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1785,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "lvm.c",
+      "line": 1800,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaH_new returns GC-managed object; free() would be wrong; GC handles reclaim"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "lvm.c",
+      "line": 1800,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaH_new returns GC-managed object; free() would be wrong; GC handles reclaim"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1802,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "lvm.c",
+      "line": 1828,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaH_new returns GC-managed object; free() would be wrong; GC handles reclaim"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "lvm.c",
+      "line": 1828,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaH_new returns GC-managed object; free() would be wrong; GC handles reclaim"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1831,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "lvm.c",
+      "line": 1838,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Arguments are independent TValue reads from separate stack slots; no sequencing issue"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1849,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1856,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "lvm.c",
+      "line": 1873,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaH_new returns GC-managed object; free() would be wrong; GC handles reclaim"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "lvm.c",
+      "line": 1873,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaH_new returns GC-managed object; free() would be wrong; GC handles reclaim"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1875,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "EXP43-C",
+      "file": "lvm.c",
+      "line": 1886,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "setobjs2s copies between ra+3 and ra (non-overlapping distinct stack slots)"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "lvm.c",
+      "line": 1892,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaH_new returns GC-managed object; free() would be wrong; GC handles reclaim"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "lvm.c",
+      "line": 1892,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaH_new returns GC-managed object; free() would be wrong; GC handles reclaim"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1894,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1901,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "lvm.c",
+      "line": 1905,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "const advisory; modifying const local is intentional style in VM macros"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1929,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1936,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1943,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1949,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1955,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lvm.c",
+      "line": 1964,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Infinite dispatch loop; case labels never fall through to function end"
+    }
+  ],
+  "fns": [],
+  "files_reviewed": [
+    "lvm.c"
+  ],
+  "files_clean": [
+    "lvm.c"
+  ],
+  "summary": {
+    "ground_truth": 0,
+    "tp": 0,
+    "fp": 291,
+    "fn": 0
+  }
+}

@@ -1,0 +1,2623 @@
+{
+"lvm.c": [
+{
+"column": 6,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 68,
+"message": "Shift operation '(((LUA_MAXINTEGER >> (NBM / 4)) >> (NBM / 4)) >> (NBM / 4)) \\\n\t>> (NBM - (3 * (NBM / 4)))' by '(NBM - (3 * (NBM / 4)))' without validating shift amount is non-negative and within type width",
+"rule_id": "INT34-C",
+"severity": "Medium",
+"suggestion": "Check that '(NBM - (3 * (NBM / 4)))' is >= 0 and < the bit width of the operand before shifting"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 68,
+"message": "Shift operation '((LUA_MAXINTEGER >> (NBM / 4)) >> (NBM / 4)) >> (NBM / 4)' by '(NBM / 4)' without validating shift amount is non-negative and within type width",
+"rule_id": "INT34-C",
+"severity": "Medium",
+"suggestion": "Check that '(NBM / 4)' is >= 0 and < the bit width of the operand before shifting"
+},
+{
+"column": 8,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 68,
+"message": "Shift operation '(LUA_MAXINTEGER >> (NBM / 4)) >> (NBM / 4)' by '(NBM / 4)' without validating shift amount is non-negative and within type width",
+"rule_id": "INT34-C",
+"severity": "Medium",
+"suggestion": "Check that '(NBM / 4)' is >= 0 and < the bit width of the operand before shifting"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 68,
+"message": "Shift operation 'LUA_MAXINTEGER >> (NBM / 4)' by '(NBM / 4)' without validating shift amount is non-negative and within type width",
+"rule_id": "INT34-C",
+"severity": "Medium",
+"suggestion": "Check that '(NBM / 4)' is >= 0 and < the bit width of the operand before shifting"
+},
+{
+"column": 40,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 99,
+"message": "Variable 'stlen' is used uninitialized",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'stlen' before use, e.g., at its declaration"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 126,
+"message": "Function 'luaV_flttointeger' does not validate pointer parameter 'p' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'p' at the start of the function, e.g., 'if (!p) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 142,
+"message": "Function 'luaV_tointegerns' does not validate pointer parameter 'p' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'p' at the start of the function, e.g., 'if (!p) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 157,
+"message": "Function 'luaV_tointeger' does not validate pointer parameter 'obj' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'obj' at the start of the function, e.g., 'if (!obj) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 157,
+"message": "Function 'luaV_tointeger' does not validate pointer parameter 'p' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'p' at the start of the function, e.g., 'if (!p) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 181,
+"message": "Function 'forlimit' participates in indirect recursion: forlimit -> luaG_forerror -> luaT_objtypename -> luaS_new -> luaS_newlstr -> internshrstr -> growstrtab -> luaC_fullgc -> fullgen -> entergen -> atomic2gen -> finishgencycle -> luaD_checkminstack -> luaD_growstack -> luaG_runerror -> luaG_errormsg -> luaD_callnoyield -> ccall -> luaV_execute -> forprep -> forlimit",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 214,
+"message": "Function 'forprep' participates in indirect recursion: forprep -> luaG_runerror -> luaG_errormsg -> luaD_callnoyield -> ccall -> luaV_execute -> forprep",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 27,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 229,
+"message": "Variable 'limit' is used uninitialized",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'limit' before use, e.g., at its declaration"
+},
+{
+"column": 11,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 231,
+"message": "Compound assignment with 'l_castS2U(step)' without checking for zero",
+"rule_id": "INT33-C",
+"severity": "High",
+"suggestion": "Check if 'l_castS2U(step)' is not zero before division"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 236,
+"message": "Compound assignment with 'l_castS2U(-(step + 1)) + 1u' without checking for zero",
+"rule_id": "INT33-C",
+"severity": "High",
+"suggestion": "Check if 'l_castS2U(-(step + 1)) + 1u' is not zero before division"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 239,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 252,
+"message": "Variable 'step' is used uninitialized",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'step' before use, e.g., at its declaration"
+},
+{
+"column": 49,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 254,
+"message": "Variable 'init' is used uninitialized",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'init' before use, e.g., at its declaration"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 291,
+"message": "Function 'luaV_finishget' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 291,
+"message": "Function 'luaV_finishget' does not validate pointer parameter 't' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 't' at the start of the function, e.g., 'if (!t) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 291,
+"message": "Function 'luaV_finishget' does not validate pointer parameter 'key' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 291,
+"message": "Function 'luaV_finishget' participates in indirect recursion: luaV_finishget -> luaT_callTMres -> luaD_call -> ccall -> luaV_execute -> luaV_finishget",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 334,
+"message": "Function 'luaV_finishset' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 334,
+"message": "Function 'luaV_finishset' does not validate pointer parameter 't' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 't' at the start of the function, e.g., 'if (!t) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 334,
+"message": "Function 'luaV_finishset' does not validate pointer parameter 'key' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 334,
+"message": "Function 'luaV_finishset' does not validate pointer parameter 'val' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'val' at the start of the function, e.g., 'if (!val) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 334,
+"message": "Function 'luaV_finishset' participates in indirect recursion: luaV_finishset -> luaH_finishset -> luaS_normstr -> internshrstr -> growstrtab -> luaC_fullgc -> fullgen -> entergen -> atomic2gen -> finishgencycle -> luaD_checkminstack -> luaD_growstack -> luaG_runerror -> luaG_errormsg -> luaD_callnoyield -> ccall -> luaV_execute -> luaV_finishset",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 340,
+"message": "Variable 'h' is initialized but never modified, consider const-qualifying it",
+"rule_id": "DCL00-C",
+"severity": "Medium",
+"suggestion": "Add 'const' qualifier: const h = ..."
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 391,
+"message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add return statements to ensure all execution paths return a value"
+},
+{
+"column": 26,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 397,
+"message": "'s1' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before conversion to larger type"
+},
+{
+"column": 30,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 397,
+"message": "'s2' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before conversion to larger type"
+},
+{
+"column": 27,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 401,
+"message": "'s1' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before conversion to larger type"
+},
+{
+"column": 27,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 402,
+"message": "'s2' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before conversion to larger type"
+},
+{
+"column": 18,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 403,
+"message": "Variable 'rl2' may be used uninitialized (not assigned on all paths)",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'rl2' before use, e.g., at its declaration"
+},
+{
+"column": 24,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 404,
+"message": "Variable 'rl1' may be used uninitialized (not assigned on all paths)",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'rl1' before use, e.g., at its declaration"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 426,
+"message": "Function 'LTintfloat' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static l_sinline LTintfloat"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 426,
+"message": "Function 'LTintfloat' is only used within this file. It should be declared static to minimize scope.",
+"rule_id": "DCL19-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage class to function 'LTintfloat'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 426,
+"message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add return statements to ensure all execution paths return a value"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 443,
+"message": "Function 'LEintfloat' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static l_sinline LEintfloat"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 443,
+"message": "Function 'LEintfloat' is only used within this file. It should be declared static to minimize scope.",
+"rule_id": "DCL19-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage class to function 'LEintfloat'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 443,
+"message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add return statements to ensure all execution paths return a value"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 460,
+"message": "Function 'LTfloatint' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static l_sinline LTfloatint"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 460,
+"message": "Function 'LTfloatint' is only used within this file. It should be declared static to minimize scope.",
+"rule_id": "DCL19-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage class to function 'LTfloatint'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 460,
+"message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add return statements to ensure all execution paths return a value"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 477,
+"message": "Function 'LEfloatint' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static l_sinline LEfloatint"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 477,
+"message": "Function 'LEfloatint' is only used within this file. It should be declared static to minimize scope.",
+"rule_id": "DCL19-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage class to function 'LEfloatint'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 477,
+"message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add return statements to ensure all execution paths return a value"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 493,
+"message": "Function 'LTnum' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static l_sinline LTnum"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 493,
+"message": "Function 'LTnum' is only used within this file. It should be declared static to minimize scope.",
+"rule_id": "DCL19-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage class to function 'LTnum'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 493,
+"message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add return statements to ensure all execution paths return a value"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 515,
+"message": "Function 'LEnum' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static l_sinline LEnum"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 515,
+"message": "Function 'LEnum' is only used within this file. It should be declared static to minimize scope.",
+"rule_id": "DCL19-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage class to function 'LEnum'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 515,
+"message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add return statements to ensure all execution paths return a value"
+},
+{
+"column": 12,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 540,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 12,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 562,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 582,
+"message": "Function 'luaV_equalobj' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 582,
+"message": "Function 'luaV_equalobj' participates in indirect recursion: luaV_equalobj -> luaT_callTMres -> luaD_call -> ccall -> luaV_execute -> luaV_equalobj",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 16,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 604,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 16,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 622,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 16,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 624,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 17,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 627,
+"message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+"rule_id": "MEM10-C",
+"severity": "Medium",
+"suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+},
+{
+"column": 13,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 629,
+"message": "Variable 'tm' is used uninitialized",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'tm' before use, e.g., at its declaration"
+},
+{
+"column": 17,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 635,
+"message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+"rule_id": "MEM10-C",
+"severity": "Medium",
+"suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 657,
+"message": "Macro 'tostring' reverses parameter order, creating inconsistent interface",
+"rule_id": "API03-C",
+"severity": "Medium",
+"suggestion": "Avoid macros that reorder parameters. Maintain consistent parameter ordering across related functions"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 657,
+"message": "Function-like macro 'tostring' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 657,
+"message": "Macro evaluates parameter 'o' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 665,
+"message": "Function-like macro 'isemptystr' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 665,
+"message": "Macro evaluates parameter 'o' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 47,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 668,
+"message": "Pointer parameter 'buff' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *buff'"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 674,
+"message": "Function 'memcpy' called with potentially invalid size calculation",
+"rule_id": "ARR38-C",
+"severity": "High",
+"suggestion": "Ensure size argument does not exceed buffer bounds"
+},
+{
+"column": 26,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 674,
+"message": "Variable 'l' is used uninitialized",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'l' before use, e.g., at its declaration"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 684,
+"message": "Function 'luaV_concat' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 684,
+"message": "Function 'luaV_concat' participates in indirect recursion: luaV_concat -> luaS_newlstr -> internshrstr -> growstrtab -> luaC_fullgc -> fullgen -> entergen -> atomic2gen -> finishgencycle -> luaD_checkminstack -> luaD_growstack -> luaG_runerror -> luaG_errormsg -> luaD_callnoyield -> ccall -> luaV_execute -> luaV_concat",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 712,
+"message": "Fixed-size buffer may be used with environment variable",
+"rule_id": "ENV01-C",
+"severity": "High",
+"suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 731,
+"message": "Function 'luaV_objlen' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 731,
+"message": "Function 'luaV_objlen' does not validate pointer parameter 'rb' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'rb' at the start of the function, e.g., 'if (!rb) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 731,
+"message": "Function 'luaV_objlen' participates in indirect recursion: luaV_objlen -> luaT_callTMres -> luaD_call -> ccall -> luaV_execute -> luaV_objlen",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 735,
+"message": "Variable 'h' is initialized but never modified, consider const-qualifying it",
+"rule_id": "DCL00-C",
+"severity": "Medium",
+"suggestion": "Add 'const' qualifier: const h = ..."
+},
+{
+"column": 11,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 737,
+"message": "Variable 'tm' is used uninitialized",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'tm' before use, e.g., at its declaration"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 738,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 746,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 766,
+"message": "Function 'luaV_idiv' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static lua_Integer luaV_idiv"
+},
+{
+"column": 18,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 767,
+"message": "Variable 'n' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 21,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 773,
+"message": "Variable 'm' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 21,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 773,
+"message": "Division or modulo by 'n' without checking for zero",
+"rule_id": "INT33-C",
+"severity": "High",
+"suggestion": "Check if 'n' is not zero before division"
+},
+{
+"column": 14,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 774,
+"message": "Bitwise operator '^' used on signed operand 'n' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'n' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 24,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 774,
+"message": "Division or modulo by 'n' without checking for zero",
+"rule_id": "INT33-C",
+"severity": "High",
+"suggestion": "Check if 'n' is not zero before division"
+},
+{
+"column": 26,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 774,
+"message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+"rule_id": "INT10-C",
+"severity": "Medium",
+"suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 786,
+"message": "Function 'luaV_mod' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static lua_Integer luaV_mod"
+},
+{
+"column": 18,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 787,
+"message": "Variable 'n' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 793,
+"message": "Variable 'r' is initialized but never modified, consider const-qualifying it",
+"rule_id": "DCL00-C",
+"severity": "Medium",
+"suggestion": "Add 'const' qualifier: const r = ..."
+},
+{
+"column": 21,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 793,
+"message": "Division or modulo by 'n' without checking for zero",
+"rule_id": "INT33-C",
+"severity": "High",
+"suggestion": "Check if 'n' is not zero before division"
+},
+{
+"column": 23,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 793,
+"message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+"rule_id": "INT10-C",
+"severity": "Medium",
+"suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+},
+{
+"column": 20,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 794,
+"message": "Variable 'r' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 24,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 794,
+"message": "Bitwise operator '^' used on signed operand 'n' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'n' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 804,
+"message": "Function 'luaV_modf' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 804,
+"message": "Function 'luaV_modf' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static lua_Number luaV_modf"
+},
+{
+"column": 46,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 834,
+"message": "Pointer parameter 'p' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *p'"
+},
+{
+"column": 56,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 834,
+"message": "Pointer parameter 'encup' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *encup'"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 840,
+"message": "Potential null pointer dereference in member access of variable 'ncl'",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'ncl' is not NULL before member access"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 855,
+"message": "Function 'luaV_finishOp' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 934,
+"message": "Macro parameter 'a' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'a' in parentheses: (a) instead of a"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 935,
+"message": "Macro parameter 'a' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'a' in parentheses: (a) instead of a"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 936,
+"message": "Macro parameter 'a' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'a' in parentheses: (a) instead of a"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 937,
+"message": "Macro parameter 'a' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'a' in parentheses: (a) instead of a"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 944,
+"message": "Function-like macro 'op_arithI' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 944,
+"message": "Macro parameter 'iop' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'iop' in parentheses: (iop) instead of iop"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 944,
+"message": "Macro parameter 'fop' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'fop' in parentheses: (fop) instead of fop"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 944,
+"message": "Multistatement macro 'op_arithI' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 944,
+"message": "Macro evaluates parameter 'L' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 963,
+"message": "Function-like macro 'op_arithf_aux' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 963,
+"message": "Macro parameter 'fop' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'fop' in parentheses: (fop) instead of fop"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 963,
+"message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+"rule_id": "PRE02-C",
+"severity": "Medium",
+"suggestion": "Wrap the entire replacement list in parentheses: ({  \\\n  lua_Number n1; lua_Number n2;  \\\n  if (tonumberns(v1, n1) && tonumberns(v2, n2)) {  \\\n    StkId ra = RA(i);  \\\n    pc++; setfltvalue(s2v(ra), fop(L, n1, n2));  \\\n  }})"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 963,
+"message": "Multistatement macro 'op_arithf_aux' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 974,
+"message": "Multistatement macro 'op_arithf' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 983,
+"message": "Multistatement macro 'op_arithfK' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 992,
+"message": "Function-like macro 'op_arith_aux' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 992,
+"message": "Macro parameter 'iop' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'iop' in parentheses: (iop) instead of iop"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 992,
+"message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+"rule_id": "PRE02-C",
+"severity": "Medium",
+"suggestion": "Wrap the entire replacement list in parentheses: ({  \\\n  if (ttisinteger(v1) && ttisinteger(v2)) {  \\\n    StkId ra = RA(i); \\\n    lua_Integer i1 = ivalue(v1); lua_Integer i2 = ivalue(v2);  \\\n    pc++; setivalue(s2v(ra), iop(L, i1, i2));  \\\n  }  \\\n  else op_arithf_aux(L, v1, v2, fop); })"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 992,
+"message": "Multistatement macro 'op_arith_aux' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 992,
+"message": "Macro evaluates parameter 'L' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1004,
+"message": "Multistatement macro 'op_arith' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1013,
+"message": "Multistatement macro 'op_arithK' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1022,
+"message": "Function-like macro 'op_bitwiseK' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1022,
+"message": "Macro parameter 'op' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'op' in parentheses: (op) instead of op"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1022,
+"message": "Multistatement macro 'op_bitwiseK' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1036,
+"message": "Function-like macro 'op_bitwise' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1036,
+"message": "Macro parameter 'op' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'op' in parentheses: (op) instead of op"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1036,
+"message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+"rule_id": "PRE02-C",
+"severity": "Medium",
+"suggestion": "Wrap the entire replacement list in parentheses: ({  \\\n  TValue *v1 = vRB(i);  \\\n  TValue *v2 = vRC(i);  \\\n  lua_Integer i1; lua_Integer i2;  \\\n  if (tointegerns(v1, &i1) && tointegerns(v2, &i2)) {  \\\n    StkId ra = RA(i); \\\n    pc++; setivalue(s2v(ra), op(i1, i2));  \\\n  }})"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1036,
+"message": "Multistatement macro 'op_bitwise' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1051,
+"message": "Macro parameter 'opi' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'opi' in parentheses: (opi) instead of opi"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1051,
+"message": "Macro parameter 'opn' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'opn' in parentheses: (opn) instead of opn"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1051,
+"message": "Macro parameter 'other' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'other' in parentheses: (other) instead of other"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1051,
+"message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+"rule_id": "PRE02-C",
+"severity": "Medium",
+"suggestion": "Wrap the entire replacement list in parentheses: ({  \\\n  TValue *ra = vRA(i); \\\n  int cond;  \\\n  TValue *rb = vRB(i);  \\\n  if (ttisinteger(ra) && ttisinteger(rb)) {  \\\n    lua_Integer ia = ivalue(ra);  \\\n    lua_Integer ib = ivalue(rb);  \\\n    cond = opi(ia, ib);  \\\n  }  \\\n  else if (ttisnumber(ra) && ttisnumber(rb))  \\\n    cond = opn(ra, rb);  \\\n  else  \\\n    Protect(cond = other(L, ra, rb));  \\\n  docondjump(); })"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1051,
+"message": "Multistatement macro 'op_order' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1071,
+"message": "Macro parameter 'opi' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'opi' in parentheses: (opi) instead of opi"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1071,
+"message": "Macro parameter 'opf' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'opf' in parentheses: (opf) instead of opf"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1071,
+"message": "Multistatement macro 'op_orderI' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1110,
+"message": "Function-like macro 'RKC' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1110,
+"message": "Macro evaluates parameter 'i' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1114,
+"message": "Macro parameter 'ci' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'ci' in parentheses: (ci) instead of ci"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1116,
+"message": "Macro parameter 'ci' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'ci' in parentheses: (ci) instead of ci"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1119,
+"message": "Multistatement macro 'updatestack' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1127,
+"message": "Macro parameter 'e' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'e' in parentheses: (e) instead of e"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1127,
+"message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+"rule_id": "PRE02-C",
+"severity": "Medium",
+"suggestion": "Wrap the entire replacement list in parentheses: ({ pc += GETARG_sJ(i) + e; updatetrap(ci); })"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1127,
+"message": "Multistatement macro 'dojump' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1131,
+"message": "Multistatement macro 'donextjump' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1138,
+"message": "Function-like macro 'docondjump' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1138,
+"message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+"rule_id": "PRE02-C",
+"severity": "Medium",
+"suggestion": "Wrap the entire replacement list in parentheses: (if (cond != GETARG_k(i)) pc++; else donextjump(ci);)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1138,
+"message": "Multistatement macro 'docondjump' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1138,
+"message": "Macro 'docondjump' definition ends with a semicolon. This can cause unexpected behavior when the macro is used.",
+"rule_id": "PRE11-C",
+"severity": "Medium",
+"suggestion": "Remove the trailing semicolon from the macro definition. The semicolon should be added by the macro user, not in the definition."
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1144,
+"message": "Macro parameter 'ci' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'ci' in parentheses: (ci) instead of ci"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1151,
+"message": "Function-like macro 'savestate' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1151,
+"message": "Macro parameter 'L' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'L' in parentheses: (L) instead of L"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1151,
+"message": "Macro parameter 'ci' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'ci' in parentheses: (ci) instead of ci"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1151,
+"message": "Macro evaluates parameter 'ci' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1174,
+"message": "Function-like macro 'luai_threadyield' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1174,
+"message": "Multistatement macro 'luai_threadyield' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1174,
+"message": "Macro evaluates parameter 'L' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1178,
+"message": "Function-like macro 'checkGC' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1178,
+"message": "Macro parameter 'L' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'L' in parentheses: (L) instead of L"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1178,
+"message": "Multistatement macro 'checkGC' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1178,
+"message": "Macro evaluates parameter 'L' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1194,
+"message": "Macro parameter 'l' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'l' in parentheses: (l) instead of l"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1198,
+"message": "Function 'luaV_execute' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1198,
+"message": "Function 'luaV_execute' does not validate pointer parameter 'ci' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'ci' at the start of the function, e.g., 'if (!ci) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1198,
+"message": "Function 'luaV_execute' participates in indirect recursion: luaV_execute -> luaV_equalobj -> luaT_callTMres -> luaD_call -> ccall -> luaV_execute",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1232,
+"message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add return statements to ensure all execution paths return a value"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1233,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1238,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1244,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1247,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1250,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1256,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1263,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1268,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1274,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1279,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1287,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1293,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1300,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1311,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 11,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1317,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1325,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1328,
+"message": "Variable 'c' is initialized but never modified, consider const-qualifying it",
+"rule_id": "DCL00-C",
+"severity": "Medium",
+"suggestion": "Add 'const' qualifier: const c = ..."
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1338,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1349,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1362,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 11,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1368,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1379,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1394,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1407,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1410,
+"message": "Variable 'c' is initialized but never modified, consider const-qualifying it",
+"rule_id": "DCL00-C",
+"severity": "Medium",
+"suggestion": "Add 'const' qualifier: const c = ..."
+},
+{
+"column": 15,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1413,
+"message": "Variable 'b' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 15,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1413,
+"message": "Variable 'b' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 15,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1413,
+"message": "Variable 'b' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 15,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1413,
+"message": "Shift operation '1u << (b - 1)' by '(b - 1)' without validating shift amount is non-negative and within type width",
+"rule_id": "INT34-C",
+"severity": "Medium",
+"suggestion": "Check that '(b - 1)' is >= 0 and < the bit width of the operand before shifting"
+},
+{
+"column": 21,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1413,
+"message": "Bitwise operator '<<' used on signed operand 'b' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'b' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 13,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1421,
+"message": "Memory allocated with 'luaH_new' for variable 't' is not freed",
+"rule_id": "MEM31-C",
+"severity": "High",
+"suggestion": "Add 'free(t)' before the variable goes out of scope"
+},
+{
+"column": 13,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1421,
+"message": "Memory allocated with 'luaH_new' for variable 't' is not freed",
+"rule_id": "MEM31-C",
+"severity": "High",
+"suggestion": "Add 'free(t)' before the variable goes out of scope"
+},
+{
+"column": 13,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1421,
+"message": "Memory allocated with 'luaH_new' for variable 't' is not freed",
+"rule_id": "MEM31-C",
+"severity": "High",
+"suggestion": "Add 'free(t)' before the variable goes out of scope"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1428,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1440,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1444,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1448,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1452,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1456,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1461,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1465,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1469,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1474,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1478,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1482,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1486,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 17,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1492,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1496,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 17,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1502,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1506,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1510,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1514,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1518,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1523,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1527,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1531,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1536,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1540,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1544,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1548,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1552,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1556,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1558,
+"message": "Variable 'pi' is initialized but never modified, consider const-qualifying it",
+"rule_id": "DCL00-C",
+"severity": "Medium",
+"suggestion": "Add 'const' qualifier: const pi = ..."
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1566,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1568,
+"message": "Variable 'pi' is initialized but never modified, consider const-qualifying it",
+"rule_id": "DCL00-C",
+"severity": "Medium",
+"suggestion": "Add 'const' qualifier: const pi = ..."
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1576,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1578,
+"message": "Variable 'pi' is initialized but never modified, consider const-qualifying it",
+"rule_id": "DCL00-C",
+"severity": "Medium",
+"suggestion": "Add 'const' qualifier: const pi = ..."
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1586,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 11,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1592,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 11,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1595,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1601,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 11,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1606,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1612,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1621,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1626,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1634,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1640,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1646,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1650,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1658,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1662,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1666,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1674,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 18,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1681,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1687,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1691,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1695,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1699,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1703,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1709,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1720,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 11,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1733,
+"message": "Potential memory leak: 't' allocated with 'luaH_new' may not be freed due to goto",
+"rule_id": "MEM31-C",
+"severity": "High",
+"suggestion": "Ensure 't' is freed before this goto or at the target label"
+},
+{
+"column": 11,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1733,
+"message": "Potential memory leak: 't' allocated with 'luaH_new' may not be freed due to goto",
+"rule_id": "MEM31-C",
+"severity": "High",
+"suggestion": "Ensure 't' is freed before this goto or at the target label"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1737,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 11,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1760,
+"message": "Potential memory leak: 't' allocated with 'luaH_new' may not be freed due to goto",
+"rule_id": "MEM31-C",
+"severity": "High",
+"suggestion": "Ensure 't' is freed before this goto or at the target label"
+},
+{
+"column": 11,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1760,
+"message": "Potential memory leak: 't' allocated with 'luaH_new' may not be freed due to goto",
+"rule_id": "MEM31-C",
+"severity": "High",
+"suggestion": "Ensure 't' is freed before this goto or at the target label"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1763,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1783,
+"message": "Potential memory leak: 't' allocated with 'luaH_new' may not be freed due to goto",
+"rule_id": "MEM31-C",
+"severity": "High",
+"suggestion": "Ensure 't' is freed before this goto or at the target label"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1783,
+"message": "Potential memory leak: 't' allocated with 'luaH_new' may not be freed due to goto",
+"rule_id": "MEM31-C",
+"severity": "High",
+"suggestion": "Ensure 't' is freed before this goto or at the target label"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1785,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1800,
+"message": "Potential memory leak: 't' allocated with 'luaH_new' may not be freed due to goto",
+"rule_id": "MEM31-C",
+"severity": "High",
+"suggestion": "Ensure 't' is freed before this goto or at the target label"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1800,
+"message": "Potential memory leak: 't' allocated with 'luaH_new' may not be freed due to goto",
+"rule_id": "MEM31-C",
+"severity": "High",
+"suggestion": "Ensure 't' is freed before this goto or at the target label"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1802,
+"message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add return statements to ensure all execution paths return a value"
+},
+{
+"column": 11,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1828,
+"message": "Potential memory leak: 't' allocated with 'luaH_new' may not be freed due to goto",
+"rule_id": "MEM31-C",
+"severity": "High",
+"suggestion": "Ensure 't' is freed before this goto or at the target label"
+},
+{
+"column": 11,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1828,
+"message": "Potential memory leak: 't' allocated with 'luaH_new' may not be freed due to goto",
+"rule_id": "MEM31-C",
+"severity": "High",
+"suggestion": "Ensure 't' is freed before this goto or at the target label"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1831,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 13,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1838,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1849,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1856,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1873,
+"message": "Potential memory leak: 't' allocated with 'luaH_new' may not be freed due to goto",
+"rule_id": "MEM31-C",
+"severity": "High",
+"suggestion": "Ensure 't' is freed before this goto or at the target label"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1873,
+"message": "Potential memory leak: 't' allocated with 'luaH_new' may not be freed due to goto",
+"rule_id": "MEM31-C",
+"severity": "High",
+"suggestion": "Ensure 't' is freed before this goto or at the target label"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1875,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1886,
+"message": "Function 'setobjs2s' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+"rule_id": "EXP43-C",
+"severity": "High",
+"suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1892,
+"message": "Potential memory leak: 't' allocated with 'luaH_new' may not be freed due to goto",
+"rule_id": "MEM31-C",
+"severity": "High",
+"suggestion": "Ensure 't' is freed before this goto or at the target label"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1892,
+"message": "Potential memory leak: 't' allocated with 'luaH_new' may not be freed due to goto",
+"rule_id": "MEM31-C",
+"severity": "High",
+"suggestion": "Ensure 't' is freed before this goto or at the target label"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1894,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1901,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1905,
+"message": "Variable 'h' is initialized but never modified, consider const-qualifying it",
+"rule_id": "DCL00-C",
+"severity": "Medium",
+"suggestion": "Add 'const' qualifier: const h = ..."
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1929,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1936,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1943,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1949,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1955,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lvm.c",
+"line": 1964,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+}
+]
+}

@@ -1,0 +1,27 @@
+{
+  "verdicts": [
+    {
+      "file": "lua.c",
+      "line": 42,
+      "rule": "SIG31-C",
+      "verdict": "CONFIRMED_FN",
+      "severity": "low",
+      "upstream_present": true,
+      "reason": "globalL is static lua_State* (not volatile sig_atomic_t / atomic), written by main thread at lua.c:166 (globalL=L) and READ inside handler laction at lua.c:86 (lua_sethook(globalL,...)). Genuine read of a shared non-conforming object = textbook SIG31-C; sqc fired CON03-C instead. Reviewer-actionable, low severity."
+    },
+    {
+      "file": "lapi.c",
+      "line": 1475,
+      "rule": "EXP40-C",
+      "verdict": "CONFIRMED_FN",
+      "severity": "low",
+      "upstream_present": true,
+      "reason": "getupvalref (lapi.c:1433) returns (UpVal**)&nullup where nullup is 'static const UpVal *const' (1434) on out-of-range n. lua_upvaluejoin then writes *up1=*up2 (1475). api_check is ((void)0) in default release (lapi.h:18, llimits.h:111, no LUAI_ASSERT), so the const-cast write is reachable UB; manual.of:5432 documents no explicit out-of-range precondition. Low severity (invalid-index path)."
+    }
+  ],
+  "summary": {
+    "confirmed": 2,
+    "refuted": 0,
+    "downgrade": 0
+  }
+}

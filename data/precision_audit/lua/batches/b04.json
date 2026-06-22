@@ -1,0 +1,1115 @@
+{
+"lmathlib.c": [
+{
+"column": 16,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 83,
+"message": "Variable 'valid' is used uninitialized",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'valid' before use, e.g., at its declaration"
+},
+{
+"column": 26,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 132,
+"message": "Division or modulo by 'd' without checking for zero",
+"rule_id": "INT33-C",
+"severity": "High",
+"suggestion": "Check if 'd' is not zero before division"
+},
+{
+"column": 46,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 132,
+"message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+"rule_id": "INT10-C",
+"severity": "Medium",
+"suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+},
+{
+"column": 23,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 135,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 13,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 192,
+"message": "Division or modulo by 'l_mathop(log)(base)' without checking for zero",
+"rule_id": "INT33-C",
+"severity": "High",
+"suggestion": "Check if 'l_mathop(log)(base)' is not zero before division"
+},
+{
+"column": 47,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 206,
+"message": "Floating-point division without error checking (consider using feclearexcept/fetestexcept)",
+"rule_id": "FLP03-C",
+"severity": "Low",
+"suggestion": "Use feclearexcept(FE_ALL_EXCEPT) before and fetestexcept(FE_ALL_EXCEPT) after floating-point operations"
+},
+{
+"column": 47,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 206,
+"message": "Division or modulo by 'PI' without checking for zero",
+"rule_id": "INT33-C",
+"severity": "High",
+"suggestion": "Check if 'PI' is not zero before division"
+},
+{
+"column": 47,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 212,
+"message": "Floating-point division without error checking (consider using feclearexcept/fetestexcept)",
+"rule_id": "FLP03-C",
+"severity": "Low",
+"suggestion": "Use feclearexcept(FE_ALL_EXCEPT) before and fetestexcept(FE_ALL_EXCEPT) after floating-point operations"
+},
+{
+"column": 47,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 212,
+"message": "Division or modulo by 'l_mathop(180.0)' without checking for zero",
+"rule_id": "INT33-C",
+"severity": "High",
+"suggestion": "Check if 'l_mathop(180.0)' is not zero before division"
+},
+{
+"column": 22,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 221,
+"message": "Variable 'ep' is used uninitialized",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'ep' before use, e.g., at its declaration"
+},
+{
+"column": 6,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 307,
+"message": "Do not assume constant values in expressions: '(ULONG_MAX >> 31) >> 31'",
+"rule_id": "EXP07-C",
+"severity": "Low",
+"suggestion": "Use the constant identifier directly instead of assuming its numeric value"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 307,
+"message": "Do not assume constant values in expressions: 'ULONG_MAX >> 31'",
+"rule_id": "EXP07-C",
+"severity": "Low",
+"suggestion": "Use the constant identifier directly instead of assuming its numeric value"
+},
+{
+"column": 8,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 319,
+"message": "Do not assume constant values in expressions: '(LUA_MAXUNSIGNED >> 31) >> 31'",
+"rule_id": "EXP07-C",
+"severity": "Low",
+"suggestion": "Use the constant identifier directly instead of assuming its numeric value"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 319,
+"message": "Do not assume constant values in expressions: 'LUA_MAXUNSIGNED >> 31'",
+"rule_id": "EXP07-C",
+"severity": "Low",
+"suggestion": "Use the constant identifier directly instead of assuming its numeric value"
+},
+{
+"column": 10,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 345,
+"message": "Variable 'n' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 11,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 345,
+"message": "Shift operation 'x << n' by 'n' without validating shift amount is non-negative and within type width",
+"rule_id": "INT34-C",
+"severity": "Medium",
+"suggestion": "Check that 'n' is >= 0 and < the bit width of the operand before shifting"
+},
+{
+"column": 16,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 345,
+"message": "Bitwise operator '<<' used on signed operand 'n' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'n' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 22,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 345,
+"message": "Shift operation 'trim64(x) >> (64 - n)' by '(64 - n)' without validating shift amount is non-negative and within type width",
+"rule_id": "INT34-C",
+"severity": "Medium",
+"suggestion": "Check that '(64 - n)' is >= 0 and < the bit width of the operand before shifting"
+},
+{
+"column": 35,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 345,
+"message": "Bitwise operator '>>' used on signed operand 'n' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'n' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 19,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 352,
+"message": "Variable 'state1' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 24,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 356,
+"message": "Do not assume constant values in expressions: 'state1 << 17'",
+"rule_id": "EXP07-C",
+"severity": "Low",
+"suggestion": "Use the constant identifier directly instead of assuming its numeric value"
+},
+{
+"column": 16,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 431,
+"message": "Bitwise operator '|' used on signed operand 'i' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'i' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 16,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 431,
+"message": "Variable 'n' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 17,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 431,
+"message": "Shift operation 'i.h << n' by 'n' without validating shift amount is non-negative and within type width",
+"rule_id": "INT34-C",
+"severity": "Medium",
+"suggestion": "Check that 'n' is >= 0 and < the bit width of the operand before shifting"
+},
+{
+"column": 30,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 431,
+"message": "Shift operation 'trim32(i.l) >> (32 - n)' by '(32 - n)' without validating shift amount is non-negative and within type width",
+"rule_id": "INT34-C",
+"severity": "Medium",
+"suggestion": "Check that '(32 - n)' is >= 0 and < the bit width of the operand before shifting"
+},
+{
+"column": 56,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 431,
+"message": "Bitwise operator '<<' used on signed operand 'i' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'i' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 56,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 431,
+"message": "Shift operation 'i.l << n' by 'n' without validating shift amount is non-negative and within type width",
+"rule_id": "INT34-C",
+"severity": "Medium",
+"suggestion": "Check that 'n' is >= 0 and < the bit width of the operand before shifting"
+},
+{
+"column": 16,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 461,
+"message": "Bitwise operator '|' used on signed operand 'i' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'i' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 16,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 461,
+"message": "Variable 'n' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 17,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 461,
+"message": "Shift operation 'i.h << n' by 'n' without validating shift amount is non-negative and within type width",
+"rule_id": "INT34-C",
+"severity": "Medium",
+"suggestion": "Check that 'n' is >= 0 and < the bit width of the operand before shifting"
+},
+{
+"column": 30,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 461,
+"message": "Shift operation 'trim32(i.l) >> (32 - n)' by '(32 - n)' without validating shift amount is non-negative and within type width",
+"rule_id": "INT34-C",
+"severity": "Medium",
+"suggestion": "Check that '(32 - n)' is >= 0 and < the bit width of the operand before shifting"
+},
+{
+"column": 17,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 462,
+"message": "Shift operation 'trim32(i.h) >> (32 - n)' by '(32 - n)' without validating shift amount is non-negative and within type width",
+"rule_id": "INT34-C",
+"severity": "Medium",
+"suggestion": "Check that '(32 - n)' is >= 0 and < the bit width of the operand before shifting"
+},
+{
+"column": 44,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 462,
+"message": "Bitwise operator '|' used on signed operand 'i' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'i' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 45,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 462,
+"message": "Shift operation 'i.l << n' by 'n' without validating shift amount is non-negative and within type width",
+"rule_id": "INT34-C",
+"severity": "Medium",
+"suggestion": "Check that 'n' is >= 0 and < the bit width of the operand before shifting"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 468,
+"message": "Variable 'n' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 37,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 469,
+"message": "Bitwise operator '|' used on signed operand 'i' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'i' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 16,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 470,
+"message": "Bitwise operator '|' used on signed operand 'i' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'i' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 507,
+"message": "Variable 'h' is initialized but never modified, consider const-qualifying it",
+"rule_id": "DCL00-C",
+"severity": "Medium",
+"suggestion": "Add 'const' qualifier: const h = ..."
+},
+{
+"column": 31,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 507,
+"message": "Variable 'FIGS' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 31,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 507,
+"message": "Shift operation 'trim32(x.h) >> (32 - FIGS)' by '(32 - FIGS)' without validating shift amount is non-negative and within type width",
+"rule_id": "INT34-C",
+"severity": "Medium",
+"suggestion": "Check that '(32 - FIGS)' is >= 0 and < the bit width of the operand before shifting"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 530,
+"message": "Variable 'h' is initialized but never modified, consider const-qualifying it",
+"rule_id": "DCL00-C",
+"severity": "Medium",
+"suggestion": "Add 'const' qualifier: const h = ..."
+},
+{
+"column": 18,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 530,
+"message": "Variable 'x' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 18,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 530,
+"message": "Variable 'trim32' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 12,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 540,
+"message": "Do not assume constant values in expressions: '(lua_Unsigned)trim32(x.h) << 31'",
+"rule_id": "EXP07-C",
+"severity": "Low",
+"suggestion": "Use the constant identifier directly instead of assuming its numeric value"
+},
+{
+"column": 27,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 545,
+"message": "Bitwise operator '>>' used on signed operand 'n' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'n' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 28,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 545,
+"message": "Do not assume constant values in expressions: 'n >> 31'",
+"rule_id": "EXP07-C",
+"severity": "Low",
+"suggestion": "Use the constant identifier directly instead of assuming its numeric value"
+},
+{
+"column": 39,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 570,
+"message": "Pointer parameter 'state' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *state'"
+},
+{
+"column": 17,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 574,
+"message": "Variable 'lim' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 13,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 575,
+"message": "Shift operation 'lim >> sh' by 'sh' without validating shift amount is non-negative and within type width",
+"rule_id": "INT34-C",
+"severity": "Medium",
+"suggestion": "Check that 'sh' is >= 0 and < the bit width of the operand before shifting"
+},
+{
+"column": 20,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 575,
+"message": "Bitwise operator '>>' used on signed operand 'sh' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'sh' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 24,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 586,
+"message": "Potential null pointer dereference in member access of variable 'state'",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'state' is not NULL before member access"
+},
+{
+"column": 11,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 595,
+"message": "Variable 'up' is used uninitialized",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'up' before use, e.g., at its declaration"
+},
+{
+"column": 26,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 636,
+"message": "Potential null pointer dereference in member access of variable 'state'",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'state' is not NULL before member access"
+},
+{
+"column": 23,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 647,
+"message": "Array declaration 'randfuncs[]' has implicit bounds; specify explicit size",
+"rule_id": "ARR02-C",
+"severity": "Medium",
+"suggestion": "Explicitly specify array bounds even when using an initializer"
+},
+{
+"column": 14,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 659,
+"message": "Potential null pointer dereference in member access of variable 'state'",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'state' is not NULL before member access"
+},
+{
+"column": 23,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 706,
+"message": "Array declaration 'mathlib[]' has implicit bounds; specify explicit size",
+"rule_id": "ARR02-C",
+"severity": "Medium",
+"suggestion": "Explicitly specify array bounds even when using an initializer"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 752,
+"message": "Function 'luaopen_math' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 752,
+"message": "Function 'luaopen_math' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static LUAMOD_API luaopen_math"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 755,
+"message": "Passing string literal to function 'lua_setfield' which may modify it",
+"rule_id": "STR30-C",
+"severity": "High",
+"suggestion": "Use a modifiable array instead of a string literal"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 757,
+"message": "Passing string literal to function 'lua_setfield' which may modify it",
+"rule_id": "STR30-C",
+"severity": "High",
+"suggestion": "Use a modifiable array instead of a string literal"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 759,
+"message": "Passing string literal to function 'lua_setfield' which may modify it",
+"rule_id": "STR30-C",
+"severity": "High",
+"suggestion": "Use a modifiable array instead of a string literal"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lmathlib.c",
+"line": 761,
+"message": "Passing string literal to function 'lua_setfield' which may modify it",
+"rule_id": "STR30-C",
+"severity": "High",
+"suggestion": "Use a modifiable array instead of a string literal"
+}
+],
+"loadlib.c": [
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 113,
+"message": "Function returns pointer to local variable 'lib' with automatic storage duration",
+"rule_id": "DCL30-C",
+"severity": "High",
+"suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 154,
+"message": "Fixed-size buffer may be used with environment variable",
+"rule_id": "ENV01-C",
+"severity": "High",
+"suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 154,
+"message": "Variable-length array with runtime-sized allocation; use malloc instead",
+"rule_id": "MEM05-C",
+"severity": "Medium",
+"suggestion": "Use malloc/calloc for dynamic allocation"
+},
+{
+"column": 45,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 158,
+"message": "Variable 'buff' is used uninitialized",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'buff' before use, e.g., at its declaration"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 161,
+"message": "Potential null pointer dereference of variable 'lb'",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'lb' is not NULL before dereferencing"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 161,
+"message": "Pointer dereference '*lb' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 34,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 216,
+"message": "Pointer parameter 'lib' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *lib'"
+},
+{
+"column": 51,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 228,
+"message": "Pointer parameter 'lib' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *lib'"
+},
+{
+"column": 22,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 279,
+"message": "'getenv()' uses internal static storage that is shared between threads",
+"rule_id": "CON34-C",
+"severity": "Medium",
+"suggestion": "Use 'secure_getenv or a cached copy' instead for thread safety"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 281,
+"message": "Storing pointer returned by 'getenv' is prohibited. The data referenced may be overwritten by subsequent calls. Use strdup(), malloc()/strcpy(), or consume the value immediately.",
+"rule_id": "ENV34-C",
+"severity": "Medium",
+"suggestion": "Instead of 'ptr = getenv()', use 'ptr = strdup(getenv())' and remember to free() later, or use 'const char *ptr' for immediate use only"
+},
+{
+"column": 12,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 281,
+"message": "'getenv()' uses internal static storage that is shared between threads",
+"rule_id": "CON34-C",
+"severity": "Medium",
+"suggestion": "Use 'secure_getenv or a cached copy' instead for thread safety"
+},
+{
+"column": 25,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 287,
+"message": "'path' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before conversion to larger type"
+},
+{
+"column": 25,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 287,
+"message": "'path' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before conversion to larger type"
+},
+{
+"column": 33,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 291,
+"message": "Passing variable 'dftmark' (from 'getenv (derived)()') to function 'ct_diff2sz()' which may modify it.",
+"rule_id": "ENV30-C",
+"severity": "Medium",
+"suggestion": "Copy the return value to a local buffer before passing to functions that may modify it"
+},
+{
+"column": 40,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 297,
+"message": "Passing variable 'path' (from 'getenv()') to function 'ct_diff2sz()' which may modify it.",
+"rule_id": "ENV30-C",
+"severity": "Medium",
+"suggestion": "Copy the return value to a local buffer before passing to functions that may modify it"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 328,
+"message": "Function returns pointer to local variable 'plib' with automatic storage duration",
+"rule_id": "DCL30-C",
+"severity": "High",
+"suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+},
+{
+"column": 28,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 336,
+"message": "Pointer parameter should use conformant array syntax",
+"rule_id": "API05-C",
+"severity": "High",
+"suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+},
+{
+"column": 38,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 336,
+"message": "Pointer parameter should use conformant array syntax",
+"rule_id": "API05-C",
+"severity": "High",
+"suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+},
+{
+"column": 38,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 336,
+"message": "Pointer parameter 'ptr' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *ptr'"
+},
+{
+"column": 11,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 387,
+"message": "Static variable 'lsys_load' used without explicit initialization",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'lsys_load' before use, e.g., at its declaration"
+},
+{
+"column": 29,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 408,
+"message": "'path' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before conversion to larger type"
+},
+{
+"column": 29,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 408,
+"message": "'path' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before conversion to larger type"
+},
+{
+"column": 35,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 408,
+"message": "'init' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before conversion to larger type"
+},
+{
+"column": 13,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 429,
+"message": "File opened for reading using variable filename 'filename' without verifying file attributes (fstat + st_uid/st_gid check)",
+"rule_id": "FIO05-C",
+"severity": "Medium",
+"suggestion": "Use fstat() to check file ownership (st_uid, st_gid) before reading untrusted files"
+},
+{
+"column": 13,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 429,
+"message": "fopen() called without 'N' flag in mode string \"r\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+"rule_id": "WIN03-C",
+"severity": "High",
+"suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 431,
+"message": "Return value from fclose() is ignored. Error handling is required.",
+"rule_id": "ERR00-C",
+"severity": "Medium",
+"suggestion": "Store and check the return value from fclose()"
+},
+{
+"column": 55,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 441,
+"message": "Pointer parameter 'end' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *end'"
+},
+{
+"column": 8,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 443,
+"message": "Pointer to const assigned to non-const pointer without cast: *name = *path: '*name = *path'",
+"rule_id": "EXP40-C",
+"severity": "Low",
+"suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+},
+{
+"column": 16,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 443,
+"message": "Pointer dereference '*path' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 16,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 443,
+"message": "Pointer dereference '*path' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 447,
+"message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+"rule_id": "MEM33-C",
+"severity": "High",
+"suggestion": "Use memcpy() to copy the structure and its flexible array member"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 447,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 453,
+"message": "Pointer dereference '*sep' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 454,
+"message": "Local variable 'sep' assigned through pointer parameter - address will be invalid when function returns",
+"rule_id": "DCL30-C",
+"severity": "High",
+"suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 454,
+"message": "Pointer dereference '*path' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 454,
+"message": "Pointer dereference '*path' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 455,
+"message": "Function returns pointer to local variable 'name' with automatic storage duration",
+"rule_id": "DCL30-C",
+"severity": "High",
+"suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+},
+{
+"column": 19,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 503,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 12,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 534,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 17,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 560,
+"message": "Passing potentially null pointer 'modname' to function",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'modname' is not NULL before passing to function"
+},
+{
+"column": 23,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 684,
+"message": "Array declaration 'pk_funcs[]' has implicit bounds; specify explicit size",
+"rule_id": "ARR02-C",
+"severity": "Medium",
+"suggestion": "Explicitly specify array bounds even when using an initializer"
+},
+{
+"column": 23,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 697,
+"message": "Array declaration 'll_funcs[]' has implicit bounds; specify explicit size",
+"rule_id": "ARR02-C",
+"severity": "Medium",
+"suggestion": "Explicitly specify array bounds even when using an initializer"
+},
+{
+"column": 30,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 704,
+"message": "Array declaration 'searchers[]' has implicit bounds; specify explicit size",
+"rule_id": "ARR02-C",
+"severity": "Medium",
+"suggestion": "Explicitly specify array bounds even when using an initializer"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 720,
+"message": "Passing string literal to function 'lua_setfield' which may modify it",
+"rule_id": "STR30-C",
+"severity": "High",
+"suggestion": "Use a modifiable array instead of a string literal"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 724,
+"message": "Function 'luaopen_package' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 724,
+"message": "Function 'luaopen_package' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static LUAMOD_API luaopen_package"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 730,
+"message": "Passing string literal to function 'setpath' which may modify it",
+"rule_id": "STR30-C",
+"severity": "High",
+"suggestion": "Use a modifiable array instead of a string literal"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 731,
+"message": "Passing string literal to function 'setpath' which may modify it",
+"rule_id": "STR30-C",
+"severity": "High",
+"suggestion": "Use a modifiable array instead of a string literal"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 735,
+"message": "Passing string literal to function 'lua_setfield' which may modify it",
+"rule_id": "STR30-C",
+"severity": "High",
+"suggestion": "Use a modifiable array instead of a string literal"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 738,
+"message": "Passing string literal to function 'lua_setfield' which may modify it",
+"rule_id": "STR30-C",
+"severity": "High",
+"suggestion": "Use a modifiable array instead of a string literal"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/loadlib.c",
+"line": 741,
+"message": "Passing string literal to function 'lua_setfield' which may modify it",
+"rule_id": "STR30-C",
+"severity": "High",
+"suggestion": "Use a modifiable array instead of a string literal"
+}
+],
+"luaconf.h": [
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/luaconf.h",
+"line": 425,
+"message": "Macro 'l_floatatt' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+"rule_id": "PRE05-C",
+"severity": "Low",
+"suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/luaconf.h",
+"line": 442,
+"message": "Macro 'l_floatatt' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+"rule_id": "PRE05-C",
+"severity": "Low",
+"suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/luaconf.h",
+"line": 458,
+"message": "Macro 'l_floatatt' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+"rule_id": "PRE05-C",
+"severity": "Low",
+"suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/luaconf.h",
+"line": 466,
+"message": "Macro parameter 'op' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'op' in parentheses: (op) instead of op"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/luaconf.h",
+"line": 602,
+"message": "Function-like macro 'lua_pointer2str' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/luaconf.h",
+"line": 602,
+"message": "Macro parameter 'p' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'p' in parentheses: (p) instead of p"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/luaconf.h",
+"line": 602,
+"message": "Macro evaluates parameter 'p' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/luaconf.h",
+"line": 626,
+"message": "Macro parameter 'op' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'op' in parentheses: (op) instead of op"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/luaconf.h",
+"line": 745,
+"message": "Multistatement macro 'LUAI_MAXALIGN' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/luaconf.h",
+"line": 748,
+"message": "Multistatement macro 'LUAI_MAXALIGN' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+}
+]
+}

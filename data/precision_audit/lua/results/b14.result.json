@@ -1,0 +1,993 @@
+{
+  "ground_truth": [
+    {
+      "rule": "SIG31-C",
+      "file": "lua.c",
+      "line": 42,
+      "severity": "Low",
+      "desc": "globalL accessed in signal handler without volatile; non-volatile non-atomic object modified by main and read in laction",
+      "confidence": "med",
+      "sqc_detected": false
+    }
+  ],
+  "labels": [
+    {
+      "rule": "CON07-C",
+      "file": "liolib.c",
+      "line": 39,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "l_checkmode operates on local parameter, not a shared static variable"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "liolib.c",
+      "line": 40,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*(mode++) is post-increment on local pointer; well-defined sequence point"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "liolib.c",
+      "line": 40,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Duplicate finding; same post-increment on local pointer, valid C"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "liolib.c",
+      "line": 40,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Duplicate finding; same post-increment on local pointer, valid C"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "liolib.c",
+      "line": 41,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "++mode inside comma expression with cast, sequence-point safe"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "liolib.c",
+      "line": 68,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "l_checkmodep indexes m[0..2] without side-effecting argument; no multiple-eval issue"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "liolib.c",
+      "line": 68,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "m used as array base, not in arithmetic expression; no precedence risk"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "liolib.c",
+      "line": 68,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "m[0]/m[1]/m[2] index access not a multiple-evaluation of a side-effecting argument"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "liolib.c",
+      "line": 88,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Default l_checkmodep same pattern; index access, no side-effecting argument"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "liolib.c",
+      "line": 88,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "No operator precedence hazard; m used as pointer base only"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "liolib.c",
+      "line": 88,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "No multiple-evaluation; m[0] and m[1] indexed once each"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "liolib.c",
+      "line": 202,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_newuserdatauv raises on OOM; p is never NULL after call"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "liolib.c",
+      "line": 204,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "p points to Lua GC userdata, not a stack-allocated local; safe to return"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "liolib.c",
+      "line": 254,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "newprefile calls lua_newuserdatauv which raises on OOM; p never NULL"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "liolib.c",
+      "line": 256,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "p is Lua GC userdata, not stack storage; return is safe"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "liolib.c",
+      "line": 262,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "p from newfile (via newprefile/lua_newuserdatauv) is always non-NULL"
+    },
+    {
+      "rule": "FIO42-C",
+      "file": "liolib.c",
+      "line": 262,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "p->f is managed by io_fclose via Lua GC; file is closed via closef callback"
+    },
+    {
+      "rule": "FIO42-C",
+      "file": "liolib.c",
+      "line": 262,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Duplicate FIO42-C; same LStream lifecycle analysis applies"
+    },
+    {
+      "rule": "FIO51-C",
+      "file": "liolib.c",
+      "line": 262,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "File closed via io_fclose registered in closef; Lua GC manages lifecycle"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "liolib.c",
+      "line": 264,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Lua io library is single-threaded by design; strerror thread safety not a concern"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "liolib.c",
+      "line": 264,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same rationale; Lua state is single-threaded, strerror static buffer not shared"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "liolib.c",
+      "line": 275,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "p from newfile always non-NULL; Lua raises on OOM before returning"
+    },
+    {
+      "rule": "FIO42-C",
+      "file": "liolib.c",
+      "line": 275,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "io_open assigns p->f and closef=io_fclose; lifecycle managed by Lua GC"
+    },
+    {
+      "rule": "FIO42-C",
+      "file": "liolib.c",
+      "line": 275,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Duplicate FIO42-C; same lifecycle applies"
+    },
+    {
+      "rule": "ERR00-C",
+      "file": "liolib.c",
+      "line": 275,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fopen return is checked at line 276: (p->f == NULL) ? luaL_fileresult..."
+    },
+    {
+      "rule": "FIO51-C",
+      "file": "liolib.c",
+      "line": 275,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "File closed by io_fclose via GC-managed closef; FP"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "liolib.c",
+      "line": 296,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "p from newprefile always non-NULL; Lua raises on allocation failure"
+    },
+    {
+      "rule": "FIO42-C",
+      "file": "liolib.c",
+      "line": 296,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "io_popen sets closef=io_pclose; FILE closed by pclose via Lua GC"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "liolib.c",
+      "line": 305,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "p from newfile always non-NULL"
+    },
+    {
+      "rule": "FIO21-C",
+      "file": "liolib.c",
+      "line": 305,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "tmpfile() is the standard C portable API; race-condition concern is theoretical advisory for this use case"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "liolib.c",
+      "line": 316,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "p from lua_touserdata on a known registry value; isclosed check guards p->f"
+    },
+    {
+      "rule": "STR00-C",
+      "file": "liolib.c",
+      "line": 468,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rn->c is int (from getc/getc_unlocked); already unsigned-char-range safe"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "liolib.c",
+      "line": 468,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rn->c is int in [0..255] or EOF; no sign-extension issue with isxdigit"
+    },
+    {
+      "rule": "STR00-C",
+      "file": "liolib.c",
+      "line": 468,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same int c analysis; isdigit(rn->c) is safe"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "liolib.c",
+      "line": 468,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Duplicate; rn->c declared int, already in valid range for ctype macros"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "liolib.c",
+      "line": 479,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "FILE* cannot be const FILE* per stdio semantics; const inapplicable"
+    },
+    {
+      "rule": "STR00-C",
+      "file": "liolib.c",
+      "line": 488,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rn.c is int from getc(); no signed char issue"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "liolib.c",
+      "line": 488,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rn.c is int from l_getc (getc/getc_unlocked); safe for isspace"
+    },
+    {
+      "rule": "ERR33-C",
+      "file": "liolib.c",
+      "line": 501,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ungetc return on lookahead pushback; failure here is diagnostic-only advisory, not a defect"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "liolib.c",
+      "line": 514,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "c is assigned by getc(f); advisory const style nit, not a defect"
+    },
+    {
+      "rule": "ERR33-C",
+      "file": "liolib.c",
+      "line": 515,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ungetc pushback of EOF is documented no-op; return check advisory only"
+    },
+    {
+      "rule": "FIO34-C",
+      "file": "liolib.c",
+      "line": 525,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ferror(f) checked at g_read line 609 after read; standard idiom, not a defect"
+    },
+    {
+      "rule": "FIO34-C",
+      "file": "liolib.c",
+      "line": 529,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same; EOF detection loop with post-loop ferror check at g_read caller"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "liolib.c",
+      "line": 529,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Assignment in while condition (c = l_getc(f)) has defined sequence point"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "liolib.c",
+      "line": 529,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "c declared at line 523; assigned in while condition before use in loop body"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "liolib.c",
+      "line": 538,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_rawlen declared in lua.h which is included at top of file"
+    },
+    {
+      "rule": "ERR33-C",
+      "file": "liolib.c",
+      "line": 548,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fread return stored in nr; loop condition (nr==LUAL_BUFFERSIZE) handles partial reads"
+    },
+    {
+      "rule": "ERR00-C",
+      "file": "liolib.c",
+      "line": 548,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "nr used to track bytes read; read_all loop exits on short read"
+    },
+    {
+      "rule": "FIO17-C",
+      "file": "liolib.c",
+      "line": 548,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaL_Buffer handles binary data; no null-terminator requirement here"
+    },
+    {
+      "rule": "ERR00-C",
+      "file": "liolib.c",
+      "line": 561,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "nr from fread used in luaL_addsize and as return value; return is checked"
+    },
+    {
+      "rule": "FIO17-C",
+      "file": "liolib.c",
+      "line": 561,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaL_Buffer is a binary buffer; null-terminator handling done by Lua string layer"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "liolib.c",
+      "line": 561,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaL_prepbuffsize raises on OOM; p is never NULL"
+    },
+    {
+      "rule": "CON43-C",
+      "file": "liolib.c",
+      "line": 589,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "switch on *p (local const char*) in single-threaded Lua; no double-fetch"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "liolib.c",
+      "line": 642,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "isclosed(p) checked at line 636 before p->f access; safe"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "liolib.c",
+      "line": 668,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buff is declared at line 668 and filled by lua_numbertocstring at line 671; not uninitialized"
+    },
+    {
+      "rule": "FIO18-C",
+      "file": "liolib.c",
+      "line": 678,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "len from luaL_checklstring is the exact string length; fwrite count is correct"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "liolib.c",
+      "line": 678,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaL_checklstring raises on type error; s is never NULL when reached"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "liolib.c",
+      "line": 703,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Implicit bounds on static const array with initializer is standard C idiom"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "liolib.c",
+      "line": 704,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Implicit bounds on static const string-pointer array; style advisory only"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "liolib.c",
+      "line": 706,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "modenames is const char*[]; indexing yields const char*, not a char sign-extension"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "liolib.c",
+      "line": 723,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Static const int array with implicit bounds; advisory style nit"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "liolib.c",
+      "line": 724,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Static const char* array with implicit bounds; style advisory"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "liolib.c",
+      "line": 726,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same as line 706; modenames yields pointer not char; no sign extension"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "liolib.c",
+      "line": 754,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaL_Reg iolib[] implicit bounds; standard Lua lib registration idiom"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "liolib.c",
+      "line": 773,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaL_Reg meth[] implicit bounds; standard Lua lib registration idiom"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "liolib.c",
+      "line": 788,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaL_Reg metameth[] implicit bounds; standard Lua lib registration idiom"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "liolib.c",
+      "line": 802,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_setfield takes const char* and does not modify the string literal"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "liolib.c",
+      "line": 819,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "FILE* parameter; const FILE* not meaningful for stdio FILE objects"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "liolib.c",
+      "line": 822,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "p from newprefile always non-NULL; Lua raises on allocation failure"
+    },
+    {
+      "rule": "API00-C",
+      "file": "liolib.c",
+      "line": 832,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "L validation is internal Lua convention; asserting non-NULL is a lua_assert, not a runtime check"
+    },
+    {
+      "rule": "DCL15-C",
+      "file": "liolib.c",
+      "line": 832,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "LUAMOD_API marks public ABI entry point; external linkage is intentional"
+    },
+    {
+      "rule": "CON03-C",
+      "file": "lua.c",
+      "line": 42,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "globalL is a signal-handler concern (SIG31-C), not a threading issue; wrong rule applied"
+    },
+    {
+      "rule": "SIG00-C",
+      "file": "lua.c",
+      "line": 57,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sigemptyset(&sa.sa_mask) is called at line 56 before sigaction; sa_mask properly initialized"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "lua.c",
+      "line": 70,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_Debug* signature fixed by Lua API (lua_Hook type); cannot add const"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "lua.c",
+      "line": 86,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "laction only fires during docall after globalL is set; globalL non-NULL when handler runs"
+    },
+    {
+      "rule": "EXP43-C",
+      "file": "lua.c",
+      "line": 152,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaL_traceback(L, L, ...) is the standard Lua pattern; L is a state not a restrict buffer"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "lua.c",
+      "line": 191,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "char** argv matches main() convention; const char** would require incompatible cast"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "lua.c",
+      "line": 199,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_setglobal takes const char*; does not modify the string literal"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "lua.c",
+      "line": 233,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*modname compared via strchr; char used in pointer context not widened to int with sign extension"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "lua.c",
+      "line": 241,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*suffix is char from argv string used as NUL; assigned '\\0', no sign extension concern"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "lua.c",
+      "line": 255,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "luaL_len declared in lauxlib.h which is included"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "lua.c",
+      "line": 258,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "n = (int)luaL_len on arg table; arg table cannot have INT_MAX entries in practice"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "lua.c",
+      "line": 264,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "char** argv is standard main convention; const not applicable without cascading casts"
+    },
+    {
+      "rule": "ARR00-C",
+      "file": "lua.c",
+      "line": 267,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "argv[-1] in handle_script intentional; caller ensures script>0 so argv-1 is valid"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "lua.c",
+      "line": 293,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "char** argv standard main convention"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "lua.c",
+      "line": 356,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "char** argv standard main convention"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "lua.c",
+      "line": 360,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "argv[i][1] used as switch value on ASCII option char; no sign-extension hazard"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "lua.c",
+      "line": 394,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "l_getenv declared at line 383 before call at line 394"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "lua.c",
+      "line": 397,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "l_getenv declared at line 383; same declaration covers all call sites"
+    },
+    {
+      "rule": "CON03-C",
+      "file": "lua.c",
+      "line": 478,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "l_readline is a module-level function pointer set once at init; not shared across threads"
+    },
+    {
+      "rule": "CON03-C",
+      "file": "lua.c",
+      "line": 482,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "l_addhist is a module-level function pointer set once at init; not a threading concern"
+    },
+    {
+      "rule": "ERR33-C",
+      "file": "lua.c",
+      "line": 490,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fflush return on stdout prompt is advisory; ignoring is standard REPL practice"
+    },
+    {
+      "rule": "FIO20-C",
+      "file": "lua.c",
+      "line": 491,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fgets with LUA_MAXINPUT=512; truncation handled by multiline continuation logic"
+    },
+    {
+      "rule": "MEM00-C",
+      "file": "lua.c",
+      "line": 505,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_freeline(line) at call site; allocation and free abstraction levels match readline pattern"
+    },
+    {
+      "rule": "FIO42-C",
+      "file": "lua.c",
+      "line": 520,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lib is dlopen handle; intentionally not closed (process lifetime for readline library)"
+    },
+    {
+      "rule": "ENV30-C",
+      "file": "lua.c",
+      "line": 520,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "dlopen does not modify the path string; ENV30-C inapplicable"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "lua.c",
+      "line": 524,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*name = \"lua\" assigns the pointer rl_readline_name to point at literal; not modifying literal"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "lua.c",
+      "line": 524,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*name is const char** dereference; pointer assigned not char widened"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "lua.c",
+      "line": 524,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Duplicate finding; same analysis applies"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "lua.c",
+      "line": 578,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lmsg passed as output pointer to lua_tolstring which initializes it; not uninitialized"
+    },
+    {
+      "rule": "ENV01-C",
+      "file": "lua.c",
+      "line": 589,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "handle_luainit uses l_getenv returning a pointer; no fixed-size copy buffer present at line 589"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "lua.c",
+      "line": 612,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "retline is const char* from lua_pushfstring; no sign extension context"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "lua.c",
+      "line": 612,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_pushfstring never returns NULL; raises on OOM"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "lua.c",
+      "line": 612,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Duplicate finding; same lua_pushfstring const char* analysis"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "lua.c",
+      "line": 638,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "multiline has for(;;) loop with return inside; control never falls off end"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "lua.c",
+      "line": 643,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "line from lua_tolstring is const char*; no char sign-extension"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "lua.c",
+      "line": 643,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "len is output parameter to lua_tolstring on same line; initialized before use"
+    },
+    {
+      "rule": "EXP20-C",
+      "file": "lua.c",
+      "line": 673,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "loadline sets stack to exactly 1 result; == 1 test is intentional and correct"
+    },
+    {
+      "rule": "CON07-C",
+      "file": "lua.c",
+      "line": 698,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "progname is single-threaded; save/restore pattern for REPL is safe"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "lua.c",
+      "line": 711,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "oldprogname holds a pointer value (not stack array address); restoring progname is safe"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "lua.c",
+      "line": 711,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "oldprogname is a pointer to string-literal or argv[0], not stack-allocated memory"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "lua.c",
+      "line": 735,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "argv[i][0] used as switch char; ASCII option chars never negative"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "lua.c",
+      "line": 736,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "script is passed as &script to collectargs which initializes it; not uninitialized at use"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "lua.c",
+      "line": 739,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "argv is main argv from C runtime; non-NULL; collectargs validated it already"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "lua.c",
+      "line": 742,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "args bitmask uses positive values < 32; bitwise & on small positive int is safe"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "lua.c",
+      "line": 744,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same bitmask; values are defined positive constants"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "lua.c",
+      "line": 747,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_setfield takes const char*; string literal not modified"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "lua.c",
+      "line": 763,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "args & has_e: positive bitmask values; safe bitwise operation"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "lua.c",
+      "line": 765,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "args & (has_e | has_v): positive bitmask, no sign-bit involvement"
+    },
+    {
+      "rule": "API00-C",
+      "file": "lua.c",
+      "line": 777,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "argv in main() is guaranteed non-NULL by C runtime; validation is unnecessary"
+    }
+  ],
+  "fns": [
+    {
+      "file": "lua.c",
+      "line": 42,
+      "rule": "SIG31-C",
+      "severity": "Low",
+      "desc": "globalL is non-volatile, modified by main thread and read in signal handler laction; C11 requires volatile sig_atomic_t or atomic for signal-handler-visible objects",
+      "upstream_present": true
+    }
+  ],
+  "files_reviewed": ["liolib.c", "lua.c"],
+  "files_clean": ["liolib.c"],
+  "summary": {
+    "ground_truth": 1,
+    "tp": 0,
+    "fp": 120,
+    "fn": 1
+  }
+}

@@ -1,0 +1,1086 @@
+{
+"liolib.c": [
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 39,
+"message": "Function 'l_checkmode' performs compound operation on shared static variable 'mode' without synchronization",
+"rule_id": "CON07-C",
+"severity": "Medium",
+"suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+},
+{
+"column": 11,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 40,
+"message": "Variable(s) 'mode' modified and accessed without sequence point",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Separate the modification into a separate statement"
+},
+{
+"column": 11,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 40,
+"message": "Variable(s) 'mode' modified and accessed without sequence point",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Separate the modification into a separate statement"
+},
+{
+"column": 11,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 40,
+"message": "Variable(s) 'mode' modified and accessed without sequence point",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Separate the modification into a separate statement"
+},
+{
+"column": 11,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 41,
+"message": "Variable(s) 'mode' modified and accessed without sequence point",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Separate the modification into a separate statement"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 68,
+"message": "Function-like macro 'l_checkmodep' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 68,
+"message": "Macro parameter 'm' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'm' in parentheses: (m) instead of m"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 68,
+"message": "Macro evaluates parameter 'm' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 88,
+"message": "Function-like macro 'l_checkmodep' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 88,
+"message": "Macro parameter 'm' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'm' in parentheses: (m) instead of m"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 88,
+"message": "Macro evaluates parameter 'm' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 202,
+"message": "Potential null pointer dereference in member access of variable 'p'",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'p' is not NULL before member access"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 204,
+"message": "Function returns pointer to local variable 'p' with automatic storage duration",
+"rule_id": "DCL30-C",
+"severity": "High",
+"suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 254,
+"message": "Potential null pointer dereference in member access of variable 'p'",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'p' is not NULL before member access"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 256,
+"message": "Function returns pointer to local variable 'p' with automatic storage duration",
+"rule_id": "DCL30-C",
+"severity": "High",
+"suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 262,
+"message": "Potential null pointer dereference in member access of variable 'p'",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'p' is not NULL before member access"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 262,
+"message": "FILE pointer 'p->f' opened with fopen/freopen but never closed with fclose()",
+"rule_id": "FIO42-C",
+"severity": "High",
+"suggestion": "Add fclose(p->f) before function returns or program exits"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 262,
+"message": "File descriptor 'p->f' opened with open() but never closed with close()",
+"rule_id": "FIO42-C",
+"severity": "High",
+"suggestion": "Add close(p->f) before function returns or program exits"
+},
+{
+"column": 10,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 262,
+"message": "File opened with fopen() but not closed with fclose()",
+"rule_id": "FIO51-C",
+"severity": "Medium",
+"suggestion": "Call fclose() before function returns"
+},
+{
+"column": 56,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 264,
+"message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+"rule_id": "CON33-C",
+"severity": "Medium",
+"suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+},
+{
+"column": 56,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 264,
+"message": "'strerror()' uses internal static storage that is shared between threads",
+"rule_id": "CON34-C",
+"severity": "Medium",
+"suggestion": "Use 'strerror_r' instead for thread safety"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 275,
+"message": "Potential null pointer dereference in member access of variable 'p'",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'p' is not NULL before member access"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 275,
+"message": "FILE pointer 'p->f' opened with fopen/freopen but never closed with fclose()",
+"rule_id": "FIO42-C",
+"severity": "High",
+"suggestion": "Add fclose(p->f) before function returns or program exits"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 275,
+"message": "File descriptor 'p->f' opened with open() but never closed with close()",
+"rule_id": "FIO42-C",
+"severity": "High",
+"suggestion": "Add close(p->f) before function returns or program exits"
+},
+{
+"column": 10,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 275,
+"message": "Return value from fopen() should be checked for errors",
+"rule_id": "ERR00-C",
+"severity": "Medium",
+"suggestion": "Check if fopen() returned an error value (NULL, -1, etc.)"
+},
+{
+"column": 10,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 275,
+"message": "File opened with fopen() but not closed with fclose()",
+"rule_id": "FIO51-C",
+"severity": "Medium",
+"suggestion": "Call fclose() before function returns"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 296,
+"message": "Potential null pointer dereference in member access of variable 'p'",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'p' is not NULL before member access"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 296,
+"message": "File descriptor 'p->f' opened with open() but never closed with close()",
+"rule_id": "FIO42-C",
+"severity": "High",
+"suggestion": "Add close(p->f) before function returns or program exits"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 305,
+"message": "Potential null pointer dereference in member access of variable 'p'",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'p' is not NULL before member access"
+},
+{
+"column": 10,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 305,
+"message": "tmpfile() creates temporary files in a shared directory (typically /tmp), which is vulnerable to race conditions and symlink attacks. Use mkstemp() in a secure directory instead.",
+"rule_id": "FIO21-C",
+"severity": "High",
+"suggestion": "Use mkstemp() with a template in a secure, user-specific directory"
+},
+{
+"column": 10,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 316,
+"message": "Potential null pointer dereference in member access of variable 'p'",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'p' is not NULL before member access"
+},
+{
+"column": 17,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 468,
+"message": "Plain 'char' passed to 'isxdigit()' without cast to 'unsigned char'",
+"rule_id": "STR00-C",
+"severity": "Medium",
+"suggestion": "Cast to '(unsigned char)' before passing to 'isxdigit()': isxdigit((unsigned char)rn->c)"
+},
+{
+"column": 26,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 468,
+"message": "Argument to 'isxdigit()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+"rule_id": "STR37-C",
+"severity": "Medium",
+"suggestion": "Cast the argument to unsigned char: 'isxdigit((unsigned char)...)'"
+},
+{
+"column": 35,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 468,
+"message": "Plain 'char' passed to 'isdigit()' without cast to 'unsigned char'",
+"rule_id": "STR00-C",
+"severity": "Medium",
+"suggestion": "Cast to '(unsigned char)' before passing to 'isdigit()': isdigit((unsigned char)rn->c)"
+},
+{
+"column": 43,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 468,
+"message": "Argument to 'isdigit()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+"rule_id": "STR37-C",
+"severity": "Medium",
+"suggestion": "Cast the argument to unsigned char: 'isdigit((unsigned char)...)'"
+},
+{
+"column": 44,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 479,
+"message": "Pointer parameter 'f' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *f'"
+},
+{
+"column": 38,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 488,
+"message": "Plain 'char' passed to 'isspace()' without cast to 'unsigned char'",
+"rule_id": "STR00-C",
+"severity": "Medium",
+"suggestion": "Cast to '(unsigned char)' before passing to 'isspace()': isspace((unsigned char)rn.c)"
+},
+{
+"column": 46,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 488,
+"message": "Argument to 'isspace()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+"rule_id": "STR37-C",
+"severity": "Medium",
+"suggestion": "Cast the argument to unsigned char: 'isspace((unsigned char)...)'"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 501,
+"message": "Return value of 'ungetc' ignored: 'ungetc(rn.c, rn.f)' - Can return error indicator",
+"rule_id": "ERR33-C",
+"severity": "High",
+"suggestion": "Check return value for errors"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 514,
+"message": "Variable 'c' is initialized but never modified, consider const-qualifying it",
+"rule_id": "DCL00-C",
+"severity": "Medium",
+"suggestion": "Add 'const' qualifier: const c = ..."
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 515,
+"message": "Return value of 'ungetc' ignored: 'ungetc(c, f)' - Can return error indicator",
+"rule_id": "ERR33-C",
+"severity": "High",
+"suggestion": "Check return value for errors"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 525,
+"message": "EOF comparison without feof()/ferror() verification: 'do {  /* may need to read several chunks to get whole line */'",
+"rule_id": "FIO34-C",
+"severity": "High",
+"suggestion": "After EOF is detected, call feof() and ferror() to distinguish between end-of-file and I/O error"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 529,
+"message": "EOF comparison without feof()/ferror() verification: 'while (i < LUAL_BUFFERSIZE && (c = l_getc(f)) != EOF && c != '\\n')'",
+"rule_id": "FIO34-C",
+"severity": "High",
+"suggestion": "After EOF is detected, call feof() and ferror() to distinguish between end-of-file and I/O error"
+},
+{
+"column": 12,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 529,
+"message": "Variable(s) 'c' modified and accessed without sequence point",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Separate the modification into a separate statement"
+},
+{
+"column": 61,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 529,
+"message": "Variable 'c' may be used uninitialized (not assigned on all paths)",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'c' before use, e.g., at its declaration"
+},
+{
+"column": 24,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 538,
+"message": "Function 'lua_rawlen' is called without prior declaration",
+"rule_id": "DCL31-C",
+"severity": "Low",
+"suggestion": "Declare the function before calling it or include the appropriate header"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 548,
+"message": "Return value of 'fread' assigned to 'nr' but not checked for errors: 'fread(p, sizeof(char), LUAL_BUFFERSIZE, f)' - Returns number of items read, may be less than requested",
+"rule_id": "ERR33-C",
+"severity": "High",
+"suggestion": "Check if (items_read == expected_items) or handle partial reads"
+},
+{
+"column": 10,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 548,
+"message": "Return value from fread() should be checked for errors",
+"rule_id": "ERR00-C",
+"severity": "Medium",
+"suggestion": "Check if fread() returned an error value (NULL, -1, etc.)"
+},
+{
+"column": 10,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 548,
+"message": "fread() used without explicitly accounting for null terminator in character buffer",
+"rule_id": "FIO17-C",
+"severity": "Medium",
+"suggestion": "Ensure buffer size accounts for null terminator, or explicitly add null terminator after fread()"
+},
+{
+"column": 8,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 561,
+"message": "Return value from fread() should be checked for errors",
+"rule_id": "ERR00-C",
+"severity": "Medium",
+"suggestion": "Check if fread() returned an error value (NULL, -1, etc.)"
+},
+{
+"column": 8,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 561,
+"message": "fread() used without explicitly accounting for null terminator in character buffer",
+"rule_id": "FIO17-C",
+"severity": "Medium",
+"suggestion": "Ensure buffer size accounts for null terminator, or explicitly add null terminator after fread()"
+},
+{
+"column": 14,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 561,
+"message": "Passing potentially null pointer 'p' to function",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'p' is not NULL before passing to function"
+},
+{
+"column": 8,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 589,
+"message": "Dereferencing pointer in switch statement may create double-fetch vulnerability",
+"rule_id": "CON43-C",
+"severity": "High",
+"suggestion": "Store dereferenced value in a local variable or use atomic operations"
+},
+{
+"column": 17,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 642,
+"message": "Potential null pointer dereference in member access of variable 'p'",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'p' is not NULL before member access"
+},
+{
+"column": 10,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 668,
+"message": "Variable 'buff' is used uninitialized",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'buff' before use, e.g., at its declaration"
+},
+{
+"column": 16,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 678,
+"message": "fwrite() count argument 'len' not derived from strlen(s). May write incorrect number of bytes.",
+"rule_id": "FIO18-C",
+"severity": "Medium",
+"suggestion": "For null-terminated strings, use strlen(s) + 1 to include the null terminator but avoid writing uninitialized data."
+},
+{
+"column": 23,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 678,
+"message": "Passing potentially null pointer 's' to function",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 's' is not NULL before passing to function"
+},
+{
+"column": 20,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 703,
+"message": "Array declaration 'mode[]' has implicit bounds; specify explicit size",
+"rule_id": "ARR02-C",
+"severity": "Medium",
+"suggestion": "Explicitly specify array bounds even when using an initializer"
+},
+{
+"column": 28,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 704,
+"message": "Array declaration 'modenames[]' has implicit bounds; specify explicit size",
+"rule_id": "ARR02-C",
+"severity": "Medium",
+"suggestion": "Explicitly specify array bounds even when using an initializer"
+},
+{
+"column": 42,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 706,
+"message": "'modenames' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before conversion to larger type"
+},
+{
+"column": 20,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 723,
+"message": "Array declaration 'mode[]' has implicit bounds; specify explicit size",
+"rule_id": "ARR02-C",
+"severity": "Medium",
+"suggestion": "Explicitly specify array bounds even when using an initializer"
+},
+{
+"column": 28,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 724,
+"message": "Array declaration 'modenames[]' has implicit bounds; specify explicit size",
+"rule_id": "ARR02-C",
+"severity": "Medium",
+"suggestion": "Explicitly specify array bounds even when using an initializer"
+},
+{
+"column": 41,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 726,
+"message": "'modenames' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before conversion to larger type"
+},
+{
+"column": 23,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 754,
+"message": "Array declaration 'iolib[]' has implicit bounds; specify explicit size",
+"rule_id": "ARR02-C",
+"severity": "Medium",
+"suggestion": "Explicitly specify array bounds even when using an initializer"
+},
+{
+"column": 23,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 773,
+"message": "Array declaration 'meth[]' has implicit bounds; specify explicit size",
+"rule_id": "ARR02-C",
+"severity": "Medium",
+"suggestion": "Explicitly specify array bounds even when using an initializer"
+},
+{
+"column": 23,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 788,
+"message": "Array declaration 'metameth[]' has implicit bounds; specify explicit size",
+"rule_id": "ARR02-C",
+"severity": "Medium",
+"suggestion": "Explicitly specify array bounds even when using an initializer"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 802,
+"message": "Passing string literal to function 'lua_setfield' which may modify it",
+"rule_id": "STR30-C",
+"severity": "High",
+"suggestion": "Use a modifiable array instead of a string literal"
+},
+{
+"column": 47,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 819,
+"message": "Pointer parameter 'f' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *f'"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 822,
+"message": "Potential null pointer dereference in member access of variable 'p'",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'p' is not NULL before member access"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 832,
+"message": "Function 'luaopen_io' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/liolib.c",
+"line": 832,
+"message": "Function 'luaopen_io' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static LUAMOD_API luaopen_io"
+}
+],
+"lua.c": [
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 42,
+"message": "Shared variable 'globalL' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+"rule_id": "CON03-C",
+"severity": "Medium",
+"suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 57,
+"message": "sigaction() call detected without apparent signal masking. Ensure sa_mask is properly configured with sigaddset() before calling sigaction().",
+"rule_id": "SIG00-C",
+"severity": "High",
+"suggestion": "Use sigemptyset() and sigaddset() to configure sa_mask before calling sigaction() to prevent race conditions in signal handlers."
+},
+{
+"column": 44,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 70,
+"message": "Pointer parameter 'ar' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *ar'"
+},
+{
+"column": 15,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 86,
+"message": "Passing null pointer 'globalL' to 'lua_sethook' which does not check for NULL",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'globalL' is not NULL before passing to 'lua_sethook'"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 152,
+"message": "Function 'luaL_traceback' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+"rule_id": "EXP43-C",
+"severity": "High",
+"suggestion": "Ensure output restrict parameter receives a unique pointer"
+},
+{
+"column": 48,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 191,
+"message": "Pointer parameter 'argv' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *argv'"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 199,
+"message": "Passing string literal to function 'lua_setglobal' which may modify it",
+"rule_id": "STR30-C",
+"severity": "High",
+"suggestion": "Use a modifiable array instead of a string literal"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 233,
+"message": "Pointer dereference '*modname' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 241,
+"message": "Pointer dereference '*suffix' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 12,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 255,
+"message": "Function 'luaL_len' is called without prior declaration",
+"rule_id": "DCL31-C",
+"severity": "Low",
+"suggestion": "Declare the function before calling it or include the appropriate header"
+},
+{
+"column": 20,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 258,
+"message": "Signed integer negation '-i' may overflow (-INT_MIN)",
+"rule_id": "INT32-C",
+"severity": "High",
+"suggestion": "Add check: if (value == INT_MIN) { /* handle error */ }"
+},
+{
+"column": 46,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 264,
+"message": "Pointer parameter 'argv' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *argv'"
+},
+{
+"column": 41,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 267,
+"message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+"rule_id": "ARR00-C",
+"severity": "Medium",
+"suggestion": "Array 'argv' requires a non-negative index. Negative indices access memory before the array."
+},
+{
+"column": 30,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 293,
+"message": "Pointer parameter 'argv' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *argv'"
+},
+{
+"column": 40,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 356,
+"message": "Pointer parameter 'argv' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *argv'"
+},
+{
+"column": 18,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 360,
+"message": "'argv' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before conversion to larger type"
+},
+{
+"column": 22,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 394,
+"message": "Function 'l_getenv' is called without prior declaration",
+"rule_id": "DCL31-C",
+"severity": "Low",
+"suggestion": "Declare the function before calling it or include the appropriate header"
+},
+{
+"column": 12,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 397,
+"message": "Function 'l_getenv' is called without prior declaration",
+"rule_id": "DCL31-C",
+"severity": "Low",
+"suggestion": "Declare the function before calling it or include the appropriate header"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 478,
+"message": "Shared variable 'l_readline' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+"rule_id": "CON03-C",
+"severity": "Medium",
+"suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 482,
+"message": "Shared variable 'l_addhist' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+"rule_id": "CON03-C",
+"severity": "Medium",
+"suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 490,
+"message": "Return value of 'fflush' ignored: 'fflush(stdout)' - Can return error indicator",
+"rule_id": "ERR33-C",
+"severity": "High",
+"suggestion": "Check return value for errors"
+},
+{
+"column": 12,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 491,
+"message": "fgets() without truncation check. Input may be silently truncated.",
+"rule_id": "FIO20-C",
+"severity": "Medium",
+"suggestion": "Check for newline character to detect truncation: if (strchr(buf, '\\n') == NULL) { /* handle truncation */ }"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 505,
+"message": "Freeing parameter 'line'. Memory should be freed at the same abstraction level where it was allocated.",
+"rule_id": "MEM00-C",
+"severity": "Medium",
+"suggestion": "Return error code and let caller handle deallocation"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 520,
+"message": "File descriptor 'lib' opened with open() but never closed with close()",
+"rule_id": "FIO42-C",
+"severity": "High",
+"suggestion": "Add close(lib) before function returns or program exits"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 520,
+"message": "Passing variable 'rllib' (from 'getenv()') to function 'dlopen()' which may modify it.",
+"rule_id": "ENV30-C",
+"severity": "Medium",
+"suggestion": "Copy the return value to a local buffer before passing to functions that may modify it"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 524,
+"message": "Attempting to modify string literal through pointer 'name'",
+"rule_id": "STR30-C",
+"severity": "High",
+"suggestion": "Use a modifiable array instead of a string literal"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 524,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 524,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 578,
+"message": "Variable 'lmsg' is used uninitialized",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'lmsg' before use, e.g., at its declaration"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 589,
+"message": "Fixed-size buffer may be used with environment variable",
+"rule_id": "ENV01-C",
+"severity": "High",
+"suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+},
+{
+"column": 36,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 612,
+"message": "'retline' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before conversion to larger type"
+},
+{
+"column": 52,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 612,
+"message": "Passing potentially null pointer 'retline' to function",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'retline' is not NULL before passing to function"
+},
+{
+"column": 52,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 612,
+"message": "'retline' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before conversion to larger type"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 638,
+"message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add return statements to ensure all execution paths return a value"
+},
+{
+"column": 38,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 643,
+"message": "'line' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before conversion to larger type"
+},
+{
+"column": 44,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 643,
+"message": "Variable 'len' may be used uninitialized (not assigned on all paths)",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'len' before use, e.g., at its declaration"
+},
+{
+"column": 14,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 673,
+"message": "Testing 'lua_gettop(L)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+"rule_id": "EXP20-C",
+"severity": "Medium",
+"suggestion": "Consider using: lua_gettop(L) != 0"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 698,
+"message": "Function 'doREPL' performs compound operation on shared static variable 'progname' without synchronization",
+"rule_id": "CON07-C",
+"severity": "Medium",
+"suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 711,
+"message": "Local variable 'oldprogname' assigned to global/static variable 'progname' - creates dangling pointer",
+"rule_id": "DCL30-C",
+"severity": "High",
+"suggestion": "Use static storage for local variable or copy data instead of assigning pointer"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 711,
+"message": "Stack pointer escape: local array/VLA assigned to global 'progname'",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not save pointers to stack-allocated memory in global variables."
+},
+{
+"column": 26,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 735,
+"message": "'argv' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before conversion to larger type"
+},
+{
+"column": 17,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 736,
+"message": "Variable 'script' is used uninitialized",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'script' before use, e.g., at its declaration"
+},
+{
+"column": 17,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 739,
+"message": "Potential null pointer dereference in array access of variable 'argv'",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'argv' is not NULL before array access"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 742,
+"message": "Bitwise operator '&' used on signed operand 'args' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'args' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 744,
+"message": "Bitwise operator '&' used on signed operand 'args' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'args' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 747,
+"message": "Passing string literal to function 'lua_setfield' which may modify it",
+"rule_id": "STR30-C",
+"severity": "High",
+"suggestion": "Use a modifiable array instead of a string literal"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 763,
+"message": "Bitwise operator '&' used on signed operand 'args' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'args' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 28,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 765,
+"message": "Bitwise operator '&' used on signed operand 'args' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'args' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lua.c",
+"line": 777,
+"message": "Function 'main' does not validate pointer parameter 'argv' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'argv' at the start of the function, e.g., 'if (!argv) { return error_code; }'"
+}
+]
+}

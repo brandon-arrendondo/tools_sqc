@@ -1,0 +1,2154 @@
+{
+  "ground_truth": [],
+  "labels": [
+    {
+      "rule": "EXP20-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 37,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_checkstack used as bool guard is standard C idiom; result is int-as-bool"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 153,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_State* cannot be const-qualified per the Lua API convention"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 154,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg initialized by getthread() out-param before this line"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 154,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1 from getthread(); adding 2 cannot overflow int"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 156,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+2 \u2264 3, no overflow"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 157,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+1 \u2264 2, no overflow"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 159,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+1 \u2264 2, no overflow"
+    },
+    {
+      "rule": "EXP20-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 163,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_getstack int-as-bool is standard C idiom for this API"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 163,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+1 \u2264 2, no overflow"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 169,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+2 \u2264 3, no overflow"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 171,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "options from luaL_optstring never returns NULL (has default value)"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 173,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_setfield takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 174,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "settabss takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 175,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "settabsi takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 176,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "settabsi takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 177,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "settabss takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 180,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "settabsi takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 182,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "settabsi takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 183,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "settabsi takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 184,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "settabsb takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 187,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "settabss takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 188,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "settabss takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 191,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "settabsi takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 192,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "settabsi takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 195,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "settabsb takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 196,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "settabsi takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 208,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_State* cannot be const-qualified per the Lua API convention"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 209,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg initialized by getthread() out-param on line 208"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 209,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+2 \u2264 3, no overflow"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 210,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+1 \u2264 2, no overflow"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 211,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+1 \u2264 2, no overflow"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 218,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+1 \u2264 2, no overflow"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 220,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+1 \u2264 2, no overflow"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 240,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_State* cannot be const-qualified per Lua API convention"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 242,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg initialized by getthread() out-param on line 240"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 242,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+1 \u2264 2, no overflow"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 243,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+2 \u2264 3, no overflow"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 245,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+1 \u2264 2, no overflow"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 246,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+3 \u2264 4, no overflow"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 247,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+3 \u2264 4, no overflow"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 297,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "returns void* upvalue ID (heap address), not address of local variable"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 317,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "n1 initialized by checkupval() out-param call on line 313"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 317,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "n2 initialized by checkupval() out-param call on line 314"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 327,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "implicit-bounds array with full initializer; style advisory only"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 360,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "bitwise AND on positive hook-mask flags; no signed-operand hazard"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 361,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "bitwise AND on positive hook-mask flags; no signed-operand hazard"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 362,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "bitwise AND on positive hook-mask flags; no signed-operand hazard"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 371,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_State* cannot be const-qualified per Lua API convention"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 372,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg initialized by getthread() out-param on line 371"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 372,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+1 \u2264 2, no overflow"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 373,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+1 \u2264 2, no overflow"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 377,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+2 \u2264 3, no overflow"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 378,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+1 \u2264 2, no overflow"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 379,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+3 \u2264 4, no overflow"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 385,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_setfield takes const char* key; string literal safe"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 391,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+1 \u2264 2, no overflow"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 400,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_State* cannot be const-qualified per Lua API convention"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 423,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "infinite for(;;) with return 0 inside; function cannot fall off end"
+    },
+    {
+      "rule": "FIO20-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 427,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "debug REPL; buffer truncation advisory in trusted-only debug path"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 428,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buffer is stack array; fgets writes to it before any read use"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 440,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_State* cannot be const-qualified per Lua API convention"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 441,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg initialized by getthread() out-param on line 440"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 441,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+1 \u2264 2, no overflow"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 442,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+1 \u2264 2, no overflow"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 443,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+1 \u2264 2, no overflow"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 445,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "arg is 0 or 1; arg+2 \u2264 3, no overflow"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 452,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "implicit-bounds array with full initializer; style advisory only"
+    },
+    {
+      "rule": "API00-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 473,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "L guaranteed non-NULL by Lua module loader convention"
+    },
+    {
+      "rule": "DCL15-C",
+      "file": "/home/brandon/toolchain/lua/ldblib.c",
+      "line": 473,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "LUAMOD_API requires external linkage; static breaks module ABI"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 128,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Opcode macro params are always plain variables at call sites; no side effects"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 128,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Opcode macro params are always plain variables at call sites; no side effects"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 135,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Opcode macro params are always plain variables at call sites; no side effects"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 135,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Opcode macro params are always plain variables at call sites; no side effects"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 141,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Opcode macro params are always plain variables at call sites; no side effects"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 141,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Opcode macro params are always plain variables at call sites; no side effects"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 143,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Opcode macro params are always plain variables at call sites; no side effects"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 143,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Opcode macro params are always plain variables at call sites; no side effects"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 149,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Opcode macro params are always plain variables at call sites; no side effects"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 149,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Opcode macro params are always plain variables at call sites; no side effects"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 151,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Opcode macro params are always plain variables at call sites; no side effects"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 151,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Opcode macro params are always plain variables at call sites; no side effects"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 161,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Opcode macro params are always plain variables at call sites; no side effects"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 161,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Opcode macro params are always plain variables at call sites; no side effects"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 164,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Opcode macro params are always plain variables at call sites; no side effects"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 164,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Opcode macro params are always plain variables at call sites; no side effects"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 167,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Opcode macro params are always plain variables at call sites; no side effects"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 167,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro used in statement or rhs context; outer parens not needed for safety"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 167,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Opcode macro params are always plain variables at call sites; no side effects"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 171,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Opcode macro params are always plain variables at call sites; no side effects"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 171,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro used in statement or rhs context; outer parens not needed for safety"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 171,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Opcode macro params are always plain variables at call sites; no side effects"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 425,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "LUAI_DDEC is a portability macro for extern array; not implicit-int"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 427,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Param 'm' used in array-index context; no operator precedence hazard"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 428,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Param 'm' used in array-index context; no operator precedence hazard"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 429,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Param 'm' used in array-index context; no operator precedence hazard"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 430,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Param 'm' used in array-index context; no operator precedence hazard"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 436,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Opcode macro params are always plain variables at call sites; no side effects"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lopcodes.h",
+      "line": 436,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Opcode macro params are always plain variables at call sites; no side effects"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 115,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_tmpnam args are plain variables at its one call site"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 115,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_tmpnam param 'e' used in simple assignment; no precedence hazard"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 115,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_tmpnam used in statement context; outer parens not needed"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 115,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_tmpnam body in braces used only as sole statement; no if-else hazard"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 115,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "lua_tmpnam args are plain variables; no multiple-evaluation side effects"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 125,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ISO C lua_tmpnam; param 'e' is simple lvalue assignment"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 125,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ISO C lua_tmpnam in braces; used as sole statement only"
+    },
+    {
+      "rule": "FIO10-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 168,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rename() return value checked via luaL_fileresult; error propagated to Lua"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 184,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "getenv result immediately passed to lua_pushstring; no concurrent Lua state access"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 233,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "setallfields reads tm struct; const annotation is advisory only"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 234,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "setfield takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 235,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "setfield takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 236,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "setfield takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 237,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "setfield takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 238,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "setfield takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 239,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "setfield takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 240,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "setfield takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 241,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "setfield takes const char* key; string literal is safe"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 242,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "setboolfield takes const char* key; string literal safe"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 256,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "key is const char* pointer not a char value; no sign-extension occurs"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 258,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "isnum is out-param to lua_tointegerx; set by that call"
+    },
+    {
+      "rule": "API05-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 275,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "C99 conformant-array advisory; Lua uses plain pointer convention"
+    },
+    {
+      "rule": "API05-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 276,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "C99 conformant-array advisory; Lua uses plain pointer convention"
+    },
+    {
+      "rule": "STR31-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 283,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buff[oplen]='\\0' explicitly adds null terminator after memcpy; safe"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 309,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "slen is out-param to luaL_optlstring; initialized by that call"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 311,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "s from luaL_optlstring never NULL; stm NULL-checked at line 317"
+    },
+    {
+      "rule": "ERR33-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 338,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "strftime returns 0 on failure; luaL_addsize(b,0) handles gracefully"
+    },
+    {
+      "rule": "ERR33-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 363,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mktime result checked: t==(time_t)(-1) tested on line 366"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 385,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "implicit-bounds array with full initializer; style advisory only"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 387,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "implicit-bounds array with full initializer; style advisory only"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 390,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "catnames is const char* array; no char-to-integer widening here"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 391,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "setlocale thread-safety advisory; Lua states are not shared between threads"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 391,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "setlocale result immediately used; no concurrent access in single-state Lua"
+    },
+    {
+      "rule": "ERR05-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 404,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "os_exit() calls exit() intentionally; this is the Lua os.exit purpose"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 409,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "implicit-bounds array with full initializer; style advisory only"
+    },
+    {
+      "rule": "API00-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 428,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "L guaranteed non-NULL by Lua module loader convention"
+    },
+    {
+      "rule": "DCL15-C",
+      "file": "/home/brandon/toolchain/lua/loslib.c",
+      "line": 428,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "LUAMOD_API requires external linkage; static breaks module ABI"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 158,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Header macro params are plain variables at all call sites; no side effects"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 158,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro used in assignment/expression where precedence issues cannot arise"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 158,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Call sites pass simple variables; multiple evaluation is harmless"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 263,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Header macro params are plain variables at all call sites; no side effects"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 263,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro used in assignment/expression where precedence issues cannot arise"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 263,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Call sites pass simple variables; multiple evaluation is harmless"
+    },
+    {
+      "rule": "INT30-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 266,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "st bounded to 3 bits by assertion; shift by 12 gives \u226415 bits in uint32"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 276,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Header macro params are plain variables at all call sites; no side effects"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 276,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Call sites pass simple variables; multiple evaluation is harmless"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 375,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Param used in field-member-access context; no operator precedence hazard"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 382,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Param used in field-member-access context; no operator precedence hazard"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 414,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Header macro params are plain variables at all call sites; no side effects"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 414,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro used in assignment/expression where precedence issues cannot arise"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 414,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Call sites pass simple variables; multiple evaluation is harmless"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 416,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Header macro params are plain variables at all call sites; no side effects"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 416,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro used in assignment/expression where precedence issues cannot arise"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 416,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Call sites pass simple variables; multiple evaluation is harmless"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 417,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Header macro params are plain variables at all call sites; no side effects"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 417,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro used in assignment/expression where precedence issues cannot arise"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 417,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Call sites pass simple variables; multiple evaluation is harmless"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 418,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Header macro params are plain variables at all call sites; no side effects"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 418,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro used in assignment/expression where precedence issues cannot arise"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 418,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Call sites pass simple variables; multiple evaluation is harmless"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 419,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Header macro params are plain variables at all call sites; no side effects"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 419,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro used in assignment/expression where precedence issues cannot arise"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 419,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Call sites pass simple variables; multiple evaluation is harmless"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 421,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Header macro params are plain variables at all call sites; no side effects"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 421,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro used in assignment/expression where precedence issues cannot arise"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 421,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Call sites pass simple variables; multiple evaluation is harmless"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 422,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Header macro params are plain variables at all call sites; no side effects"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 422,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro used in assignment/expression where precedence issues cannot arise"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 422,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Call sites pass simple variables; multiple evaluation is harmless"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 423,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Header macro params are plain variables at all call sites; no side effects"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 423,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro used in assignment/expression where precedence issues cannot arise"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 423,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Call sites pass simple variables; multiple evaluation is harmless"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 424,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Header macro params are plain variables at all call sites; no side effects"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 424,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro used in assignment/expression where precedence issues cannot arise"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 424,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Call sites pass simple variables; multiple evaluation is harmless"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 430,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Header macro params are plain variables at all call sites; no side effects"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 430,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro used in assignment/expression where precedence issues cannot arise"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 430,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Call sites pass simple variables; multiple evaluation is harmless"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 435,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Header macro params are plain variables at all call sites; no side effects"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lstate.h",
+      "line": 435,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Call sites pass simple variables; multiple evaluation is harmless"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 177,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 178,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 179,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 180,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 181,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 182,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 183,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 185,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 192,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 193,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 194,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 195,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 196,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 197,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "API02-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 200,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "int*/size_t* params are output scalars, not array buffers needing size"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 200,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "API02-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 201,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "int*/size_t* params are output scalars, not array buffers needing size"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 202,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "API02-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 203,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "int*/size_t* params are output scalars, not array buffers needing size"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 205,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 230,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 236,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 237,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 244,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 245,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "API05-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 246,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "C99 conformant-array advisory; Lua public API uses plain pointer style"
+    },
+    {
+      "rule": "API05-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 248,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "C99 conformant-array advisory; Lua public API uses plain pointer style"
+    },
+    {
+      "rule": "API05-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 248,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "C99 conformant-array advisory; Lua public API uses plain pointer style"
+    },
+    {
+      "rule": "EXP37-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 252,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "stdarg.h included at top of file; variadic declaration is fully valid"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 253,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 254,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 255,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 256,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 262,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 263,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 264,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 265,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 266,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 267,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 268,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 270,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 272,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 273,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 279,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 280,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 281,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 282,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 283,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 284,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 285,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 286,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 287,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 293,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 297,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 301,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 304,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 310,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "API02-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 312,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "int*/size_t* params are output scalars, not array buffers needing size"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 312,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 314,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 315,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 323,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 324,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 360,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "EXP37-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 360,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "stdarg.h included at top of file; variadic declaration is fully valid"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 367,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 369,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 371,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 372,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "API02-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 375,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "int*/size_t* params are output scalars, not array buffers needing size"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 379,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 381,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 382,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "API03-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 394,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro wraps function with extra NULL arg; does not reorder parameters"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 400,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro param L is always a plain lua_State* variable; no side-effect risk"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 400,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro param L is always a plain lua_State* variable; no side-effect risk"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 423,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro param L is always a plain lua_State* variable; no side-effect risk"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 423,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro param L is always a plain lua_State* variable; no side-effect risk"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 425,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro param L is always a plain lua_State* variable; no side-effect risk"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 425,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro param L is always a plain lua_State* variable; no side-effect risk"
+    },
+    {
+      "rule": "API03-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 436,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Macro wraps function with extra NULL arg; does not reorder parameters"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 470,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 471,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 478,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 481,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 483,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 484,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parenthesized LUA_API function-name form is one declaration; not incompatible redecl"
+    },
+    {
+      "rule": "API01-C",
+      "file": "/home/brandon/toolchain/lua/lua.h",
+      "line": 504,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Struct field order does not create buffer overflow; sqc misfire"
+    }
+  ],
+  "fns": [],
+  "files_reviewed": [
+    "/home/brandon/toolchain/lua/ldblib.c",
+    "/home/brandon/toolchain/lua/lopcodes.h",
+    "/home/brandon/toolchain/lua/loslib.c",
+    "/home/brandon/toolchain/lua/lstate.h",
+    "/home/brandon/toolchain/lua/lua.h"
+  ],
+  "files_clean": [
+    "/home/brandon/toolchain/lua/ldblib.c",
+    "/home/brandon/toolchain/lua/lopcodes.h",
+    "/home/brandon/toolchain/lua/loslib.c",
+    "/home/brandon/toolchain/lua/lstate.h",
+    "/home/brandon/toolchain/lua/lua.h"
+  ],
+  "summary": {
+    "ground_truth": 0,
+    "tp": 0,
+    "fp": 266,
+    "fn": 0
+  }
+}

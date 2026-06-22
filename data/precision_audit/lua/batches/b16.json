@@ -1,0 +1,976 @@
+{
+"ltable.c": [
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 99,
+"message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+"rule_id": "PRE02-C",
+"severity": "Medium",
+"suggestion": "Wrap the entire replacement list in parentheses: (luaM_limitN(1 << MAXHBITS, Node))"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 106,
+"message": "Function-like macro 'hashpow2' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 106,
+"message": "Macro evaluates parameter 't' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 112,
+"message": "Function-like macro 'hashmod' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 112,
+"message": "Macro evaluates parameter 't' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 21,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 148,
+"message": "Variable 'sizenode' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 21,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 148,
+"message": "Variable 't' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 21,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 148,
+"message": "Division or modulo by 'cast_int((sizenode(t)-1) | 1)' without checking for zero",
+"rule_id": "INT33-C",
+"severity": "High",
+"suggestion": "Check if 'cast_int((sizenode(t)-1) | 1)' is not zero before division"
+},
+{
+"column": 34,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 148,
+"message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+"rule_id": "INT10-C",
+"severity": "Medium",
+"suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 226,
+"message": "Function 'mainpositionfromnode' does not validate pointer parameter 't' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 't' at the start of the function, e.g., 'if (!t) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 226,
+"message": "Function 'mainpositionfromnode' does not validate pointer parameter 'nd' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'nd' at the start of the function, e.g., 'if (!nd) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 226,
+"message": "Function 'mainpositionfromnode' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static l_sinline mainpositionfromnode"
+},
+{
+"column": 60,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 226,
+"message": "Pointer parameter 'nd' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *nd'"
+},
+{
+"column": 14,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 256,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 16,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 272,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 16,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 278,
+"message": "Multiple function calls with potential side effects in unsequenced arguments",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 291,
+"message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add return statements to ensure all execution paths return a value"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 326,
+"message": "Macro parameter 't' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 't' in parentheses: (t) instead of t"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 361,
+"message": "Function 'luaH_next' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 361,
+"message": "Function 'luaH_next' does not validate pointer parameter 't' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 't' at the start of the function, e.g., 'if (!t) { return error_code; }'"
+},
+{
+"column": 28,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 397,
+"message": "Use-after-free: passing freed pointer 't' to function",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not pass freed memory to functions."
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 479,
+"message": "Function 'arraykeyisempty' does not validate pointer parameter 't' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 't' at the start of the function, e.g., 'if (!t) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 479,
+"message": "Function 'arraykeyisempty' does not validate integer parameter 'key' for overflow before arithmetic operations",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add overflow validation for 'key' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 479,
+"message": "Function 'arraykeyisempty' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static l_sinline arraykeyisempty"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 479,
+"message": "Function 'arraykeyisempty' is only used within this file. It should be declared static to minimize scope.",
+"rule_id": "DCL19-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage class to function 'arraykeyisempty'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 544,
+"message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add return statements to ensure all execution paths return a value"
+},
+{
+"column": 12,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 548,
+"message": "Scaled integer arithmetic with pointer: 'size * (sizeof(Value) + 1) + sizeof(unsigned)'. This results in double scaling",
+"rule_id": "ARR39-C",
+"severity": "High",
+"suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+},
+{
+"column": 49,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 563,
+"message": "Pointer parameter 't' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *t'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 602,
+"message": "Function 'setnodevector' participates in indirect recursion: setnodevector -> luaG_runerror -> luaG_errormsg -> luaD_callnoyield -> ccall -> luaV_execute -> luaH_new -> setnodevector",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 30,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 611,
+"message": "Shift operation '1 << lsize' by 'lsize' without validating shift amount is non-negative and within type width",
+"rule_id": "INT34-C",
+"severity": "Medium",
+"suggestion": "Check that 'lsize' is >= 0 and < the bit width of the operand before shifting"
+},
+{
+"column": 35,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 611,
+"message": "Bitwise operator '<<' used on signed operand 'lsize' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'lsize' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 22,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 617,
+"message": "Scaled integer arithmetic with pointer: 'size * sizeof(Node) + sizeof(Limbox)'. This results in double scaling",
+"rule_id": "ARR39-C",
+"severity": "High",
+"suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+},
+{
+"column": 22,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 619,
+"message": "Scaled integer arithmetic with pointer: 'Node *, node + sizeof(Limbox)'. This results in double scaling",
+"rule_id": "ARR39-C",
+"severity": "High",
+"suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+},
+{
+"column": 24,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 620,
+"message": "Use-after-free: passing freed pointer 't' to function",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not pass freed memory to functions."
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 623,
+"message": "Use-after-free: passing freed pointer 't' to function",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not pass freed memory to functions."
+},
+{
+"column": 17,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 625,
+"message": "Use-after-free: passing freed pointer 't' to function",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not pass freed memory to functions."
+},
+{
+"column": 53,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 667,
+"message": "Bitwise operator '|' used on signed operand 'bitdummy1' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'bitdummy1' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 715,
+"message": "Function 'luaH_resize' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 715,
+"message": "Function 'luaH_resize' does not validate pointer parameter 't' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 't' at the start of the function, e.g., 'if (!t) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 715,
+"message": "Function 'luaH_resize' participates in indirect recursion: luaH_resize -> luaG_runerror -> luaG_errormsg -> luaD_callnoyield -> ccall -> luaV_execute -> luaH_resizearray -> luaH_resize",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 750,
+"message": "Function 'luaH_resizearray' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 750,
+"message": "Function 'luaH_resizearray' does not validate pointer parameter 't' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 't' at the start of the function, e.g., 'if (!t) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 750,
+"message": "Function 'luaH_resizearray' participates in indirect recursion: luaH_resizearray -> luaH_resize -> luaG_runerror -> luaG_errormsg -> luaD_callnoyield -> ccall -> luaV_execute -> luaH_resizearray",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 761,
+"message": "Function 'rehash' participates in indirect recursion: rehash -> luaH_resize -> luaG_runerror -> luaG_errormsg -> luaD_callnoyield -> ccall -> luaV_execute -> luaT_adjustvarargs -> createvarargtab -> luaH_set -> luaH_finishset -> luaH_newkey -> rehash",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 35,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 767,
+"message": "Variable 'ct' may be used uninitialized (not assigned on all paths)",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'ct' before use, e.g., at its declaration"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 787,
+"message": "Variable 'nsize' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 798,
+"message": "Function 'luaH_new' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 798,
+"message": "Function 'luaH_new' participates in indirect recursion: luaH_new -> setnodevector -> luaG_runerror -> luaG_errormsg -> luaD_callnoyield -> ccall -> luaV_execute -> luaH_new",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 806,
+"message": "Function returns pointer to local variable 't' with automatic storage duration",
+"rule_id": "DCL30-C",
+"severity": "High",
+"suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 810,
+"message": "Function 'luaH_size' does not validate pointer parameter 't' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 't' at the start of the function, e.g., 'if (!t) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 821,
+"message": "Function 'luaH_free' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 821,
+"message": "Function 'luaH_free' does not validate pointer parameter 't' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 't' at the start of the function, e.g., 'if (!t) { return error_code; }'"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 823,
+"message": "Use-after-free: passing freed pointer 't' to function",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not pass freed memory to functions."
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 823,
+"message": "Use-after-free: passing freed pointer 't' to function",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not pass freed memory to functions."
+},
+{
+"column": 21,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 823,
+"message": "Use-after-free: accessing member of freed pointer 't'",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not access members of freed memory."
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 824,
+"message": "Double-free: 't' freed multiple times",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Set pointer to NULL after freeing to prevent double-free."
+},
+{
+"column": 12,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 831,
+"message": "Double-free: 't' freed multiple times",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Set pointer to NULL after freeing to prevent double-free."
+},
+{
+"column": 29,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 831,
+"message": "Use-after-free: accessing member of freed pointer 't'",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not access members of freed memory."
+},
+{
+"column": 22,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 832,
+"message": "Double-free: 't' freed multiple times",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Set pointer to NULL after freeing to prevent double-free."
+},
+{
+"column": 18,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 838,
+"message": "Use-after-free: passing freed pointer 't' to function",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not pass freed memory to functions."
+},
+{
+"column": 20,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 840,
+"message": "Use-after-free: passing freed pointer 't' to function",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not pass freed memory to functions."
+},
+{
+"column": 59,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 858,
+"message": "Pointer parameter 'value' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *value'"
+},
+{
+"column": 17,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 867,
+"message": "Use-after-free: passing freed pointer 't' to function",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not pass freed memory to functions."
+},
+{
+"column": 14,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 868,
+"message": "Use-after-free: passing freed pointer 't' to function",
+"rule_id": "MEM30-C",
+"severity": "Critical",
+"suggestion": "Do not pass freed memory to functions."
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 874,
+"message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+"rule_id": "MEM33-C",
+"severity": "High",
+"suggestion": "Use memcpy() to copy the structure and its flexible array member"
+},
+{
+"column": 12,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 874,
+"message": "Potential null pointer dereference of variable 'mp'",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'mp' is not NULL before dereferencing"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 913,
+"message": "Function 'luaH_newkey' participates in indirect recursion: luaH_newkey -> rehash -> luaH_resize -> luaG_runerror -> luaG_errormsg -> luaD_callnoyield -> ccall -> luaV_execute -> luaT_adjustvarargs -> createvarargtab -> luaH_set -> luaH_finishset -> luaH_newkey",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 958,
+"message": "Function 'luaH_getint' does not validate pointer parameter 't' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 't' at the start of the function, e.g., 'if (!t) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 974,
+"message": "Function 'luaH_Hgetshortstr' does not validate pointer parameter 't' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 't' at the start of the function, e.g., 'if (!t) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 974,
+"message": "Function 'luaH_Hgetshortstr' does not validate pointer parameter 'key' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 974,
+"message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add return statements to ensure all execution paths return a value"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 990,
+"message": "Function 'luaH_getshortstr' does not validate pointer parameter 't' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 't' at the start of the function, e.g., 'if (!t) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 990,
+"message": "Function 'luaH_getshortstr' does not validate pointer parameter 'key' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 990,
+"message": "Function 'luaH_getshortstr' does not validate pointer parameter 'res' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'res' at the start of the function, e.g., 'if (!res) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1011,
+"message": "Function 'luaH_getstr' does not validate pointer parameter 't' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 't' at the start of the function, e.g., 'if (!t) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1011,
+"message": "Function 'luaH_getstr' does not validate pointer parameter 'key' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1011,
+"message": "Function 'luaH_getstr' does not validate pointer parameter 'res' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'res' at the start of the function, e.g., 'if (!res) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1019,
+"message": "Function 'luaH_get' does not validate pointer parameter 't' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 't' at the start of the function, e.g., 'if (!t) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1019,
+"message": "Function 'luaH_get' does not validate pointer parameter 'key' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1019,
+"message": "Function 'luaH_get' does not validate pointer parameter 'res' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'res' at the start of the function, e.g., 'if (!res) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1048,
+"message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add return statements to ensure all execution paths return a value"
+},
+{
+"column": 31,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1048,
+"message": "Pointer parameter 't' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *t'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1076,
+"message": "Function 'luaH_psetint' does not validate pointer parameter 't' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 't' at the start of the function, e.g., 'if (!t) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1076,
+"message": "Function 'luaH_psetint' does not validate pointer parameter 'val' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'val' at the start of the function, e.g., 'if (!val) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1097,
+"message": "Function 'luaH_psetshortstr' does not validate pointer parameter 'key' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1131,
+"message": "Function 'luaH_pset' does not validate pointer parameter 't' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 't' at the start of the function, e.g., 'if (!t) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1131,
+"message": "Function 'luaH_pset' does not validate pointer parameter 'key' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1131,
+"message": "Function 'luaH_pset' does not validate pointer parameter 'val' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'val' at the start of the function, e.g., 'if (!val) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1153,
+"message": "Function 'luaH_finishset' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1153,
+"message": "Function 'luaH_finishset' participates in indirect recursion: luaH_finishset -> luaS_normstr -> internshrstr -> growstrtab -> luaC_fullgc -> fullgen -> entergen -> atomic2gen -> finishgencycle -> luaD_checkminstack -> luaD_growstack -> luaG_runerror -> luaG_errormsg -> luaD_callnoyield -> ccall -> luaV_execute -> luaT_adjustvarargs -> createvarargtab -> luaH_set -> luaH_finishset",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 31,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1182,
+"message": "Variable 'hres' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 13,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1185,
+"message": "Bitwise operator '~' used on signed operand 'hres' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'hres' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1195,
+"message": "Function 'luaH_set' does not validate pointer parameter 't' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 't' at the start of the function, e.g., 'if (!t) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1195,
+"message": "Function 'luaH_set' does not validate pointer parameter 'key' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1195,
+"message": "Function 'luaH_set' does not validate pointer parameter 'value' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'value' at the start of the function, e.g., 'if (!value) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1195,
+"message": "Function 'luaH_set' participates in indirect recursion: luaH_set -> luaH_finishset -> luaS_normstr -> internshrstr -> growstrtab -> luaC_fullgc -> fullgen -> entergen -> atomic2gen -> finishgencycle -> luaD_checkminstack -> luaD_growstack -> luaG_runerror -> luaG_errormsg -> luaD_callnoyield -> ccall -> luaV_execute -> luaT_adjustvarargs -> createvarargtab -> luaH_set",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1206,
+"message": "Function 'luaH_setint' does not validate pointer parameter 't' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 't' at the start of the function, e.g., 'if (!t) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1206,
+"message": "Function 'luaH_setint' participates in indirect recursion: luaH_setint -> luaH_newkey -> rehash -> luaH_resize -> luaG_runerror -> luaG_errormsg -> luaD_callnoyield -> ccall -> luaV_execute -> luaT_adjustvarargs -> createvarargtab -> luaH_setint",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 19,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1243,
+"message": "Variable 'n' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 20,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1243,
+"message": "Shift operation '1u << n' by 'n' without validating shift amount is non-negative and within type width",
+"rule_id": "INT34-C",
+"severity": "Medium",
+"suggestion": "Check that 'n' is >= 0 and < the bit width of the operand before shifting"
+},
+{
+"column": 26,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1243,
+"message": "Bitwise operator '<<' used on signed operand 'n' of type 'int'. Use unsigned types for bitwise operations",
+"rule_id": "INT13-C",
+"severity": "Medium",
+"suggestion": "Change 'n' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+},
+{
+"column": 19,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1244,
+"message": "Variable 'mask' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 19,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1244,
+"message": "Variable 'rnd' used with both bitwise and arithmetic operations (reduces code readability)",
+"rule_id": "INT14-C",
+"severity": "Medium",
+"suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+},
+{
+"column": 10,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1262,
+"message": "Subtracting pointers from different arrays ('j' from 'LUA_MAXINTEGER' and 'i' from 'j'). Pointer subtraction is only defined for pointers within the same array object.",
+"rule_id": "ARR00-C",
+"severity": "Medium",
+"suggestion": "Only subtract pointers that point to elements within the same array object."
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1301,
+"message": "Function 'luaH_getn' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static lua_Unsigned luaH_getn"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1301,
+"message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add return statements to ensure all execution paths return a value"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1351,
+"message": "Function 'luaH_mainposition' does not validate pointer parameter 't' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 't' at the start of the function, e.g., 'if (!t) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ltable.c",
+"line": 1351,
+"message": "Function 'luaH_mainposition' does not validate pointer parameter 'key' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+}
+]
+}

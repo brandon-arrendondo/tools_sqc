@@ -1,0 +1,1950 @@
+{
+"ldebug.c": [
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 34,
+"message": "Function-like macro 'LuaClosure' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 34,
+"message": "Macro evaluates parameter 'f' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 85,
+"message": "Function 'luaG_getfuncline' does not validate integer parameter 'pc' for overflow before arithmetic operations",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add overflow validation for 'pc' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 133,
+"message": "Function 'lua_sethook' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 133,
+"message": "Function 'lua_sethook' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static LUA_API lua_sethook"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 147,
+"message": "Function 'lua_gethook' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 147,
+"message": "Function 'lua_gethook' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static LUA_API lua_gethook"
+},
+{
+"column": 41,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 147,
+"message": "Pointer parameter 'L' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *L'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 152,
+"message": "Function 'lua_gethookmask' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 152,
+"message": "Function 'lua_gethookmask' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static LUA_API lua_gethookmask"
+},
+{
+"column": 40,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 152,
+"message": "Pointer parameter 'L' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *L'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 157,
+"message": "Function 'lua_gethookcount' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 157,
+"message": "Function 'lua_gethookcount' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static LUA_API lua_gethookcount"
+},
+{
+"column": 41,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 157,
+"message": "Pointer parameter 'L' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *L'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 162,
+"message": "Function 'lua_getstack' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 162,
+"message": "Function 'lua_getstack' does not validate pointer parameter 'ar' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'ar' at the start of the function, e.g., 'if (!ar) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 162,
+"message": "Function 'lua_getstack' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static LUA_API lua_getstack"
+},
+{
+"column": 41,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 186,
+"message": "Pointer parameter 'ci' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *ci'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 198,
+"message": "Function 'luaG_findlocal' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 198,
+"message": "Function 'luaG_findlocal' does not validate pointer parameter 'ci' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'ci' at the start of the function, e.g., 'if (!ci) { return error_code; }'"
+},
+{
+"column": 39,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 198,
+"message": "Pointer parameter 'L' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *L'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 222,
+"message": "Function 'lua_getlocal' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 222,
+"message": "Function 'lua_getlocal' does not validate integer parameter 'n' for overflow before arithmetic operations",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add overflow validation for 'n' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+},
+{
+"column": 6,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 225,
+"message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+"rule_id": "MEM10-C",
+"severity": "Medium",
+"suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 240,
+"message": "Function returns pointer to local variable 'name' with automatic storage duration",
+"rule_id": "DCL30-C",
+"severity": "High",
+"suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 244,
+"message": "Function 'lua_setlocal' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 244,
+"message": "Function 'lua_setlocal' does not validate pointer parameter 'ar' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'ar' at the start of the function, e.g., 'if (!ar) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 244,
+"message": "Function 'lua_setlocal' does not validate integer parameter 'n' for overflow before arithmetic operations",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add overflow validation for 'n' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 255,
+"message": "Function returns pointer to local variable 'name' with automatic storage duration",
+"rule_id": "DCL30-C",
+"severity": "High",
+"suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 285,
+"message": "Array subscript uses function parameter 'pc' without bounds checking. Caller could pass invalid index.",
+"rule_id": "ARR00-C",
+"severity": "Medium",
+"suggestion": "Add bounds checking for 'pc' before using it as an array index"
+},
+{
+"column": 26,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 286,
+"message": "Array subscript uses function parameter 'pc' without bounds checking. Caller could pass invalid index.",
+"rule_id": "ARR00-C",
+"severity": "Medium",
+"suggestion": "Add bounds checking for 'pc' before using it as an array index"
+},
+{
+"column": 16,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 300,
+"message": "Memory allocated with 'luaH_new' for variable 't' is not freed",
+"rule_id": "MEM31-C",
+"severity": "High",
+"suggestion": "Add 'free(t)' before the variable goes out of scope"
+},
+{
+"column": 56,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 323,
+"message": "Pointer parameter 'ci' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *ci'"
+},
+{
+"column": 12,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 326,
+"message": "Static variable 'funcnamefromcall' used without explicit initialization",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'funcnamefromcall' before use, e.g., at its declaration"
+},
+{
+"column": 4,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 335,
+"message": "Dereferencing pointer in switch statement may create double-fetch vulnerability",
+"rule_id": "CON43-C",
+"severity": "High",
+"suggestion": "Store dereferenced value in a local variable or use atomic operations"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 395,
+"message": "Function 'lua_getinfo' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 395,
+"message": "Function 'lua_getinfo' does not validate pointer parameter 'what' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'what' at the start of the function, e.g., 'if (!what) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 395,
+"message": "Function 'lua_getinfo' does not validate pointer parameter 'ar' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'ar' at the start of the function, e.g., 'if (!ar) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 395,
+"message": "Function 'lua_getinfo' should be declared static if it doesn't need external linkage",
+"rule_id": "DCL15-C",
+"severity": "Low",
+"suggestion": "Add 'static' storage-class specifier: static LUA_API lua_getinfo"
+},
+{
+"column": 29,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 447,
+"message": "Array subscript uses function parameter 'lastpc' without bounds checking. Caller could pass invalid index.",
+"rule_id": "ARR00-C",
+"severity": "Medium",
+"suggestion": "Add bounds checking for 'lastpc' before using it as an array index"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 495,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 495,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 499,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 499,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 508,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 508,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 512,
+"message": "Variable(s) 'pc' modified and accessed without sequence point",
+"rule_id": "EXP30-C",
+"severity": "High",
+"suggestion": "Separate the modification into a separate statement"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 524,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 524,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 542,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 542,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 11,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 562,
+"message": "Variable 'name' may be used uninitialized (not assigned on all paths)",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'name' before use, e.g., at its declaration"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 573,
+"message": "Function returns pointer to local variable 'kind' with automatic storage duration",
+"rule_id": "DCL30-C",
+"severity": "High",
+"suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 589,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 9,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 589,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 624,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 624,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 651,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 651,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 662,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 662,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 666,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 5,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 666,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 30,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 685,
+"message": "Pointer parameter 'ci' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *ci'"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 703,
+"message": "Variable 'c' is initialized but never modified, consider const-qualifying it",
+"rule_id": "DCL00-C",
+"severity": "Medium",
+"suggestion": "Add 'const' qualifier: const c = ..."
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 707,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 7,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 707,
+"message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+"rule_id": "STR34-C",
+"severity": "Medium",
+"suggestion": "Cast to 'unsigned char' before assignment to larger type"
+},
+{
+"column": 6,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 717,
+"message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+"rule_id": "MEM10-C",
+"severity": "Medium",
+"suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+},
+{
+"column": 33,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 739,
+"message": "Passing null pointer 'name' to 'formatvarinfo' which does not check for NULL",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'name' is not NULL before passing to 'formatvarinfo'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 746,
+"message": "Function 'typeerror' participates in indirect recursion: typeerror -> luaT_objtypename -> luaS_new -> luaS_newlstr -> internshrstr -> growstrtab -> luaC_fullgc -> fullgen -> entergen -> atomic2gen -> finishgencycle -> luaD_checkminstack -> luaD_growstack -> luaG_runerror -> luaG_errormsg -> luaD_callnoyield -> ccall -> luaD_precall -> tryfuncTM -> luaG_callerror -> typeerror",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 746,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 757,
+"message": "Function 'luaG_typeerror' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 757,
+"message": "Function 'luaG_typeerror' does not validate pointer parameter 'o' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'o' at the start of the function, e.g., 'if (!o) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 757,
+"message": "Function 'luaG_typeerror' does not validate pointer parameter 'op' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'op' at the start of the function, e.g., 'if (!op) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 757,
+"message": "Function 'luaG_typeerror' participates in indirect recursion: luaG_typeerror -> typeerror -> luaT_objtypename -> luaS_new -> luaS_newlstr -> internshrstr -> growstrtab -> luaC_fullgc -> fullgen -> entergen -> atomic2gen -> finishgencycle -> luaD_checkminstack -> luaD_growstack -> luaG_runerror -> luaG_errormsg -> luaD_callnoyield -> ccall -> luaV_execute -> luaV_finishget -> luaG_typeerror",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 757,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 767,
+"message": "Function 'luaG_callerror' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 767,
+"message": "Function 'luaG_callerror' does not validate pointer parameter 'o' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'o' at the start of the function, e.g., 'if (!o) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 767,
+"message": "Function 'luaG_callerror' participates in indirect recursion: luaG_callerror -> typeerror -> luaT_objtypename -> luaS_new -> luaS_newlstr -> internshrstr -> growstrtab -> luaC_fullgc -> fullgen -> entergen -> atomic2gen -> finishgencycle -> luaD_checkminstack -> luaD_growstack -> luaG_runerror -> luaG_errormsg -> luaD_callnoyield -> ccall -> luaD_precall -> tryfuncTM -> luaG_callerror",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 767,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 22,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 770,
+"message": "Static variable 'funcnamefromcall' used without explicit initialization",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'funcnamefromcall' before use, e.g., at its declaration"
+},
+{
+"column": 53,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 771,
+"message": "Passing null pointer 'name' to 'formatvarinfo' which does not check for NULL",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 'name' is not NULL before passing to 'formatvarinfo'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 776,
+"message": "Function 'luaG_forerror' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 776,
+"message": "Function 'luaG_forerror' does not validate pointer parameter 'o' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'o' at the start of the function, e.g., 'if (!o) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 776,
+"message": "Function 'luaG_forerror' does not validate pointer parameter 'what' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'what' at the start of the function, e.g., 'if (!what) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 776,
+"message": "Function 'luaG_forerror' participates in indirect recursion: luaG_forerror -> luaT_objtypename -> luaS_new -> luaS_newlstr -> internshrstr -> growstrtab -> luaC_fullgc -> fullgen -> entergen -> atomic2gen -> finishgencycle -> luaD_checkminstack -> luaD_growstack -> luaG_runerror -> luaG_errormsg -> luaD_callnoyield -> ccall -> luaV_execute -> forprep -> forlimit -> luaG_forerror",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 776,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 782,
+"message": "Function 'luaG_concaterror' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 782,
+"message": "Function 'luaG_concaterror' does not validate pointer parameter 'p1' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'p1' at the start of the function, e.g., 'if (!p1) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 782,
+"message": "Function 'luaG_concaterror' participates in indirect recursion: luaG_concaterror -> luaG_typeerror -> typeerror -> luaT_objtypename -> luaS_new -> luaS_newlstr -> internshrstr -> growstrtab -> luaC_fullgc -> fullgen -> entergen -> atomic2gen -> finishgencycle -> luaD_checkminstack -> luaD_growstack -> luaG_runerror -> luaG_errormsg -> luaD_callnoyield -> ccall -> luaV_execute -> luaV_concat -> luaT_tryconcatTM -> luaG_concaterror",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 782,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 788,
+"message": "Function 'luaG_opinterror' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 788,
+"message": "Function 'luaG_opinterror' does not validate pointer parameter 'p2' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'p2' at the start of the function, e.g., 'if (!p2) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 788,
+"message": "Function 'luaG_opinterror' does not validate pointer parameter 'msg' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'msg' at the start of the function, e.g., 'if (!msg) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 788,
+"message": "Function 'luaG_opinterror' participates in indirect recursion: luaG_opinterror -> luaG_typeerror -> typeerror -> luaT_objtypename -> luaS_new -> luaS_newlstr -> internshrstr -> growstrtab -> luaC_fullgc -> fullgen -> entergen -> atomic2gen -> finishgencycle -> luaD_checkminstack -> luaD_growstack -> luaG_runerror -> luaG_errormsg -> luaD_callnoyield -> ccall -> luaV_execute -> luaT_trybiniTM -> luaT_trybinassocTM -> luaT_trybinTM -> luaG_opinterror",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 788,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 799,
+"message": "Function 'luaG_tointerror' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 799,
+"message": "Function 'luaG_tointerror' does not validate pointer parameter 'p2' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'p2' at the start of the function, e.g., 'if (!p2) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 799,
+"message": "Function 'luaG_tointerror' participates in indirect recursion: luaG_tointerror -> luaG_runerror -> luaG_errormsg -> luaD_callnoyield -> ccall -> luaV_execute -> luaT_trybiniTM -> luaT_trybinassocTM -> luaT_trybinTM -> luaG_tointerror",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 799,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 807,
+"message": "Function 'luaG_ordererror' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 807,
+"message": "Function 'luaG_ordererror' does not validate pointer parameter 'p1' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'p1' at the start of the function, e.g., 'if (!p1) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 807,
+"message": "Function 'luaG_ordererror' does not validate pointer parameter 'p2' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'p2' at the start of the function, e.g., 'if (!p2) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 807,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 14,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 810,
+"message": "Passing potentially null pointer 't1' to function",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 't1' is not NULL before passing to function"
+},
+{
+"column": 18,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 810,
+"message": "Passing potentially null pointer 't2' to function",
+"rule_id": "EXP34-C",
+"severity": "High",
+"suggestion": "Check if 't2' is not NULL before passing to function"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 817,
+"message": "Function 'luaG_errnnil' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 817,
+"message": "Function 'luaG_errnnil' does not validate pointer parameter 'cl' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'cl' at the start of the function, e.g., 'if (!cl) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 817,
+"message": "Function 'luaG_errnnil' participates in indirect recursion: luaG_errnnil -> luaG_runerror -> luaG_errormsg -> luaD_callnoyield -> ccall -> luaV_execute -> luaG_errnnil",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 817,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 46,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 817,
+"message": "Pointer parameter 'cl' is not modified and should be declared const",
+"rule_id": "DCL13-C",
+"severity": "Low",
+"suggestion": "Declare parameter as 'const <type> *cl'"
+},
+{
+"column": 6,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 828,
+"message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+"rule_id": "MEM10-C",
+"severity": "Medium",
+"suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+},
+{
+"column": 28,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 834,
+"message": "Variable 'idlen' is used uninitialized",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'idlen' before use, e.g., at its declaration"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 840,
+"message": "Function 'luaG_errormsg' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 840,
+"message": "Function 'luaG_errormsg' participates in indirect recursion: luaG_errormsg -> luaD_callnoyield -> ccall -> luaD_precall -> tryfuncTM -> luaG_callerror -> typeerror -> luaT_objtypename -> luaS_new -> luaS_newlstr -> internshrstr -> growstrtab -> luaC_fullgc -> fullgen -> entergen -> atomic2gen -> finishgencycle -> luaD_checkminstack -> luaD_growstack -> luaG_runerror -> luaG_errormsg",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 840,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 857,
+"message": "Function 'luaG_runerror' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 857,
+"message": "Function 'luaG_runerror' does not validate pointer parameter 'fmt' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'fmt' at the start of the function, e.g., 'if (!fmt) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 857,
+"message": "Function 'luaG_runerror' participates in indirect recursion: luaG_runerror -> luaG_errormsg -> luaD_callnoyield -> ccall -> luaD_precall -> tryfuncTM -> luaG_callerror -> typeerror -> luaT_objtypename -> luaS_new -> luaS_newlstr -> internshrstr -> growstrtab -> luaC_fullgc -> fullgen -> entergen -> atomic2gen -> finishgencycle -> luaD_checkminstack -> luaD_growstack -> luaG_runerror",
+"rule_id": "MSC04-C",
+"severity": "Medium",
+"suggestion": "Refactor to eliminate the recursion cycle"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 857,
+"message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+"rule_id": "MSC37-C",
+"severity": "Medium",
+"suggestion": "Add a return statement on all execution paths of this function"
+},
+{
+"column": 19,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 862,
+"message": "Variable 'argp' is used uninitialized",
+"rule_id": "EXP33-C",
+"severity": "High",
+"suggestion": "Initialize 'argp' before use, e.g., at its declaration"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 910,
+"message": "Function 'luaG_tracecall' does not validate pointer parameter 'L' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'L' at the start of the function, e.g., 'if (!L) { return error_code; }'"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/ldebug.c",
+"line": 936,
+"message": "Function 'luaG_traceexec' does not validate pointer parameter 'pc' before use",
+"rule_id": "API00-C",
+"severity": "Medium",
+"suggestion": "Add validation check for 'pc' at the start of the function, e.g., 'if (!pc) { return error_code; }'"
+}
+],
+"lobject.h": [
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 98,
+"message": "Function-like macro 'righttt' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 98,
+"message": "Macro evaluates parameter 'obj' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 106,
+"message": "Function-like macro 'checkliveness' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 106,
+"message": "Macro parameter 'L' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'L' in parentheses: (L) instead of L"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 106,
+"message": "Macro evaluates parameter 'L' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 118,
+"message": "Multistatement macro 'setobj' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 221,
+"message": "Function-like macro 'isnonstrictnil' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 221,
+"message": "Macro evaluates parameter 'v' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 259,
+"message": "Function-like macro 'l_isfalse' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 259,
+"message": "Macro evaluates parameter 'o' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 260,
+"message": "Function-like macro 'tagisfalse' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 260,
+"message": "Macro evaluates parameter 't' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 280,
+"message": "Function-like macro 'thvalue' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 280,
+"message": "Macro evaluates parameter 'o' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 282,
+"message": "Multistatement macro 'setthvalue' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 302,
+"message": "Multistatement macro 'CommonHeader' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 319,
+"message": "Function-like macro 'gcvalue' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 319,
+"message": "Macro evaluates parameter 'o' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 323,
+"message": "Multistatement macro 'setgcovalue' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 344,
+"message": "Function-like macro 'nvalue' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 344,
+"message": "Macro evaluates parameter 'o' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 346,
+"message": "Function-like macro 'fltvalue' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 346,
+"message": "Macro evaluates parameter 'o' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 347,
+"message": "Function-like macro 'ivalue' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 347,
+"message": "Macro evaluates parameter 'o' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 352,
+"message": "Multistatement macro 'setfltvalue' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 355,
+"message": "Multistatement macro 'chgfltvalue' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 358,
+"message": "Multistatement macro 'setivalue' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 361,
+"message": "Multistatement macro 'chgivalue' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 383,
+"message": "Function-like macro 'tsvalue' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 383,
+"message": "Macro evaluates parameter 'o' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 385,
+"message": "Multistatement macro 'setsvalue' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 398,
+"message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+"rule_id": "PRE02-C",
+"severity": "Medium",
+"suggestion": "Wrap the entire replacement list in parentheses: (-1)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 399,
+"message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+"rule_id": "PRE02-C",
+"severity": "Medium",
+"suggestion": "Wrap the entire replacement list in parentheses: (-2)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 400,
+"message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+"rule_id": "PRE02-C",
+"severity": "Medium",
+"suggestion": "Wrap the entire replacement list in parentheses: (-3)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 422,
+"message": "Function-like macro 'isextstr' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 422,
+"message": "Macro evaluates parameter 'ts' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 430,
+"message": "Function-like macro 'getshrstr' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 430,
+"message": "Macro evaluates parameter 'ts' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 431,
+"message": "Function-like macro 'getlngstr' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 431,
+"message": "Macro evaluates parameter 'ts' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 432,
+"message": "Function-like macro 'getstr' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 432,
+"message": "Macro evaluates parameter 'ts' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 436,
+"message": "Function-like macro 'tsslen' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 436,
+"message": "Macro evaluates parameter 'ts' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 441,
+"message": "Function-like macro 'getlstr' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 441,
+"message": "Macro evaluates parameter 'ts' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 467,
+"message": "Function-like macro 'pvalue' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 467,
+"message": "Macro evaluates parameter 'o' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 468,
+"message": "Function-like macro 'uvalue' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 468,
+"message": "Macro evaluates parameter 'o' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 472,
+"message": "Multistatement macro 'setpvalue' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 475,
+"message": "Multistatement macro 'setuvalue' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 498,
+"message": "Flexible array member should use [] not [1]",
+"rule_id": "DCL38-C",
+"severity": "Medium",
+"suggestion": "Use int data[]; syntax"
+},
+{
+"column": 10,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 498,
+"message": "Character array too small to hold any string data plus null terminator",
+"rule_id": "STR31-C",
+"severity": "Medium",
+"suggestion": "Increase array size to accommodate expected string length plus null terminator"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 521,
+"message": "Function-like macro 'udatamemoffset' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 521,
+"message": "Macro evaluates parameter 'nuv' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 526,
+"message": "Function-like macro 'getudatamem' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 526,
+"message": "Macro evaluates parameter 'u' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 649,
+"message": "Function-like macro 'ttisclosure' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 649,
+"message": "Macro evaluates parameter 'o' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 654,
+"message": "Function-like macro 'clvalue' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 654,
+"message": "Macro evaluates parameter 'o' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 655,
+"message": "Function-like macro 'clLvalue' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 655,
+"message": "Macro evaluates parameter 'o' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 656,
+"message": "Function-like macro 'fvalue' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 656,
+"message": "Macro evaluates parameter 'o' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 657,
+"message": "Function-like macro 'clCvalue' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 657,
+"message": "Macro evaluates parameter 'o' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 661,
+"message": "Multistatement macro 'setclLvalue' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 668,
+"message": "Multistatement macro 'setfvalue' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 671,
+"message": "Multistatement macro 'setclCvalue' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 697,
+"message": "Multistatement macro 'ClosureHeader' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 703,
+"message": "Flexible array member should use [] not [1]",
+"rule_id": "DCL38-C",
+"severity": "Medium",
+"suggestion": "Use int data[]; syntax"
+},
+{
+"column": 10,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 703,
+"message": "Character array too small to hold any string data plus null terminator",
+"rule_id": "STR31-C",
+"severity": "Medium",
+"suggestion": "Increase array size to accommodate expected string length plus null terminator"
+},
+{
+"column": 3,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 710,
+"message": "Flexible array member should use [] not [1]",
+"rule_id": "DCL38-C",
+"severity": "Medium",
+"suggestion": "Use int data[]; syntax"
+},
+{
+"column": 10,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 710,
+"message": "Character array too small to hold any string data plus null terminator",
+"rule_id": "STR31-C",
+"severity": "Medium",
+"suggestion": "Increase array size to accommodate expected string length plus null terminator"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 735,
+"message": "Function-like macro 'hvalue' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 735,
+"message": "Macro evaluates parameter 'o' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 737,
+"message": "Multistatement macro 'sethvalue' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 764,
+"message": "Multistatement macro 'setnodekey' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 770,
+"message": "Multistatement macro 'getnodekey' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+"rule_id": "PRE10-C",
+"severity": "Medium",
+"suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 806,
+"message": "Function-like macro 'gckeyN' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 806,
+"message": "Macro evaluates parameter 'n' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 825,
+"message": "Function-like macro 'lmod' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+"rule_id": "PRE00-C",
+"severity": "Low",
+"suggestion": null
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 825,
+"message": "Macro parameter 'size' is not parenthesized in replacement text. This can cause operator precedence issues.",
+"rule_id": "PRE01-C",
+"severity": "Medium",
+"suggestion": "Wrap parameter 'size' in parentheses: (size) instead of size"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 825,
+"message": "Macro evaluates parameter 'size' multiple times; use inline function instead",
+"rule_id": "PRE12-C",
+"severity": "Medium",
+"suggestion": "Replace macro with inline function to avoid multiple evaluation"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 838,
+"message": "Macro 'LUAI_FUNC' definition ends with a semicolon. This can cause unexpected behavior when the macro is used.",
+"rule_id": "PRE11-C",
+"severity": "Medium",
+"suggestion": "Remove the trailing semicolon from the macro definition. The semicolon should be added by the macro user, not in the definition."
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 855,
+"message": "Function has pointer parameter without size argument: 'LUAI_FUNC unsigned luaO_tostringbuff (const TValue *obj, char *buff);' - Add size_t parameter to specify array capacity",
+"rule_id": "API02-C",
+"severity": "High",
+"suggestion": "Add a size_t parameter after 'char *buff' to specify the maximum number of elements in the array"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 860,
+"message": "Variadic function declaration should use proper header",
+"rule_id": "EXP37-C",
+"severity": "Medium",
+"suggestion": "Include proper header instead of declaring variadic function"
+},
+{
+"column": 1,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 861,
+"message": "Function has pointer parameter without size argument: 'LUAI_FUNC void luaO_chunkid (char *out, const char *source, size_t srclen);' - Add size_t parameter to specify array capacity",
+"rule_id": "API02-C",
+"severity": "High",
+"suggestion": "Add a size_t parameter after 'char *out' to specify the maximum number of elements in the array"
+},
+{
+"column": 35,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 861,
+"message": "Pointer parameter should use conformant array syntax",
+"rule_id": "API05-C",
+"severity": "High",
+"suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+},
+{
+"column": 52,
+"file": "/home/brandon/toolchain/lua/lobject.h",
+"line": 861,
+"message": "Pointer parameter should use conformant array syntax",
+"rule_id": "API05-C",
+"severity": "High",
+"suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+}
+]
+}
