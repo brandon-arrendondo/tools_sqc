@@ -96,16 +96,69 @@ instead of the tracked variable (curl `schannel.c:368`).
   misread as empty) is a single, well-characterized parser/logic bug, not a
   fundamental scope problem — likely fixable by correctly walking a
   case_statement's absorbed-fallthrough body instead of stopping at the
-  first case/default boundary.
+  first case/default boundary. Filed as task 379, not yet fixed.
 - **MSC13-C's read-detection needs meaningfully more control-flow
   awareness** before its 20k+ real-world volume is trustworthy: loop-condition
   reads back into the loop's own init/body variables, goto-to-cleanup-label
   reads, and trailing-return reads are all missing from `is_read_context`'s
   walk, which currently only inspects the immediate parent node rather than
   scanning the rest of the enclosing loop/function for a later read.
+  Filed as task 380 — **fixed**, see below.
 - Recommend treating this as a P1/P2 fix task (same tier as tasks 350-377,
   the other detection-gap backlog) rather than disabling the rules —
   consistent with this project's standing FN-focus-over-disable policy: the
   ground-truth oracle now correctly measures these rules' real precision, so
   future benchmark runs will show the true cost of leaving them unfixed
   rather than hiding it.
+
+## Update: MSC13-C fixed in v0.4.142 (commit 0a248a73, 2026-07-27)
+
+Task 380 fixed the root cause: `check_dead_stores` sorted **all** assignment
+sites to a variable across the **whole function** by line number and flagged
+consecutive pairs with no read strictly between them — unsound whenever
+"consecutive by line number" isn't "consecutive on any executable path"
+(mutually exclusive if/else-if branches, a loop's own next-iteration read in
+its condition, an assignment before a `goto` paired against an unrelated
+later assignment when the real read is at the jump target). Rewrote to only
+pair a write with an immediately-following write **in the same straight-line
+block**, dropping tracking entirely across any `goto`/label. Also fixed two
+related coverage gaps surfaced while recovering lost true positives: the
+read-check treated the base of `a.field`/`a[i]` as a pure write when the
+whole expression was an assignment LHS (it's always a read — you need the
+base value to compute the write address), and the dead-store extractor
+skipped pointer-typed and multi-declarator (`char *a = NULL, *b = NULL;`)
+declarations entirely.
+
+**Real-world impact** (run sqc-0.4.142-0a248a73 vs. sqc-0.4.141-2acbd455,
+same 7 codebases): MSC13-C's raw finding count dropped **91.3%**, 20,816 →
+1,809, with no regressions in any other rule.
+
+**Re-measured precision** on a fresh, independently seeded 50-finding sample
+drawn from the post-fix run (`sample_msc13_postfix_0.4.142.json` /
+`adjudication_msc13_postfix.csv`, same adjudication standard as the original
+audit):
+
+| | Pre-fix (0.4.141) | Post-fix (0.4.142) |
+|---|---|---|
+| Sample TP/50 | 4 | 34 |
+| Sample precision | 8.0% | 68.0% |
+| Official oracle precision (`bench realworld-score`) | 8.0% | **73.5%** (36 TP / 13 FP) |
+
+Surviving FP patterns in the post-fix sample (worth a follow-up task, not
+urgent — precision is now in line with the rest of the rule set):
+1. **Self-referential RHS read missed** (5/16): a write immediately followed
+   by an expression that reads the same variable as a call argument before
+   reassigning it, e.g. `pos = f(pos); pos = g(hapd, pos, ...)` — the second
+   write's own RHS reads the pending variable, but the current same-statement
+   scan doesn't check a write statement's RHS against its own just-updated
+   pending entry from the previous statement.
+2. **Macro-hidden reads** (2/16): `IN_RENAME_OBJECT` macro reading `pParse`,
+   `##` token-pasting inside a `ROUND()` macro reading `s3` — genuinely
+   invisible without a real C preprocessor (see
+   `docs/design/macro-expansion.md`).
+3. **Assignment-in-condition self-read** (1/16): `while ((err =
+   ERR_get_error()))` — the assignment's own value is read by the `while`
+   condition it's embedded in.
+4. **Misattribution** (5/16): flagged line isn't a variable assignment at
+   all — a C++ default-parameter value, a `switch case` label, a struct
+   field declaration.

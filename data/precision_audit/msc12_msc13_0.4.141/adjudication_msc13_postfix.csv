@@ -1,0 +1,51 @@
+rule,idx,project,file,line,verdict,reason
+MSC13-C,0,sqlite,src/walker.c,142,FP,pParse read via IN_RENAME_OBJECT macro (pParse->eParseMode>=PARSE_MODE_RENAME) - macro-hidden read
+MSC13-C,1,hostap,src/crypto/crypto_nettle.c,390,FP,len read on RHS of next line len=(len+7)/8 before being used again - self-referential read missed
+MSC13-C,2,sqlite,tool/offsets.c,179,FP,x read on RHS of next accumulation line x=(x<<8)+... - self-referential read missed
+MSC13-C,3,curl,lib/ws.c,1248,TP,result=CURLE_OK never read before unconditional overwrite by Curl_rand() call at line 1278
+MSC13-C,4,curl,lib/cf-ip-happy.c,735,TP,result=CURLE_OK never read; connected branch returns literal, else path overwrites at line 743 unread
+MSC13-C,5,hostap,wpa_supplicant/dbus/dbus_new_handlers.c,992,TP,reply=NULL never read; early-return branch bypasses it, else path overwrites at line 1005 unread
+MSC13-C,6,sqlite,ext/fts5/fts5_index.c,5193,TP,i2=0 never read before being reassigned at line 5202 on the only path reaching that line
+MSC13-C,7,hostap,src/ap/ap_drv_ops.c,89,FP,pos read as argument on the very next line (hostapd_eid_time_adv(hapd,pos)) before reassignment
+MSC13-C,8,sqlite,ext/intck/test_intck.c,50,TP,iIdx=-1 never read; Tcl_GetIndexFromObjStruct(&iIdx) only writes to it, initial value unused
+MSC13-C,9,raylib,src/rmodels.c,2053,TP,result=false never read across the whole function body until overwritten at line 2137
+MSC13-C,10,curl,lib/request.c,178,TP,result=CURLE_OK never read before unconditional overwrite by Curl_xfer_send() at line 212
+MSC13-C,11,hostap,src/crypto/tls_openssl.c,306,FP,err is read in its own while condition while((err=ERR_get_error())) - assignment-in-condition self-read
+MSC13-C,12,raylib,src/rtext.c,2767,TP,readVars assigned 7x via sscanf in this function but never once read/checked anywhere in LoadFontDataBDF
+MSC13-C,13,curl,docs/examples/smtp-ssl.c,138,FP,recipients read as first arg on next line curl_slist_append(recipients, CC_MAIL) before reassignment
+MSC13-C,14,sqlite,src/test1.c,7325,TP,rc=SQLITE_OK never read before unconditional overwrite by sqlite3_file_control() at line 7338
+MSC13-C,15,curl,lib/rand.c,227,TP,result=CURLE_BAD_FUNCTION_ARGUMENT never read before overwrite by Curl_rand() at line 245
+MSC13-C,16,curl,tests/unit/unit2602.c,34,FP,misattribution - hds is a struct heavily used via Curl_dynhds_* calls throughout the function, not a dead value
+MSC13-C,17,sqlite,src/os_unix.c,3386,TP,rc=SQLITE_OK never read before unconditional overwrite by closeUnixFile() at line 3407
+MSC13-C,18,curl,lib/imap.c,164,TP,result=CURLE_OK never read before unconditional overwrite by curlx_dyn_addf() at line 177
+MSC13-C,19,hostap,src/drivers/driver_nl80211_event.c,3274,TP,cookie=0 never read before unconditional overwrite by nla_get_u64() at line 3289
+MSC13-C,20,curl,lib/vauth/krb5_sspi.c,247,TP,trailer=NULL never read anywhere before being overwritten at line 328 (no earlier use, no goto path touches it)
+MSC13-C,21,curl,lib/tftp.c,904,TP,remote_addr=NULL never read before unconditional overwrite by Curl_conn_get_remote_addr() at line 949
+MSC13-C,22,curl,tests/libtest/lib3010.c,29,TP,curl=NULL never read before unconditional overwrite by curl_easy_init() at line 34
+MSC13-C,23,curl,tests/libtest/lib1567.c,30,TP,curl=NULL never read before unconditional overwrite by curl_easy_init() at line 35
+MSC13-C,24,curl,lib/imap.c,509,TP,result=CURLE_OK never read before unconditional overwrite by imap_sendf() at line 516
+MSC13-C,25,mosquitto,include/mosquitto/libmosquittopp.h,78,FP,misattribution - this is a C++ default-parameter value (tls=NULL) in a function prototype, not a variable assignment
+MSC13-C,26,hostap,src/ap/beacon.c,1022,FP,pos read as argument on next line hostapd_get_rsne_override(hapd,pos,...) before reassignment
+MSC13-C,27,curl,tests/libtest/lib1507.c,44,FP,rcpt_list read as first arg on next-use curl_slist_append(rcpt_list,...) before reassignment
+MSC13-C,28,sqlite,ext/fts3/fts3_write.c,5146,TP,nMerge=0 never read before unconditional overwrite by fts3Getint() at line 5150
+MSC13-C,29,curl,lib/vtls/rustls.c,153,TP,rresult=0 never read before unconditional overwrite at line 171
+MSC13-C,30,sqlite,src/treeview.c,191,TP,n=0 never read anywhere before being reset to 0 again and used starting at line 238
+MSC13-C,31,curl,tests/libtest/lib513.c,38,TP,result=CURLE_OK never read; first test_setopt macro use unconditionally overwrites it before any check
+MSC13-C,32,curl,tests/server/getpart.c,152,TP,need_alloc=0 never read; early-return branch bypasses it, else path overwrites at line 157 unread
+MSC13-C,33,curl,projects/OS400/ccsidcurl.c,1322,TP,s=NULL never read; early-return branch bypasses it, else path overwrites at line 1327 unread
+MSC13-C,34,sqlite,ext/fts5/fts5_index.c,5152,TP,aPg=0 never read; break branch bypasses it, else path overwrites at line 5156 unread
+MSC13-C,35,curl,projects/OS400/ccsidcurl.c,338,TP,s=NULL never read; early-return branch bypasses it, else path overwrites at line 343 unread
+MSC13-C,36,curl,lib/cf-socket.c,1872,TP,ctx=NULL never read before unconditional overwrite by curlx_calloc() at line 1879
+MSC13-C,37,mosquitto,include/mosquitto/libmosquittopp.h,50,FP,misattribution - this is a C++ default-parameter value (qos=0) in a function prototype, not a variable assignment
+MSC13-C,38,sqlite,src/test_bestindex.c,188,TP,pTab=0 never read before unconditional overwrite by sqlite3_malloc64() at line 201
+MSC13-C,39,sqlite,src/alter.c,2790,TP,pTab=0 never read before unconditional overwrite by alterFindTable() at line 2797
+MSC13-C,40,hostap,src/fst/fst.c,44,TP,iface=NULL never read before unconditional overwrite by fst_iface_create() at line 68
+MSC13-C,41,hostap,src/drivers/driver_nl80211.c,14076,TP,msg=NULL never read before unconditional overwrite by nl80211_bss_msg() at line 14092
+MSC13-C,42,sqlite,src/insert.c,2021,FP,misattribution - flagged line is a switch case label (case OE_Rollback:), not a variable assignment
+MSC13-C,43,mosquitto,src/handle_connect.c,339,TP,will_struct=NULL never read before unconditional overwrite by mosquitto_calloc() at line 344
+MSC13-C,44,hostap,src/crypto/aes-internal-dec.c,90,FP,s3 is read via ## token-pasting inside the ROUND() macro (TD1(s##3)) - macro-hidden read sqc cannot see
+MSC13-C,45,sqlite,ext/fts5/fts5_index.c,8024,TP,apOut=0 never read before unconditional overwrite by sqlite3Fts5MallocZero() at line 8028
+MSC13-C,46,sqlite,src/malloc.c,54,FP,misattribution - nearlyFull is a struct field inside the Mem0Global struct definition, not a local variable
+MSC13-C,47,hostap,src/ap/beacon.c,897,FP,pos read as argument on next line hostapd_eid_adv_proto(hapd,pos) before reassignment
+MSC13-C,48,mosquitto,include/mosquitto/libmosquittopp.h,73,FP,misattribution - this is a C++ default-parameter value (clientid=NULL) in a function prototype, not a variable assignment
+MSC13-C,49,hostap,src/ap/beacon.c,3229,TP,sta_profile=NULL never read at loop-top before unconditional overwrite by hostapd_gen_sta_profile() at line 3249
