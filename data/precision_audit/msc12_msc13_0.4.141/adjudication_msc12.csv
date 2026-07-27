@@ -1,0 +1,51 @@
+rule,idx,project,file,line,verdict,reason
+MSC12-C,0,lua,lapi.c,450,FP,"default: return 0; has a return statement -- not empty, misattributed."
+MSC12-C,1,curl,tests/http/testenv/mod_curltest/mod_curltest.c,63,FP,"case 'D': groups with case 'd': (fallthrough), standard multi-value case idiom."
+MSC12-C,2,curl,lib/ftp.c,3663,FP,case CURLE_FILESIZE_EXCEEDED: groups into a long fallthrough error-code list.
+MSC12-C,3,raylib,src/platforms/rcore_desktop_win32.c,2000,FP,"default has TRACELOG(...) call + break -- not empty, misattributed past skipped call."
+MSC12-C,4,sqlite,tool/lemon.c,2191,FP,case OPT_FLAG/OPT_FFLAG group to a shared break; intentional no-op for other switch.
+MSC12-C,5,hostap,src/tls/tlsv1_common.c,353,FP,"default: return -1; has a return statement -- not empty, misattributed."
+MSC12-C,6,sqlite,src/expr.c,5298,FP,case TK_ISNULL: groups with TK_NOTNULL: into a real code block.
+MSC12-C,7,curl,lib/urlapi.c,1788,FP,case '{': groups into long allowed-char list ending in return TRUE;.
+MSC12-C,8,lua,llex.c,442,FP,"default: { ... } contains esccheck()/readdecesc() code -- not empty, misattributed."
+MSC12-C,9,sqlite,src/os_win.c,2059,FP,for(...){} is the standard 'work done in condition' scan idiom (finds \r/\n); i is used after.
+MSC12-C,10,curl,lib/curl_trc.h,117,FP,"';' is the declaration terminator after CURL_PRINTF(2,3) attribute, not a stray semicolon."
+MSC12-C,11,curl,lib/urlapi.c,1783,FP,case '$': groups into the same allowed-char fallthrough list as idx 7.
+MSC12-C,12,hostap,src/rsn_supp/wpa.h,600,FP,wpa_reset_ft_completed is one of several deliberate no-op stub funcs in this header.
+MSC12-C,13,curl,lib/multi.c,2708,FP,"case MSTATE_PENDING: groups with MSTATE_MSGSENT:, has comment + break documenting intent."
+MSC12-C,14,lua,ltm.c,155,FP,case TM_SHL/TM_SHR/TM_BNOT group into a real code block right after.
+MSC12-C,15,curl,lib/vtls/schannel.c,763,FP,TLSv1/TLSv1_0.._3 group into a real code block calling schannel_set_ssl_version_min_max.
+MSC12-C,16,curl,lib/vssh/libssh2.c,211,FP,case LIBSSH2_ERROR_HOSTKEY_INIT groups into list ending in return CURLE_PEER_FAILED_VERIFICATION;.
+MSC12-C,17,hostap,src/crypto/tls_openssl.c,2429,FP,long X509_V_ERR_* case group ends in return TLS_FAIL_UNTRUSTED; -- standard grouping.
+MSC12-C,18,hostap,src/common/hw_features_common.c,941,FP,case 2/4/8/16 group to return num_chans * 20; -- standard grouping.
+MSC12-C,19,curl,lib/multi.c,3239,FP,case has its own break; and a comment marks these as deliberately-retired no-op options.
+MSC12-C,20,sqlite,ext/jni/src/c/sqlite3-jni.c,3742,FP,case SQLITE_DBCONFIG_ENABLE_VIEW groups into a long list ending in a real code block.
+MSC12-C,21,hostap,src/wps/wps_upnp_web.c,259,FP,"case HTTP_INTERNAL_SERVER_ERROR: groups with default:, real code (wpabuf_put_str+break) follows."
+MSC12-C,22,hostap,src/ap/gas_serv.c,1439,FP,"default: has wpa_printf(...) call + break -- not empty, misattributed."
+MSC12-C,23,sqlite,src/vdbemem.c,1257,FP,for(...){} is the standard scan-to-find-terminator idiom (UTF16 NUL scan); nByte used after.
+MSC12-C,24,curl,projects/OS400/ccsidcurl.c,1105,FP,case CURLOPT_SASL_AUTHZID groups into a large fallthrough option list.
+MSC12-C,25,hostap,src/drivers/driver_nl80211.c,2025,FP,"default: has a real assignment (sec_channel = 0;) + break -- not empty, misattributed."
+MSC12-C,26,hostap,src/eapol_supp/eapol_supp_sm.h,442,FP,eapol_sm_notify_logoff is one of several deliberate no-op stub funcs in this header.
+MSC12-C,27,curl,tests/http/testenv/mod_curltest/mod_curltest.c,97,FP,"case 's': groups with case 'S':, real code (ptimeout assignment) follows."
+MSC12-C,28,sqlite,tool/lemon.c,2109,FP,else-if body has an explanatory comment ('Ignore this option') -- deliberate no-op arm.
+MSC12-C,29,curl,tests/http/testenv/mod_curltest/mod_curltest.c,67,FP,"case 's': groups with case 'S':, real code (ptimeout assignment) follows."
+MSC12-C,30,curl,lib/getinfo.c,175,FP,"case CURLINFO_CAINFO: is followed by a real #ifdef-guarded assignment + break, not empty."
+MSC12-C,31,sqlite,ext/jni/src/c/sqlite3-jni.c,1698,FP,S3JniAutoExt_mutex_assertLocker is a bare macro token (mutex assert) with a hidden side effect.
+MSC12-C,32,lua,lvm.c,1672,FP,"vmbreak is a VM-dispatch macro with real control-flow effect, not a no-op identifier."
+MSC12-C,33,lua,lstrlib.c,1317,FP,case 'o'/'x' group with case 'X': which sets flags and falls to a real labeled block.
+MSC12-C,34,sqlite,ext/jni/src/c/sqlite3-jni.c,5934,FP,"Fts5ExtDecl is a bare declaration/init macro with a hidden side effect, not a no-op."
+MSC12-C,35,hostap,wpa_supplicant/wps_supplicant.c,895,FP,"case WPS_EV_PBC_TIMEOUT: has its own break; -- a real (deliberate no-op) statement, not empty."
+MSC12-C,36,hostap,src/utils/os_none.c,136,FP,"os_free() is a deliberate no-op impl under #ifdef OS_NO_C_LIB_DEFINES, not accidental."
+MSC12-C,37,sqlite,ext/jni/src/c/sqlite3-jni.c,3599,FP,S3JniIfThrew is an if-like macro controlling the following if/else block -- hidden effect.
+MSC12-C,38,hostap,wlantest/wlantest.h,258,FP,"';' is the declaration terminator after PRINTF_FORMAT(3,4) attribute, not a stray semicolon."
+MSC12-C,39,sqlite,src/carray.c,270,FP,case 2: groups with case 3: into a real code block right after.
+MSC12-C,40,curl,lib/vtls/x509asn1.c,658,FP,case CURL_ASN1_PRINTABLE_STRING groups into a long list ending in a real assignment.
+MSC12-C,41,curl,src/tool_writeout.c,132,FP,"case VAR_INPUT_URLFRAGMENT: groups with URLEFRAGMENT:, real assignment + break follows."
+MSC12-C,42,curl,lib/telnet.c,350,FP,case CURL_EMPTY: has its own break; and an explanatory comment -- not empty.
+MSC12-C,43,hostap,src/common/ieee802_11_common.c,1281,FP,"default: return NULL; has a return statement -- not empty, misattributed."
+MSC12-C,44,hostap,src/ap/ieee802_11_he.c,441,FP,"default: has a real assignment (mcs_count = 1;) + break -- not empty, misattributed."
+MSC12-C,45,hostap,src/ap/ieee802_11_eht.c,1062,FP,case WLAN_AUTH_OPEN: groups with WLAN_AUTH_EPPKE: into return pos; -- standard grouping.
+MSC12-C,46,hostap,src/eap_server/eap_server_ttls.c,1010,FP,"default: has wpa_printf(...) call + break -- not empty, misattributed."
+MSC12-C,47,curl,lib/vtls/schannel.c,1352,FP,"case SEC_I_CONTINUE_NEEDED: groups with SEC_E_OK:, comment + real code follows."
+MSC12-C,48,mosquitto,client/client_shared.c,136,FP,else-if body is one of many comment-documented no-op arms enumerating recognized format chars.
+MSC12-C,49,hostap,src/common/ieee802_11_common.c,128,FP,"case OWE_OUI_TYPE: has an explanatory comment + break -- not empty, misattributed."
