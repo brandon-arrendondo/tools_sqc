@@ -1,0 +1,51 @@
+rule,idx,project,file,line,verdict,reason
+MSC12-C,0,sqlite,tool/lemon.c,231,FP,deliberate no-op while body `while((*dest++=*src++)!=0){}` - strcpy idiom, all work done in condition
+MSC12-C,1,sqlite,ext/wasm/api/sqlite3-wasm.c,1474,FP,RC macro is an intentional debug-trace toggle (#if 0/#else empty define) reused 5x in this fn - scaffold not a bug
+MSC12-C,2,hostap,src/p2p/p2p_i.h,1118,FP,misattribution - PRINTF_FORMAT(2,3); is the format-check attribute terminating the p2p_info() prototype, not a stray semicolon
+MSC12-C,3,sqlite,src/build.c,1921,FP,deliberate no-op for loop `for(zStart++;isspace;zStart++){}` - trims whitespace via clauses, idiomatic scan loop
+MSC12-C,4,curl,lib/vquic/vquic.c,204,FP,deliberate no-op while body `while(swrite()==-1 && EINTR);` - retry-on-EINTR idiom, work done in condition
+MSC12-C,5,curl,lib/curl_trc.c,68,FP,deliberate empty default case with explicit /* nada */ comment - documented intentional no-op
+MSC12-C,6,hostap,wpa_supplicant/dbus/dbus_new.h,474,FP,intentional empty stub function - part of a block of no-op D-Bus signal stubs for disabled feature build
+MSC12-C,7,mosquitto,src/plugin_basic_auth.c,78,FP,deliberate empty if-branch with explicit /* Do nothing */ comment - documented intentional no-op
+MSC12-C,8,sqlite,src/where.c,5246,FP,deliberate no-op for loop `for(j=0;...pTerm!=aLTerm[j];j++){}` - linear search idiom done via clauses
+MSC12-C,9,hostap,src/common/proc_coord.c,384,FP,empty case (just break) for PROC_COORD_MSG_REQUEST - message type intentionally not handled in this dispatch function
+MSC12-C,10,raylib,src/platforms/rcore_web_emscripten.c,291,FP,misattribution - line is inside an EM_ASM() embedded JavaScript block; sqc's C parser misreads the JS as an empty C statement
+MSC12-C,11,lua,lvm.c,1947,FP,misattribution - flagged line is `luaT_getvararg(ci, ra, rc);`, a real function call with side effects, not empty
+MSC12-C,12,curl,lib/mime.c,736,FP,deliberate empty case STOP_FILLING - named constant signals nothing further to do this round, idiomatic
+MSC12-C,13,hostap,src/rsn_supp/wpa.c,3586,FP,misattribution - continue_fuzz2: label is followed by real code (ok=1;) once #ifdef TEST_FUZZ/#endif is preprocessed away
+MSC12-C,14,mosquitto,lib/loop.c,202,FP,deliberate no-op while body draining sockpairR via recv() in the condition - all work done in condition, idiomatic drain loop
+MSC12-C,15,curl,lib/content_encoding.c,434,FP,grouped case label (NEEDS_MORE_OUTPUT/NEEDS_MORE_INPUT share a break) - same grouped-case idiom the v0.4.143 fix targeted, residual
+MSC12-C,16,sqlite,ext/misc/tmstmpvfs.c,615,FP,deliberate empty if-branch with explicit /* No-op */ comment
+MSC12-C,17,curl,lib/mime.c,705,FP,deliberate empty if-branch with explicit /* sz is already zero */ comment
+MSC12-C,18,hostap,src/common/ieee802_11_common.c,131,FP,deliberate empty case (DPP_CC_OUI_TYPE) with comment - recognized-but-currently-unused sub-element type
+MSC12-C,19,sqlite,ext/misc/anycollseq.c,22,FP,SQLITE_EXTENSION_INIT1 macro expands to a real sqlite3_api pointer declaration/init - hidden effect sqc can't see through
+MSC12-C,20,curl,lib/http.c,1814,FP,deliberate empty else-if body (bare ;) - part of a documented skip-header chain (Content-Type sent later by formdata)
+MSC12-C,21,hostap,src/rsn_supp/wpa.h,506,FP,intentional empty stub function - part of a block of no-op wpa_sm_* stubs for disabled feature build
+MSC12-C,22,curl,lib/sendf.c,1335,FP,deliberate empty default case in cr_buf_cntrl - only REWIND opcode needs action
+MSC12-C,23,curl,lib/multi.c,2705,FP,deliberate empty case MSTATE_COMPLETED (just break) - terminal state machine state needing no further action
+MSC12-C,24,hostap,src/ap/ctrl_iface_ap.c,1823,FP,misattribution - fail: label has real code following (os_free/return) once #ifdef CONFIG_MBO/#endif is preprocessed away
+MSC12-C,25,curl,src/tool_operate.c,2304,FP,deliberate empty else-if body (bare ; /* already done */) - documented intentional no-op
+MSC12-C,26,curl,lib/http.c,1819,FP,part of the same documented skip-header else-if chain as idx 20 (Connection header handled specially)
+MSC12-C,27,hostap,wpa_supplicant/sme.h,124,FP,intentional empty stub function - part of a block of no-op sme_* stubs for disabled CONFIG_SME feature build
+MSC12-C,28,hostap,src/crypto/tls_none.c,231,FP,intentional empty stub function - entire file is the null/no-op TLS backend implementation by design
+MSC12-C,29,curl,lib/vtls/wolfssl.c,814,FP,deliberate empty if-branch with explicit comment "The cached store is already in use, do nothing"
+MSC12-C,30,mosquitto,src/http_serv.c,207,FP,deliberate empty else-branch with explicit /* Unknown header */ comment
+MSC12-C,31,curl,lib/telnet.c,300,FP,deliberate empty case with explicit comment "Already negotiating for NO"
+MSC12-C,32,sqlite,ext/wasm/api/sqlite3-wasm.c,548,FP,_DefGroup is a macro that closes/registers the DefGroup DSL construct - hidden real effect via macro expansion
+MSC12-C,33,hostap,src/ap/drv_callbacks.c,2614,FP,misattribution - case EVENT_SCAN_RESULTS has substantial real code below (scan_cb dispatch, MLD partner handling), not empty
+MSC12-C,34,hostap,src/ap/wps_hostapd.c,925,FP,deliberate empty case, one of six sequential ER-event cases intentionally left as no-op in this build
+MSC12-C,35,curl,lib/vquic/vquic.c,514,FP,deliberate no-op while body `while(recvmsg()==-1 && EINTR/EMSGSIZE);` - retry-on-EINTR idiom
+MSC12-C,36,mosquitto,src/plugin_basic_auth.c,66,FP,deliberate empty if-branch with explicit /* Do nothing */ comment - same idiom as idx 7 (per-listener plugin check)
+MSC12-C,37,curl,lib/vquic/vquic.c,430,FP,deliberate no-op while body `while(recvmmsg()==-1 && EINTR/EMSGSIZE);` - retry-on-EINTR idiom, recvmmsg variant
+MSC12-C,38,curl,lib/curl_trc.h,60,FP,misattribution - CURL_PRINTF(2,3); is the format-check attribute terminating the Curl_failf() prototype, not a stray semicolon
+MSC12-C,39,hostap,wpa_supplicant/pr_supplicant.h,50,FP,intentional empty stub function - part of a block of no-op wpas_pr_* stubs for disabled CONFIG_PR feature build
+MSC12-C,40,sqlite,ext/misc/zipfile.c,28,FP,SQLITE_EXTENSION_INIT1 macro expands to a real sqlite3_api pointer declaration/init - hidden effect sqc can't see through
+MSC12-C,41,sqlite,ext/jni/src/c/sqlite3-jni.c,3428,FP,deliberate empty else-if branch with explicit /* No-op */ comment (jLog already registered)
+MSC12-C,42,hostap,src/utils/os_internal.c,457,FP,deliberate no-op while body `while(*s++);` with comment "determine total src string length" - idiomatic scan loop
+MSC12-C,43,hostap,src/rsn_supp/wpa.h,448,FP,intentional empty stub function - part of a block of no-op wpa_sm_* stubs for disabled feature build
+MSC12-C,44,sqlite,ext/jni/src/c/sqlite3-jni.c,4952,FP,S3JniHook_mutex_enter is a mutex-lock macro with a real hidden effect, not a no-effect bare token
+MSC12-C,45,hostap,wpa_supplicant/wpa_gui-qt4/scanresultsitem.h,19,FP,misattribution - `};` is the required closing semicolon of a C++ class definition; also out-of-scope C++ file (CERT C only)
+MSC12-C,46,hostap,src/l2_packet/l2_packet_none.c,127,FP,deliberate empty function with explicit comment "This function can be left empty"
+MSC12-C,47,mosquitto,src/service.c,67,FP,deliberate empty case with explicit comment "Pause service."
+MSC12-C,48,sqlite,ext/jni/src/c/sqlite3-jni.c,5505,FP,S3JniExceptionClear is a JNI exception-clearing macro with a real hidden effect, not a no-effect bare token
+MSC12-C,49,hostap,src/crypto/crypto_nettle.c,472,FP,intentional empty stub function crypto_unload() - nettle backend needs no unload cleanup, interface-conformance no-op

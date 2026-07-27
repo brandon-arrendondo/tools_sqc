@@ -162,3 +162,75 @@ urgent — precision is now in line with the rest of the rule set):
 4. **Misattribution** (5/16): flagged line isn't a variable assignment at
    all — a C++ default-parameter value, a `switch case` label, a struct
    field declaration.
+
+## Update: MSC12-C fixed in v0.4.143 (commit f788a412, 2026-07-27)
+
+Task 379 fixed the documented root cause: `check_empty_switch_case` parsed
+grouped case labels (`case 'D': case 'd': ...code...`) as independent
+sibling `case_statement` nodes (tree-sitter-c's actual structure — they are
+not nested) and flagged the leading, body-less label as an empty case even
+though it shares the following label's body. A bare label with no
+statements of its own, immediately followed by another case/default label,
+is now recognized as a grouped-label member and skipped. A second bug in
+the same code path was fixed alongside it: the case-value-skip heuristic
+(`prev_named_sibling() == None`) also misfired on a `default:` case's first
+real statement (no value node precedes a `default:` label either), causing
+misattribution false positives — replaced with an explicit
+`child_by_field_name("value")` check.
+
+**Real-world impact** (run sqc-0.4.143-f788a412 vs. sqc-0.4.141-2acbd455,
+same 7 codebases): MSC12-C's raw finding count dropped **58.4%**, 4,952 →
+2,059, with no regressions in any other rule (MSC12-C's own test suite
+also gained a fixed test: `wiki_exceptions_2`, previously a stale baseline
+failure).
+
+**Re-measured precision** on a fresh, independently seeded 50-finding
+sample drawn from the post-fix run
+(`sample_msc12_postfix_0.4.143.json` / `adjudication_msc12_postfix.csv`,
+same adjudication standard as the original audit):
+
+| | Pre-fix (0.4.141) | Post-fix (0.4.143) |
+|---|---|---|
+| Sample TP/50 | 0 | 0 |
+| Sample precision | 0.0% | **0.0%** (unchanged) |
+| Official oracle precision (`bench realworld-score`) | 0.0% | **0.0%** (unchanged) |
+
+**Precision did not move.** The grouped-case-label bug was real — only 1
+residual instance turned up in the post-fix sample (`content_encoding.c:434`,
+a `NEEDS_MORE_OUTPUT`/`NEEDS_MORE_INPUT` shared-break pair) — but it was
+never the rule's dominant FP driver in the first place; it just happened to
+be the single most *characterizable* one. The actual dominant driver,
+unchanged by this fix, is structural: `check_empty_control_flow` /
+`check_empty_switch_case` treat "syntactically empty body" as "no effect,"
+but real-world C is full of *intentionally* empty bodies, and the rule has
+no way to distinguish "empty by design" from "empty by mistake." FP
+breakdown of the post-fix 50-sample:
+
+1. **Deliberate empty branches with explanatory comments** (`/* No-op */`,
+   `/* Do nothing */`, `/* already done */`, `/* Unknown header */`, etc.) — 16
+2. **Intentional no-op stub functions** for disabled features or null
+   backends (`sme.h`, `tls_none.c`, `crypto_nettle.c:crypto_unload`, etc.) — 9
+3. **Deliberate no-op scan/retry loops** doing all work in the loop clauses
+   (`while((*dest++=*src++)!=0){}`, `while(recvmsg()==-1 && EINTR);`) — 8
+4. **Bare macro tokens with hidden real effects** sqc can't see through
+   (`SQLITE_EXTENSION_INIT1`, `S3JniHook_mutex_enter`, `_DefGroup`) — 6
+5. **Attribute-macro-terminating semicolons** (`PRINTF_FORMAT(2,3);`) — 2
+6. **Misattribution to code with real effects** (a genuine call, a
+   substantial case body, labels with real code after an `#ifdef`/`#endif`
+   boundary, a C++ class-closing `};`, JS misparsed inside `EM_ASM()`) — 7
+7. **Empty cases with clear idiomatic intent from context** (state-machine
+   terminal states, sequential unhandled-event cases, uncommented) — 2
+
+**Implication**: unlike MSC13-C, MSC12-C's real fix is not another
+targeted parser bug — it needs either (a) an explicit "empty body is OK"
+allowlist (a leading comment, a recognized no-op idiom, a stub-function
+heuristic) or (b) to stop firing on empty-body patterns entirely and keep
+only the higher-confidence sub-checks (self-assignment, duplicate
+conditions, redundant logical operators, no-effect expressions), which
+were not sampled here since none appeared in either 50-item draw. Given 0%
+measured precision on two independent seeded samples and ~2,059 remaining
+real-world hits, MSC12-C should be considered for disabling its
+empty-body-family checks (or the whole rule) pending that redesign —
+this is a `disable`-track recommendation, not a `fix`-and-reverify one,
+since the fixed bug did not move the needle and no further quick win is
+visible in the current sample data.
